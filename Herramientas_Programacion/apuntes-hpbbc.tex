@@ -1,0 +1,170 @@
+\documentclass{config/apuntes}
+
+\title{Herramientas de Programación en Bioinformática y Biología Computacional}
+\author{Sandra Mingo Ramírez}
+\date{2024/25}
+\acronym{HPBBC}
+
+\usepackage[all]{nowidow}
+
+\begin{document}
+
+\begin{abstract}
+Esta es una asignatura introductoria de los conceptos más importantes que se irán extendiendo a lo largo de todo el máster. Se divide en tres módulos: Linux, Python y Bases de Datos. 
+\end{abstract}
+
+\pagestyle{plain}
+
+\maketitle
+
+\tableofcontents
+
+%02/09/24 - Eduardo Serrano (Despacho B305) eduardo.serrano@uam.es
+%En los ordenadores de la EPS, al arrancarlos hay que seleccionar el segundo sistema operativo en la pantalla negra, que es el primero de Ubuntu. Después aparece una pantalla amarilla que pide usuario (mbioinf) y contraseña (2024).
+ %3 módulos: introducción a linux + programación de script, introducción a python, bases de datos relacionales
+%Asistencia obligatoria un 70% salvo si es demasiado inicial, en cuyo caso hay que avisar al profesor.
+ %Evaluación asignatura: en las tres partes hay que hacer una práctica que cuenta un 75%. En la parte de linux se puede hacer en grupos de 3-4 personas de forma colaborativa. También hay un examen en el que hay que sacar por encima de un 4. La práctica se entrega más o menos a finales de noviembre o principios de diciembre. 
+ %Se realizará detección de posibles copias mediante Turnitin, y quien copie suspenderá la asignatura y puede llegar a la suspensión del máster y de la universidad.
+ %Hay que instalar linux mediante máquina virtual, cambiando el sistema operativo entero, tener particiones, linux on fly (arrancando una terminal)... La solución más chapucera vale para este curso, pero quizás para las asignaturas del resto del máster no porque hay que descargar ciertas bibliotecas, por lo que arrancarlo mediante un pendrive puede no funcionar. 
+\chapter{Linux}
+Todos los comandos se lanzan desde la terminal de Linux. Se pueden explorar los ficheros del árbol de directorios con un explorador que es equivalente al explorador de Windows. En cuanto se maneje con ficheros grandes, o se requieran acciones mínimas, las herramientas de la interfaz gráfica no van a ser suficientes - de ahí que tengamos que trabajar con la terminal. 
+
+Con el comando \texttt{man comando}, \marginpar[\footnotesize man]  \ se accede al manual para buscar el comando con su nombre, descripción y posibles parámetros tanto en su versión larga como corta.
+
+\section{Tratamiento de ficheros y directorios}
+El comando \texttt{ls} \marginpar[\footnotesize ls]  \  muestra la lista de la información del directorio en el que nos encontremos. Muestra tanto los ficheros como los directorios. En Ubuntu, distingue los directorios en azul oscuro y los ficheros en verde, pero el código de colores puede cambiar en la configuración y puede no ser igual siempre, por lo que no nos deberíamos fijar en eso.  El comando se puede completar con una serie de \textbf{parámetros detrás de un guion que modifican el comportamiento del comando inicial}. \texttt{ls -l} lista el contenido del directorio con información adicional que incluye la localización del fichero, el tipo de fichero, el tamaño en bytes, los permisos, el inode y cuándo se modificó por última vez. Algunos tamaños pueden ser difíciles de leer a simple vista. Para ello, se emplea \texttt{ls -lh} que lista el contenido con el tamaño largo, de forma que indica las unidades de forma más comprensible a simple vista. De hecho, la h viene de "human".  El parámetro \texttt{-t} ordena la lista por orden de creación o modificación de más reciente a más antiguo, y \texttt{-p} añade una barra invertida a los directorios para poder distinguirlos de los ficheros. Si se escribe \texttt{-lp}, la primera columna tiene una d al inicio de todos los directorios, mientras que los ficheros tienen un guion como primer caracter. Así, todos los parámetros se pueden concatenar en \texttt{ls -lhtp}. El parámetro \texttt{ls -a} lista el contenido del directorio en el que nos encontremos, incluyendo los ficheros ocultos cuyo nombre empieza por un punto (por ejemplo, ".config"). Estos ficheros no aparecen a no ser que se añada el parámetro a para protegerlos y que no se modifiquen sin querer. "Si no quieres que alguien meta la pata, no le enseñes dónde puede meter la pata". En función de los permisos que se tenga, luego se pueden modificar esos ficheros o no. El parámetro \texttt{-i} añade un inode que será importante cuando seamos administradores, ya que es un índice que único para cada fichero que permite modificar un fichero sin modificar otro aunque se llamen igual. Aunque no se puedan tener dos ficheros en el mismo directorio que se llamen igual porque el path sería el mismo, sí puede haber dos ficheros con el mismo nombre en directorios distintos, ya que el path sería diferente, al igual que el inode.
+
+Para crear nuevas carpetas o directorios, en el explorador es click derecho y crear nueva carpeta. \marginpar[\footnotesize mkdir] \ En la terminal, esto se traduce en el comando \texttt{mkdir nombre-carpeta-nueva}. El tamaño de un directorio no es el tamaño de lo que tenga dentro el directorio; al crear una carpeta nueva, ya tiene un tamaño de 4K, y si se tuvieran muchos ficheros muy pesados, no tiene por qué ser la suma de todos los tamaños que contenga ese directorio.
+
+Para cambiar de directorio, se emplea el comando \texttt{cd nuevo-directorio} \marginpar[\footnotesize cd]. \ Así, el siguiente prompt incluye el directorio en el que se encuentra. Al entrar en un directorio que acabamos de crear, con el comando \texttt{ls -lht} no aparece nada, pero con \texttt{ls -lhta} aparecen dos directorios ocultos llamados "." y "..". Los dos puntos son un\textbf{ enlace al directorio anterior o padre}, de forma que con \texttt{cd ..} se va al directorio anterior. El punto simple es el \textbf{directorio actual}. 
+
+El comando \texttt{pwd} \marginpar[\footnotesize pwd] \ muestra dónde se encuentra el \textbf{directorio actual}, es decir, el \textbf{directorio de trabajo o working directory}. El primer símbolo es una barra (/) que indica el \textbf{directorio raíz}. La virgulilla ($\sim$) lleva a la "carpeta personal", que es una traducción de \textbf{"home directory"}. Se puede mover entre directorios ya sea por path directo mediante el uso del directorio raíz o mediante el árbol del directorio con los dobles puntos o la virgulilla. 
+
+%unix2.html
+Para copiar un archivo,  \marginpar[\footnotesize cp] \ se emplea el comando \texttt{cp archivo-original archivo-nuevo}. Hay comandos que no necesitan \textbf{argumentos}, y hay comandos (como este) que sí necesitan. En este caso, requiere de dos argumentos: el archivo que se quiere copiar y el nombre que se le quiere dar a la copia. El orden es siempre \textbf{comando -parámetro argumento}. Si se quiere copiar un directorio con todo su contenido a otro directorio, es necesario añadir el parámetro \texttt{cp -r directorio-original directorio-nuevo} (r de recursivo, es decir, todo lo que haya dentro). La fecha de los ficheros copiados es de cuando se crea la copia, no la del fichero original. Solo se podrán copiar archivos en aquellos directorios en los que tengamos los permisos apropiados por el administrador. Antes de realizar el comando para copiar, la terminal realiza una serie de comprobaciones, de forma que si el nombre del archivo a copiar tiene alguna errata, salta un error al no poder realizarse el comando stat, que forma parte de las comprobaciones previas. Si se copia un directorio en otro preexistente, se copia el primer directorio en el segundo. Esto resulta en que el segundo directorio incluye los ficheros que ya estaban y un nuevo directorio nuevo dentro - no se sobreescribe todo el directorio ni se borra lo que hubiese ahí. Aun así, sigue siendo recomendable proteger los directorios sensibles añadiendo un punto antes del nombre o directamente cambiando los permisos.
+
+Para mover un archivo, \marginpar[\footnotesize mv] \ se utiliza el comando \texttt{mv}. Se utiliza de forma similar a cp, pudiendo mover un fichero a otro directorio o al mismo con el mismo u otro nombre siempre que el nuevo directorio ya exista previamente. Si se mueve un directorio entero, se mueve con todo el contenido que tenga en el nuevo directorio, y también se le puede cambiar el nombre. 
+
+A la hora de querer borrar, \marginpar[\footnotesize rm \\ rmdir] \ se utiliza \texttt{rm} para los archivos y \texttt{rmdir} para los directorios. Para esto último, es necesario que el directorio esté vacío. En caso de que no, se puede utilizar \texttt{rm -r directorio/} o \texttt{rm -r ./directorio/} para borrar tanto el directorio como su contenido.
+
+En lugar de copiar un fichero y tenerlo doble, \marginpar[\footnotesize ln] \ se puede crear un link simbólico. Esto quiere decir que se crea un fichero que no tiene el contenido del fichero original (y por tanto pesa menos, solo 11 bytes), si no que redirige a ese archivo, permitiendo enlazar distintos directorios o ficheros en ordenadores en remoto. Para crear un link simbólico, el comando es \texttt{ln -s fichero-original fichero-simbolico}. Si se borra el fichero original, el enlace simbólico ya no tiene utilidad. Para borrar un enlace, se puede borrar como un fichero cualquiera con \texttt{rm}.
+
+\begin{table}[htbp]
+\begin{mdframed}[backgroundcolor=black!10]
+    \centering
+    Todos los ficheros tienen un nombre y una extensión, y siempre se debe escribir completo. Los directorios no llevan nunca extensión. Se recomienda no utilizar espacios en blanco en los nombres tanto de los ficheros como de los directorios porque dificulta la navegación.
+    \end{mdframed}
+\end{table}
+
+\section{Mostrar contenidos en pantalla}
+El comando \texttt{clear} \marginpar[\footnotesize clear] \ borra los comandos de la pantalla para dejarla vacía.
+
+Para mostrar en pantalla el contenido de un fichero, \marginpar[\footnotesize cat] \ se puede emplear el comando \texttt{cat fichero}. No obstante, este comando no diferencia cambio de página, si no que muestra todo el contenido por pantalla aunque ocupe más. También se puede utilizar este comando con varios ficheros para que se muestren uno detrás de otro. 
+
+Para mostrar el contenido de un fichero en la pantalla por partes, \marginpar[\footnotesize less] \ se emplea \texttt{less}. De esa forma no hay que subir y bajar en la pantalla, si no que se desplaza mediante el uso del espacio para ir por páginas enteras, enter para ir línea a línea, y la tecla q para salir (quit). 
+
+El comando \texttt{head} \marginpar[\footnotesize head \\ tail] \ muestra en pantalla las primeras 10 líneas de un fichero por defecto. Se le puede añadir un parámetro para indicar el número de líneas que se desea ver: \texttt{head -15 fichero} muestra las primeras 15 líneas. De forma similar, \texttt{tail} muestra las últimas 10 líneas de un fichero.
+
+\section{Buscar contenidos de ficheros}
+El comando \texttt{grep} \marginpar[\footnotesize grep] \ es fundamental al utilizarse mucho con los pipes y las redirecciones (véase más abajo). Se utiliza \texttt{grep cadena-buscada fichero}, y el resultado son todas las líneas que incluyen la cadena de caracteres que se ha buscado, tanto como palabra suelta como dentro de otra palabra. Utilizando \texttt{grep -w}, se filtran aquellas líneas en las que la cadena forma palabras individuales (si se busca with, descarga within, por ejemplo). Este comando es sensible a las mayúsculas y minúsculas. Para ignorar eso, se añade el parámetro \texttt{-i}. El parámetro \texttt{-v} muestra aquellas líneas que no incluyan la cadena, \texttt{-n} incluye al inicio de cada línea el número de dicha línea, y \texttt{-c} el número de líneas que se deberían mostrar.
+
+El comando \texttt{wc} \marginpar[\footnotesize wc] \ cuenta distintas cosas en un fichero: líneas, palabras, y bytes. Para obtener solo una de esas mediciones, se pueden añadir los parámetros \texttt{-l, -w, -c} respectivamente. Tradicionalmente, la cantidad de bytes indica la cantidad de caracteres, pero puede haber pequeñas diferencias por la codificación. Para obtener la cantidad de caracteres, se emplea \texttt{grep -m}.
+
+%03/09 - Eduardo Serrano
+%unit3.html
+\section{Redireccionamientos y pipes}
+Tras ejecutar un comando, el resultado que sale en pantalla es la \textbf{salida estándar}. Sin embargo, se puede \textbf{redireccionar la salida} a otro lugar mediante el símbolo >. \marginpar[\footnotesize > \\ > >] \ Linux trata igual la salida estándar y un fichero, pero la salida estándar es la opción por defecto, por lo que nosotros debemos redireccionar la salida cuando lo queremos guardar en un fichero. Hay que tener cuidado porque si se redirecciona una salida a un fichero que ya existe, se sobreescribe el contenido del mismo. Si lo que queremos es que el contenido nuevo se añada detrás del contenido ya presente en un fichero, se deben emplear los dos símbolos > >. 
+
+También existe un \textbf{redireccionamiento de entrada}, siendo la entrada estándar lo que se escribe por teclado. Para redireccionar la entrada, se emplea el símbolo <.  \marginpar[\footnotesize <] \ 
+
+El comando \texttt{gedit fichero} \marginpar[\footnotesize gedit] \ abre un editor de texto plano que nos permite crear un fichero y escribir su contenido. Para guardar el contenido que hemos escrito, pulsa \texttt{ctrl s} y para cerrar \texttt{ctrl q}. Aunque el editor de texto también muestre el contenido de un fichero que ya existe previamente, si el tamaño del fichero es muy grande, no es recomendable leer su contenido mediante este comando, si no mediante otros mencionados previamente como \texttt{less}.
+
+El comando \texttt{sort} \marginpar[\footnotesize sort] \ ordena una entrada por teclado o un fichero alfanuméricamente. Si un fichero está separado en líneas, utiliza el primer caracter de cada línea. A este comando se le puede pasar directamente ficheros o se le puede redireccionar por entrada.
+
+Hay ocasiones que para obtener un resultado paso a paso,  \marginpar[\footnotesize |] \ hay que crear ficheros temporales que modificar y a los que acceder. Esto se puede evitar mediante el uso de \textbf{pipes} o barras verticales (|), que conectan los comandos antes y después del pipe. De esta forma, se omite el paso intermedio y se utiliza la salida del primer comando como entrada del segundo. 
+
+%unix4.html
+\section{Wildcards y convenciones en nombres de archivo}
+Los wildcards en informática son como comodines.\marginpar[\footnotesize * \\ ?] \ Existen dos tipos: el asterisco y el símbolo de interrogación. El \textbf{asterisco} va a representar cualquier número de caracteres en el nombre de un fichero o directorio. Por ejemplo, si ponemos \texttt{prueba*}, puede resultar en el directorio pruebas y en los ficheros prueba.txt y prueba.pdf. Por el contrario, el \textbf{interrogante} representa exactamente un caracter. Así, al poner \texttt{prueba?}, el resultado será exclusivamente el directorio pruebas, pero no los ficheros.
+
+A la hora de nombrar ficheros y directorios, se deben \textbf{evitar los símbolos especiales} tales como /, *, \& y \%. También es muy recomendable \textbf{evitar espacios entre caracteres}. En resumen, a la hora de poner un nombre a un archivo, se deberían usar solo caracteres alfanuméricos junto a barras bajas y puntos. Tradicionalmente, los nombres empiezan en minúcula y pueden terminar en un punto seguido de un grupo de letras que indican el contenido de un archivo (por ejemplo, poner al final de todos los archivos en código Python .py).
+
+%unix5.html
+\section{Seguridad del sistema de archivos (permisos de acceso}
+Cada archivo y directorio tiene \textbf{permisos de acceso asociados}, que se pueden comprobar en la primera columna al realizar \texttt{ls -lht}. Se trata de una cadena de 10 símbolos d, r, w, x, -. La d solo estará presente en primera posición e indica que se trata de un directorio. Si se trata de un fichero, en primera posición hay un guion. Los 9 símbolos restantes se agrupan en grupos de 3 en 3 y representan los \textbf{permisos del usuario, del grupo al que pertenece el usuario (y no es el usuario) y de todos los demás} respectivamente. Las opciones son:
+\begin{itemize}
+\item r (read): permisos de lectura y copiado de un archivo y de listar el contenido de un directorio.
+\item w (write): permisos de escritura y modificado de un archivo y de crear y borrar los archivos del directorio o mover archivos a él.
+\item x (execution): permisos de ejecución de un archivo cuando sea apropiado, es decir, cuando sea ejecutable. Por ejemplo, los comandos de linux como ls o mv son ficheros que se encuentra en /usr/bin/ y que se pueden ejecutar por todos a la hora de escribir esos comandos en la terminal. 
+\end{itemize}
+Si en lugar del caracter aparece un guion, significa que ese permiso no está dado. \marginpar[\footnotesize chmod] \ Si eres el propietario de un fichero, se pueden cambiar los permisos mediante el comando \texttt{chmod}. Para indicar a quién se le quiere cambiar el permiso, se pone u (usuario), g (grupo), o (otros), a (todos). Para quitar un permiso, se escribe un guion (-) seguido del permiso que se quiere quitar y del fichero; para dar un permiso, se escribe un más (+) y el permiso seguido del nombre del fichero. Un igual (=) expresa los permisos que se quieran. Para poner permisos diferentes, se escriben separados por comas (pero sin espacios), por ejemplo \texttt{chmod g+wx,o+w fichero}. También se puede ejecutar el comando \texttt{chmod 777 fichero} para darle todos los permisos a todos. Es importante tener en cuenta también los permisos de los directorios, ya que para poder modificar un fichero, no solo se deben tener los permisos para modificarlo, si no que a su vez debe estar en un directorio para el que se tengan los permisos para modificarlo.
+
+\section{Procesos y trabajos}
+Un \textbf{proceso} es un programa que se ejecuta y que recibe un \textbf{identificador (PID)} por parte del sistema operativo. Hay procesos que los lanzamos nosotros, pero hay otros que funcionan por detrás como por ejemplo buscar conexiones Wifi. 
+
+El comando \texttt{top} muestra todos los procesos que se están llevando a cabo en tiempo real. \marginpar[\footnotesize top] \ La terminal es un proceso, y cada vez que nosotros lanzamos un proceso desde la terminal, por lo que se genera un proceso con un proceso padre (la terminal). Los procesos no pueden ejecutarse a la vez (van secuencialmente), pero el sistema operativo va gestionando los procesos y sus tiempos para que parezca que van en paralelo. Los sistemas operativos modernos pueden contener varios núcleos o kernel que permite su funcionamiento a la vez, pero dentro de cada núcleo o kernel los procesos van de forma secuencial. Para salir de top, se debe ejecutar \texttt{ctrl c}.
+
+El comando \texttt{ps} \marginpar[\footnotesize ps] \ muestra todos los procesos que se han lanzado desde esa terminal. Añadiendo el parámetro \texttt{-ef}, se incluyen los procesos padres (lanzados por root) con el usuario que lanzó el proceso, el PID y el PID padre.
+
+El proceso \texttt{sleep} \marginpar[\footnotesize sleep] \ está parado el tiempo que se le indique. En realidad, va a estar más tiempo debido a la gestión del tiempo del sistema operativo que va alternando distintos procesos de forma intermitente. Por ello, aunque ese proceso sí dure el tiempo determinado, el usuario tiene que esperar algo más. Si se escribe \texttt{sleep 10s \&}, se estará ejecutando de fondo (en el background), y lo que se devuelve a la terminal es el PID. Esto permite seguir utilizando la terminal para otros procesos mientras tanto. Si se va enviado un proceso en el foreground cuando se quería en el background, se puede abortar (con ctrl c) y volver a ejecutar bien o se puede detener (con ctrl z) y poner \texttt{bg} para enviarlo al background. Si por el contrario se quiere reiniciar un proceso suspendido, se pone \texttt{fg}. Esto reinicia el último proceso suspendido. Para especificar uno concreto, se debe poner su número de trabajo (no el PID): \texttt{fg \$1}. 
+
+Para matar un proceso de forma eficiente, se puede usar el comando \texttt{kill -9} \marginpar[\footnotesize kill] \ seguido del identificador del proceso. De esta forma se asegura que también se eliminen los subprocesos generados por ese proceso y se cierren todos los recursos. Sin embargo, no es posible matar los procesos de otros usuarios.
+
+%unix6.html
+\section{Otros comandos útiles de UNIX}
+\begin{itemize}
+\item \textbf{df}: informa del espacio libre del sistema.
+
+\item \textbf{du}: saca los kilobytes utilizados por cada subdirectorio. Esto puede ser útil cuando se ha superado el almacenamiento para ver qué directorio tiene más archivos. \begin{itemize}
+\item -s: muestra solo un resumen
+\end{itemize}
+
+\item \textbf{gzip y gunzip}: \texttt{gzip} reduce el tamaño de un fichero utilizando el compresor Zip, resultando en un fichero con extensión .gz. \texttt{gunzip} descomprime el fichero .gz. Para esto, es necesario tener permisos de lectura.
+
+\item \textbf{tar}: combina varios archivos en uno único que puede o no estar comprimido. \begin{itemize}
+\item -c: crea un archivo.
+\item -x: extrae un archivo.
+\item -v: muestra el progreso de un archivo.
+\item -f: nombre de archivo.
+\item -t: ver el contenido del archivo.
+\item -j: comprime el archivo mediante bzip2.
+\item -z: comprime el archivo mediante gzip.
+\item -r: añade o actualiza archivos o directorios a archivos existentes.
+\item -C: directorio especificado
+\item --exclude=: excluye los archivos que vayan a continuación de la orden principal. 
+\end{itemize}
+
+\item \textbf{zcat}: lee archivos de extensión .gz sin la necesidad de descomprimirlos previamente. 
+
+\item \textbf{cut}: extrae porciones de texto de un fichero al seleccionar columnas o caracteres. \begin{itemize}
+\item -d: delimitador en comillas simples
+\item -f: campo
+\end{itemize}
+ 
+\item \textbf{tr}: reemplaza o borra caracteres.
+
+\item \textbf{date}: 
+
+\item \textbf{file}: 
+
+\item \textbf{stat}: 
+
+\item \textbf{basename y dirname}: 
+
+\item \textbf{diff}: 
+
+\item \textbf{sort}: 
+
+\item \textbf{find}: 
+
+\item \textbf{xargs}: 
+
+\item \textbf{history}: 
+
+\item \textbf{ssh}: 
+
+\item \textbf{nohup}: 
+\end{itemize}
+
+
+\end{document}
