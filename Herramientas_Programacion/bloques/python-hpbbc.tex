@@ -56,7 +56,7 @@ else:
 
 Si se cumple la condición del if, el código que se ejecuta es el que se encuentra indentado y se continúa sin ejecutarse el bloque else. Si no se cumple el if, el código que se ejecuta es el que se encuentra indentado tras else, y se omite el bloque del if. 
 
-En el caso de que haya más condicionales, se puede utilizar \texttt{ifelse} seguido del siguiente condicional, siempre y cuando la condición sea de verdadero o falso:
+En el caso de que haya más condicionales, se puede utilizar \texttt{elif} seguido del siguiente condicional, siempre y cuando la condición sea de verdadero o falso:
 
 \begin{lstlisting}
 num_pensado = 4
@@ -64,7 +64,7 @@ num = input("Elige un número: ")
 
 if num_pensado == num:
 	print("Enhorabuena, has acertado")
-ifelse num_pensado < num:
+elif num_pensado < num:
 	print("No has acertado, el número es más bajo")
 else:
 	print("No has acertado, el número es más grande")
