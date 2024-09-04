@@ -2,7 +2,7 @@
 Apuntes de las asignaturas del Máster de Bioinformática y Biología Computacional de la Universidad Autónoma de Madrid (plan de estudios 2024/25). 
 
 ## LaTeX
-Los apuntes están tomados en [LaTeX](https://es.wikipedia.org/wiki/LaTeX), un procesador de textos basado en comandos. Aunque esto pueda parecer algo confuso al principio (sobre todo viniendo de procesadores WYSIWYG como Microsoft Word o Google Docs), tiene la ventaja de poder centrarse en el contenido sin preocupaciones del formato. 
+Los apuntes están tomados en [LaTeX](https://es.wikipedia.org/wiki/LaTeX), un procesador de textos basado en comandos. Aunque esto pueda parecer algo confuso al principio (sobre todo viniendo de procesadores [WYSIWYG](https://es.wikipedia.org/wiki/WYSIWYG) como Microsoft Word o Google Docs), tiene la ventaja de poder centrarse en el contenido sin preocupaciones del formato. 
 LaTeX se utiliza ampliamente en el campo de la ciencia debido a la posibilidad de representar ecuaciones, fórmulas complejas y notación científica. También permite estructurar fácilmente cualquier documento con capítulos, secciones, notas, bibliografía, índices, etc. Y aunque penséis que todo eso también se puede lograr con los procesadores de texto tradicionales, la ventaja de LaTeX es que la salida es siempre la misma con independencia del dispositivo y sistema operativo (es decir, las imágenes no se van a mover de sitio, entre otros). 
 
 ### Empezar en LaTeX
