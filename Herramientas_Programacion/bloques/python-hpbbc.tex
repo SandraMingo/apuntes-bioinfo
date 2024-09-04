@@ -1,0 +1,149 @@
+%04/09 - Oscar Delgado
+\chapter{Programación en Python}
+Los lenguajes de programación son la forma de comunicarnos con los ordenadores. Algunos lenguajes tienen bajo nivel de abstracción que trabajan en binario y por ello son más similares al propio sistema. Por otro lado, están los lenguajes de alto nivel de abstracción que son más cercanos al idioma humano. Python es el lenguaje con el mejor \textbf{balance entre potencia y simplicidad}. 
+
+La máquina ejecuta un programa ejecutable (.exe), que está escrito en ensamblador, el lenguaje del ordenador. Para algunos lenguajes de programación, se requiere de un compilador para que genere a partir de nuestro código un ejecutable que entienda la máquina, como por ejemplo C. En el caso de Python, lo que requiere es un \textbf{intérprete}, que genera a tiempo real las instrucciones del ordenador para ejecutar nuestro código. El intérprete solía ser más lento que el compilador al tener que estar traduciendo a tiempo real el código. No obstante, a día de hoy, Python puede alcanzar un 90\% del tiempo que tardaría un programa escrito en C en ejecutarse. Esto se debe a que hay problemas paralelizables, es decir, que se pueden dividir en partes y realizar al mismo tiempo. El rendimiento de un programa depende de entrada-salida, es decir, la lectura de los datos que se encuentran en el disco duro, y eso depende de la tecnología del disco duro, no del lenguaje de programación. 
+
+Python tiene un \textbf{gran soporte de librerías}, que son programas escritos por otras personas y que se pueden utilizar por los demás. Los comandos de Python se pueden escribir directamente desde la terminal (escribiendo primero \texttt{python3} y luego salir con ctrl d), pero eso no es cómodo. Es mejor crear primero un fichero fuente con extensión .py que luego pueda utilizar el intérprete. Para ello, se escribe \texttt{pico nombre.py}. Esto abre un editor de texto donde podemos escribir el código. Se guarda con ctrl s y se cierra con ctrl x. Para que el intérprete lo lea, se debe poner en la consola \texttt{python3 nombre.py}. En caso de que haya alguna errata o algún error en el código, a la hora de ejecutar el código por el intérprete se va a indicar en qué línea del código fuente se encuentra y qué problema hay. También existen\textbf{ programas o IDEs} que son entornos donde poder editar el código fuente de forma más intuitiva. Ejemplos son Visual Studio Code, PyCharm, Spider, etc. 
+
+El código de Python se va ejecutando secuencialmente comando a comando. 
+
+\section{Variables}
+Las \textbf{variables} son contenedores donde guardar un contenido al que poder referirse mediante el nombre de la variable. El contenido puede ser desde números a cadenas de texto, lo que define el tipo de variable (el tipo de contenido que contiene una variable). En otros lenguajes, es necesario declarar una variable antes de poder usarla (se crea antes de meterle un contenido). Esto en Python no es necesario; la \textbf{creación de tipos es implícita por el intérprete en función del primer valor que se le dé a la variable}. Así, si se escribe directamente \texttt{age = 35}, el intérprete le da el tipo integer (número entero) a la variable age. Los \textbf{tipos en Python son implícitos y dinámicos} (pueden cambiar), lo que puede ser muy cómodo, pero también puede dar lugar a errores. Los tipos son:
+\begin{itemize}
+\item Integer: número entero
+\item Float: número con decimales
+\item String: cadena de caracteres, ya sean letras o números, que van entre comillas simples o dobles. Una vez que están definidas, ya no se pueden modificar.
+\item Bool: booleanos, es decir, True o False.
+\item List: lista
+\item Tuple: tupla
+\item Dictionary: diccionario
+\end{itemize}
+
+En cuanto a los nombres de las variables, no pueden contener espacios en blanco ni empezar por un número. Python es case-sensitive, por lo que hay una distinción entre mayúsculas y minúsculas. 
+
+\section{Primeras nociones}
+El comando \texttt{print} permite imprimir algo por pantalla. 
+
+El comando \texttt{input} le pide información al usuario que debe aportar por teclado.
+
+\begin{lstlisting}
+name = input('Enter your name: ')
+print('Hello, ', name)
+\end{lstlisting}
+
+Ese código está dividido en dos líneas de código. La primera línea es bloqueante, ya que le pide al usuario insertar por teclado su nombre. Una vez dado, ese nombre se asigna a la variable name que se emplea para imprimir por pantalla Hello y el nombre que se le ha insertado. 
+
+Aunque los tipos de variables sean implícitos, se puede realizar un \textbf{casting}, es decir, especificar el tipo de la variable:
+\begin{itemize}
+\item str(variable): convierte en tipo string.
+\item int(variable): convierte en tipo integer.
+\item float(variable): convierte en tipo float.
+\end{itemize}
+
+\section{Expresiones condicionales}
+En Python, se pueden escribir condicionales: si algo es verdadero/falso, ocurre algo. Esto se hace mediante \texttt{if} y \texttt{else} y sirve para cambiar el flujo del programa o tomar decisiones.
+
+\begin{lstlisting}
+num_pensado = 4
+num = input("Elige un número: ")
+
+if num_pensado == num:
+	print("Enhorabuena, has acertado")
+else:
+	print("Sigue intentando")
+\end{lstlisting}
+
+Si se cumple la condición del if, el código que se ejecuta es el que se encuentra indentado y se continúa sin ejecutarse el bloque else. Si no se cumple el if, el código que se ejecuta es el que se encuentra indentado tras else, y se omite el bloque del if. 
+
+En el caso de que haya más condicionales, se puede utilizar \texttt{ifelse} seguido del siguiente condicional, siempre y cuando la condición sea de verdadero o falso:
+
+\begin{lstlisting}
+num_pensado = 4
+num = input("Elige un número: ")
+
+if num_pensado == num:
+	print("Enhorabuena, has acertado")
+ifelse num_pensado < num:
+	print("No has acertado, el número es más bajo")
+else:
+	print("No has acertado, el número es más grande")
+\end{lstlisting}
+
+\subsection{Operadores condicionales}
+Los operadores condicionales son aquellos que resultan en True o False. Los operadores son:
+\begin{itemize}
+\item x == y: x es igual a y. Un solo igual asigna el valor de una variable a otra, dos iguales comprueban si son lo mismo.
+\item x != y: x no es igual a y.
+\item x < y: x es menor que y.
+\item x <= y: x es menor o igual que y.
+\item x > y: x es mayor que y.
+\item x >= y: x es mayor o igual que y. 
+\end{itemize}
+
+\subsection{Operadores lógicos}
+Para poder incluir varios condicionales, se utilizan los operadores lógicos \textbf{and} y \textbf{or}. 
+
+El operador \texttt{and} implica que las dos condiciones que se unen deben ser True para que el resultado sea True. Para el operador \texttt{or}, basta con que una condición sea True para que el resultado sea True.
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabularx}{0.5\textwidth}{XXcc}
+	X & Y & X and Y & X or Y \\ \hline
+	True & True & True & True \\
+	True & False & False & True \\
+	False & True & False & True \\
+	False & False & False & False
+	\end{tabularx}
+\end{table}
+
+\section{Bucles o loops}
+Los bucles permiten repetir ciertas sentencias para ahorrar código redundante. 
+
+\subsection{For loops}
+Los for loops permiten repetir un código un \textbf{número determinado de veces}. La estructura típica de un for loop es:
+
+\begin{lstlisting}
+for variable in range(número de veces):
+	código que se quiere repetir
+\end{lstlisting}
+
+Es importante remarcar que el código que se quiere repetir debe estar indentado. Por ejemplo, utilizando el ejemplo anterior, se podría escribir:
+
+\begin{lstlisting}
+num_pensado = 4
+
+for i in range(5):
+	num = input("Elige un número: ")
+	if num_pensado == int(num):
+		print("Enhorabuena, has acertado")
+		break
+	else:
+		print("Sigue intentando")
+\end{lstlisting}
+
+La i es una variable que empieza en 0 y con cada iteración aumenta en uno hasta llegar a 4. Esto se hace automáticamente por el intérprete. Si se acierta el número antes, se sale del bucle mediante \texttt{break}.
+
+\subsection{While loops}
+Los bucles while se repiten un \textbf{número indeterminado de veces}. Este bucle depende de una condición:
+
+\begin{lstlisting}
+while condición:
+	código que se quiere repetir
+\end{lstlisting}
+
+En estos bucles, es importante que la condición se modifique dentro del bucle para no crear un bucle infinito. 
+
+\begin{lstlisting}
+num_pensado = 4
+fallo = True
+
+while fallo == True:
+	num = input("Elige un número: ")
+	if num_pensado == num:
+		print("Enhorabuena, has acertado")
+		fallo = False
+	else:
+		print("Sigue intentando")
+\end{lstlisting}
+Así, cuando el usuario acierta el número, la variable fallo pasa a ser falsa y el bucle se interrumpe.

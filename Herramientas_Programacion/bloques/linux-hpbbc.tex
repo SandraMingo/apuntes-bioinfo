@@ -1,24 +1,3 @@
-\documentclass{config/apuntes}
-
-\title{Herramientas de Programación en Bioinformática y Biología Computacional}
-\author{Sandra Mingo Ramírez}
-\date{2024/25}
-\acronym{HPBBC}
-
-\usepackage[all]{nowidow}
-
-\begin{document}
-
-\begin{abstract}
-Esta es una asignatura introductoria de los conceptos más importantes que se irán extendiendo a lo largo de todo el máster. Se divide en tres módulos: Linux, Python y Bases de Datos. 
-\end{abstract}
-
-\pagestyle{plain}
-
-\maketitle
-
-\tableofcontents
-
 %02/09/24 - Eduardo Serrano (Despacho B305) eduardo.serrano@uam.es
 %En los ordenadores de la EPS, al arrancarlos hay que seleccionar el segundo sistema operativo en la pantalla negra, que es el primero de Ubuntu. Después aparece una pantalla amarilla que pide usuario (mbioinf) y contraseña (2024).
  %3 módulos: introducción a linux + programación de script, introducción a python, bases de datos relacionales
@@ -79,7 +58,7 @@ También existe un \textbf{redireccionamiento de entrada}, siendo la entrada est
 
 El comando \texttt{gedit fichero} \marginpar[\footnotesize gedit] \ abre un editor de texto plano que nos permite crear un fichero y escribir su contenido. Para guardar el contenido que hemos escrito, pulsa \texttt{ctrl s} y para cerrar \texttt{ctrl q}. Aunque el editor de texto también muestre el contenido de un fichero que ya existe previamente, si el tamaño del fichero es muy grande, no es recomendable leer su contenido mediante este comando, si no mediante otros mencionados previamente como \texttt{less}.
 
-El comando \texttt{sort} \marginpar[\footnotesize sort] \ ordena una entrada por teclado o un fichero alfanuméricamente. Si un fichero está separado en líneas, utiliza el primer caracter de cada línea. A este comando se le puede pasar directamente ficheros o se le puede redireccionar por entrada.
+El comando \texttt{sort} \marginpar[\footnotesize sort] \ ordena una entrada por teclado o un fichero alfanuméricamente. Si un fichero está separado en líneas, compara todos los caracteres de cada línea y empieza a ordenar por el primero. A este comando se le puede pasar directamente ficheros o se le puede redireccionar por entrada. El parámetro \texttt{-r} muestra el resultado en orden inverso, y \texttt{-u} filtra las líneas repetidas en un archivo. Para ordenar una sola parte, el parámetro \texttt{-k} permite elegir los campos a comparar.
 
 Hay ocasiones que para obtener un resultado paso a paso,  \marginpar[\footnotesize |] \ hay que crear ficheros temporales que modificar y a los que acceder. Esto se puede evitar mediante el uso de \textbf{pipes} o barras verticales (|), que conectan los comandos antes y después del pipe. De esta forma, se omite el paso intermedio y se utiliza la salida del primer comando como entrada del segundo. 
 
@@ -143,28 +122,23 @@ Para matar un proceso de forma eficiente, se puede usar el comando \texttt{kill 
  
 \item \textbf{tr}: reemplaza o borra caracteres.
 
-\item \textbf{date}: 
+\item \textbf{date}: imprime en pantalla el día y la hora. Se puede personalizar la forma en la que se muestra. 
 
-\item \textbf{file}: 
+\item \textbf{file}: muestra la información de uno o varios ficheros como su codificación.
 
-\item \textbf{stat}: 
+\item \textbf{stat}: muestra el archivo o el estado del archivo. También es posible acceder a la meta-información del fichero mediante el parámetro \texttt{-c} seguido de una secuencia válida. 
 
-\item \textbf{basename y dirname}: 
+\item \textbf{basename y dirname}: basename elimina las partes del path en el nombre de un archivo para dejar únicamente el nombre propio. También puede eliminar el sufijo de un nombre. Por el contrario, dirname elimina el nombre del archivo para dejar únicamente el path.
 
-\item \textbf{diff}: 
+\item \textbf{diff}: compara el contenido de dos ficheros y muestra las diferencias entre ambos.
 
-\item \textbf{sort}: 
+\item \textbf{find}: busca en los directorios ficheros y directorios con un cierto nombre, fecha, tamaño u otro atributo que se quiera especificar. Por ejemplo, para buscar todos los archivos en el directorio actual que sean de texto plano, se puede poner \texttt{find . -name "*.txt" -print}. Para buscar únicamente directorios, se debe poner \texttt{-type d} y para buscar únicamente ficheros \texttt{-type e}.
 
-\item \textbf{find}: 
+\item \textbf{xargs}: se utiliza usualmente para combinar comandos.
 
-\item \textbf{xargs}: 
+\item \textbf{history}: muestra el historial de comandos.
 
-\item \textbf{history}: 
+\item \textbf{ssh}: permite acceder a un servidor de Linux remoto.
 
-\item \textbf{ssh}: 
-
-\item \textbf{nohup}: 
+\item \textbf{nohup}: hace que haya procesos de fondo al trabajar desde un servidor remoto y que no se detengan cuando cerremos sesión.
 \end{itemize}
-
-
-\end{document}
