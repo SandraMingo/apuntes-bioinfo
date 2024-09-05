@@ -5,7 +5,7 @@
  %Evaluación asignatura: en las tres partes hay que hacer una práctica que cuenta un 75%. En la parte de linux se puede hacer en grupos de 3-4 personas de forma colaborativa. También hay un examen en el que hay que sacar por encima de un 4. La práctica se entrega más o menos a finales de noviembre o principios de diciembre. 
  %Se realizará detección de posibles copias mediante Turnitin, y quien copie suspenderá la asignatura y puede llegar a la suspensión del máster y de la universidad.
  %Hay que instalar linux mediante máquina virtual, cambiando el sistema operativo entero, tener particiones, linux on fly (arrancando una terminal)... La solución más chapucera vale para este curso, pero quizás para las asignaturas del resto del máster no porque hay que descargar ciertas bibliotecas, por lo que arrancarlo mediante un pendrive puede no funcionar. 
-\chapter{Linux}
+\chapter{Linux - Bash}
 Todos los comandos se lanzan desde la terminal de Linux. Se pueden explorar los ficheros del árbol de directorios con un explorador que es equivalente al explorador de Windows. En cuanto se maneje con ficheros grandes, o se requieran acciones mínimas, las herramientas de la interfaz gráfica no van a ser suficientes - de ahí que tengamos que trabajar con la terminal. 
 
 Con el comando \texttt{man comando}, \marginpar[\footnotesize man]  \ se accede al manual para buscar el comando con su nombre, descripción y posibles parámetros tanto en su versión larga como corta.
@@ -49,12 +49,19 @@ El comando \texttt{grep} \marginpar[\footnotesize grep] \ es fundamental al util
 
 El comando \texttt{wc} \marginpar[\footnotesize wc] \ cuenta distintas cosas en un fichero: líneas, palabras, y bytes. Para obtener solo una de esas mediciones, se pueden añadir los parámetros \texttt{-l, -w, -c} respectivamente. Tradicionalmente, la cantidad de bytes indica la cantidad de caracteres, pero puede haber pequeñas diferencias por la codificación. Para obtener la cantidad de caracteres, se emplea \texttt{grep -m}.
 
-%03/09 - Eduardo Serrano
+%03/09
 %unit3.html
 \section{Redireccionamientos y pipes}
 Tras ejecutar un comando, el resultado que sale en pantalla es la \textbf{salida estándar}. Sin embargo, se puede \textbf{redireccionar la salida} a otro lugar mediante el símbolo >. \marginpar[\footnotesize > \\ > >] \ Linux trata igual la salida estándar y un fichero, pero la salida estándar es la opción por defecto, por lo que nosotros debemos redireccionar la salida cuando lo queremos guardar en un fichero. Hay que tener cuidado porque si se redirecciona una salida a un fichero que ya existe, se sobreescribe el contenido del mismo. Si lo que queremos es que el contenido nuevo se añada detrás del contenido ya presente en un fichero, se deben emplear los dos símbolos > >. 
 
 También existe un \textbf{redireccionamiento de entrada}, siendo la entrada estándar lo que se escribe por teclado. Para redireccionar la entrada, se emplea el símbolo <.  \marginpar[\footnotesize <] \ 
+
+\begin{table}[htbp]
+\begin{mdframed}[backgroundcolor=red!10]
+    \centering
+    \textbf{Nunca se debe emplear el mismo fichero de entrada y de salida.} Al leer un fichero, el programa va línea a línea, por lo que si se procesa la primera línea y se guarda, se sobreescribe el fichero que se usaba de entrada, afectando a la continuidad del programa.
+    \end{mdframed}
+\end{table}
 
 El comando \texttt{gedit fichero} \marginpar[\footnotesize gedit] \ abre un editor de texto plano que nos permite crear un fichero y escribir su contenido. Para guardar el contenido que hemos escrito, pulsa \texttt{ctrl s} y para cerrar \texttt{ctrl q}. Aunque el editor de texto también muestre el contenido de un fichero que ya existe previamente, si el tamaño del fichero es muy grande, no es recomendable leer su contenido mediante este comando, si no mediante otros mencionados previamente como \texttt{less}.
 
@@ -77,6 +84,13 @@ Cada archivo y directorio tiene \textbf{permisos de acceso asociados}, que se pu
 \item x (execution): permisos de ejecución de un archivo cuando sea apropiado, es decir, cuando sea ejecutable. Por ejemplo, los comandos de linux como ls o mv son ficheros que se encuentra en /usr/bin/ y que se pueden ejecutar por todos a la hora de escribir esos comandos en la terminal. 
 \end{itemize}
 Si en lugar del caracter aparece un guion, significa que ese permiso no está dado. \marginpar[\footnotesize chmod] \ Si eres el propietario de un fichero, se pueden cambiar los permisos mediante el comando \texttt{chmod}. Para indicar a quién se le quiere cambiar el permiso, se pone u (usuario), g (grupo), o (otros), a (todos). Para quitar un permiso, se escribe un guion (-) seguido del permiso que se quiere quitar y del fichero; para dar un permiso, se escribe un más (+) y el permiso seguido del nombre del fichero. Un igual (=) expresa los permisos que se quieran. Para poner permisos diferentes, se escriben separados por comas (pero sin espacios), por ejemplo \texttt{chmod g+wx,o+w fichero}. También se puede ejecutar el comando \texttt{chmod 777 fichero} para darle todos los permisos a todos. Es importante tener en cuenta también los permisos de los directorios, ya que para poder modificar un fichero, no solo se deben tener los permisos para modificarlo, si no que a su vez debe estar en un directorio para el que se tengan los permisos para modificarlo.
+
+\begin{table}[htbp]
+\begin{mdframed}[backgroundcolor=black!10]
+    \centering
+    A la hora de crear ficheros, Bash proporciona al usuario autor los permisos de lectura y escritura, pero no de ejecución. Esto es importante a la hora de crear archivos ejecutables con extensión .sh.
+    \end{mdframed}
+\end{table}
 
 \section{Procesos y trabajos}
 Un \textbf{proceso} es un programa que se ejecuta y que recibe un \textbf{identificador (PID)} por parte del sistema operativo. Hay procesos que los lanzamos nosotros, pero hay otros que funcionan por detrás como por ejemplo buscar conexiones Wifi. 
@@ -116,11 +130,18 @@ Para matar un proceso de forma eficiente, se puede usar el comando \texttt{kill 
 \item \textbf{zcat}: lee archivos de extensión .gz sin la necesidad de descomprimirlos previamente. 
 
 \item \textbf{cut}: extrae porciones de texto de un fichero al seleccionar columnas o caracteres. \begin{itemize}
-\item -d: delimitador en comillas simples
-\item -f: campo
+\item -d: delimitador en comillas simples (por ejemplo, \texttt{-d '|'}).
+\item -f: campo o columna que se quiere extraer (\texttt{-f1} o, si se quieren varias, \texttt{-f1,2}).
 \end{itemize}
+
+\item \textbf{echo}: muestra en la salida estándar lo que se ponga a continuación. Aunque funcione directamente, es recomendable escribir las cadenas de caracteres entre comillas dobles.
  
-\item \textbf{tr}: reemplaza o borra caracteres.
+\item \textbf{tr}: reemplaza o borra caracteres de una cadena. No admite un fichero de entrada, si no que debe venir por un pipe o utilizando el redireccionamiento de entrada. \begin{itemize}
+\item -s: sustituye la secuencia que se ponga a continuación entre comillas simples con una única ocurrencia. 
+\item -d: elimina los caracteres proporcionados.
+\end{itemize}
+
+\item \textbf{touch}: toca el fichero, es decir, accede a él, cambiando la fecha de acceso. Si el fichero no existe, se crea el fichero sin contenido (tamaño 0).
 
 \item \textbf{date}: imprime en pantalla el día y la hora. Se puede personalizar la forma en la que se muestra. 
 
@@ -141,4 +162,45 @@ Para matar un proceso de forma eficiente, se puede usar el comando \texttt{kill 
 \item \textbf{ssh}: permite acceder a un servidor de Linux remoto.
 
 \item \textbf{nohup}: hace que haya procesos de fondo al trabajar desde un servidor remoto y que no se detengan cuando cerremos sesión.
+
+\item \textbf{gnome-terminal}: crea una nueva terminal.
+\end{itemize}
+
+%05/09
+%unit7.html
+\section{Variables}
+En bash, las únicas variables que se puede crear son con \textbf{cadenas de caracteres} (\texttt{x=ejemplo}). Si se pone un número, el intérprete interpreta el número como un caracter ("3" en Python). Aunque las comillas no sean necesarias, sí son recomendables (sí son obligatorias cuando hay espacios en blanco entre caracteres). Es importante \textbf{no dejar espacios} entre la variable, el igual y la cadena, ya que se interpretaría el nombre de la variable como un comando y puede dar un error. Para acceder al valor de la variable, se debe poner con un símbolo de dólar antes del nombre: \texttt{echo \$x}. Si la variable que se accede no existe, la salida estará en blanco. Las variables que creamos se borran al apagar el ordenador. Para prevenir esto, se pueden guardar las variables en el fichero de configuración .bashrc.
+
+El sistema crea automáticamente algunas variables denominadas \textbf{variables de ambiente} cada vez que se enciende el ordenador. Esto es importante saberlo para no cambiar el valor de estas variables. Ejemplos son: \begin{itemize}
+\item HOME: path completo del usuario hasta la carpeta personal o home directory.
+\item USER: usuario en el que nos encontramos.
+\item PATH: directorios separados por dos puntos donde el intérprete va a buscar los ficheros de los comandos si no se encuentran en el directorio de trabajo.
+\item ?: guarda un 0 si el último comando ha sido correcto y un entero diferente de 0 si la última acción no ha sido ejecutada correctamente (ha dado un error). Es importante remarcar que aquí, comando verdadero es 0, mientras que en Python y otros lenguajes de programación, True es cualquier número que no sea 0.
+\end{itemize}
+
+En una terminal nueva, las variables que se habían creado no existen. \marginpar[\footnotesize export] \ Para ello, se puede usar el comando \texttt{export nombre-variable} para que terminales nuevas sí puedan acceder a las variables en ese estado. Si la variable se modifica posteriormente, si no se vuelve a exportar, la terminal nueva no tiene la actualización. A su vez, como la terminal nueva es un proceso nuevo, no le puede exportar sus variables al proceso padre.
+
+Para evitar que una variable se modifique, \marginpar[\footnotesize readonly] \ se puede utilizar el comando \texttt{readonly nombre-variable}. 
+
+Para guardar en una variable la salida de un comando, se debe emplear la expresión \texttt{x=\$(comando)}. Entre los paréntesis y el comando sí se pueden dejar espacios para facilitar la lectura humana. Si hay una errata en el comando y da error, la asignación a la variable no se realiza y la variable se queda sin contenido. 
+
+Se puede crear una variable con el contenido de otras variables. Teniendo \texttt{x=3} y \texttt{y=4}, si se escribe \texttt{z=\$x+\$y}, al poner \texttt{echo \$z}, el resultado es 3+4. Esto se debe a que bash no interpreta el símbolo + como suma matemática. Para poder hacer eso, la declaración de variable y la suma se debe realizar entre doble paréntesis: \texttt{((z=x+y))}.
+
+Para eliminar variables, se usa el comando \texttt{unset nombre-variable}. \marginpar[\footnotesize unset] \ 
+
+\section{Scripts}
+Los scripts son ficheros ejecutables de código. La extensión de estos ficheros depende del lenguaje de programación: en el caso de Python, los scripts tienen la extensión .py, y en el caso de bash, la extensión .sh. Para que un fichero se pueda ejecutar, se deben tener los permisos de ejecución. Además, la primera línea del código debe contener el directorio del intérprete que se debe utilizar. Tradicionalmente, los intérpretes se encuentran en /usr/bin o en /bin. Por ejemplo, la primera línea de un script de Python debe ser \texttt{\#!/usr/bin/python3} y de Bash \texttt{\#!/bin/bash}. Una vez hecho esto, desde la propia terminal se puede ejecutar el script.
+
+\subsection{Variables especiales en scripts}
+Es posible pasar argumentos a un script para personalizar la salida. Para asignar algo indeterminado a una variable, se emplea \texttt{\$1 - \$9}, de forma que al ejecutar el script, se deban poner los argumentos que pasará a reemplazar los huecos en ese orden. Es buena práctica que en el script los argumentos pasados por teclado se guarden en variables con nombres que tengan sentido y luego sean esas variables las que se empleen en el resto del código. De esa forma, el código queda más claro visualmente y es más fácil de modificar sin equivocaciones.
+
+Otras variables especiales son: \begin{itemize}
+\item \$0: el nombre del script de bash.
+\item \$\#: la cantidad de argumentos que se han pasado al script.
+\item \$@: todos los argumentos que se han pasado al script.
+\item \$\$: el PID del script actual.
+\item HOSTNAME: nombre de la máquina en la que se está ejecutando el script. 
+\item SECONDS: la cantidad de segundos desde que el script se inició. 
+\item RANDOM: devuelve un número aleatorio diferente cada vez que se refiera a esto.
+\item LINENO: devuelve el número de la línea actual en el script de bash.
 \end{itemize}
