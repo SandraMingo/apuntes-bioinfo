@@ -204,3 +204,97 @@ Otras variables especiales son: \begin{itemize}
 \item RANDOM: devuelve un número aleatorio diferente cada vez que se refiera a esto.
 \item LINENO: devuelve el número de la línea actual en el script de bash.
 \end{itemize}
+
+%06/09 estudio propio
+%unix8.html
+\section{Branching}
+Las sentencias condicionales if y case ayudan a tomar decisiones en los scripts de bash. Permiten decidir si ejecutar ciertos fragmentos de código en base a ciertas condiciones.
+
+\subsection{Expresiones condicionales}
+Una expresión condicional básica hace que, si una condición es verdadera, se ejecute el siguiente código. Si la condición resulta ser falsa, entonces esas acciones no se desarrollan.
+\begin{lstlisting}
+if [ condición ]
+then
+	código a ejecutar
+fi
+\end{lstlisting}
+
+Los posibles operadores que se pueden utilizar en la condición son: \begin{itemize}
+\item\texttt{ ! expresión}: la expresión es falsa
+\item \texttt{-z string}: la longitud de string es 0, es decir, está vacía. 
+\item \texttt{string1 = string2}: string1 es igual que string2.
+\item \texttt{string1 != string2}: string1 no es igual que string2.
+\item \texttt{integer1 -eq integer2}: integer1 es numéricamente igual que integer2.
+\item \texttt{integer1 -gt integer2}: integer1 es numéricamente mayor que integer2.
+\item \texttt{integer1 -lt integer2}: integer1 es numéricamente menor que integer2.
+\item \texttt{-d fichero}: el fichero existe y es un directorio.
+\item \texttt{-e fichero}: el fichero existe.
+\item \texttt{-r fichero}: el fichero existe y tiene el permiso de lectura.
+\item \texttt{-s fichero}: el fichero existe y su tamaño es mayor que 0, es decir, no está vacío.
+\item \texttt{-w fichero}: el fichero existe y tiene el permiso de escritura.
+\item \texttt{-x fichero}: el fichero existe y tiene el permiso de ejecución.
+\item \texttt{fichero1 -nt fichero2}: es True si fichero1 es más nuevo que fichero2.
+\item \texttt{fichero1 -ot fichero2}: es True si fichero1 es más antiguo que fichero2.
+\end{itemize} 
+
+Es posible conectar varias condiciones mediante el uso de \texttt{and} y \texttt{or}. Para ello, la forma preferida es combinar condiciones individuales con los operadores \&\& para and y || para or.
+\begin{lstlisting}
+if [ condición 1 ] && [ condición 2 ]; then
+	código a ejecutar
+fi
+\end{lstlisting}
+
+Otra opción sería escribir los operadores en la propia condición con \texttt{-a} para and y \texttt{-o} para or. Para invertir la condición (buscar que algo no sea x), se utiliza ! antes de la condición.
+
+Las expresiones condicionales pueden requerir ciertas acciones si una condición es verdadera, y otras si es falsa. Para ello, se emplea \texttt{else}:
+\begin{lstlisting}
+if [ condición ] ; then
+	código a ejecutar si la condición es verdadera
+else
+	código a ejecutar si la condición es falsa
+fi
+\end{lstlisting}
+
+En algunas ocasiones puede haber distintas condiciones que deriven en distintas acciones.
+\begin{lstlisting}
+if [ condición ]
+then
+	código a ejecutar
+elif [ otra condición ]
+then
+	otro código a ejecutar
+else
+	código diferente
+fi
+\end{lstlisting}
+
+\subsection{Bucles}
+Los bucles permiten repetir una serie de comandos hasta que se llega a un objetivo. Son útiles para ahorrar en código redundante y automatizar tareas repetitivas. 
+\subsubsection{For loops}
+Los bucles for toman cada elemento de una lista en orden, lo asignan a una variable y se ejecuta el comando hasta que se acaben los objetos de la lista.
+\begin{lstlisting}
+for variable in lista
+do
+	código a repetir
+done
+\end{lstlisting}
+
+También es posible procesar una serie de números, pero para ello deben estar en formato C: \texttt{\{inicial..final..pasos\}}.
+
+\subsubsection{While loops}
+Los bucles while permiten repetir una lista de comandos mientras que la condición sea cierta y se detiene cuando la condición pasa a ser falsa:
+\begin{lstlisting}
+while [ condición ]
+do
+	código a repetir
+done
+\end{lstlisting}
+
+\subsubsection{Until loops}
+El bucle until es similar al while, pero repite la lista de comandos hasta que la condición sea cierta, es decir, mientras sea falsa y se detiene cuando se hace verdadera.
+\begin{lstlisting}
+until [ condición ]
+do
+	código a repetir
+done
+\end{lstlisting}
