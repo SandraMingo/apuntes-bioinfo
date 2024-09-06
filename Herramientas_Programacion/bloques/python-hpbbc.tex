@@ -1,4 +1,4 @@
-%04/09 - Oscar Delgado
+%04/09 - Oscar Delgado - LE GUSTAN NOMBRES COMPLETOS DE VARIABLES !!!
 \chapter{Programación en Python}
 Los lenguajes de programación son la forma de comunicarnos con los ordenadores. Algunos lenguajes tienen bajo nivel de abstracción que trabajan en binario y por ello son más similares al propio sistema. Por otro lado, están los lenguajes de alto nivel de abstracción que son más cercanos al idioma humano. Python es el lenguaje con el mejor \textbf{balance entre potencia y simplicidad}. 
 
@@ -26,7 +26,6 @@ En cuanto a los nombres de las variables, no pueden contener espacios en blanco 
 El comando \texttt{print} permite imprimir algo por pantalla. 
 
 El comando \texttt{input} le pide información al usuario que debe aportar por teclado.
-
 \begin{lstlisting}
 name = input('Enter your name: ')
 print('Hello, ', name)
@@ -42,7 +41,6 @@ Aunque los tipos de variables sean implícitos, se puede realizar un \textbf{cas
 \end{itemize}
 
 Los comentarios en Python, marcados con \#, sirven para poner anotaciones para otras personas o nosotros mismos y que el intérprete va a omitir. Es buena práctica poner comentarios para explicar las partes del código.
-
 \begin{lstlisting}
 #Código de prueba
 print('Esto es una prueba') #print
@@ -50,7 +48,6 @@ print('Esto es una prueba') #print
 
 \section{Expresiones condicionales}
 En Python, se pueden escribir condicionales: si algo es verdadero/falso, ocurre algo. Esto se hace mediante \texttt{if} y \texttt{else} y sirve para cambiar el flujo del programa o tomar decisiones.
-
 \begin{lstlisting}
 num_pensado = 4
 num = input("Elige un número: ")
@@ -64,7 +61,6 @@ else:
 Si se cumple la condición del if, el código que se ejecuta es el que se encuentra indentado y se continúa sin ejecutarse el bloque else. Si no se cumple el if, el código que se ejecuta es el que se encuentra indentado tras else, y se omite el bloque del if. 
 
 En el caso de que haya más condicionales, se puede utilizar \texttt{elif} seguido del siguiente condicional, siempre y cuando la condición sea de verdadero o falso:
-
 \begin{lstlisting}
 num_pensado = 4
 num = input("Elige un número: ")
@@ -109,14 +105,15 @@ Los bucles permiten repetir ciertas sentencias para ahorrar código redundante.
 
 \subsection{For loops}
 Los for loops permiten repetir un código un \textbf{número determinado de veces}. La estructura típica de un for loop es:
-
 \begin{lstlisting}
-for variable in range(número de veces):
+for variable in range(número inicial, número final, incremento):
 	código que se quiere repetir
+	
+for variable in otra_variable:
+	código a repetir
 \end{lstlisting}
 
-Es importante remarcar que el código que se quiere repetir debe estar indentado. Por ejemplo, utilizando el ejemplo anterior, se podría escribir:
-
+Es importante remarcar que el código que se quiere repetir debe estar indentado. Si no se pone número inicial, automáticamente empieza en 0. De igual forma, el incremento es 1 por defecto. El número final no está incluido. Por ello, si sólo se pone \texttt{range(número)}, se podría interpretar que se repite el bucle se repite el número indicado de veces. Por ejemplo, utilizando el ejemplo anterior, se podría escribir:
 \begin{lstlisting}
 num_pensado = 4
 
@@ -133,14 +130,12 @@ La i es una variable que empieza en 0 y con cada iteración aumenta en uno hasta
 
 \subsection{While loops}
 Los bucles while se repiten un \textbf{número indeterminado de veces}. Este bucle depende de una condición:
-
 \begin{lstlisting}
 while condición:
 	código que se quiere repetir
 \end{lstlisting}
 
 En estos bucles, es importante que la condición se modifique dentro del bucle para no crear un bucle infinito. 
-
 \begin{lstlisting}
 num_pensado = 4
 fallo = True
@@ -154,3 +149,130 @@ while fallo == True:
 		print("Sigue intentando")
 \end{lstlisting}
 Así, cuando el usuario acierta el número, la variable fallo pasa a ser falsa y el bucle se interrumpe.
+
+%06/09
+\section{Cadenas o strings}
+Las cadenas son cualquier secuencia de caracteres o números que se encuentran entre comillas simples o dobles. También hay cadenas vacías que no tienen ninguna secuencia entre las comillas. Las cadenas se pueden concatenar mediante el +. También se puede repetir el contenido de una cadena al multiplicarlo con las veces que se quiere repetir.
+\begin{lstlisting}
+'AB' + 'cd' # ABcd
+'Hi' * 2 # HiHi 
+\end{lstlisting}
+
+Se puede calcular la longitud de una cadena mediante \texttt{len()}.  \marginpar[\footnotesize len] \
+\begin{lstlisting}
+cadena = "Hola"
+len(cadena) #4
+\end{lstlisting}
+
+Para comprobar si una cadena contiene algo, se emplea el operador \texttt{in}. \marginpar[\footnotesize in \\ not in]  \ Para ver si no contiene algo, se usa \texttt{not in}. Esto realmente es una expresión booleana, ya que el resultado es verdadero o falso. 
+\begin{lstlisting}
+secuencia = "ATC"
+if "G" in secuencia:
+	print("La secuencia contiene guanina".)
+else:
+	print("La secuencia no contiene guanina.")
+\end{lstlisting}
+
+\subsection{F-strings}
+A la hora de imprimir texto, es común alternar cadenas con valores de variables. Esto se puede hacer intercalando las cadenas entre comillas con las variables o con los denominados f-strings (format-strings). Los f-strings son expresiones con una sintaxis más fluida que permite darle formato a cadenas. Para imprimir el valor de variables, basta con poner el nombre de la variable entre llaves (\{\}). En caso de querer imprimir una llave en un f-string, se debe poner doble.
+\begin{lstlisting}
+variable = 1
+print(f"El valor de la variable es {variable}.")
+# Output: El valor de la variable es 1.
+print(f"El valor de la variable es {{{variable}}}.")
+# Output: El valor de la variable es {1}.
+\end{lstlisting}
+
+\subsection{Indexación y slicing}
+Las cadenas se pueden indexar, es decir, referir a una posición en la misma cadena. Esto se realiza escribiendo la cadena (o la variable que contiene la cadena) seguido de la posición que se quiere entre corchetes. La primera posición es un 0, y las subsiguientes van incrementando en uno. A esto se le conoce como \textbf{indexación positiva}. 
+\begin{lstlisting}
+cadena = "hola"
+cadena[0] #h
+cadena[1] #o
+cadena[2] #l
+cadena[3] #a
+\end{lstlisting}
+
+La \textbf{indexación negativa} se refiere a acceder a la posición desde el final de la cadena. El último caracter es -1, y los siguientes van incrementando en 1. 
+\begin{lstlisting}
+cadena = "hola"
+cadena[-1] #a
+cadena[-2] #l
+cadena[-3] #o
+cadena[-4] #h
+\end{lstlisting}
+
+En algunas ocasiones, queremos acceder a un fragmento de una cadena. A esto se le conoce como \textbf{slicing}, y se emplea con las posiciones: \texttt{[primero:último:paso]}. La última posición no está incluida. Los pasos son opcionales, ya que tienen un valor por defecto de 1. Si se omite el primer valor, se empieza desde el primer caracter por defecto. Si se omite el último valor, se termina en el último caracter. Así, si se pone [:], se incluye todo el contenido.
+\begin{lstlisting}
+cadena = "hola"
+cadena[1:3] #ol
+cadena[::2] #hl
+\end{lstlisting}
+
+\subsection{Métodos de cadenas}
+\begin{itemize}
+\item lower(): devuelve la cadena con todas las letras en minúscula.
+\item upper(): devuelve la cadena con todas las letras en mayúscula.
+\item replace(s1, s2): reemplaza la primera cadena con la segunda.
+\item count(x): cuenta el número de veces que se encuentra x.
+\item index(x): devuelve la posición del primer x.
+\item isalpha(): devuelve True si todos los caracteres de una cadena son letras.
+\item eval(): evalúa la expresión matemática dentro de la cadena cuando el resultado es numérico.
+\end{itemize}
+
+\section{Estructuras de datos}
+En Python hay cuatro estructuras de datos: listas, diccionarios, tuplas y conjuntos o sets. 
+
+\subsection{Listas}
+La lista es un \textbf{conjunto ordenado de objetos}. Pueden ser números, cadenas, booleanos, y se pueden mezclar los distintos tipos. El contenido de una lista se escribe entre corchetes y separando los distintos objetos por comas. 
+\begin{lstlisting}
+lista = [False, 1, 2, "tres"]
+\end{lstlisting}
+
+Las listas guardan algunas similitudes con las cadenas: \begin{itemize}
+\item Son indexables y pueden sufrir slicing.
+\item \texttt{len} muestra la cantidad de elementos que se encuentran en cadena.
+\item El operador \texttt{in} muestra si la lista contiene algo.
+\item Se puede concatenar listas mediante + y multiplicarlas con *.
+\item Se pueden crear listas vacías con [].
+\item Se puede iterar sobre ellas.
+\end{itemize}
+\begin{lstlisting}
+codones = ['AAA', 'GCT', 'CCA']
+for codon in codones:
+	for nucleotido in codon:
+		print(nucleotido)
+\end{lstlisting}
+
+Algunos métodos específicos para trabajar con listas son:
+\begin{itemize}
+\item \texttt{append(x}): añade x al final de la lista.
+\item\texttt{sort()}: ordena la lista de forma alfabética si solo contiene letras y de pequeño a grande si solo contiene números. 
+\item \texttt{count(x)}: devuelve el número de veces que aparece x en la lista.
+\item \texttt{index(x)}: devuelve el índice del primer valor de x.
+\item \texttt{reverse()}: revierte el orden de la lista.
+\item \texttt{remove(x)}: elimina el primer x en la lista.
+\item \texttt{pop(i)}: elimina el item en el índice i y devuelve su valor.
+\item \texttt{insert(i,x)}: inserta x en el índice i de la lista.
+\end{itemize}
+
+\subsection{Diccionarios}
+Los diccionarios son \textbf{conjuntos no ordenados de parejas de clave y valor}. Las claves deben ser únicas e inmutables de cadenas o números, ya que sirven para acceder al valor que tengan asignado. 
+\begin{lstlisting}
+#Diccionario de dos elementos
+year ={'Enero':31, 'Febrero':28}
+\end{lstlisting}
+
+Se puede iterar sobre los diccionarios, pero el  elemento que se devuelve es la clave. Para que se devuelva el valor, se debe \textbf{indexar por la clave}:
+\begin{lstlisting}
+for mes in year:
+	print(mes) # Imprime las claves
+	print(year[mes]) #Imprime los valores
+\end{lstlisting}
+
+\section{Leer ficheros}
+Para abrir un fichero en Python, se emplea \texttt{open(path/del/fichero)}. Para obtener las líneas que tiene el fichero, se utiliza el método \texttt{readlines()}.
+\begin{lstlisting}
+fichero = open(ejemplo.txt)
+contenido = fichero.readlines()
+\end{lstlisting}
