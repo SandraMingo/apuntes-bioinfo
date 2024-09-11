@@ -1,0 +1,28 @@
+%11/09 - Patricia Álvarez
+\chapter{Modelos de evolución}
+Todos los métodos de inferencia y reconstrucción filogenética implican una serie de \textbf{supuestos}, aunque éstos no se hagan explícitos: \begin{itemize}
+\item Todos los sitios o posiciones cambian independientemente. 
+\item Las tasas de evolución son constantes a lo largo del tiempo y entre linajes.
+\item La composición de bases es homogénea.
+\item La verosimilitud de los cambios de base es la misma para todos los sitios y no cambia a lo largo del tiempo. 
+\end{itemize}
+
+Esto son asunciones, pero en realizar no son ciertos. Las tasas de evolución no son constantes, las posiciones no cambian independientes las unas de las otras, la composición de bases no es homogénea (hay mayor porcentaje de GC que de AT) y se pueden dar múltiples cambios en un único sitio que quedan ocultos (si el nucleótido original es C, puede que en un organismo cambie a A y en otro a G). Estos cambios ocultos hacen que las secuencias estén cada vez más saturadas: la mayoría de los sitios que cambian han cambiado antes. 
+
+En un contexto filogenético, los modelos predicen el proceso de sustitución de las secuencias a través de las ramas. Describen probabilísticamente el proceso por el que los estados de los caracteres homólogos de las secuencias (posiciones alineadas: nucleótidos o aminoácidos) cambian a lo largo del tiempo.
+
+Los modelos implican por lo general los siguientes \textbf{parámetros}: \begin{itemize}
+\item \textbf{Composición:} frecuencia de las diferentes bases o aminoácidos.
+\item \textbf{Proceso de sustitución:} tasa de cambio de uno a otro estado de carácter.
+\item \textbf{Otros parámetros (heterogeneidad de tasas):} proporción de sitios invariables o agregación de los cambios a lo largo de la secuencia.
+\end{itemize}
+
+\section{Modelos frecuentes}
+El modelo más sencillo es el de Jukes Cantor, el cual asume que todos los cambios son igualmente probables y que la frecuencia de todas las bases es la misma. A partir de este, la complejidad empezó a aumentar, ya que las combinaciones de parámetros son muchas. Algunos de los modelos más frecuentes son: \begin{itemize}
+\item \textbf{Jukes and Cantor (JC69)}: La frecuencia de todas las bases es la misma (0.25 cada una), y la tasa de cambio de una a otra base es igual.
+\item \textbf{Kimura 2-parámetros (K2P)}: La frecuencia de todas las bases es la misma (0.25 cada una), pero la tasa de sustitución es diferente para transiciones y transversiones.
+\item \textbf{Hasegawa-Kishino-Yano (HKY)}: Como K2P, pero la composición de bases varía libremente.
+\item \textbf{General Time Reversible (GTR)}: La composición de bases varía libremente, y todas las sustituciones posibles pueden tener distintas frecuencias.
+\end{itemize}
+
+Cada vez, los modelos son más complejos, y normalmente se utiliza el más complejo. Hay programas que ya proponen un modelo a elegir según los datos que se le proporcionen. 
