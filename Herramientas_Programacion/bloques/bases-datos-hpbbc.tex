@@ -1,0 +1,92 @@
+%10/09 - Ruth Cobos
+\chapter{Bases de datos}
+\section{Introducción a las bases de datos relacionales}
+En cualquier empresa o laboratorio, se va a necesitar acceder a una gran cantidad de datos. Los \textbf{sistemas de manejo de los datos (DBMS por sus siglas en inglés)} permiten tener todos los datos juntos y relacionados para facilitar su acceso, estando de forma conveniente y eficiente de usar. Las bases de datos pueden ser muy largas y tocan todos los aspectos de nuestras vidas, desde las transacciones bancarias al registro de notas de la universidad. 
+
+El uso de bases de datos tiene muchas ventajas, como tener un acceso más sencillo a los datos que desde múltiples ficheros e integrar los datos. Utilizar ficheros aislados puede conllevar a datos redundantes e inconsistentes, aislamiento de los datos, atomicidad de las actualizaciones, concurrencia de los accesos y problemas de seguridad.
+
+Existen bases de datos relacionales, en las cuales los modelos de datos son entidad-relación. Hay otros paradigmas como jerárquicas, no relacionales o basados en objetos.
+
+Las arquitecturas suelen ser cliente-servidor, pero también puede ser paralela, distribuida o centralizada. En esta asignatura utilizaremos PostgreSQL, que es de arquitectura cliente-servidor.
+
+A partir de la década de 1950 se empezó a hablar del almacenamiento de datos en cintas magnéticas. A finales de 1960, se empezó a guardar los datos, pero no fue hasta 1980 cuando se creó el lenguaje SQL. En 1990 empiezan a aparecer las redes, la web y el data mining. A principios de los 2000 comenzaron XML y XQuery. En el siglo actual hay millones de datos (big data).
+
+\section{Modelo de entidad relacional}
+\subsection{Esquema entidad-relación (ER)}
+El esquema entidad-relación (ER) es básicamente un gráfico que muestra de forma sencilla cómo se modela la problemática que se quiere abordar con una base de datos. Va a estar compuesto por un conjunto de entidades que pueden tener atributos que los describas. Entre las entidades hay relaciones. En un esquema ER, los rectángulos representan las entidades, los diamantes las relaciones, las elipses los atributos, las líneas unen los atributos con las entidades y las entidades entre sí, y el subrayado indica los atributos clave primarios. 
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.5\linewidth]{figs/esquema-er.png}
+\caption{Esquema ER.}
+\end{figure}
+
+Una \textbf{entidad} es un objeto o algo que pueda contener muchas instancias. Tiene atributos que le caracterizan y se deben poder distinguir de otras entidades mediante el contenido de los atributos. Normalmente, las entidades reciben un nombre en singular (por una sola palabra) y se representan con rectángulos. Las entidades débiles son aquellas cuya supervivencia depende de otra identidad.
+
+Los \textbf{atributos} son propiedades de las entidades, y deben estar asignados a una entidad. El conjunto de valores para cada atributo se le conoce como dominio del atributo. Normalmente, los valores de los atributos son atómicos, es decir, indivisibles.
+
+Las \textbf{relaciones} son asociaciones entre las distintas entidades. Puede haber atributos en las relaciones. Las relaciones pueden ir también a la misma entidad en forma de bucle. En ese caso, se especifican los roles.
+
+\subsection{Claves primarias}
+Una clave primaria permite identificar de manera única cada identidad. Puede ser uno o varios atributos. La clave candidata es la clave mínima primaria. Aunque puedan existir varias claves candidatas, solo una de ellas debería ser clave primaria. 
+
+\subsection{Mapa de cardinalidades}
+El mapa de cardinalidades expresa el número de entidades a los que se les puede asociar a otra entidad por una relación. Se representan por una flecha cuando es una relación individual o por una línea cuando son muchas. Hay tres cardinalidades: uno-a-uno (un cliente sólo puede pedir un préstamo, y un préstamo puede ser de un solo cliente), uno-a-muchos (un préstamo puede ser de un solo cliente, pero un cliente puede tener varios préstamos) o muchos-a-muchos (un cliente puede tener varios préstamos, y cada préstamo puede ser de varios clientes). 
+
+\subsection{Especialización, jerarquía o generalización}
+ISA se conoce como especialización, jerarquía o generalización. Viene del inglés "is a", y permite que una entidad se especialice en otras entidades. Aunque todas las entidades tengan los mismos atributos, después de la especialización las subentidades van a tener otros atributos y heredan los anteriores. Cuando en el esquema se va de arriba a abajo, se trata de una especialización, mientras que si se va de abajo a arriba se trata de una generalización. Sólo se heredan los atributos conforme se va especializando.
+
+\subsection{Notación ER}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figs/notacion-er.png}
+\caption{Resumen de la notación de un esquema ER. Los conceptos rodeados en rojo son los importantes. Los que están rodeados en azul no se recomiendan y los deberíamos evitar.}
+\end{figure}
+
+\subsection{Ejercicio 1: sistema de reserva de aulas para la universidad}
+Vamos a hacer un sistema de reserva de salas para una universidad. Debe ser posible acceder al usuario que ha reservado cada sala, a las salas reservadas en un día concreto, o aulas concretas. Los profesores pueden reservar cualquier sala, pero los estudiantes solo pueden reservar las salas de propósito general o salas de seminario. Los usuarios se deben identificar por usuario y contraseña. 
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\linewidth]{figs/ejercicio-er-1.drawio.png}
+\caption{Solución del ejercicio.}
+\end{figure}
+
+\subsection{Modelo relacional: esquema ER a tablas}
+Desde el esquema ER, se debe convertir al modelo relacional o a un formato tabla. Para cada entidad hay una tabla única que tiene un número de columnas, que suele corresponder con los atributos, que tienen nombres únicos. Las relaciones muchos-a-muchos tienen tablas separadas que consisten en las claves primarias de las dos identidades que relaciona. Las relaciones muchos-a-uno y uno-a-muchos pueden representar añadiendo un atributo extra en la parte de muchos que contenga la clave primaria de la parte uno.
+
+A la hora de representar la especialización como tablas, hay dos opciones, y cada gestor lo hace de una manera: las especializaciones adquieren solo la clave primaria o adquiere todos los atributos de la generalización.
+
+Los pasos para crear tablas son:
+\begin{enumerate}
+\item Identificar las claves primarias
+\item Identificar entidades
+\item Identificar los atributos redundantes de las entidades y especializar
+\item Identificar relaciones n-n
+\item Todas las entidades producen una tabla
+\item Todas las relaciones n-n producen una tabla
+\item Todas las relaciones n-1 añaden una columna a la entidad n.
+\end{enumerate}
+
+\subsection{Resumen}
+El primer paso es crear el esquema ER identificando las entidades con sus atributos y relaciones, las cardinalidades y las especializaciones. Después, se debe reducir el esquema a tablas, identificando las claves primarias, entidades y relaciones n-a-n. Las entidades y las relaciones n-a-n producen una tabla. Todas las relaciones n-1 añaden columnas a la entidad de muchos.
+
+\subsection{Ejercicio 2: gestión de mercancías}
+Una empresa de gestión de mercancías desea tener almacenados los datos de sus clientes, los productos y los proveedores relacionados con los distintos pedidos que realizan los clientes. También interesa llevar un control sobre los tipos de los productos.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\linewidth]{figs/ejercicio-2-solucion.png}
+\caption{Solución del ejercicio.}
+\end{figure}
+
+\begin{itemize}
+\item Cliente (\underline{id-cliente}, DNI, nombre, apellidos, domicilio)
+\item Teléfono (\underline{id-telefono}, \underline{id-cliente $\uparrow$} , telefono, situación)
+\item TipoProducto (\underline{id-tipoProducto}, nombre, características)
+\item Proveedor (\underline{id-proveedor}, DNI, empresa, CIF, teléfono)
+\item Producto (\underline{id-producto}, id-tipoProducto $\uparrow$, id-proveedor$ \uparrow$, nombre, descripción, precio)
+\item Pedido (\underline{id-pedido}, id-cliente $\uparrow$, fecha)
+\item PedidoProducto / Factura (\underline{id-pedido $\uparrow$}, \underline{id-producto $\uparrow$}, cantidad) 
+\end{itemize}
