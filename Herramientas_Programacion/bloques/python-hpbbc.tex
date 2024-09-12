@@ -88,7 +88,6 @@ Los operadores condicionales son aquellos que resultan en True o False. Los oper
 Para poder incluir varios condicionales, se utilizan los operadores lógicos \textbf{and} y \textbf{or}. 
 
 El operador \texttt{and} implica que las dos condiciones que se unen deben ser True para que el resultado sea True. Para el operador \texttt{or}, basta con que una condición sea True para que el resultado sea True.
-
 \begin{table}[htbp]
 	\centering
 	\begin{tabularx}{0.5\textwidth}{XXcc}
@@ -193,7 +192,7 @@ cadena[2] #l
 cadena[3] #a
 \end{lstlisting}
 
-La \textbf{indexación negativa} se refiere a acceder a la posición desde el final de la cadena. El último caracter es -1, y los siguientes van incrementando en 1. 
+La \textbf{indexación negativa} se refiere a acceder a la posición desde el final de la cadena. El último carácter es -1, y los siguientes van incrementando en 1. 
 \begin{lstlisting}
 cadena = "hola"
 cadena[-1] #a
@@ -259,20 +258,157 @@ Algunos métodos específicos para trabajar con listas son:
 \subsection{Diccionarios}
 Los diccionarios son \textbf{conjuntos no ordenados de parejas de clave y valor}. Las claves deben ser únicas e inmutables de cadenas o números, ya que sirven para acceder al valor que tengan asignado. 
 \begin{lstlisting}
-#Diccionario de dos elementos
-year ={'Enero':31, 'Febrero':28}
+dic_vacio = {} #Diccionario vacío
+year ={'Enero':31, 'Febrero':28} #Diccionario de dos elementos
 \end{lstlisting}
 
 Se puede iterar sobre los diccionarios, pero el  elemento que se devuelve es la clave. Para que se devuelva el valor, se debe \textbf{indexar por la clave}:
 \begin{lstlisting}
-for mes in year:
-	print(mes) # Imprime las claves
-	print(year[mes]) #Imprime los valores
+for month in year:
+	print(month) # Imprime las claves
+	print(year[month]) #Imprime los valores
 \end{lstlisting}
 
-\section{Leer ficheros}
-Para abrir un fichero en Python, se emplea \texttt{open(path/del/fichero)}. Para obtener las líneas que tiene el fichero, se utiliza el método \texttt{readlines()}.
+Se pueden añadir o cambiar el valor de elementos de un diccionario mediante indexación de la clave. Si la clave no existe previamente en el diccionario, se crea con el valor que se le asigna. Si la clave ya existía, se actualiza su valor. Para eliminar elementos de un diccionario, se emplea \texttt{del()} y se indexa la clave que se quiere eliminar.
+
+Se puede obtener una lista de todas las claves y de todos los valores con los métodos \texttt{.keys()} y \texttt{.values()} respectivamente. 
+
+\section{Funciones}
+Las funciones son una agrupación de líneas de código que se pueden ejecutar llamando el nombre de la funciones un número ilimitado de veces. De esa forma, las funciones permiten simplificar programas largos y mantenerlos. Además, eliminan código redundante. Es muy recomendable que las funciones se encuentren definidas antes de su llamada. Por convenio, todas las funciones se ponen en la parte superior del código, aunque sean llamadas solo al final. La estructura de una función es la siguiente:
 \begin{lstlisting}
-fichero = open(ejemplo.txt)
-contenido = fichero.readlines()
+def nombre_funcion(argumento1, argumento2):
+	código que ejecuta la función
 \end{lstlisting}
+El número de argumentos tiene que ser el mismo en la definición y en la llamada. No es necesario que los argumentos tengan el mismo nombre en la llamada y en la definición. Las \textbf{variables de la función son locales} y sólo se puede acceder a ellas dentro de la misma (en el ámbito de la función). 
+
+La mayoría de las funciones devuelven un valor. Esto significa que una variable dentro de la función pase a estar disponible fuera de la misma. Para ello, se emplea \texttt{return}, el cual indica qué valor se devuelve. Cuando el código ejecuta un return, en ese momento termina la ejecución de la función, aunque haya más código posterior.
+\begin{lstlisting}
+def celsius_a_fahrenheit(temperatura_c):
+	temperatura_f = temperatura_c * 9/5 + 32
+	return temperatura_f
+	
+temp_c = 23
+temp_f = celsius_a_fahrenheit(temp_c) 
+#el valor de temp_c se pasa a la función y el valor de temperatura_f se le asigna a temp_f
+\end{lstlisting}
+Se pueden devolver varios valores en una función separándolos por comas. En la llamada, se pueden poner varias variables que se irán asignando en el mismo orden. Si alguna de las variables que se devuelven no se quieren guardar en una variable global, a la hora de asignar las variables se puede poner un guion bajo.
+\begin{lstlisting}
+def funcion(arg1, arg2, arg3):
+	return arg3, arg2, arg1 
+	
+v1, v2, v3 = funcion(1, 2, 3) #v1 = 3, v2 = 2, v3 = 1
+_, _, variable = funcion (1, 2, 3) # variable = 1
+\end{lstlisting}
+Las funciones no deberían escribirse para imprimir nada en pantalla, ya que entonces no sería reusable. Las funciones deberían ser modulares y autocompletadas: que reciban un valor y devuelvan un valor. Se puede hacer que una función imprima algún dato auxiliar en pantalla, pero esa no debería ser su función principal.
+
+\subsection{Variables locales vs globales}
+Las variables que se encuentran dentro de una función son variables locales, ya que no existen fuera del ámbito de la función. Por el contrario, variables globales están presentes en el código principal y existen en cualquier parte. Aunque se pueda tener una variable local que se llame igual a otra global sin que se afecten mutuamente, no es buena práctica hacer esto.
+
+\subsection{Argumentos por defecto}
+Es posible definir funciones que tengan argumentos por defecto. Esto hace que el argumento sea opcional, es decir, que en caso de no obtener un valor en la llamada, el argumento va a tener un valor predeterminado. Esto se utiliza en aquellas funciones en las que la mayoría de las veces un argumento tiene un valor. Así, solo en los casos excepcionales se debe indicar el valor, y en la mayoría de casos no se debe incluir en la llamada. Los parámetros opcionales se deben definir en la función siempre después de los parámetros obligatorios. 
+
+\section{Librerías/módulos}
+Muchas veces, vamos a necesitar importar librerías o módulos para nuestro código. Las librerías y los módulos son lo mismo; en informática, se solía hablar de librerías, pero en Python reciben el nombre de módulos. Para importar una librería, se emplea la siguiente estructura:
+\begin{lstlisting}
+import libreria
+import libreria as lib
+\end{lstlisting}
+La diferencia entre la segunda línea y la primera es que en la primera, siempre se debe poner \texttt{libreria} cuando queramos usar una función que esté ella, mientras que en la segunda se le asigna el alias lib para no tener que escribir el nombre completo. Si solo se quiere importar una función de una librería, se puede escribir:
+\begin{lstlisting}
+from libreria import funcion
+from libreria import funcion1, funcion2
+
+libreria.funcion1()
+\end{lstlisting}
+Esto puede ser beneficioso si de una librería sólo se quiere importar una función, ya que actualmente hay librerías que ocupan mucho espacio y, dependiendo del código, puede ser ineficiente cargarla entera. 
+
+\begin{table}[htbp]
+\begin{mdframed}[backgroundcolor=black!10]
+    \centering
+    Un script en Python está organizado en tres bloques: la importación de librerías, la definición de funciones, y el código principal.
+    \end{mdframed}
+\end{table}
+
+\subsection{Instalar nuevos módulos}
+Desde la terminal, se puede instalar nuevos módulos de Python mediante el comando \texttt{pip install}. \marginpar[\footnotesize pip install]  \ Las librerías tienen su propia documentación en la que se detalla las funciones que tienen y cómo usarlas. Esta documentación puede estar disponible en internet o en un repositorio de GitHub. Hay que tener cuidado a la hora de instalar nuevos módulos, ya que pueden darse problemas de seguridad importantes. 
+
+Las librerías tienen distintas versiones, por lo que se recomienda utilizar librerías que hayan sido actualizadas recientemente y haya mucha gente colaborando y mejorándola en el repositorio GitHub. Esto asegura que no esté anticuada y que tenga un número mínimo de errores, ya que la mayoría de errores se habrán solucionado ya por todos los usuarios. 
+
+\subsection{Módulo random}
+El módulo random cuenta con varias funciones que permiten obtener valores pseudoaleatorios. \marginpar[\footnotesize random \\ randint]  \ Por ejemplo, la función \texttt{randint()} saca un valor entero entre los valores inicial y final, ambos incluidos. 
+\begin{lstlisting}
+import random
+print(random.randint(1, 10)) 
+\end{lstlisting}
+
+\subsection{Módulo requests}
+El módulo requests permite interactuar con HTTP, es decir, con el formato de navegadores y páginas web. Probablemente lo vayamos a usar en el futuro para acceder a bases de datos biomédicas publicadas en la web. 
+
+\subsection{Módulo sys}
+El módulo sys permite acceder a algunas funciones del sistema. Por ejemplo, \texttt{sys.exit()} termina la ejecución de un script.
+
+\section{Ficheros y directorios}
+Trabajar con ficheros tiene un ciclo muy concreto: abrirlo, leerlo o escribirlo, y cerrarlo. Si se abren muchos ficheros y no se cierran, el ordenador se puede quedar sin memoria, por lo que es importante cerrarlos cuando ya no sean necesarios. 
+
+Para \textbf{abrir un fichero} en Python, \marginpar[\footnotesize open() \\ readlines() \\ write() \\ close()]  \ se emplea \texttt{open(path/del/fichero, "modo")}. Modo hace referencia a cómo queremos abrir el fichero (el modo de lectura): para leer ("r"), escribir ("w"), leer y escribir ("rw") o append ("a"). Así, si solo queremos leer los datos de un fichero, lo abrimos con permisos de lectura y, al intentar escribir, daría un error. En la práctica, no hay diferencia entre los modos w y rw. Cuando se escribe en ficheros, se reescriben por completo; si queremos añadir texto al final del fichero, debemos usar el modo a que no sobreescribe el fichero. Para poder (sobre)escribir un fichero, se necesitan los permisos del sistema operativo para poder modificar el archivo. Para obtener las líneas que tiene el fichero, se utiliza el método \texttt{readlines()}. También se puede iterar sobre el fichero para obtener las líneas. Si queremos escribir en un fichero, se utiliza \texttt{write("contenido")}. Para cerrar un fichero una vez leído y modificado, se utiliza \texttt{close()}.
+\begin{lstlisting}
+fichero = open(ejemplo.txt) #el fichero se encuentra en el mismo directorio
+
+contenido = fichero.readlines()
+for line in fichero:
+	print(line)
+	
+fichero.write("Nuevo contenido")
+	
+fichero.close()
+\end{lstlisting}
+
+\subsection{Ejercicio}
+Escribir una función que escriba en un fichero una secuencia de ADN aleatoria de una longitud que reciba por parámetro.
+\begin{lstlisting}
+import random # alternativa: from random import choice
+
+def escribe_secuencia_fichero(secuencia, nombre_fichero):
+	fichero = open(nombre_fichero, "w")
+	fichero.write(secuencia)
+	fichero.close()
+
+def generar_secuencia(longitud):
+	bases = ["A", "T", "C", "G"] 
+	secuencia_aleatoria = ""
+	for i in range(longitud):
+		secuencia_aleatoria += random.choice(bases)
+	return secuencia_aleatoria
+	
+filename = "secuencia_aleatoria.txt"
+num_bases = 10
+secuencia = generar_secuencia(num_bases)
+escribe_secuencia_fichero(secuencia, filename)
+\end{lstlisting}
+
+\section{Excepciones}
+Una excepción es un \textbf{error irrecuperable}. Algunos errores en el programa son semánticos, es decir, son nuestros de programación. Estos son los peores porque aparentemente el programa funciona. Los errores irrecuperables hacen que el programa se detenga, como por ejemplo acceder a un fichero que no exista. Sabiendo que un código puede generar un error irrecuperable, se puede encapsular ese código dentro de una estructura especial:
+\begin{lstlisting}
+try:
+	código que debe intentar
+except Error: #ZeroDivisionError, PermissionError, IndexError, ...
+	código que hacer entonces
+\end{lstlisting}
+Así, se captura la excepción y se da la oportunidad de hacer otra cosa. Para saber qué funciones pueden producir excepciones, se debe mirar la documentación, en la que se especifica también el tipo de error que se da. Se pueden dar varias excepciones con distintos errores para hacer el código más robusto.
+
+Hay una excepción que recibe el nombre de Exception. Si se captura esta excepción, se captura cualquier tipo de error irrecuperable. El problema de esto es que aporta muy poca información de error y no se gestiona. Así, el programa no se para, pero tampoco se repara. Por tanto, hacer esto no es una buena práctica. 
+
+Las excepciones pueden tener un else, el cual se ejecutará si no se lanza la excepción. De esa forma, no es necesario poner sys.exit(). Por último, existe la cláusula finally, la cual se ejecuta siempre, se lance o no una excepción. Esto es muy útil para cerrar ficheros (sobre todo si son grandes) y que no se queden en la memoria RAM cuando se da alguna excepción no capturada. 
+\begin{lstlisting}
+try:
+	fichero = open("fichero.txt", "r")
+except FileNotFoundError:
+	print("El fichero no existe")
+else:
+	#código que podría fallar en algún momento
+finally:
+	fichero.close()
+\end{lstlisting}
+
+\section{Programación orientada a objetos}
+Tradicionalmente, el código era lineal y se ejecutaba de forma lineal. La programación orientada a objetos presenta otro paradigma, ya que encapsula el código en objetos y clases para poder manipularlos directamente como si fuera un diccionario.
