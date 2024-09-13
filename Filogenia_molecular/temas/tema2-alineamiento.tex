@@ -24,9 +24,13 @@ El método más utilizado y aplicado, denominado \textbf{ponderación implícita
 
 Goloboff reconoce que los árboles con los pesos medios más elevados son los que más «respetan» los datos: un peso medio bajo implica que la mayoría de los caracteres están siendo «ignorados» por los algoritmos de construcción de árboles. Aunque originalmente se propuso con una ponderación severa de k=3, Goloboff prefiere ahora concavidades más «suaves» (por ejemplo, k = 12), que han demostrado ser más eficaces en casos simulados y del mundo real.
 
-$$F = \sigma fi, fi = \frac{k}{k+(s-m)} $$
-
-siendo m el número mínimo de pasos, s el número de pasos observados y k la constante de concavidad.
+\begin{center}
+\begin{tabular}{l l}
+\multirow{3}{12em}{$F = \Sigma fi, fi = \frac{k}{k+(s-m)} $} & m: número mínimo de pasos \\ 
+ & s: número de pasos observados \\
+ & k: constante de concavidad
+\end{tabular}
+\end{center}
 
 \subsection{Secuencias de ADN}
  Generalmente, se toma la tasa de sustitución como medida de la fiabilidad de la información filogenética del marcador. Se entiende entonces homoplasia como saturación. Las transversiones evolucionan lentamente y aumentan su frecuencia a medida que pasa el tiempo. Las transiciones se saturan a partir de cierta distancia filogenética, perdiéndose su señal. 
