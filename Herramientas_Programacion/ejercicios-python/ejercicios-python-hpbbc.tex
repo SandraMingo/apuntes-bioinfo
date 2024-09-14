@@ -38,11 +38,14 @@
 Escribe un programa que muestre la tabla de multiplicar de un número que introduzca el usuario.
 \begin{lstlisting}
 #Pide al usuario que introduzca un número por teclado
-try:
-	num_usuario = int(input("Introduzca un número entero: "))
-except ValueError:
-	print("El valor introducido no es un número entero. Pruebe otra vez.").
-	num_usuario = int(input("Introduzca un número entero: "))
+comprobacion = False
+while comprobacion == False:
+	try:
+		num_usuario = int(input("Introduzca un número entero: "))
+	except ValueError:
+		print("El valor introducido no es un número entero. Pruebe otra vez.").
+	else:
+		comprobacion = True
 #Utiliza un bucle for para mostrar la tabla de multiplicar
 for i in range(1, 11):
 	print(f"{num_usuario} x {i} = {num_usuario * i}")
@@ -60,14 +63,18 @@ while num_multiplicacion < 10:
 Escribe un programa que pida al usuario un número entero positivo nullN y luego calcule la suma de todos los números desde 1 hasta nullN.
 \begin{lstlisting}
 #Pide al usuario que introduzca un número entero positivo
-try:
-	num_usuario = int(input("Introduzca un número entero positivo: "))
-except ValueError:
-	print("El valor introducido no es un número entero. Pruebe otra vez.").
-	num_usuario = int(input("Introduzca un número entero: "))
-if num_usuario < 0:
-	print("El número no es positivo.")
-	num_usuario = int(input("Introduzca un número entero positivo: "))
+comprobacion = False
+while comprobacion == False:
+	try:
+		num_usuario = int(input("Introduzca un número entero positivo: "))
+	except ValueError:
+		print("El valor introducido no es un número entero. Pruebe otra vez.").
+		num_usuario = int(input("Introduzca un número entero: "))
+	else:
+		if num_usuario < 0:
+			print("El número no es positivo.")
+		else:
+			comprobacion = True
 resultado = 0
 for i in range(1, num_usuario +1):
 	resultado += 1
