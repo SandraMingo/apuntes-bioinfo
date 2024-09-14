@@ -58,7 +58,7 @@ Los árboles filogenéticos se consideran resueltos cuando de un nodo interno sa
 \end{figure}
 
 \section{Tipos de árboles filogenéticos}
-Existen distintos tipos de árboles filogenéticos. Los \textbf{filogramas (phylogram}) miden en las ramas los cambios que ha habido por sitio, por lo que las longitudes de las ramas representan a escala la cantidad de divergencia evolutiva. Tienen la ventaja de mostrar tanto las relaciones evolutivas como la información sobre el tiempo relativo de divergencia de las ramas. Los \textbf{cladogramas (cladogram)} muestran la similitud de los distintos elementos, pero las longitudes de sus ramas no son proporcionales al número de cambios evolutivos y, por tanto, no tienen ningún significado filogenético. Los cronogramas (chronogram) representan la relación de los elementos de forma temporal.
+Existen distintos tipos de árboles filogenéticos. Los \textbf{filogramas (phylogram}) miden en las ramas los cambios que ha habido por sitio, por lo que las longitudes de las ramas representan a escala la cantidad de divergencia evolutiva. Tienen la ventaja de mostrar tanto las relaciones evolutivas como la información sobre el tiempo relativo de divergencia de las ramas. Los \textbf{cladogramas (cladogram)} muestran la similitud de los distintos elementos, pero las longitudes de sus ramas no son proporcionales al número de cambios evolutivos y, por tanto, no tienen ningún significado filogenético. Los \textbf{cronogramas (chronogram)} representan la relación de los elementos de forma temporal.
 
 \begin{figure}[htbp]
 \centering
@@ -84,12 +84,19 @@ Dentro de la homología se distinguen dos tipos: la ortología y la paralogía. 
 
 %11/09 - Patricia Álvarez
 \subsection{Tipos de homología}
-En cladística, se emplean unas clasificaciones de las propiedades de organismos basándose en similitudes derivadas. Se refiere a \textbf{plesiomorfia} un estado ancestral o primitivo de un carácter al estar presente en grupos externos y en los ancestros. Cuando un carácter es evolutivamente novedoso pero deriva de otro rasgo perteneciente a un taxón ancestral filogenéticamente próximo, se denomina \textbf{apomorfia}. Así, se emplean los adjetivos plesiomófico y apomórfico en lugar de primitivo y avanzado para evitar juicios de valor sobre la evolución de los carácteres. Una \textbf{sinapomorfia} es una apomorfia compartida por un ancestro común y todos sus descendientes. Una \textbf{simplesiomorfia} se refiere a una plesiomorfia compartida por un ancestro común, pero no todos los descendientes. Finalmente, una \textbf{autapomorfía} es un carácter único de un taxón que no aparece en el antepasado. 
+En cladística, se emplean unas clasificaciones de las propiedades de organismos basándose en similitudes derivadas. Se refiere a \textbf{plesiomorfia} un estado ancestral o primitivo de un carácter al estar presente en grupos externos y en los ancestros. Cuando un carácter es evolutivamente novedoso pero deriva de otro rasgo perteneciente a un taxón ancestral filogenéticamente próximo, se denomina \textbf{apomorfia}. Así, se emplean los adjetivos plesiomófico y apomórfico en lugar de primitivo y avanzado para evitar juicios de valor sobre la evolución de los carácteres. Una \textbf{sinapomorfia} es una apomorfia (carácter exclusivo) compartida por un ancestro común y todos sus descendientes. Una \textbf{simplesiomorfia} se refiere a una plesiomorfia (carácter ancestral) compartida por dos o más taxa. Finalmente, una \textbf{autapomorfía} es un carácter único de un taxón que no aparece en el antepasado. 
+
+\begin{table}[htbp]
+\begin{mdframed}[backgroundcolor=black!10]
+    \centering
+    El prefijo "sin" viene de "compartido". Por tanto, los caracteres sinapomorfos son caracteres apomorfos compartidos, mientras que las simplesiomorfías son plesiomorfías compartidas.
+    \end{mdframed}
+\end{table}
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.5\linewidth]{figs/tipos-homologia.png}
-\caption{Tipos de homología.}
+\includegraphics[width=0.5\linewidth]{figs/sinapomorfia.jpg}
+\caption{Tipos de homología en el árbol filogenético (tumbado). El carácter A es plesiomórfico al estar en el ancestro. El carácter C es apomórfico al ser una novedad evolutiva. En los nodos terminales, el carácter A se considera simplesiomórfico al estar compartido por los descendientes y ser un carácter ancestral. Por el contrario, el carácter C en los nodos terminales es sinapomórfico por ser un carácter novedoso y estar compartido en el ancestro en el que surgió y sus descendientes. Los caracteres B, D y E son autopomorfos por estar presentes en un único nodo terminal.}
 \end{figure}
 
 \subsection{Homoplasia}
