@@ -124,7 +124,7 @@ Los distintos tipos de datos en SQL son:
 \end{itemize}
 
 La sintaxis básica para crear una tabla y eliminarla es:
-\begin{lstlisting}
+\begin{lstlisting}[language=SQL]
 CREATE TABLE nombre-tabla (nombre-columna tipo-columna, nombre-columna2 tipo-columna2);
 DROP TABLE nombre-tabla;
 \end{lstlisting}
@@ -132,7 +132,7 @@ DROP TABLE nombre-tabla;
 Se puede elegir el nombre para las tablas, pero hay algunos \textbf{nombres reservados} que no pueden adoptar: oid, tableoid, xmin, cmin, xmax, cmax, ctid.
 
 Si un valor no se asigna a un atributo, se asigna \texttt{null} por defecto excepto si se ha predefinido un valor por defecto a la hora de crear la relación. Esto es útil porque, aunque nosotros creemos la base de datos, ésta será utilizada por muchas otras personas, de forma que los campos con valores predeterminados sirven para evitar errores.
-\begin{lstlisting}
+\begin{lstlisting}[language=SQL]
 CREATE SEQUENCE product_no_seq; 
 CREATE TABLE product(
 	product_no integer PRIMARY KEY DEFAULT nextval('product_no_seq'),
@@ -150,7 +150,7 @@ Las \textbf{restricciones de integridad} son:
 \item \underline{primary key}: un atributo se establece como clave primaria. Cuando se utiliza detrás de un atributo, solo se puede poner una vez. Si se quiere poner más de un campo como clave primaria, se debe poner como tupla, es decir, primary key (atributo1, atributo2). Las claves primarias no se pueden repetir, pero jamás pueden ser valores nulos. Esto lo diferencia con unique, ya que ahí sí puede haber valores nulos. 
 \item \underline{foreign key references r}: se utiliza un atributo presente en otra tabla a la que se referencia. El valor de la foreign key debe existir en la tabla principal. De igual forma, no se puede borrar en la tabla original si está referenciado. Si se borra en la referencia, la tabla original no se modifica a no ser que se especifique que se borre en cascada (lo cual no se recomienda).
 \end{itemize}
-\begin{lstlisting}
+\begin{lstlisting}[language=SQL]
 CREATE TABLE product(
 	product_no integer NOT NULL,
 	name text,
@@ -179,7 +179,7 @@ A estas sentencias (salvo insert) se les debe añadir modificadores para indicar
 \end{itemize}
 
 Se pueden insertar valores en una tabla de dos formas:
-\begin{lstlisting}
+\begin{lstlisting}[language=SQL]
 -- Opción 1: sin especificar los nombres de las columnas, solo los valores
 INSERT INTO nombre-tabla VALUES (valores respetando el orden del create table);
 -- Opción 2: especificando el nombre de los atributos
@@ -187,7 +187,7 @@ INSERT INTO nombre-tabla (atributo1, atributo2, atributo3) VALUES (valor1, valor
 \end{lstlisting}
 
 Para cambiar la estructura de una base de datos ya creada, se podría borrar y volver a crear, pero cuando ya hay datos insertados, esto no es eficiente. Para ello, se puede realizar \texttt{alter table}:
-\begin{lstlisting}
+\begin{lstlisting}[language=SQL]
 -- Algunos ejemplos
 ALTER TABLE nombre-tabla ADD CHECK (condición);
 ALTER TABLE nombre-tabla ALTER COLUMN nombre-columna SET NOT NULL;
