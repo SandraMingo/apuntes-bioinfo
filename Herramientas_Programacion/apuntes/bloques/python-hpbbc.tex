@@ -410,6 +410,7 @@ finally:
 	fichero.close()
 \end{lstlisting}
 
+%19/09
 \section{Programación orientada a objetos (POO)}
 Tradicionalmente, el código era lineal y se ejecutaba de forma lineal. La programación orientada a objetos (POO) presenta otro paradigma, ya que encapsula el código en objetos y clases para poder manipularlos directamente. La diferencia con la programación procedural es que la programación orientada a objetos se basa en modelizar las entidades con las que trabaja el programa en forma de clases y encapsular la funcionalidad en los objetos. Así, un objeto en Python es una colección única de datos (atributos) y comportamiento (métodos).
 
@@ -442,6 +443,12 @@ print('Toby is a', toby.kind) #acceder al atributo del objeto
 \end{lstlisting}
 
 El método \_\_str\_\_ devuelve una cadena que puede contener la información que se quiera sobre un objeto.
+
+Idealmente, cada clase debería estar en un fichero distinto. Esto se puede importar luego en otro fichero de Python como las librerías. No es necesario escribir la extensión del fichero donde se encuentra la clase.
+\begin{lstlisting}[language=Python]
+from dog import Dog
+#from fichero import clase
+\end{lstlisting}
 
 \subsection{Herencia}
 La herencia permite definir múltiples subclases a partir de una clase ya definida. Las subclases heredan todas las características (atributos) y algunos comportamientos comunes (métodos). Los atributos creados en la subclase no estarán presentes en la clase padre.
