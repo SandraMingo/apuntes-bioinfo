@@ -26,7 +26,7 @@ En cuanto a los nombres de las variables, no pueden contener espacios en blanco 
 El comando \texttt{print} permite imprimir algo por pantalla. 
 
 El comando \texttt{input} le pide información al usuario que debe aportar por teclado.
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 name = input('Enter your name: ')
 print('Hello, ', name)
 \end{lstlisting}
@@ -41,14 +41,14 @@ Aunque los tipos de variables sean implícitos, se puede realizar un \textbf{cas
 \end{itemize}
 
 Los comentarios en Python, marcados con \#, sirven para poner anotaciones para otras personas o nosotros mismos y que el intérprete va a omitir. Es buena práctica poner comentarios para explicar las partes del código.
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 #Código de prueba
 print('Esto es una prueba') #print
 \end{lstlisting}
 
 \section{Expresiones condicionales}
 En Python, se pueden escribir condicionales: si algo es verdadero/falso, ocurre algo. Esto se hace mediante \texttt{if} y \texttt{else} y sirve para cambiar el flujo del programa o tomar decisiones.
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 num_pensado = 4
 num = input("Elige un número: ")
 
@@ -61,7 +61,7 @@ else:
 Si se cumple la condición del if, el código que se ejecuta es el que se encuentra indentado y se continúa sin ejecutarse el bloque else. Si no se cumple el if, el código que se ejecuta es el que se encuentra indentado tras else, y se omite el bloque del if. 
 
 En el caso de que haya más condicionales, se puede utilizar \texttt{elif} seguido del siguiente condicional, siempre y cuando la condición sea de verdadero o falso:
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 num_pensado = 4
 num = input("Elige un número: ")
 
@@ -104,7 +104,7 @@ Los bucles permiten repetir ciertas sentencias para ahorrar código redundante.
 
 \subsection{For loops}
 Los for loops permiten repetir un código un \textbf{número determinado de veces}. La estructura típica de un for loop es:
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 for variable in range(número inicial, número final, incremento):
 	código que se quiere repetir
 	
@@ -113,7 +113,7 @@ for variable in otra_variable:
 \end{lstlisting}
 
 Es importante remarcar que el código que se quiere repetir debe estar indentado. Si no se pone número inicial, automáticamente empieza en 0. De igual forma, el incremento es 1 por defecto. El número final no está incluido. Por ello, si sólo se pone \texttt{range(número)}, se podría interpretar que se repite el bucle se repite el número indicado de veces. Por ejemplo, utilizando el ejemplo anterior, se podría escribir:
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 num_pensado = 4
 
 for i in range(5):
@@ -129,13 +129,13 @@ La i es una variable que empieza en 0 y con cada iteración aumenta en uno hasta
 
 \subsection{While loops}
 Los bucles while se repiten un \textbf{número indeterminado de veces}. Este bucle depende de una condición:
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 while condición:
 	código que se quiere repetir
 \end{lstlisting}
 
 En estos bucles, es importante que la condición se modifique dentro del bucle para no crear un bucle infinito. 
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 num_pensado = 4
 fallo = True
 
@@ -152,19 +152,19 @@ Así, cuando el usuario acierta el número, la variable fallo pasa a ser falsa y
 %06/09
 \section{Cadenas o strings}
 Las cadenas son cualquier secuencia de caracteres o números que se encuentran entre comillas simples o dobles. También hay cadenas vacías que no tienen ninguna secuencia entre las comillas. Las cadenas se pueden concatenar mediante el +. También se puede repetir el contenido de una cadena al multiplicarlo con las veces que se quiere repetir.
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 'AB' + 'cd' # ABcd
 'Hi' * 2 # HiHi 
 \end{lstlisting}
 
 Se puede calcular la longitud de una cadena mediante \texttt{len()}.  \marginpar[\footnotesize len] \
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 cadena = "Hola"
 len(cadena) #4
 \end{lstlisting}
 
 Para comprobar si una cadena contiene algo, se emplea el operador \texttt{in}. \marginpar[\footnotesize in \\ not in]  \ Para ver si no contiene algo, se usa \texttt{not in}. Esto realmente es una expresión booleana, ya que el resultado es verdadero o falso. 
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 secuencia = "ATC"
 if "G" in secuencia:
 	print("La secuencia contiene guanina".)
@@ -174,7 +174,7 @@ else:
 
 \subsection{F-strings}
 A la hora de imprimir texto, es común alternar cadenas con valores de variables. Esto se puede hacer intercalando las cadenas entre comillas con las variables o con los denominados f-strings (format-strings). Los f-strings son expresiones con una sintaxis más fluida que permite darle formato a cadenas. Para imprimir el valor de variables, basta con poner el nombre de la variable entre llaves (\{\}). En caso de querer imprimir una llave en un f-string, se debe poner doble.
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 variable = 1
 print(f"El valor de la variable es {variable}.")
 # Output: El valor de la variable es 1.
@@ -184,7 +184,7 @@ print(f"El valor de la variable es {{{variable}}}.")
 
 \subsection{Indexación y slicing}
 Las cadenas se pueden indexar, es decir, referir a una posición en la misma cadena. Esto se realiza escribiendo la cadena (o la variable que contiene la cadena) seguido de la posición que se quiere entre corchetes. La primera posición es un 0, y las subsiguientes van incrementando en uno. A esto se le conoce como \textbf{indexación positiva}. 
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 cadena = "hola"
 cadena[0] #h
 cadena[1] #o
@@ -193,7 +193,7 @@ cadena[3] #a
 \end{lstlisting}
 
 La \textbf{indexación negativa} se refiere a acceder a la posición desde el final de la cadena. El último carácter es -1, y los siguientes van incrementando en 1. 
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 cadena = "hola"
 cadena[-1] #a
 cadena[-2] #l
@@ -202,7 +202,7 @@ cadena[-4] #h
 \end{lstlisting}
 
 En algunas ocasiones, queremos acceder a un fragmento de una cadena. A esto se le conoce como \textbf{slicing}, y se emplea con las posiciones: \texttt{[primero:último:paso]}. La última posición no está incluida. Los pasos son opcionales, ya que tienen un valor por defecto de 1. Si se omite el primer valor, se empieza desde el primer caracter por defecto. Si se omite el último valor, se termina en el último caracter. Así, si se pone [:], se incluye todo el contenido.
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 cadena = "hola"
 cadena[1:3] #ol
 cadena[::2] #hl
@@ -224,7 +224,7 @@ En Python hay cuatro estructuras de datos: listas, diccionarios, tuplas y conjun
 
 \subsection{Listas}
 La lista es un \textbf{conjunto ordenado de objetos}. Pueden ser números, cadenas, booleanos, y se pueden mezclar los distintos tipos. El contenido de una lista se escribe entre corchetes y separando los distintos objetos por comas. 
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 lista = [False, 1, 2, "tres"]
 \end{lstlisting}
 
@@ -236,7 +236,7 @@ Las listas guardan algunas similitudes con las cadenas: \begin{itemize}
 \item Se pueden crear listas vacías con [].
 \item Se puede iterar sobre ellas.
 \end{itemize}
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 codones = ['AAA', 'GCT', 'CCA']
 for codon in codones:
 	for nucleotido in codon:
@@ -257,13 +257,13 @@ Algunos métodos específicos para trabajar con listas son:
 
 \subsection{Diccionarios}
 Los diccionarios son \textbf{conjuntos no ordenados de parejas de clave y valor}. Las claves deben ser únicas e inmutables de cadenas o números, ya que sirven para acceder al valor que tengan asignado. 
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 dic_vacio = {} #Diccionario vacío
 year ={'Enero':31, 'Febrero':28} #Diccionario de dos elementos
 \end{lstlisting}
 
 Se puede iterar sobre los diccionarios, pero el  elemento que se devuelve es la clave. Para que se devuelva el valor, se debe \textbf{indexar por la clave}:
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 for month in year:
 	print(month) # Imprime las claves
 	print(year[month]) #Imprime los valores
@@ -275,14 +275,14 @@ Se puede obtener una lista de todas las claves y de todos los valores con los m�
 
 \section{Funciones}
 Las funciones son una agrupación de líneas de código que se pueden ejecutar llamando el nombre de la funciones un número ilimitado de veces. De esa forma, las funciones permiten simplificar programas largos y mantenerlos. Además, eliminan código redundante. Es muy recomendable que las funciones se encuentren definidas antes de su llamada. Por convenio, todas las funciones se ponen en la parte superior del código, aunque sean llamadas solo al final. La estructura de una función es la siguiente:
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 def nombre_funcion(argumento1, argumento2):
 	código que ejecuta la función
 \end{lstlisting}
 El número de argumentos tiene que ser el mismo en la definición y en la llamada. No es necesario que los argumentos tengan el mismo nombre en la llamada y en la definición. Las \textbf{variables de la función son locales} y sólo se puede acceder a ellas dentro de la misma (en el ámbito de la función). 
 
 La mayoría de las funciones devuelven un valor. Esto significa que una variable dentro de la función pase a estar disponible fuera de la misma. Para ello, se emplea \texttt{return}, el cual indica qué valor se devuelve. Cuando el código ejecuta un return, en ese momento termina la ejecución de la función, aunque haya más código posterior.
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 def celsius_a_fahrenheit(temperatura_c):
 	temperatura_f = temperatura_c * 9/5 + 32
 	return temperatura_f
@@ -292,7 +292,7 @@ temp_f = celsius_a_fahrenheit(temp_c)
 #el valor de temp_c se pasa a la función y el valor de temperatura_f se le asigna a temp_f
 \end{lstlisting}
 Se pueden devolver varios valores en una función separándolos por comas. En la llamada, se pueden poner varias variables que se irán asignando en el mismo orden. Si alguna de las variables que se devuelven no se quieren guardar en una variable global, a la hora de asignar las variables se puede poner un guion bajo.
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 def funcion(arg1, arg2, arg3):
 	return arg3, arg2, arg1 
 	
@@ -309,12 +309,12 @@ Es posible definir funciones que tengan argumentos por defecto. Esto hace que el
 
 \section{Librerías/módulos}
 Muchas veces, vamos a necesitar importar librerías o módulos para nuestro código. Las librerías y los módulos son lo mismo; en informática, se solía hablar de librerías, pero en Python reciben el nombre de módulos. Para importar una librería, se emplea la siguiente estructura:
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 import libreria
 import libreria as lib
 \end{lstlisting}
 La diferencia entre la segunda línea y la primera es que en la primera, siempre se debe poner \texttt{libreria} cuando queramos usar una función que esté ella, mientras que en la segunda se le asigna el alias lib para no tener que escribir el nombre completo. Si solo se quiere importar una función de una librería, se puede escribir:
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 from libreria import funcion
 from libreria import funcion1, funcion2
 
@@ -336,7 +336,7 @@ Las librerías tienen distintas versiones, por lo que se recomienda utilizar lib
 
 \subsection{Módulo random}
 El módulo random cuenta con varias funciones que permiten obtener valores pseudoaleatorios. \marginpar[\footnotesize random \\ randint]  \ Por ejemplo, la función \texttt{randint()} saca un valor entero entre los valores inicial y final, ambos incluidos. 
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 import random
 print(random.randint(1, 10)) 
 \end{lstlisting}
@@ -351,7 +351,7 @@ El módulo sys permite acceder a algunas funciones del sistema. Por ejemplo, \te
 Trabajar con ficheros tiene un ciclo muy concreto: abrirlo, leerlo o escribirlo, y cerrarlo. Si se abren muchos ficheros y no se cierran, el ordenador se puede quedar sin memoria, por lo que es importante cerrarlos cuando ya no sean necesarios. 
 
 Para \textbf{abrir un fichero} en Python, \marginpar[\footnotesize open() \\ readlines() \\ write() \\ close()]  \ se emplea \texttt{open(path/del/fichero, "modo")}. Modo hace referencia a cómo queremos abrir el fichero (el modo de lectura): para leer ("r"), escribir ("w"), leer y escribir ("rw") o append ("a"). Así, si solo queremos leer los datos de un fichero, lo abrimos con permisos de lectura y, al intentar escribir, daría un error. En la práctica, no hay diferencia entre los modos w y rw. Cuando se escribe en ficheros, se reescriben por completo; si queremos añadir texto al final del fichero, debemos usar el modo a que no sobreescribe el fichero. Para poder (sobre)escribir un fichero, se necesitan los permisos del sistema operativo para poder modificar el archivo. Para obtener las líneas que tiene el fichero, se utiliza el método \texttt{readlines()}. También se puede iterar sobre el fichero para obtener las líneas. Si queremos escribir en un fichero, se utiliza \texttt{write("contenido")}. Para cerrar un fichero una vez leído y modificado, se utiliza \texttt{close()}.
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 fichero = open(ejemplo.txt) #el fichero se encuentra en el mismo directorio
 
 contenido = fichero.readlines()
@@ -365,7 +365,7 @@ fichero.close()
 
 \subsection{Ejercicio}
 Escribir una función que escriba en un fichero una secuencia de ADN aleatoria de una longitud que reciba por parámetro.
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 import random # alternativa: from random import choice
 
 def escribe_secuencia_fichero(secuencia, nombre_fichero):
@@ -388,7 +388,7 @@ escribe_secuencia_fichero(secuencia, filename)
 
 \section{Excepciones}
 Una excepción es un \textbf{error irrecuperable}. Algunos errores en el programa son semánticos, es decir, son nuestros de programación. Estos son los peores porque aparentemente el programa funciona. Los errores irrecuperables hacen que el programa se detenga, como por ejemplo acceder a un fichero que no exista. Sabiendo que un código puede generar un error irrecuperable, se puede encapsular ese código dentro de una estructura especial:
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 try:
 	código que debe intentar
 except Error: #ZeroDivisionError, PermissionError, IndexError, ...
@@ -399,7 +399,7 @@ Así, se captura la excepción y se da la oportunidad de hacer otra cosa. Para s
 Hay una excepción que recibe el nombre de Exception. Si se captura esta excepción, se captura cualquier tipo de error irrecuperable. El problema de esto es que aporta muy poca información de error y no se gestiona. Así, el programa no se para, pero tampoco se repara. Por tanto, hacer esto no es una buena práctica. 
 
 Las excepciones pueden tener un else, el cual se ejecutará si no se lanza la excepción. De esa forma, no es necesario poner sys.exit(). Por último, existe la cláusula finally, la cual se ejecuta siempre, se lance o no una excepción. Esto es muy útil para cerrar ficheros (sobre todo si son grandes) y que no se queden en la memoria RAM cuando se da alguna excepción no capturada. 
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 try:
 	fichero = open("fichero.txt", "r")
 except FileNotFoundError:
@@ -410,5 +410,61 @@ finally:
 	fichero.close()
 \end{lstlisting}
 
-\section{Programación orientada a objetos}
-Tradicionalmente, el código era lineal y se ejecutaba de forma lineal. La programación orientada a objetos presenta otro paradigma, ya que encapsula el código en objetos y clases para poder manipularlos directamente como si fuera un diccionario.
+\section{Programación orientada a objetos (POO)}
+Tradicionalmente, el código era lineal y se ejecutaba de forma lineal. La programación orientada a objetos (POO) presenta otro paradigma, ya que encapsula el código en objetos y clases para poder manipularlos directamente. La diferencia con la programación procedural es que la programación orientada a objetos se basa en modelizar las entidades con las que trabaja el programa en forma de clases y encapsular la funcionalidad en los objetos. Así, un objeto en Python es una colección única de datos (atributos) y comportamiento (métodos).
+
+La programación orientada a objetos permite abordar problemas complejos de una forma más sencilla, pudiendo implementar más funciones sin comprometer la estabilidad de un proyecto. Además, permite reutilizar el código mediante la implementación de la abstracción, que hace que el código sea más conciso y legible. La clase es como una plantilla que permite crear objetos personalizados basados en los atributos y métodos que se definan. Por otro lado, las instancias son objetos individuales de una clase, que tiene una dirección de memoria única.
+
+\begin{table}[htbp]
+\begin{mdframed}[backgroundcolor=black!10]
+    \centering
+Ejemplo: Coche \\
+Un vehículo tiene una serie de atributos: ruedas, tipo de motor, color, velocidad máxima, carburante. También tiene una serie de métodos, es decir, acciones que puede realizar: arrancar, repostar, acelerar. Las clases son el concepto abstracto, mientras que el objeto es la personificación de la clase. El concepto de vehículo sería una clase. El objeto concreto instanciado sería un Tesla, una moto de marca X, etc. 
+    \end{mdframed}
+\end{table}
+
+Para crear una clase en Python, se utiliza la palabra clave \texttt{class} seguida del nombre de la clase, cuya convención dicta que se escriba en mayúsculas para poder diferenciarlas de las variables. Tras haber creado la clase, se pueden añadir los atributos de la clase y que serán iguales para todos los objetos de esa clase que se construyan. A continuación, se definen los métodos de la clase. El primer método siempre debe ser el método constructor (\texttt{\_\_init\_\_}), el cual es llamado por Python cada vez que se instancie un objeto. El constructor es el que crea el estado inicial del objeto con una serie de parámetros. Todos los métodos deben incluir el parámetro self, que se refiere a la instancia de la clase (el objeto en sí). Después, se le pueden añadir los parámetros que se deseen como atributos de la instancia y que serán diferentes para cada objeto. Se deberán incluir como argumentos a la hora de crear los objetos, y para acceder a ellos una vez creada una instancia, se utiliza la notación de puntos. También se pueden crear más métodos de forma similar a como se creaban las funciones y se invoca igual.
+\begin{lstlisting}[language=Python]
+class Dog:
+
+	kind = 'canine' # atributo de la clase
+	
+	def __init__(self, name): #constructor
+		self.name = name
+		
+	def makeNoise(self): #método
+		print('Guau!')
+
+#Uso de la clase
+toby = Dog('Toby') #creación de un objeto
+toby.makeNoise() #acceder al método del objeto
+print('Toby is a', toby.kind) #acceder al atributo del objeto
+\end{lstlisting}
+
+El método \_\_str\_\_ devuelve una cadena que puede contener la información que se quiera sobre un objeto.
+
+\subsection{Herencia}
+La herencia permite definir múltiples subclases a partir de una clase ya definida. Las subclases heredan todas las características (atributos) y algunos comportamientos comunes (métodos). Los atributos creados en la subclase no estarán presentes en la clase padre.
+
+\section{Persistencia de datos}
+La persistencia de datos es la forma de guardar y leer datos para que no se pierdan ni se dañen. Hay tres maneras de persistir datos en un ordenador: 
+\begin{itemize}
+\item \underline{Ficheros}: pueden ser de texto o binarios. La diferencia es que los ficheros de texto solo pueden tener algunos de los caracteres ASCII, mientras que los ficheros binarios pueden guardar cualquier tipo de texto. Se recomienda abrir los ficheros como binarios (utilizando "rb"), ya que también permiten leer el fichero de texto, mientras que si se abre un fichero como si fuera de texto, no se pueden leer los ficheros binarios. Esto es adecuado para ficheros pequeños y medianos, ya que se irán leyendo poco a poco. Los ficheros grandes también se pueden abrir así, pero pueden tardar más.
+\item \underline{Serialización de objetos}: sirve para guardar objetos pequeños y restaurarlos mediante la librería pickle. Así, cuando se trabaja con objetos, cada x líneas se puede guardar en un fichero el estado del objeto a modo de backup mediante \texttt{pickle.dump(objeto, fichero)}. En caso necesario, se puede cargar el fichero para leer su contenido con \texttt{pickle.load(fichero)}. Normalmente se guarda con extensión .bin, que es la extensión de un fichero binario.
+\item \underline{Bases de datos relacionales}: Python permite crear una tabla de base de datos para cada clase. Esto se hace mediante la librería MySQLdb. Normalmente, las bases de datos se obtienen desde un servidor externo al que nos tenemos que conectar primero para acceder. Esto se hace mediante \texttt{MySQLdb.connect(servidor, usuario, contraseña, base de datos)}. Así, desde Python se pueden escribir programas que hablen con la base de datos. Todas las operaciones que se pueden hacer en SQL se pueden hacer desde Python.
+\end{itemize}
+\begin{lstlisting}[language=Python]
+import MySQLdb
+db = MySQLdb.connect("localhost", "testuser", "test123", "TESTDB")
+cursor = db.cursor()
+sql = "INSERT INTO employee (first_name, last_name, age, sex, income) VALUES ('%s', '%s', '%d', '%c', '%d')" % ('Marc', 'Mohan', 20, 'M', 2000)
+
+try:
+	cursor.execute(sql)
+	db.commit()
+except:
+	db.rollback 
+	#vuelve al estado previo en caso de que no fuese posible actualizar todos los datos a la base de datos por una caída o así
+	
+db.close()
+\end{lstlisting}
