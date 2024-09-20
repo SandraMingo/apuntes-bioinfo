@@ -174,4 +174,127 @@ def union_elementos_listas_eficiente(lista1, lista2):
 \end{lstlisting}
 \end{problemS}
 
+\begin{problemS} \textbf{Modelando secuencias de ADN}
+Modela una clase llamada \texttt{ADN} que almacene y manipule secuencias de ADN. La clase ADN debe tener un atributo para almacenar la secuencia de nucleótidos (una cadena de caracteres compuesta por las letras A, T, G y C). Debe tener un método para contar la cantidad de cada tipo de nucleótido en la secuencia y otro que permita obtener la secuencia complementaria de ADN (A se empareja con T, C con G). Finalmente, debe tener un método que calcule la proporción de guanina y citosina (CG content).
+\begin{lstlisting}
+class ADN:
+    def __init__(self, seq):
+        self.sequence = seq
+    
+    def nucleotide_count(self):
+        count_A = 0
+        count_T = 0
+        count_C = 0
+        count_G = 0
+        for nucleotide in self.sequence:
+            if nucleotide == 'A':
+                count_A += 1
+            elif nucleotide == 'T':
+                count_T += 1
+            elif nucleotide == 'G':
+                count_G += 1
+            elif nucleotide == 'C':
+                count_C += 1
+            else:
+                print("Nucleotide not valid.")
+                break
+        return f'The sequence has the following nucleotides: \n {count_A} A \n {count_T} T \n {count_G} G \n {count_C} C'
+        
+    def complementary_strand(self):
+        complementary_strand = ''
+        for nucleotide in self.sequence:
+            if nucleotide == 'A':
+                complementary_strand += 'T'
+            elif nucleotide == 'T':
+                complementary_strand += 'A'
+            elif nucleotide == 'G':
+                complementary_strand += 'C'
+            elif nucleotide == 'C':
+                complementary_strand += 'G'
+            else:
+                print("Nucleotide not valid.")
+                break
+        return complementary_strand
+    
+    def cg_content(self):
+        sequence_length = len(self.sequence)
+        cg_count = 0
+        for nucleotide in self.sequence:
+            if nucleotide == 'C' or nucleotide == 'G':
+                cg_count += 1
+        return cg_count / sequence_length * 100
+\end{lstlisting}
+\end{problemS}
+
+\begin{problemS} \textbf{Simulación de mutaciones en ADN}
+Expande la clase ADN del ejercicio anterior para que tenga un método que simule una mutación en una secuencia de ADN. Este método, dado un nucleótido y una posición, debe cambiar el nucleótido en esa posición.  Primero se debe validar que la posición es válida. También se debe agregar un método que simule una mutación aleatoria en una posición aleatoria.
+\begin{lstlisting}
+import random
+class ADN:
+    def __init__(self, seq):
+        self.sequence = seq.upper()
+
+    def get_sequence(self):
+        return self.sequence
+    def nucleotide_count(self):
+        count_A = 0
+        count_T = 0
+        count_C = 0
+        count_G = 0
+        for nucleotide in self.sequence:
+            if nucleotide == 'A':
+                count_A += 1
+            elif nucleotide == 'T':
+                count_T += 1
+            elif nucleotide == 'G':
+                count_G += 1
+            elif nucleotide == 'C':
+                count_C += 1
+            else:
+                print("Nucleotide not valid.")
+                break
+        return f'The sequence has the following nucleotides: \n {count_A} A \n {count_T} T \n {count_G} G \n {count_C} C'
+
+    def complementary_strand(self):
+        complementary_strand = ''
+        for nucleotide in self.sequence:
+            if nucleotide == 'A':
+                complementary_strand += 'T'
+            elif nucleotide == 'T':
+                complementary_strand += 'A'
+            elif nucleotide == 'G':
+                complementary_strand += 'C'
+            elif nucleotide == 'C':
+                complementary_strand += 'G'
+            else:
+                print("Nucleotide not valid.")
+                break
+        return complementary_strand
+
+    def cg_content(self):
+        sequence_length = len(self.sequence)
+        cg_count = 0
+        for nucleotide in self.sequence:
+            if nucleotide == 'C' or nucleotide == 'G':
+                cg_count += 1
+        return cg_count / sequence_length * 100
+
+    def mutate(self, nucleotide, position):
+        if position <= len(self.sequence):
+            sequence_list = list(self.sequence)
+            sequence_list[position-1] = nucleotide.upper()
+            self.sequence = ''.join(sequence_list)
+        else:
+            print("Position not valid - out of range")
+
+    def random_mutate(self):
+        nucleotides = ['A', 'T', 'G', 'C']
+        random_nucleotide = random.choice(nucleotides)
+        random_position = random.choice(list(range(0, len(self.sequence))))
+        sequence_list = list(self.sequence)
+        sequence_list[random_position] = random_nucleotide
+        self.sequence = ''.join(sequence_list)
+\end{lstlisting}
+\end{problemS}
+
 \end{document}
