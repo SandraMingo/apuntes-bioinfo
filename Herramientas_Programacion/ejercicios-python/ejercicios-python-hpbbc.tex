@@ -177,7 +177,7 @@ def union_elementos_listas_eficiente(lista1, lista2):
 \begin{problemS} \textbf{Modelando secuencias de ADN}
 Modela una clase llamada \texttt{ADN} que almacene y manipule secuencias de ADN. La clase ADN debe tener un atributo para almacenar la secuencia de nucleótidos (una cadena de caracteres compuesta por las letras A, T, G y C). Debe tener un método para contar la cantidad de cada tipo de nucleótido en la secuencia y otro que permita obtener la secuencia complementaria de ADN (A se empareja con T, C con G). Finalmente, debe tener un método que calcule la proporción de guanina y citosina (CG content).
 \begin{lstlisting}
-class ADN:
+class DNA:
     def __init__(self, seq):
         self.sequence = seq
     
@@ -198,7 +198,7 @@ class ADN:
             else:
                 print("Nucleotide not valid.")
                 break
-        return f'The sequence has the following nucleotides: \n {count_A} A \n {count_T} T \n {count_G} G \n {count_C} C'
+        return count_A, count_T, count_G, count_C
         
     def complementary_strand(self):
         complementary_strand = ''
@@ -218,11 +218,8 @@ class ADN:
     
     def cg_content(self):
         sequence_length = len(self.sequence)
-        cg_count = 0
-        for nucleotide in self.sequence:
-            if nucleotide == 'C' or nucleotide == 'G':
-                cg_count += 1
-        return cg_count / sequence_length * 100
+        _, _, g_count, c_count = self.nucleotide_count
+        return (g_count + c_count) / sequence_length * 100
 \end{lstlisting}
 \end{problemS}
 
@@ -230,7 +227,7 @@ class ADN:
 Expande la clase ADN del ejercicio anterior para que tenga un método que simule una mutación en una secuencia de ADN. Este método, dado un nucleótido y una posición, debe cambiar el nucleótido en esa posición.  Primero se debe validar que la posición es válida. También se debe agregar un método que simule una mutación aleatoria en una posición aleatoria.
 \begin{lstlisting}
 import random
-class ADN:
+class DNA:
     def __init__(self, seq):
         self.sequence = seq.upper()
 
@@ -253,7 +250,7 @@ class ADN:
             else:
                 print("Nucleotide not valid.")
                 break
-        return f'The sequence has the following nucleotides: \n {count_A} A \n {count_T} T \n {count_G} G \n {count_C} C'
+        return count_A, count_T, count_G, count_C
 
     def complementary_strand(self):
         complementary_strand = ''
@@ -273,11 +270,8 @@ class ADN:
 
     def cg_content(self):
         sequence_length = len(self.sequence)
-        cg_count = 0
-        for nucleotide in self.sequence:
-            if nucleotide == 'C' or nucleotide == 'G':
-                cg_count += 1
-        return cg_count / sequence_length * 100
+        _, _, g_count, c_count = self.nucleotide_count
+        return (g_count + c_count) / sequence_length * 100
 
     def mutate(self, nucleotide, position):
         if position <= len(self.sequence):
@@ -291,9 +285,36 @@ class ADN:
         nucleotides = ['A', 'T', 'G', 'C']
         random_nucleotide = random.choice(nucleotides)
         random_position = random.choice(list(range(0, len(self.sequence))))
-        sequence_list = list(self.sequence)
-        sequence_list[random_position] = random_nucleotide
-        self.sequence = ''.join(sequence_list)
+        self.mutate(random_nucleotide, random_position)       
+\end{lstlisting}
+\end{problemS}
+
+\begin{problemS} \textbf{Modelando proteínas}
+Modela una clase \texttt{Proteina} que almacene y manipule una secuencia de aminoácidos. Debe tener un atributo para almacenar la secuencia de aminoácidos (una cadena de letras que representan los aminoácidos: A, R, N, D, C, etc.). Implementa un método que devuelva la masa molecular aproximada de la proteína, utilizando un diccionario de masas de aminoácidos. Añade un método que permita determinar si la proteína contiene un motivo (una subcadena de aminoácidos de interés).
+\begin{lstlisting}
+class Protein:
+
+    molecular_weights = {'A':89.1, 'R':174.2, 'N':132.1, 'D':133.1, 'C':121.2, 'E':147.1, 'Q':146.2, 'G':75.1, 'H':155.2, 'I':131.2, 'L':131.2, 'K':146.2, 'M':149.2, 'F':165.2, 'P':115.1, 'S':105.1, 'T':119.1, 'W':204.2, 'Y':181.2, 'V':117.1}
+
+    def __init__(self, aa_seq):
+        self.aminoacids = aa_seq.upper()
+
+    def protein_weight(self):
+        weight = 0
+        for aminoacid in self.aminoacids:
+            weight += Protein.molecular_weights[aminoacid]
+        return weight
+
+    def find_motif(self, motif):
+        return motif in self.aminoacids
+\end{lstlisting}
+\end{problemS}
+
+\begin{problemS} \textbf{Simulación de una célula con ADN y proteínas}
+Crea un sistema de clases que simule el funcionamiento básico de una célula. La célula debe contener ADN, proteínas y tener la capacidad de producir proteínas a partir del ADN.  Se debe crear una clase \texttt{Cell} que contenga los objetos de las clases \texttt{DNA} y \texttt{Protein}. Esta nueva clase debe tener un método que permita transcribir una secuencia de ADN en ARN utilizando la clase ADN. La célula debe tener la capacidad de traducir ARN en proteínas, utilizando el código genético de los ejercicios anteriores, y almacenarlas. Implementa un método para mostrar todas las proteínas que la célula ha sintetizado. Agrega un método que permita realizar una mutación en el ADN y ver cómo afecta a las proteínas resultantes.
+\begin{lstlisting}
+class Cell:
+	
 \end{lstlisting}
 \end{problemS}
 
