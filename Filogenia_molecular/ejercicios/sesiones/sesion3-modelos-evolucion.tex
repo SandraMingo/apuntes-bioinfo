@@ -1,0 +1,31 @@
+\section{Modelos de evolución}
+El objetivo de esta práctica está en seleccionar el mejor modelo de sustitución para distintos tipos de datos: nucleótidos y aminoácidos. Para seleccionar el \textbf{mejor modelo de sustitución de nucleótidos} desde el servidor de IQ-Tree se deben realizar los siguientes pasos:
+\begin{enumerate}
+\item Ve al \href{http://iqtree.cibiv.univie.ac.at/}{servidor de la web de IQ-Tree}.
+\item Cambia a la pestaña de Selección de Modelos.
+\item Carga el fichero del alineamiento de nucleótidos.
+\item Selecciona el tipo de secuencia (en este caso ADN) o déjalo como detección automática.
+\item Cambia los criterios de selección a AIC para este ejercicio.
+\item No cambies ninguna otra opción.
+\item Opcional: deja un correo electrónico para poder obtener los resultados directamente.
+\item Pulsa a submit job.
+\item Una vez terminado, comprueba los resultados en la ventada de Full Results. Descarga los resultados y examina los distintos archivos en editores de texto plano.
+\end{enumerate}
+
+Para seleccionar el \textbf{mejor modelo de sustitución de aminoácidos} desde el servidor de IQ-Tree se deben realizar los siguientes pasos:
+\begin{enumerate}
+\item Ve al \href{http://iqtree.cibiv.univie.ac.at/}{servidor de la web de IQ-Tree}.
+\item Cambia a la pestaña de Selección de Modelos.
+\item Carga el fichero del alineamiento de nucleótidos.
+\item Selecciona el tipo de secuencia DNA -> AA, carga el alineamiento de aminoácidos y selecciona Protein o déjalo como detección automática.
+\item Elige el código genético apropiado (en este caso, estándar o universal).
+\item Cambia los criterios de selección a AIC para este ejercicio.
+\item No cambies ninguna otra opción.
+\item Opcional: deja un correo electrónico para poder obtener los resultados directamente.
+\item Pulsa a submit job.
+\item Una vez terminado, comprueba los resultados en la ventada de Full Results. Descarga los resultados y examina los distintos archivos en editores de texto plano.
+\end{enumerate}
+
+Si sabemos que nuestros datos son ADN o aminoácidos, es mejor indicar en IQ-Tree el tipo de secuencia que no dejar que lo detecte de forma automática. Esto se debe a que las letras de los nucleótidos también se utilizan en los aminoácidos, y a la hora de analizar SNPs puede detectar algo erróneo. 
+
+El documento descargado .iqtree muestra lo mismo que lo que se vería en la pestaña de Full Result. Los modelos aparecen por orden descendente de ajuste (el primero que aparece es el que mejor se ajusta, que suele ser el más complejo; el último es el que menos se ajusta, y suele ser el más sencillo). También muestra los parámetros de tasas de sustitución y frecuencia
