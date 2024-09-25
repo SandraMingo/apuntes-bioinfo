@@ -192,3 +192,92 @@ Para cambiar la estructura de una base de datos ya creada, se podría borrar y v
 ALTER TABLE nombre-tabla ADD CHECK (condición);
 ALTER TABLE nombre-tabla ALTER COLUMN nombre-columna SET NOT NULL;
 \end{lstlisting}
+
+%24/09 - Ruth
+\subsection{Queries básicas en SQL}
+A la hora de ver el contenido de una base de datos, en pgAdmin podemos seleccionar Schemes > Tables > click derecho en una tabla y View/Edit Data. Una vez ahí, se puede seleccionar todas las filas o solo las primeras 100. Esto es lo mismo que poner:
+\begin{lstlisting}[language=SQL]
+SELECT * FROM tabla --para seleccionar solo unas columnas, sustituir el asterisco por el nombre de las columnas
+ORDER BY tabla_id ASC LIMIT 100; --DESC si se quiere descendiente
+\end{lstlisting}
+Para seleccionar unos datos concretos, se pueden escribir las condiciones con where. No es necesario que la columna por la que se filtre sea seleccionada. Se puede emplear en la condición el igual (=), mayor (>), menor (<) y diferente (<>):
+\begin{lstlisting}[language=SQL]
+SELECT title 
+FROM movie 
+WHERE year = 1977;
+\end{lstlisting}
+A la hora de querer buscar las entradas de forma alfanumérica, no se puede utilizar el igual a no ser que se escriba exactamente igual a la entrada. Para poder buscar los datos que se parezcan a una entrada que se escribe, se utiliza LIKE con los wildcards. El porcentaje indica cualquier número de caracteres, mientras que el guion bajo solo representa un carácter.
+\begin{lstlisting}[language=SQL]
+SELECT title 
+FROM movie 
+WHERE title LIKE '(S|s)tar%; -- obtendremos así Star Wars y Star Trek junto con películas que empiecen por star (en minúscula).
+\end{lstlisting}
+Para hacer comparaciones, pero eliminando algunas opciones, existe la opción NOT SIMILAR TO. 
+
+El parámetro DISTINCT obtiene los datos únicos o diferentes, es decir, no repite datos repetidos. También se pueden utilizar alias, renombrando columnas para las queries mediante AS. Es importante que el filtro (where) utilice el nombre original, ya que el alias se aplicará al final: 
+\begin{lstlisting}[language=SQL]
+SELECT title AS titulo, year AS agno, score AS puntuacion
+FROM movie
+WHERE score > 9.0;
+\end{lstlisting}
+
+Para poder obtener datos de dos tablas (por ejemplo, todos los actores que han participado en una serie concreta), se necesita hacer un producto cartesiano. Esto se hace mediante los IDs de los actores y de las películas. Así, se puede realizar un filtro donde los IDs coincidan o realizar un NATURAL JOIN. Para eso último, las columnas se deben llamar igual en las dos relaciones.
+\begin{lstlisting}[language=SQL]
+-- Opción 1
+SELECT name
+FROM actor, casting
+WHERE movie_id = 2 AND actor.actor_id = casting.actor_id;
+-- Opción 2
+SELECT name
+FROM actor NATURAL JOIN casting --o NATURAL INNER JOIN para eliminar los datos nulos
+WHERE movie_id = 2;
+\end{lstlisting}
+
+\subsection{Subqueries}
+Las queries se pueden combinar con UNION, INTERSECT y EXCEPT. Las dos queries se escriben entre paréntesis. También es posible escribir una subquery dentro de una query para obtener mediante los operadores IN, EXISTS, ALL, ANY y BETWEEN.
+\begin{lstlisting}[language=SQL]
+SELECT title, name
+FROM movie NATURAL JOIN casting NATURAL JOIN actor
+WHERE ord = 1
+AND movie_id IN (SELECT movie_id FROM casting NATURAL JOIN actor WHERE name = 'Julie Andrews')
+\end{lstlisting}
+
+Hay algunos casos en los que, si se realiza una subquery, pero en el resultado se quiere obtener algo de la subquery, se forma un bucle y la máquina tarda en procesarlo. Esto se debería evitar. 
+
+Las vistas guardan la salida de una query de forma temporal. Posteriormente se puede utilizar como si fuese otra tabla más. La sintaxis para crear una es:
+\begin{lstlisting}[language=SQL]
+CREATE VIEW ranking AS
+SELECT actor_id, COUNT(*) AS stars
+FROM casting
+WHERE ord = 1
+GROUP BY actor_id;
+
+SELECT name, stars
+FROM actor NATURAL JOIN ranking
+WHERE stars > 10
+ORDER BY stars; 
+\end{lstlisting}
+
+\subsection{Funciones de agregación}
+Una función de agregación se basa en la álgebra relacional, y puede utilizar los operadores SUM, AVG, MIN, MAX y COUNT. Estas funciones tienen sentido cuando se hacen agrupaciones mediante GROUP BY. En el SELECT, sólo se pueden encontrar agregaciones y atributos que posteriormente se encuentran en GROUP BY. Todo lo que está en el GROUP BY debe estar en el SELECT.
+
+El parámetro HAVING permite seleccionar subgrupos. Es importante no utilizar el alias en el HAVING porque es lo último que realiza el gestor.
+\begin{lstlisting}[language=SQL]
+SELECT x, SUM(y) AS suma
+FROM table
+GROUP BY x
+HAVING SUM(y) > 3;
+\end{lstlisting}
+
+\subsection{Procesamiento de queries}
+Las queries se procesan en el siguiente orden:
+\begin{enumerate}
+\item FROM
+\item WHERE
+\item GROUP BY
+\item HAVING
+\item SELECT + alias
+\item ORDER BY
+\end{enumerate}
+
+Típica query que cae todos los años: obtener la película con mayor score de cada año. Corregir un comando donde en Having se ha puesto un alias (no se debe poner). Pregunta si en el order by se puede utilizar alias.
