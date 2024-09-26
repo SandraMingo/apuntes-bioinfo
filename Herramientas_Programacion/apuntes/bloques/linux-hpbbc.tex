@@ -153,7 +153,7 @@ Para matar un proceso de forma eficiente, se puede usar el comando \texttt{kill 
 
 \item \textbf{diff}: compara el contenido de dos ficheros y muestra las diferencias entre ambos.
 
-\item \textbf{find}: busca en los directorios ficheros y directorios con un cierto nombre, fecha, tamaño u otro atributo que se quiera especificar. Por ejemplo, para buscar todos los archivos en el directorio actual que sean de texto plano, se puede poner \texttt{find . -name "*.txt" -print}. Para buscar únicamente directorios, se debe poner \texttt{-type d} y para buscar únicamente ficheros \texttt{-type e}.
+\item \textbf{find}: busca en los directorios ficheros y directorios con un cierto nombre, fecha, tamaño u otro atributo que se quiera especificar. Es similar al comando \texttt{ls}, pero es más potente al buscar en todo el árbol de directorios empezando por el directorio en el que se encuentra y tener muchos filtros. Por ejemplo, para buscar todos los archivos en el directorio actual que sean de texto plano, se puede poner \texttt{find . -name "*.txt" -print}. Para buscar únicamente directorios, se debe poner \texttt{-type d} y para buscar únicamente ficheros \texttt{-type e}. También se puede filtrar por profundidad, es decir, en cuántas carpetas cuelgan los ficheros mediante \texttt{maxdepth}. Para quedarse en el directorio actual, debe ser \texttt{maxdepth 1}, y para incluir una carpeta en profundidad, \texttt{maxdepth 2}. Este parámetro se debe poner después del directorio donde empezar a buscar y antes de los demás filtros: \texttt{find . -maxdepth 1 -name "*.txt"}. 
 
 \item \textbf{xargs}: se utiliza usualmente para combinar comandos.
 
@@ -169,7 +169,7 @@ Para matar un proceso de forma eficiente, se puede usar el comando \texttt{kill 
 %05/09
 %unit7.html
 \section{Variables}
-En bash, las únicas variables que se puede crear son con \textbf{cadenas de caracteres} (\texttt{x=ejemplo}). Si se pone un número, el intérprete interpreta el número como un caracter ("3" en Python). Aunque las comillas no sean necesarias, sí son recomendables (sí son obligatorias cuando hay espacios en blanco entre caracteres). Es importante \textbf{no dejar espacios} entre la variable, el igual y la cadena, ya que se interpretaría el nombre de la variable como un comando y puede dar un error. Para acceder al valor de la variable, se debe poner con un símbolo de dólar antes del nombre: \texttt{echo \$x}. Si la variable que se accede no existe, la salida estará en blanco. Las variables que creamos se borran al apagar el ordenador. Para prevenir esto, se pueden guardar las variables en el fichero de configuración .bashrc.
+En bash, las únicas variables que se puede crear son con \textbf{cadenas de caracteres} (\texttt{x=ejemplo}). Si se pone un número, el intérprete interpreta el número como un caracter ("3" en Python). Aunque las comillas no sean necesarias, sí son recomendables (sí son obligatorias cuando hay espacios en blanco entre caracteres), y se recomienda poner las comillas dobles en lugar de las simples. Es importante \textbf{no dejar espacios} entre la variable, el igual y la cadena, ya que se interpretaría el nombre de la variable como un comando y puede dar un error. Para acceder al valor de la variable, se debe poner con un símbolo de dólar antes del nombre: \texttt{echo \$x}. Si la variable que se accede no existe, la salida estará en blanco. Las variables que creamos se borran al apagar el ordenador. Para prevenir esto, se pueden guardar las variables en el fichero de configuración .bashrc.
 
 El sistema crea automáticamente algunas variables denominadas \textbf{variables de ambiente} cada vez que se enciende el ordenador. Esto es importante saberlo para no cambiar el valor de estas variables. Ejemplos son: \begin{itemize}
 \item HOME: path completo del usuario hasta la carpeta personal o home directory.
@@ -189,13 +189,13 @@ Se puede crear una variable con el contenido de otras variables. Teniendo \textt
 Para eliminar variables, se usa el comando \texttt{unset nombre-variable}. \marginpar[\footnotesize unset] \ 
 
 \section{Scripts}
-Los scripts son ficheros ejecutables de código. La extensión de estos ficheros depende del lenguaje de programación: en el caso de Python, los scripts tienen la extensión .py, y en el caso de bash, la extensión .sh. Para que un fichero se pueda ejecutar, se deben tener los permisos de ejecución. Además, la primera línea del código debe contener el directorio del intérprete que se debe utilizar. Tradicionalmente, los intérpretes se encuentran en /usr/bin o en /bin. Por ejemplo, la primera línea de un script de Python debe ser \texttt{\#!/usr/bin/python3} y de Bash \texttt{\#!/bin/bash}. Una vez hecho esto, desde la propia terminal se puede ejecutar el script.
+Los scripts son ficheros ejecutables de código. La extensión de estos ficheros depende del lenguaje de programación: en el caso de Python, los scripts tienen la extensión .py, y en el caso de bash, la extensión .sh. Para que un fichero se pueda ejecutar, se deben tener los \textbf{permisos de ejecución}. Además, la primera línea del código debe contener el directorio del intérprete que se debe utilizar. Tradicionalmente, los intérpretes se encuentran en /usr/bin o en /bin. Por ejemplo, la primera línea de un script de Python debe ser \texttt{\#!/usr/bin/python3} y de Bash \texttt{\#!/bin/bash}. Una vez hecho esto, desde la propia terminal se puede ejecutar el script poniendo simplemente el nombre del script.
 
 \subsection{Variables especiales en scripts}
-Es posible pasar argumentos a un script para personalizar la salida. Para asignar algo indeterminado a una variable, se emplea \texttt{\$1 - \$9}, de forma que al ejecutar el script, se deban poner los argumentos que pasará a reemplazar los huecos en ese orden. Es buena práctica que en el script los argumentos pasados por teclado se guarden en variables con nombres que tengan sentido y luego sean esas variables las que se empleen en el resto del código. De esa forma, el código queda más claro visualmente y es más fácil de modificar sin equivocaciones.
+Es posible pasar argumentos a un script para personalizar la salida. Para asignar algo indeterminado a una variable, se emplea \texttt{\$1 - \$9}, de forma que al ejecutar el script, se deban poner los argumentos que pasará a reemplazar los huecos en ese orden. Es buena práctica que en el script los argumentos pasados por teclado se guarden en variables con nombres que tengan sentido y luego sean esas variables las que se empleen en el resto del código. De esa forma, el código queda más claro visualmente y es más fácil de modificar sin equivocaciones. Aunque quizás sea menos eficiente que utilizar el argumento donde toque en el código, así se facilita el mantenimiento del script. Por ello, nos deberíamos acostumbrar a dividir el script en tres partes: el intérprete, la declaración de variables y el código a ejecutar. Siempre que se pidan unos parámetros, se debe comprobar mediante precondiciones que se proporcionen todos los parámetros necesarios. 
 
 Otras variables especiales son: \begin{itemize}
-\item \$0: el nombre del script de bash.
+\item \$0: el nombre del script de bash en el que se encuentra.
 \item \$\#: la cantidad de argumentos que se han pasado al script.
 \item \$@: todos los argumentos que se han pasado al script.
 \item \$\$: el PID del script actual.
@@ -205,22 +205,26 @@ Otras variables especiales son: \begin{itemize}
 \item LINENO: devuelve el número de la línea actual en el script de bash.
 \end{itemize}
 
-%06/09 estudio propio
+%06/09 estudio propio + 26/09 Eduardo Serrano
 %unix8.html
 \section{Branching}
 Las sentencias condicionales if y case ayudan a tomar decisiones en los scripts de bash. Permiten decidir si ejecutar ciertos fragmentos de código en base a ciertas condiciones.
 
 \subsection{Expresiones condicionales}
 Una expresión condicional básica hace que, si una condición es verdadera, se ejecute el siguiente código. Si la condición resulta ser falsa, entonces esas acciones no se desarrollan.
-\begin{lstlisting}
+\begin{lstlisting}[language = bash]
 if [ condición ]
 then
-	código a ejecutar
+	código a ejecutar; no debe estar indentado, pero es recomendable por semejanza a Python
+fi
+#Alternativa:
+if [ condición ] ; then #el punto y coma implica salto de línea
+	código
 fi
 \end{lstlisting}
 
-Los posibles operadores que se pueden utilizar en la condición son: \begin{itemize}
-\item\texttt{ ! expresión}: la expresión es falsa
+Los posibles operadores que se pueden utilizar en la condición son muy limitados: \begin{itemize}
+\item\texttt{ ! expresión}: la expresión es falsa; se invierte la condición.
 \item \texttt{-z string}: la longitud de string es 0, es decir, está vacía. 
 \item \texttt{string1 = string2}: string1 es igual que string2.
 \item \texttt{string1 != string2}: string1 no es igual que string2.
@@ -237,17 +241,15 @@ Los posibles operadores que se pueden utilizar en la condición son: \begin{item
 \item \texttt{fichero1 -ot fichero2}: es True si fichero1 es más antiguo que fichero2.
 \end{itemize} 
 
-Es posible conectar varias condiciones mediante el uso de \texttt{and} y \texttt{or}. Para ello, la forma preferida es combinar condiciones individuales con los operadores \&\& para and y || para or.
-\begin{lstlisting}
+Es posible conectar varias condiciones mediante el uso de \texttt{and} y \texttt{or}. Para ello, la forma preferida es combinar condiciones individuales con los operadores \&\& para and y || para or. Otra opción sería escribir los operadores en la propia condición con \texttt{-a} para and y \texttt{-o} para or. 
+\begin{lstlisting}[language = bash]
 if [ condición 1 ] && [ condición 2 ]; then
 	código a ejecutar
 fi
 \end{lstlisting}
 
-Otra opción sería escribir los operadores en la propia condición con \texttt{-a} para and y \texttt{-o} para or. Para invertir la condición (buscar que algo no sea x), se utiliza ! antes de la condición.
-
 Las expresiones condicionales pueden requerir ciertas acciones si una condición es verdadera, y otras si es falsa. Para ello, se emplea \texttt{else}:
-\begin{lstlisting}
+\begin{lstlisting}[language = bash]
 if [ condición ] ; then
 	código a ejecutar si la condición es verdadera
 else
@@ -256,7 +258,7 @@ fi
 \end{lstlisting}
 
 En algunas ocasiones puede haber distintas condiciones que deriven en distintas acciones.
-\begin{lstlisting}
+\begin{lstlisting}[language = bash]
 if [ condición ]
 then
 	código a ejecutar
@@ -271,10 +273,9 @@ fi
 \subsection{Bucles}
 Los bucles permiten repetir una serie de comandos hasta que se llega a un objetivo. Son útiles para ahorrar en código redundante y automatizar tareas repetitivas. 
 \subsubsection{For loops}
-Los bucles for toman cada elemento de una lista en orden, lo asignan a una variable y se ejecuta el comando hasta que se acaben los objetos de la lista.
-\begin{lstlisting}
-for variable in lista
-do
+Los bucles for toman cada elemento de una lista en orden, lo asignan a una variable y se ejecuta el comando hasta que se acaben los objetos de la lista. En Bash, una lista podría ser una salida que tenga separaciones mediante blancos.
+\begin{lstlisting}[language = bash]
+for variable in lista ; do
 	código a repetir
 done
 \end{lstlisting}
@@ -283,7 +284,7 @@ También es posible procesar una serie de números, pero para ello deben estar e
 
 \subsubsection{While loops}
 Los bucles while permiten repetir una lista de comandos mientras que la condición sea cierta y se detiene cuando la condición pasa a ser falsa:
-\begin{lstlisting}
+\begin{lstlisting}[language = bash]
 while [ condición ]
 do
 	código a repetir
@@ -292,9 +293,54 @@ done
 
 \subsubsection{Until loops}
 El bucle until es similar al while, pero repite la lista de comandos hasta que la condición sea cierta, es decir, mientras sea falsa y se detiene cuando se hace verdadera.
-\begin{lstlisting}
+\begin{lstlisting}[language = bash]
 until [ condición ]
 do
 	código a repetir
 done
+\end{lstlisting}
+
+\section{Ejercicio: Copia de seguridad}
+Crea un script de Bash que busque y copie en un directorio backup unos ficheros que se pasen al script.
+
+\begin{lstlisting}[language = bash]
+#! /usr/bin/bash
+#Buscar y copiar en directorio backup unos ficheros
+
+FILEIN=$1
+INDIR="."
+OUTDIR="./backup"
+
+if [ $# -eq "1" ]; then
+	
+	#Crear directorio de salida si no existe
+	if ! [ -e $OUTDIR ]; then
+		mkdir $OUTDIR
+	fi
+	
+	if ! [ -r $FILEIN ]; then
+		echo "El fichero de entrada no tiene permisos de lectura"
+	fi
+	
+	#Leer fichero y guardar en lista su contenido
+	LISTA=$( cat $FILEIN )
+	
+	#Procesar lista: buscar fichero y copiar
+	for file in $LISTA; do
+		FILEPATH=$( find $INDIR -name $file )
+		
+		if [ -r $FILEPATH ]; then
+			if [ -e $OUTDIR/$file ]; then
+				rm $OUTDIR/$file
+			fi
+			cp $FILEPATH $OUTDIR/$file
+		elif [ -z $FILEPATH ]; then
+			echo "El fichero $file no existe"
+		else
+			echo "El fichero $file no tiene permisos de lectura"
+		fi
+	done
+else
+	echo "Falta un parámetro"
+fi
 \end{lstlisting}
