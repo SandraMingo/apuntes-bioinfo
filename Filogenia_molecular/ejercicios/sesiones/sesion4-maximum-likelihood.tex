@@ -1,0 +1,16 @@
+%30/09
+\section{Máxima verosimilitud}
+El objetivo de esta práctica es reconstruir la relación filogenética del virus HRSV-A utilizando la máxima verosimilitud y el best-fit model de la sustitución de nucleótidos. Para ello, seguimos los siguientes pasos:
+\begin{enumerate}
+\item Ir al \href{http://iqtree.cibiv.univie.ac.at/}{servidor de IQ-Tree} y quedarse en la pestaña de Tree Inference.
+\item Cargar el fichero de alineamiento de secuencia nucleotídica.
+\item Seleccionar el tipo de secuencia (DNA) o dejarlo como Auto-detect.
+\item Poner el modelo de sustitución en "Auto".
+\item Vamos a mostrar el soporte de las ramas con bootstrap. Se elige el método ultrafast con 1000 pseudo-réplicas para este ejercicio.
+\item Dejar las demás opciones sin modificar (esto también va a ejecutar un test de ramas SH-aLRT con 1000 réplicas).
+\item Opcional: poner correo electrónico para la notificación de cuando se termine el trabajo.
+\item Comprobar el resultado en la pestaña de Full Results. Descargar los resultados y examinar los distintos ficheros con un editor de texto plano.  
+\end{enumerate}
+A continuación, visualizaremos el árbol con FigTree. El árbol de consenso (sufijo «contree») tiene soporte boostrap ultrarrápido sólo para cada rama. El archivo del árbol principal (sufijo «treefile») tiene \textbf{soporte SH-aLRT y boostrap ultrarrápido para cada rama (valores separados por «/»)}. Una vez abierto, va a abrirse una ventana pidiendo un nombre específico para las anotaciones que el árbol ha asociado con cada nodo. En este caso, esos valores serán valores de soporte, así que pondremos un nombre similar (por ejemplo, support). A partir de entonces podemos explorar las distintas opciones de enraizado, de display y de ramas/nodos. 
+
+El valor de soporte es más correcto ponerlo en la rama, pero también se puede poner en el nodo. El árbol se puede ordenar de forma ascendente o descendiente. Una vez terminado de editar, se puede descargar en File > Export PDF/SVG/PNG.
