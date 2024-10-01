@@ -281,3 +281,141 @@ Las queries se procesan en el siguiente orden:
 \end{enumerate}
 
 Típica query que cae todos los años: obtener la película con mayor score de cada año. Corregir un comando donde en Having se ha puesto un alias (no se debe poner). Pregunta si en el order by se puede utilizar alias.
+
+%01/10 - Ruth
+\subsection{Procedimientos o funciones almacenadas}
+PL/pgSQL es la extensión procedural de SQL. Sólo sirve para PostgreSQL (para otros programas se emplea otra extensión; en Oracle es PL/SQL). Por defecto, esta opción está deshabilitada, y hay que autorizarlo mediante:
+\begin{lstlisting}[language=SQL]
+createdb mydatab
+createlang plpgsql mydatab
+\end{lstlisting}
+
+La sintaxis general es la siguiente:
+\begin{lstlisting}[language=SQL]
+CREATE FUNCTION function_name (arguments)
+RETURNS type AS '
+	DECLARE
+		declaration ; -- variables
+		[...]
+	BEGIN
+		statement; --comandos
+		[...]
+	END;
+' LANGUAGE 'plpgsql';
+\end{lstlisting}
+
+El siguiente código es un ejemplo sin parámetros que devuelve 100:
+\begin{lstlisting}[language=SQL]
+CREATE OR REPLACE FUNCTION one_function ()
+RETURNS int4 AS '
+	DECLARE
+		an_integer int4;
+	BEGIN
+		an_integer := 10 * 10;
+	RETURN an_integer;
+	END;
+' LANGUAGE 'plpgsql';
+\end{lstlisting}
+
+Se permiten aportar hasta 16 variables a una función. Dentro del bloque de declaración, se emplean \$1, \$2 y así sucesivamente para acceder a los argumentos. Para ejecutar la función, se realiza con \texttt{SELECT one\_function();}. Esto se debe hacer tanto con funciones que creemos nosotros como funciones del sistema (por ejemplo, \texttt{LENGTH}). Entre los tipos de datos, se encuentran los del SQL normal, pero otros especiales para los que no es necesario conocer el tipo de las variables:
+\begin{itemize}
+\item Para un campo: mitabla.field\%TYPE;
+\item Para una tupla: mitabla\%ROWTYPE;
+\item Para algo indefinido: record;
+\end{itemize}
+
+\begin{lstlisting}[language=SQL]
+CREATE OR REPLACE FUNCTION get_title (movieid integer)
+RETURNS text AS '
+	DECLARE
+		eachmovie movie%ROWTYPE;
+	BEGIN
+		SELECT INTO eachmovie * FROM movie WHERE movie_id = movieid;
+	RETURN eachmovie.title || '' ('' || eachmovie.year || '')'';
+	END;
+' LANGUAGE 'plpgsql';
+\end{lstlisting}
+
+Los dos pipes || sirven para concatenar. Se deben utilizar dos comillas simples porque con una simple se cerraría toda la creación de la función. Otra opción sería utilizar doble dólar en lugar de una comilla simple para poder luego utilizar comillas simples en el código. Este código sólo sirve para una sola tupla, es decir, para una sola película. En caso de querer obtener más, habría que realizar un loop. 
+\begin{lstlisting}[language=SQL]
+CREATE OR REPLACE FUNCTION filcasting(actorname text, movietitle text, ord int) RETURNS int AS $$
+DECLARE
+	_actor_id actor.actor_id%TYPE;
+	_movie_id movie.movie_id%TYPE;
+BEGIN
+	SELECT INTO _actor_id actor_id FROM actor WHERE name = actorname;
+	IF NOT FOUND THEN
+		RAISE EXCEPTION 'Actor %s not found ', actorname ;
+	END IF;
+	SELECT INTO _movie_id movie_id FROM movie WHERE title = movietitle;
+	IF NOT FOUND THEN
+		RAISE EXCEPTION 'Movie % not found ', movietitle ;
+	END IF;
+	INSERT INTO casting VALUES (_movie_id,_actor_id,ord);
+	RETURN _actor_id;
+END;
+$$ LANGUAGE 'plpgsql';
+\end{lstlisting}
+
+Las estructuras de control en SQL tienen la siguiente estructura:
+\begin{lstlisting}[language=SQL]
+-- Condicionales
+IF ... THEN ...;
+ELIF ... ;
+ELSE ... ;
+END IF;
+
+--Bucles
+WHILE ... LOOP ...;
+END LOOP;
+
+FOR ... IN ... LOOP ...;
+END LOOP;
+\end{lstlisting}
+
+\subsection{Triggers}
+Un trigger es una sentencia que se ejecuta automáticamente por el sistema dada una condición. Los eventos de trigger pueden ser insert, delete o update. 
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/trigger.png}
+\caption{Trigger layout.}
+\end{figure}
+
+Los triggers son procedimientos que devuelven un trigger:
+\begin{lstlisting}[language=SQL]
+CREATE TABLE producto (id int PRIMARY KEY, vendido timestamp);
+
+CREATE FUNCTION modificacion() RETURNS TRIGGER AS $$
+BEGIN
+NEW.vendido := now();
+RETURN NEW; END; $$LANGUAGE 'plpgsql';
+
+CREATE TRIGGER t_modificacion BEFORE INSERT ON producto 
+FOR EACH ROW EXECUTE PROCEDURE modificacion();
+
+CREATE TRIGGER t_modificacion2 AFTER INSERT ON producto 
+FOR EACH ROW EXECUTE PROCEDURE modificacion();
+\end{lstlisting}
+La diferencia entre crear un trigger con BEFORE INSERT y con AFTER INSERT es sustancial. En el caso del AFTER, no se insertaría el dato (el insert se ha hecho antes), pero se podría aprovechar para cambiar el dato de otra tabla. En resumen, cuando se quiere modificar algo de la propia tabla, se debe utilizar BEFORE, mientras que si se quiere modificar algo de otra tabla, AFTER. 
+
+Cuando se ejecuta un trigger, hay dos espacios de memoria: OLD y NEW. OLD sirve para delete y update, mientras que NEW para insert y update. Update tiene dos espacios de memoria porque OLD guarda el dato antes de actualizarse y NEW el dato después de actualizarse. Ambos son versátiles, es decir, de tipo record (pueden contener cualquier tipo de valor).
+
+\textbf{Preguntas de examen}: Explicar el siguiente código:
+\begin{lstlisting}[language = SQL]
+CREATE TABLE producto2( id int PRIMARY KEY, vendido timestamp, otro int);
+
+CREATE FUNCTION modificacion4() RETURNS TRIGGER AS $$
+BEGIN
+RAISE NOTICE ' VALOR OLD: % ', OLD.otro;
+RAISE NOTICE ' VALOR NEW: % ', NEW.otro;
+NEW.otro := 10;
+NEW.vendido:= now();
+RETURN NEW; END;$$LANGUAGE 'plpgsql';
+
+CREATE TRIGGER t_modificacion4 BEFORE UPDATE ON producto2 --lo mismo con AFTER UPDATE
+FOR EACH ROW EXECUTE PROCEDURE modificacion4();
+
+INSERT into producto2 VALUES (5);
+UPDATE producto2 SET otro=3 WHERE id=5;
+SELECT * FROM producto2;
+\end{lstlisting}
