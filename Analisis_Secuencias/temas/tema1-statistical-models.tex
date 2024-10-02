@@ -82,11 +82,108 @@ Por ejemplo, para calcular la probabilidad de encontrar la secuencia RCGTG utili
 = 0,002279 
 \end{align*}
  
-\textbf{Problema práctico:}
-Un desafío interesante sería escribir un programa que identifique islas CpG en un fragmento del genoma humano. Los dinucleótidos CG tienden a perderse debido a la metilación de la citosina, que, al desaminarse, se convierte en timina en lugar de regresar a citosina. Sin embargo, en regiones del genoma que no se metilan, como las regiones transcripcionalmente activas, las secuencias CG permanecen intactas, formando las llamadas islas CpG. El objetivo del programa sería localizar el inicio y el final de una de estas islas en una secuencia genómica.
+\subsection{Ejercicios}
+\textit{\textbf{Ejercicio 1:} 
+Supongamos que el ADN humano puede dividirse en sólo dos tipos de regiones las ricas en C+G y el resto del ADN con una composición de bases no sesgada (no ricas en C+G). Suponiendo el modelo de independencia (la probabilidad de cada nucleótido en una posición dada es independiente de la identidad de los nucleótidos adyacentes) y que la secuencia es homogénea dentro de cada una de estas dos regiones, podemos representarlas mediante un modelo probabilístico multinomial. La región rica en G+C se define por los parámetros: pT=1/8, pC=3/8,pA=1/8 y pG=3/8. El resto del ADN por pT=pC=pA=pG=1/4. ¿Cuál es la probabilidad de observar la secuencia seg=CGACGCGCGCGTCG en una región rica en C+G? ¿Y en la no rica en G+C? Ahora bien, imaginemos que sólo el 1\% (¡me lo acabo de inventar!) del genoma es rico en C+G. Si tomamos un genoma de 14 pb al azar y resulta ser la secuencia CGACGCGCGCGTCG, ¿cuál sería la probabilidad de que proceda de una región rica en C+G?}
+\begin{itemize}
+\item Paso 1: Probabilidad de observar la secuencia en la región rica en C+G
+
+La probabilidad de observar una secuencia en una región rica en C+G, dada la independencia entre los nucleótidos, es el producto de las probabilidades de cada nucleótido en la secuencia. Las probabilidades en la región rica en C+G son las siguientes:
+
+\[
+p_T = \frac{1}{8}, \quad p_C = \frac{3}{8}, \quad p_A = \frac{1}{8}, \quad p_G = \frac{3}{8}
+\]
+
+Dada la secuencia \texttt{CGACGCGCGCGTCG}, la probabilidad de observarla en la región rica en C+G es:
+
+\[
+P(\text{CGACGCGCGCGTCG} \mid \text{C+G}) = p_C \cdot p_G \cdot p_A \cdot p_C \cdot p_G \cdot p_C \cdot p_G \cdot p_C \cdot p_G \cdot p_C \cdot p_G \cdot p_T \cdot p_C \cdot p_G
+\]
+
+Sustituyendo los valores de las probabilidades:
+
+\small
+\[
+P(\text{CGACGCGCGCGTCG} \mid \text{C+G}) = 
+\]
+
+\[
+\left( \frac{3}{8} \right) \cdot \left( \frac{3}{8} \right) \cdot \left( \frac{1}{8} \right) \cdot \left( \frac{3}{8} \right) \cdot \left( \frac{3}{8} \right) \cdot \left( \frac{3}{8} \right) \cdot \left( \frac{3}{8} \right) \cdot \left( \frac{3}{8} \right) \cdot \left( \frac{3}{8} \right) \cdot \left( \frac{3}{8} \right) \cdot \left( \frac{3}{8} \right) \cdot \left( \frac{1}{8} \right) \cdot \left( \frac{3}{8} \right) \cdot \left( \frac{3}{8} \right)
+\]
+
+\normalsize
+
+\item Paso 2: Probabilidad de observar la secuencia en la región no rica en C+G
+
+En la región no rica en C+G, las probabilidades de cada nucleótido son iguales:
+
+\[
+p_T = p_C = p_A = p_G = \frac{1}{4}
+\]
+
+Por lo tanto, la probabilidad de observar la secuencia \texttt{CGACGCGCGCGTCG} es:
+
+\[
+P(\text{CGACGCGCGCGTCG} \mid \text{no C+G}) = \left( \frac{1}{4} \right)^{14}
+\]
+
+\item Paso 3: Probabilidad de que la secuencia provenga de una región rica en C+G
+
+Utilizamos el teorema de Bayes para calcular la probabilidad de que la secuencia provenga de una región rica en C+G. La fórmula de Bayes es:
+
+\[
+P(\text{C+G} \mid \text{secuencia}) = \frac{P(\text{secuencia} \mid \text{C+G}) \cdot P(\text{C+G})}{P(\text{secuencia})}
+\]
+
+Donde:
+\begin{itemize}
+\item $ P(\text{secuencia} \mid \text{C+G}) $ es la probabilidad de observar la secuencia en una región rica en C+G (calculada en el Paso 1).
+\item $ P(\text{C+G}) = 0{.}01 $ es la proporción del genoma que es rico en C+G.
+\item $ P(\text{secuencia}) $ es la probabilidad total de observar la secuencia, que se calcula como:
+\end{itemize}
+
+\[
+P(\text{secuencia}) = P(\text{secuencia} \mid \text{C+G}) \cdot P(\text{C+G}) + P(\text{secuencia} \mid \text{no C+G}) \cdot P(\text{no C+G})
+\]
+
+Donde $ P(\text{no C+G}) = 1 - P(\text{C+G}) = 0{.}99 $
+
+Sustituyendo todos los valores, podemos obtener la probabilidad de que la secuencia provenga de una región rica en C+G.
+\end{itemize}
+
+\textit{\textbf{Ejercicio 2:} 
+Ha secuenciado un fragmento de la cadena + de un nuevo organismo. Nosotros suponemos que es un fragmento representativo y que la composición es homogénea en todo el genoma. Las frecuencias absolutas de bases en este fragmento de secuencia se indican en la tabla siguiente. Estima los siguientes parámetros de un modelo de cadena de Markov para esta secuencia. ¿Qué sería la probabilidad de transición de T a A (PTA) y la probabilidad de y la probabilidad de transición de A a A (PAA)? ¿Cuál sería la probabilidad PTA para el modelo de cadena de Markov de la cadena - de este dsADN? ¿Y la probabilidad de transición de transición PAA de la cadena -?}
+\begin{table}[htbp]
+    \centering
+    \begin{tabularx}{\textwidth}{ X | X X X X}
+          & To A & To C & To G & To T \\ \hline
+         From A & 15 & 23 & 25 & 11 \\
+         From C & 9 & 38 & 35 & 8 \\
+         From G & 26 & 21 & 18 & 24 \\
+         From T & 25 & 8 & 10 & 3 \\
+    \end{tabularx}
+\end{table}
+Teniendo en cuenta las siguientes probabilidades condicionales:
+$$P_{TA+} = \frac{25}{25 + 8 + 10 + 3}$$
+$$P_{AA+} = \frac{15}{15 + 23 + 25 + 11} $$
+
+En cuanto a la probabilidad de la cadena negativa, hay que tener en cuenta que las frecuencias están dadas en la cadena positiva. Por tanto, cuando se tiene en cuenta el cambio del segundo nucleótido de la pareja en la cadena negativa, el cambio en la cadena positiva se produce en el primero. \\
+
+\begin{table}[htbp]
+\centering
+5' -----------TA-----------3' \\
+3' -----------AT-----------5' \\
+\end{table}
+
+$$P_{TA-} = \frac{25}{25 + 15 + 26 + 9}$$
+
+\subsection{Problema práctico: islas CpG}
+Un desafío interesante sería escribir un programa que identifique islas CpG en un fragmento del genoma humano. Los dinucleótidos CG tienden a perderse debido a la metilación de la citosina, que, al desaminarse, se convierte en timina en lugar de regresar a citosina. Sin embargo, en regiones del genoma que no se metilan, como las regiones transcripcionalmente activas, las secuencias CG permanecen intactas, formando las llamadas islas CpG. El objetivo del programa sería localizar el inicio y el final de una de estas islas en una secuencia genómica. La isla CpG tiene una longitud de 1.000 bases, mientras que la región genómica tendrá aproximadamente unos 40.000 nucleótidos.
+
 \begin{figure}[htbp]
 \centering
 \includegraphics[width = 0.7\textwidth]{figs/cpg-islands.png}
 \caption{Explicación biológica gráfica de las islas CpG. }
 \end{figure}
- 
+
+Las islas CpG tienen una alta densidad de dinucleótidos de CG. Por tanto, hay que buscar una región genómica que tenga una alta densidad y que permita identificar la isla. Para ello, se debe emplear un sliding window, es decir, una ventana de una cierta cantidad de nucleótidos para calcular su frecuencia de CG. Como la isla CpG va a tener un tamaño de 1000, el tamaño razonable de ventana sería de 1000, y esta ventana se irá desplazando de nucleótido en nucleótido. En un gráfico que muestre la densidad de CG, se observaría una frecuencia muy superior (un pico alto) donde se encuentre la isla. Como la gráfica real es algo ruidosa, hay que establecer un threshold para poder obtener la posición concreta de la isla. Se puede utilizar la frecuencia total de CG en la secuencia (contabilizar todas las apariciones de CG y dividir por la longitud para obtener la media), pero hay que tener en cuenta el margen de error. Se puede calcular el porcentaje de CG en todas las ventanas, calcular la media y la desviación estándar para poder tener la dispersión esperada de una ventana concreta. Una vez con eso, se puede dibujar la distribución de los porcentajes de CpG para poder establecer la frecuencia de fondo de los dinucleótidos y separarla de la frecuencia de las islas CpG. En caso de una distribución normal, se pueden establecer criterios arbitrarios como los criterios estadísticos del 5\% superior (one value t-test). Esto resulta en una distribución empírica, pero se puede utilizar una distribución binomial para obtener el mismo resultado más formalmente correcto. También se puede aproximar a una distribución de Poisson para cada ventana. La forma más correcta sería mediante los modelos ocultos de Markov, teniendo como etiquetas que una posición pertenezca o no a una isla CpG. Esto se verá más adelante en la asignatura. 
