@@ -111,6 +111,10 @@ P(\text{CGACGCGCGCGTCG} \mid \text{C+G}) =
 \left( \frac{3}{8} \right) \cdot \left( \frac{3}{8} \right) \cdot \left( \frac{1}{8} \right) \cdot \left( \frac{3}{8} \right) \cdot \left( \frac{3}{8} \right) \cdot \left( \frac{3}{8} \right) \cdot \left( \frac{3}{8} \right) \cdot \left( \frac{3}{8} \right) \cdot \left( \frac{3}{8} \right) \cdot \left( \frac{3}{8} \right) \cdot \left( \frac{3}{8} \right) \cdot \left( \frac{1}{8} \right) \cdot \left( \frac{3}{8} \right) \cdot \left( \frac{3}{8} \right)
 \]
 
+\[
+= 1,2 \cdot 10^{-7}
+\]
+
 \normalsize
 
 \item Paso 2: Probabilidad de observar la secuencia en la región no rica en C+G
@@ -124,7 +128,7 @@ p_T = p_C = p_A = p_G = \frac{1}{4}
 Por lo tanto, la probabilidad de observar la secuencia \texttt{CGACGCGCGCGTCG} es:
 
 \[
-P(\text{CGACGCGCGCGTCG} \mid \text{no C+G}) = \left( \frac{1}{4} \right)^{14}
+P(\text{CGACGCGCGCGTCG} \mid \text{no C+G}) = \left( \frac{1}{4} \right)^{14} = 3,7 \cdot 10^{-9}
 \]
 
 \item Paso 3: Probabilidad de que la secuencia provenga de una región rica en C+G
@@ -138,7 +142,7 @@ P(\text{C+G} \mid \text{secuencia}) = \frac{P(\text{secuencia} \mid \text{C+G}) 
 Donde:
 \begin{itemize}
 \item $ P(\text{secuencia} \mid \text{C+G}) $ es la probabilidad de observar la secuencia en una región rica en C+G (calculada en el Paso 1).
-\item $ P(\text{C+G}) = 0{.}01 $ es la proporción del genoma que es rico en C+G.
+\item $ P(\text{C+G}) = 0,01 $ es la proporción del genoma que es rico en C+G.
 \item $ P(\text{secuencia}) $ es la probabilidad total de observar la secuencia, que se calcula como:
 \end{itemize}
 
@@ -146,9 +150,14 @@ Donde:
 P(\text{secuencia}) = P(\text{secuencia} \mid \text{C+G}) \cdot P(\text{C+G}) + P(\text{secuencia} \mid \text{no C+G}) \cdot P(\text{no C+G})
 \]
 
-Donde $ P(\text{no C+G}) = 1 - P(\text{C+G}) = 0{.}99 $
+Donde $ P(\text{no C+G}) = 1 - P(\text{C+G}) = 0,99 $
 
 Sustituyendo todos los valores, podemos obtener la probabilidad de que la secuencia provenga de una región rica en C+G.
+
+\[
+\frac{1,2 \cdot 10^{-7} \cdot 0,01}{1,2 \cdot 10^{-7} \cdot 0,01 + 3,7 \cdot 10^{-9} \cdot 0,99} = 0,25
+\]
+
 \end{itemize}
 
 \textit{\textbf{Ejercicio 2:} 
@@ -164,8 +173,8 @@ Ha secuenciado un fragmento de la cadena + de un nuevo organismo. Nosotros supon
     \end{tabularx}
 \end{table}
 Teniendo en cuenta las siguientes probabilidades condicionales:
-$$P_{TA+} = \frac{25}{25 + 8 + 10 + 3}$$
-$$P_{AA+} = \frac{15}{15 + 23 + 25 + 11} $$
+$$P_{TA+} = \frac{25}{25 + 8 + 10 + 3} = 0,54 $$
+$$P_{AA+} = \frac{15}{15 + 23 + 25 + 11} = 0,20 $$
 
 En cuanto a la probabilidad de la cadena negativa, hay que tener en cuenta que las frecuencias están dadas en la cadena positiva. Por tanto, cuando se tiene en cuenta el cambio del segundo nucleótido de la pareja en la cadena negativa, el cambio en la cadena positiva se produce en el primero. \\
 
@@ -175,7 +184,9 @@ En cuanto a la probabilidad de la cadena negativa, hay que tener en cuenta que l
 3' -----------AT-----------5' \\
 \end{table}
 
-$$P_{TA-} = \frac{25}{25 + 15 + 26 + 9}$$
+$$P_{TA-} = \frac{25}{25 + 15 + 26 + 9} = 0,33 $$
+
+$$P_{AA-} = \frac{3}{3 + 24 + 8 + 11} = 0,065 $$
 
 \subsection{Problema práctico: islas CpG}
 Un desafío interesante sería escribir un programa que identifique islas CpG en un fragmento del genoma humano. Los dinucleótidos CG tienden a perderse debido a la metilación de la citosina, que, al desaminarse, se convierte en timina en lugar de regresar a citosina. Sin embargo, en regiones del genoma que no se metilan, como las regiones transcripcionalmente activas, las secuencias CG permanecen intactas, formando las llamadas islas CpG. El objetivo del programa sería localizar el inicio y el final de una de estas islas en una secuencia genómica. La isla CpG tiene una longitud de 1.000 bases, mientras que la región genómica tendrá aproximadamente unos 40.000 nucleótidos.
