@@ -90,10 +90,47 @@ Cuando hay números decimales, se redondea al siguiente número entero. Al compr
 \end{mdframed}
 \end{table}
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width = \textwidth]{figs/ejercicio-blosum.png}
-\end{figure}
+%\begin{figure}[htbp]
+%\centering
+%\includegraphics[width = \textwidth]{figs/ejercicio-blosum.png}
+%\end{figure}
+
+\subsubsection{Ejercicio}
+\textit{\textbf{Ejercicio 1:} Queremos hacer una matriz de puntuación de ADN a partir de alineaciones de secuencias de ADN que muestren un 88\% de identidad (es decir, una matriz optimizada para encontrar alineaciones con un 88\% de identidad). Supongamos que todos los desajustes son equiprobables, y que la composición tanto de los alineamientos como de las secuencias de fondo es uniforme al 25\% para cada nucleótido. Construya la matriz de probabilidad de mutación y la matriz de puntuación. Introduzca los valores para la Matriz de Probabilidad de Mutación.}
+
+Sabemos que las secuencias muestran un 88\% de identidad. Por tanto, en un 88\% de las ocasiones, las dos secuencias tienen los mismos residuos en la misma posición. Como cada nucleótido es equiprobable, $0,88/4 = 0,22$. Eso nos deja con $1 - 0,88 = 0,12$ a repartir entre los mismatches. Hay 12 posibilidades (12 casillas), y como todos son equiprobables, $0,12 / 12 = 0,01$. Ahora queda rellenar la tabla:
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabularx}{\textwidth}{ X | X X X X}
+          & A & C & G & T \\ \hline
+         A & 0,22 & 0,01 & 0,01 & 0,01 \\
+         C & 0,01 & 0,22& 0,01 & 0,01 \\
+         G & 0,01 & 0,01 & 0,22 & 0,01 \\
+         T & 0,01 & 0,01 & 0,01 & 0,22 \\
+    \end{tabularx}
+\end{table}
+
+En cuanto a la matriz de puntuación, nos indican que:
+$$score = log_2(odds-ratio) = log_2(\frac{observado}{esperado})$$
+
+El valor observado es aquel que obtenemos de la matriz de sustitución. El valor esperado es la probabilidad de los nucleótidos en ambas secuencias. Como una posición tendrá dos residuos (uno de cada secuencia), y todos los residuos son equiprobables, el valor esperado en cada caso será de $0,25 \cdot 0,25 = 0,0625$. Por ejemplo:
+
+$$p_{AA} = log_2(\frac{0,22}{0,0625}) = 1,8 \approx 2$$
+$$p_{AC} = log_2(\frac{0,01}{0,0625}) = -2,64 \approx -3$$
+
+Así, la tabla resultante sería:
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabularx}{\textwidth}{ X | X X X X}
+          & A & C & G & T \\ \hline
+         A & 2 & -3 & -3 & -3 \\
+         C & -3 & 2& -3 & -3 \\
+         G & -3 & -3 & 2 & -3 \\
+         T & -3 & -3 & -3 & 2 \\
+    \end{tabularx}
+\end{table}
 
 \subsection{Alineamientos de puntuación (scoring alignments)}
 Las matrices de sustitución ofrecen un método para puntuar posiciones individuales. Sin embargo, para comparar diferentes alineaciones, necesitamos un único valor que represente la puntuación combinada de todas las posiciones. Para calcular dicha puntuación, suponemos que cada posición del alineamiento es independiente de las demás \footnote{Nótese que esto es probablemente una simplificación excesiva porque en las proteínas reales a menudo existe una correlación entre residuos adyacentes. Por ejemplo, en una hélice anfipática los residuos polares e hidrófobos se distribuyen en caras opuestas. Por lo tanto, habrá cierta correlación entre los residuos en ciertas posiciones.} y calculamos la puntuación del alineamiento S como la suma de las puntuaciones individuales de cada una de las n posiciones, siendo s la entrada de la matriz de sustitución para los residuos a y b en la posición i.
