@@ -124,7 +124,7 @@ Los ficheros GFF tienen un formato de texto sin formato para representar caracte
 \item \textbf{Name}: Nombre de la característica. No es necesario que sea único.
 \item \textbf{Parent}: Id del elemento padre. Indica la relación «parte de». Un elemento puede tener varios padres. En este caso, los identificadores se separan por comas.
 \item \textbf{Note}: nota de texto libre
-\item $\cdots$
+\item \ldots
 \end{itemize}
 \end{enumerate}
 
@@ -143,3 +143,269 @@ Hay varias cuestiones que deben tenerse en cuenta al analizar un archivo GFF: La
 \caption{Ejemplo gráfico de una región genómica con el fichero GFF.}
 \label{fig:gff-graph}
 \end{figure}
+
+Se puede trabajar con un fichero GFF desde la terminal de Linux. Por ejemplo, se pueden buscar todas las regiones (\texttt{grep region fichero.gff}) u obtener las terceras columnas (\texttt{cut -f3 fichero.gff}).
+
+\begin{lstlisting}[language=Python]
+def readGFF(file):
+    """ Counts region types of a GFF file 
+        returns a dictionary """  
+    d = {}
+    
+    with open(file, 'r') as f:
+        for linea in f:
+            if linea[0] != "#": 
+                campos = linea.split("\t")
+                region_type = campos[2]
+                if region_type not in d: #o d.keys()
+                    d[region_type] = 1
+                else:
+                    d[region_type] += 1
+    return d
+
+readGFF('data/haemophilus_influenzae/GCF_000027305.1_ASM2730v1_genomic.gff')
+\end{lstlisting}
+
+\subsection{GenBank record}
+GenBank es una base de datos de secuencias de libre acceso mantenida por el National Center for Biotechnology Information (NCBI). Esta base de datos tiene un formato de archivo plano para representar un registro en la base de datos. Este formato codifica la secuencia, las características y las referencias de proteínas y genes.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = \textwidth]{figs/genbank.png}
+\caption{Principio de un documento GenBank.}
+\label{fig:genbank}
+\end{figure}
+
+Las partes de un documento GenBank (figura \ref{fig:genbank}) son:
+\begin{itemize}
+\item LOCUS: Contiene un identificador (NC\_000907 en el ejemplo siguiente), la longitud de la secuencia (1656 pb), el tipo de molécula (ADN) y la fecha de la última modificación del registro.
+\item DEFINITION: Breve descripción de la secuencia.
+\item ORGANISM: Nombre científico del organismo .
+\item REFERENCE: Publicación científica relacionada con la secuencia. La última suele referirse al autor que envió la secuencia (esta referencia se marca con «direct submission» en lugar del título del artículo).
+\item FEATURES: Información sobre genes y productos génicos de la secuencia. Tiene varios subcampos:
+\begin{itemize}
+\item Source: Campo obligatorio que describe la longitud y el organismo de la secuencia.
+\item gene: región de un gen
+\item CDS: región codificante de una proteína. Incluye translation, tabla, protein\_id, producetname, notas, etc.
+\end{itemize}
+\end{itemize}
+
+\section{Librerías de Python}
+\subsection{NumPy}
+NumPy (Numerical Python) es una librería de Python que permite realizar operaciones con arrays y matrices. También incluye herramientas de álgebra lineal, estadística o generación aleatoria de números. Se combina frecuentemente con otras librerías como SciPy para computaciones numéricas y pandas para análisis de datos.
+
+\subsubsection{Clase ndarray}
+\paragraph{Creación de arrays}
+El elemento principal de NumPy es el objeto \textbf{ndarray} que representa arrays multidimensionales. Es capaz de realizar operaciones vectoriales eficientes (en velocidad y memoria). Al contrario que las listas de Python, todos los elementos de un ndarray son del mismo tipo. Los tipos posibles son int, float, boolean, string, etc. El atributo shape te da el tamaño del array y dtypet el tipo de los elementos.
+\begin{lstlisting}[language=Python]
+import numpy as np
+
+data = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+data.shape 
+#Output: (3, 3)
+data.dtype
+#Output: dtype('int64')
+\end{lstlisting}
+
+Se puede crear un array a partir de cualquier otra secuencia (listas u otros ndarrays), utilizando la función numpy.array. Es posible especificar en la construcción el tipo del array (dtype) y la dimensión. Las dimensiones son importantes para cuando haya que fusionar arrays, ya que deberán coincidir. Además, la dimensión debe coincidir en todo el array, es decir, debe ser homogéneo.
+\begin{lstlisting}[language=Python]
+x = np.array([1, 2, 3], ndmin = 2)
+# array([[1, 2, 3]])
+y = np.array([1, 2], dtype = 'int32')
+
+error = np.array([1, 2, 3], [4, 5])
+\end{lstlisting}
+
+Otras funciones para crear e inicializar arrays/matrices son:
+\begin{itemize}
+\item Matrices de ceros: numpy.zeros y numpy.zeros\_like (el primero crea un array de las dimensiones dadas, el segundo crea un array como el que se le pasa, es decir, con sus dimensiones y el tipo).
+\item Matrices de unos: numpy.ones y numpy.ones\_like
+\item Matriz identidad: numpy.eye y numpy.identity
+\item La función numpy.arange se comporta de forma similar a la función estándar de python range, pero devuelve un ndarray.
+\item La función numpy.linspace devuelve números espaciados uniformemente en un intervalo especificado. Se proporciona el primer y último valor y el número total de valores. La función numpy.logspace hace algo similar pero de forma logarítmica.
+\end{itemize}
+
+\begin{lstlisting}[language=Python]
+np.zeros((3,2))
+#array([[0., 0.], [0., 0.], [0., 0.]])
+
+x = np.array([1, 2, 3])
+np.ones_like(x)
+#array([1, 1, 1])
+
+y = np.arange(10)
+#[0 1 2 3 4 5 6 7 8 9]
+
+np.linspace(-np.pi,np.pi,10)
+#array([-3.14159265, -2.44346095, -1.74532925, -1.04719755, -0.34906585, 0.34906585,  1.04719755,  1.74532925,  2.44346095,  3.14159265])
+\end{lstlisting}
+
+\paragraph{Operaciones básicas con arrays}
+Las operaciones aritméticas pueden realizarse con ndarrays utilizando la misma sintaxis que la empleada para los escalares y evitando el uso de bucles explícitos. 
+\begin{lstlisting}[language=Python]
+data = np.array([[1, 2, 3], [4, 5, 6]])
+data + 1
+#array([[2, 3, 4], [5, 6, 7]])
+data * 10
+array([[10, 20, 30], [40, 50, 60]])
+\end{lstlisting}
+
+Arrays del mismo tamaño se pueden sumar y multiplicar celda a celda (si son de distinto tamaño no funciona):
+\begin{lstlisting}[language=Python]
+data + data
+#array([[ 2,  4,  6], [ 8, 10, 12]])
+data * data
+#array([[ 1,  4,  9], [16, 25, 36]])
+\end{lstlisting}
+
+Todas las operaciones booleanas (>, <, ==, etc) se aplican elemento a elemento y se devuelve un array de booleanos:
+\begin{lstlisting}[language=Python]
+data = np.array([[1, 2, 3], [4, 5, 6], [4, 5, 6]])
+#array[[1 2 3], [4 5 6], [4 5 6]]
+data > 4
+#array([[False, False, False], [False,  True,  True], [False,  True,  True]])
+\end{lstlisting}
+
+\paragraph{Ejercicios}
+Construye una matriz de 5x5 elementos en la que los elementos de la diagonal sean 10  y los elementos fuera de la diagonal sean 5.
+\begin{lstlisting}[language=Python]
+np.identity(5)*5+5
+(np.identity(5)+1)*5
+
+def diag2(n, f):
+	''' f: factor, n: dimensiones del array'''
+	return (np.identity(n) + 1) * f
+diag2(5,5)
+\end{lstlisting}
+
+Crea un array que contenga los días de la semana. ¿Cuál es su dtype?
+\begin{lstlisting}[language=Python]
+weekdays_matrix = np.array(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'])
+print(weekdays_matrix.dtype)
+#<U9
+#El 9 es la longitud de palabra más grande del array
+\end{lstlisting}
+
+\subsubsection{Indexación y slicing}
+Para arrays unidimensionales, el funcionamiento es como en el caso de las listas:
+\begin{lstlisting}[language=Python]
+x = np.arange(10)
+#array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+x[4] 
+#4
+x[2:7]
+#array([2, 3, 4, 5, 6])
+x[-3:]
+#array([7, 8, 9])
+\end{lstlisting}
+
+Si se asigna un valor a un slice, el valor se asigna a todas las posiciones en el slice.
+\begin{lstlisting}[language=Python]
+x[4:7] = -1
+#array([ 0,  1,  2,  3, -1, -1, -1,  7,  8,  9])
+x = np.arange(10)
+#array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+x[0::2] = [19,17,15,13,11]
+#array([19,  1, 17,  3, 15,  5, 13,  7, 11,  9])
+\end{lstlisting}
+
+Ten en cuenta que si obtienes una referencia a un slice, los elementos no se copian y sólo se mantiene la referencia a los elementos del slice. Esto significa que si después utilizas el slice para modificar sus valores, éstos se modifican en el array original. Si queremos una copia del slice y no una referencia a los valores en los arrays originales, se puede utilizar el método copy().
+\begin{lstlisting}[language=Python]
+x = np.ones((5,3), dtype=int)
+#array([[1, 1, 1], [1, 1, 1], [1, 1, 1], [1, 1, 1], [1, 1, 1]])
+y = x[:5:2,1:] #aquí se seleccionan primero filas y luego columnas
+#array([[1, 1], [1, 1], [1, 1]])
+y[:] = 25
+print(x)
+#array([[ 1, 25, 25], [ 1,  1,  1], [ 1, 25, 25], [ 1,  1,  1], [ 1, 25, 25]])
+
+x = np.ones((5,3), dtype=int)
+z = x[:3].copy()
+#array([0, 1, 2])
+y[2] = 25
+print(x)
+#[0 1 2 3 4 5 6 7 8 9]
+print(y)
+#[ 0  1 25]
+\end{lstlisting}
+
+En arrays multidimensionales, se utilizan comas para separar los slices para cada dimensión.
+\begin{lstlisting}[language=Python]
+data = np.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]])
+#array([[ 1,  2,  3,  4], 
+# [ 5,  6,  7,  8], 
+#[ 9, 10, 11, 12], 
+#[13, 14, 15, 16]])
+data[1,1:3]
+#array([6, 7])
+data[1:3]
+#array([[ 5,  6,  7,  8], 
+# [ 9, 10, 11, 12]])
+data[:, 1:3]
+#array([[ 2,  3],
+# [ 6,  7],
+# [10, 11],
+# [14, 15]])
+data[1:4:2, 1:4:2]
+#array([[ 6,  8],
+# [14, 16]])
+\end{lstlisting}
+
+\paragraph{Indexación booleana}
+Es posible utilizar un array de valores booleanos (Verdadero/Falso) para seleccionar elementos del ndarray.
+\begin{lstlisting}[language=Python]
+data = np.random.randn(10, 3) #generación de matriz 10x3 con números de distribución normal
+data[data>0] #números positivos
+ix = data[:,0] > 0 #índices booleanos para las filas en las que el primer elemento es positivo
+#array([ True,  True, False, False,  True, False, False, False, False, True])
+selected = data[ix, :] #seleccionar las filas que empiezan por un número positivo
+\end{lstlisting}
+
+La indexación booleana siempre crea una copia, a diferencia del slicing. Es posible combinar varias operaciones booleanas utilizando \& (and), | (or) y $\sim$ (negación). Además, se puede utilizar para asignar valores a los elementos de un array que cumplan con una condición.
+\begin{lstlisting}[language=Python]
+data[(data[:, 0] > 0) & (data[:, 2] < 0), :] #selecciona las filas en las que el primer elemento es positivo y el último negativo
+data[data < 0] = 0 #asigna el valor de 0 a todos los elementos negativos
+\end{lstlisting}
+
+\paragraph{Indexación fancy}
+También es posible indexar utilizando matrices de enteros de forma similar al slicing. Estos enteros indican los índices de columna o fila a seleccionar. Este tipo de indexación es útil, por ejemplo, para seleccionar filas y columnas en un orden distinto al original.
+\begin{lstlisting}[language=Python]
+nrows = 5
+ncols = 3
+p = 1
+data = np.zeros((nrows, ncols))
+for i in range(ncols):
+    data[:, i] = np.arange(nrows)*p
+    p*=10
+#array([[  0.,   0.,   0.],
+#       [  1.,  10., 100.],
+#       [  2.,  20., 200.],
+#       [  3.,  30., 300.],
+#       [  4.,  40., 400.]])
+data[[3, 1]] #selección de las filas 3 y 1 en ese orden
+#array([[  3.,  30., 300.],
+#       [  1.,  10., 100.]])
+data[:, [2, 0]]
+#array([[  0.,   0.],
+#       [100.,   1.],
+#       [200.,   2.],
+#       [300.,   3.],
+#       [400.,   4.]])
+\end{lstlisting}
+
+\paragraph{Ejercicios} 
+En el siguiente código, ¿qué diferencia supondría \texttt{y = 100 * y} con \texttt{y[:] = 100*y}?
+\begin{lstlisting}[language=Python]
+x = np.array([1, 2, 3, 4, 5])
+y = x[:3]
+y = 100*y
+print(y) # [100 200 300]
+print(x) # [1 2 3 4 5]
+y = x[:3]
+y[:] = 100*y
+print(y) # [100 200 300]
+print(x) # [100 200 300   4   5]
+\end{lstlisting}
+De ambas formas, el resultado para y es igual; la diferencia se encuentra en el array original x. En la primera variante, x no se ve modificado, mientras que en la segunda variante, los valores de x sí se han visto modificados.
+
+\subsection{Matplotlib}
