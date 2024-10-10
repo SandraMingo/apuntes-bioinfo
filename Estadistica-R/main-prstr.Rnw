@@ -1,55 +1,5 @@
 %% ;;; -*- mode: Rnw; -*-
-\documentclass{config/apuntes}\usepackage[]{graphicx}\usepackage[]{xcolor}
-% maxwidth is the original width if it is less than linewidth
-% otherwise use linewidth (to make sure the graphics do not exceed the margin)
-\makeatletter
-\def\maxwidth{ %
-  \ifdim\Gin@nat@width>\linewidth
-    \linewidth
-  \else
-    \Gin@nat@width
-  \fi
-}
-\makeatother
-
-\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
-\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
-\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
-\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
-\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
-\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
-\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
-\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
-\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
-\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
-\let\hlipl\hlkwb
-
-\usepackage{framed}
-\makeatletter
-\newenvironment{kframe}{%
- \def\at@end@of@kframe{}%
- \ifinner\ifhmode%
-  \def\at@end@of@kframe{\end{minipage}}%
-  \begin{minipage}{\columnwidth}%
- \fi\fi%
- \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
- \colorbox{shadecolor}{##1}\hskip-\fboxsep
-     % There is no \\@totalrightmargin, so:
-     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
- \MakeFramed {\advance\hsize-\width
-   \@totalleftmargin\z@ \linewidth\hsize
-   \@setminipage}}%
- {\par\unskip\endMakeFramed%
- \at@end@of@kframe}
-\makeatother
-
-\definecolor{shadecolor}{rgb}{.97, .97, .97}
-\definecolor{messagecolor}{rgb}{0, 0, 0}
-\definecolor{warningcolor}{rgb}{1, 0, 1}
-\definecolor{errorcolor}{rgb}{1, 0, 0}
-\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
-
-\usepackage{alltt}
+\documentclass{config/apuntes}
 
 \title{Programación y Estadística con R}
 \author{Sandra Mingo Ramírez}
@@ -65,9 +15,12 @@
 \usepackage{amsmath}
 \usepackage{array}
 
+<<setup,include=FALSE,cache=FALSE>>=
+require(knitr)
+opts_knit$set(concordance = TRUE)
+opts_knit$set(stop_on_error = 2L)
+@
 
-
-\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
 \begin{abstract}
@@ -95,45 +48,29 @@ Este curso es una introducción rápida a un «entorno para la computación esta
 \section{RStudio y primeras nociones}
 En RStudio, se puede crear un nuevo fichero en File > New File > R script. Se abre un nuevo fichero en el que se puede programar. En R, la asignación de variables se realiza con <-. En la parte superior derecha, se pueden ver todas las variables que se han asignado en la sesión, los datos y las funciones.
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hldef{x} \hlkwb{<-} \hlnum{9}
-\hldef{y} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{1}\hlopt{:}\hlnum{20}\hldef{,} \hlkwc{ncol} \hldef{=} \hlnum{4}\hldef{)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
+<<eval=FALSE>>=
+x <- 9
+y <- matrix(1:20, ncol = 4)
+@
 
 En la parte inferior derecha hay una pestaña para poder visualizar los gráficos. Desde ese menú, se puede guardar, pero esto no es recomendable, ya que el gráfico se ajusta al tamaño de la pantalla y luego eso no es reproducible. En otra pestaña aparece un listado de todos los paquetes instalados en el disco duro, aunque luego haya que cargarlos en cada script en el que se desee usar. Al pulsar en el nombre de un paquete, se va a la página de ayuda del mismo. También es posible acceder con:
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{help}\hldef{(rnorm)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
+<<eval=FALSE>>=
+help(rnorm)
+@
 
 La mayor parte del trabajo «real» con R requerirá la instalación de paquetes. Los paquetes proporcionan funcionalidad adicional. Los paquetes están disponibles en muchas fuentes diferentes, pero posiblemente las principales ahora son CRAN y BioConductor. Si un paquete está disponible en CRAN, puedes hacer lo siguiente:
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{install.packages}\hldef{(}\hlsng{"nombre-paquete"}\hldef{)} \hlcom{# 1 paquete}
-\hlkwd{install.packages}\hldef{(}\hlkwd{c}\hldef{(}\hlsng{"paquete1"}\hldef{,} \hlsng{"paquete2"}\hldef{))} \hlcom{# varios paquetes}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
+<<eval=FALSE>>=
+install.packages("nombre-paquete") # 1 paquete
+install.packages(c("paquete1", "paquete2")) # varios paquetes
+@
 
 En Bioinformática, BioConductor es una fuente bien conocida de muchos paquetes diferentes. Los paquetes de BioConductor pueden instalarse de varias maneras, y existe una herramienta semiautomatizada que permite instalar conjuntos de paquetes BioC. Implican hacer algo como
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hldef{BiocManager}\hlopt{::}\hlkwd{install}\hldef{(}\hlsng{"nombre-paquete"}\hldef{)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
+<<eval=FALSE>>=
+BiocManager::install("nombre-paquete")
+@
 
 A veces los paquetes dependen de otros paquetes. Si este es el caso, por defecto, los mecanismos anteriores también instalarán las dependencias. Con algunas interfaces gráficas de usuario (en algunos sistemas operativos) también puede instalar paquetes desde una entrada de menú. Por ejemplo, en Windows, hay una entrada en la barra de menú llamada Paquetes, que permite instalar desde Internet, cambiar los repositorios, instalar desde archivos zip locales, etc. Del mismo modo, desde RStudio hay una entrada para instalar paquetes (en «Herramientas»). Los paquetes también están disponibles desde otros lugares (RForge, github, etc); a menudo encontrarás instrucciones allí.
 
@@ -142,153 +79,98 @@ Siempre puedes simplemente matar RStudio; pero eso no es agradable. En todos los
 \section{Ejemplo: problema de las pruebas múltiples}
 Es posible que hayamos oído hablar del problema de las pruebas múltiples con los microarrays: si observamos los p-valores de un gran número de pruebas, podemos ser inducidos a pensar erróneamente que está ocurriendo algo (es decir, que hay genes expresados de forma diferencial) cuando, en realidad, no hay absolutamente ninguna señal en los datos. A nosotros esto nos convence. Pero tienes un colega testarudo que no lo está. Ha decidido utilizar un ejemplo numérico sencillo para mostrarle el problema. Este es el escenario ficticio: 50 sujetos, de los cuales 30 tienen cáncer y 20 no. Medimos 1000 genes, pero ninguno de los genes tiene diferencias reales entre los dos grupos; para simplificar, todos los genes tienen la misma distribución. Haremos una prueba t por gen, mostrará un histograma de los valores p e informaremos del número de genes «significativos» (genes con p < 0,05). Este es el código R:
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hldef{randomdata} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{rnorm}\hldef{(}\hlnum{50} \hlopt{*} \hlnum{1000}\hldef{),} \hlkwc{ncol} \hldef{=} \hlnum{50}\hldef{)}
-\hldef{class} \hlkwb{<-} \hlkwd{factor}\hldef{(}\hlkwd{c}\hldef{(}\hlkwd{rep}\hldef{(}\hlsng{"NC"}\hldef{,} \hlnum{20}\hldef{),} \hlkwd{rep}\hldef{(}\hlsng{"cancer"}\hldef{,} \hlnum{30}\hldef{)))}
-\hldef{pvalues} \hlkwb{<-} \hlkwd{apply}\hldef{(randomdata,} \hlnum{1}\hldef{,}
-                 \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{t.test}\hldef{(x} \hlopt{~} \hldef{class)}\hlopt{$}\hldef{p.value)}
-\hlkwd{hist}\hldef{(pvalues)}
-\end{alltt}
-\end{kframe}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-5-1} 
-\begin{kframe}\begin{alltt}
-\hlkwd{sum}\hldef{(pvalues} \hlopt{<} \hlnum{0.05}\hldef{)}
-\end{alltt}
-\begin{verbatim}
-## [1] 48
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
+<<eval=TRUE,tidy=FALSE, fig.height=5>>=
+randomdata <- matrix(rnorm(50 * 1000), ncol = 50)
+class <- factor(c(rep("NC", 20), rep("cancer", 30)))
+pvalues <- apply(randomdata, 1,
+                 function(x) t.test(x ~ class)$p.value)
+hist(pvalues)
+sum(pvalues < 0.05)
+@
 
 En un test de la t, tenemos una hipótesis nula ($H_0$) que normalmente es lo contrario de lo que queremos ver (es decir, si queremos ver si hay diferencias entre dos muestras, la hipótesis nula es que son iguales). Después, se aplica la fórmula de la t y se obtiene un valor, que es el que se quiere ver cómo se distribuye si $H_0$ es cierta. A continuación se mira cómo de probable es que lo que se observa se observe desde $H_0$. Eso produce el p-valor, que indica si algo bajo $H_0$ es probable o improbable (evidencia contra la hipótesis nula).
 
 %10/10 - PDF
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hldef{randomdata[}\hlnum{1}\hldef{, ]}
-\hldef{randomdata[,} \hlnum{1}\hldef{]}
-\hldef{randomdata[}\hlnum{2}\hldef{, ]}
-\hldef{randomdata[,} \hlnum{2}\hldef{]}
-\hldef{randomdata[}\hlnum{2}\hldef{,} \hlnum{3}\hldef{]}
+<<activ1, eval=TRUE,tidy=FALSE, echo=TRUE, results=FALSE, fig.show='hide'>>=
+randomdata[1, ]
+randomdata[, 1]
+randomdata[2, ]
+randomdata[, 2]
+randomdata[2, 3]
 
-\hldef{class}
-\hlkwd{as.numeric}\hldef{(class)}
+class
+as.numeric(class)
 
-\hldef{pvalues[}\hlnum{1}\hldef{]}
+pvalues[1]
 
-\hlkwd{t.test}\hldef{(randomdata[}\hlnum{1}\hldef{, ]} \hlopt{~} \hldef{class)}
+t.test(randomdata[1, ] ~ class)
 
-\hlkwd{t.test}\hldef{(randomdata[}\hlnum{1}\hldef{, ]} \hlopt{~} \hldef{class)}\hlopt{$}\hldef{p.value}
+t.test(randomdata[1, ] ~ class)$p.value
 
-\hldef{pvalues[}\hlnum{1}\hlopt{:}\hlnum{10}\hldef{]} \hlopt{<} \hlnum{0.05}
+pvalues[1:10] < 0.05
 
-\hlkwd{sum}\hldef{(}\hlkwd{c}\hldef{(}\hlnum{TRUE}\hldef{,} \hlnum{TRUE}\hldef{,} \hlnum{FALSE}\hldef{))}
+sum(c(TRUE, TRUE, FALSE))
 
-\hlkwd{hist}\hldef{(}\hlkwd{c}\hldef{(}\hlnum{1}\hldef{,} \hlnum{2}\hldef{,} \hlnum{7}\hldef{,} \hlnum{7}\hldef{,} \hlnum{7}\hldef{,} \hlnum{8}\hldef{,} \hlnum{8}\hldef{))}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
+hist(c(1, 2, 7, 7, 7, 8, 8))
+@
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlcom{## For ease}
-\hldef{rd2} \hlkwb{<-} \hldef{randomdata[}\hlnum{1}\hlopt{:}\hlnum{10}\hldef{, ]}
+<<activ1_b, eval=TRUE, echo=TRUE, results=FALSE>>=
 
-\hlcom{## Where we will store results}
-\hldef{pv2} \hlkwb{<-} \hlkwd{vector}\hldef{(}\hlkwc{length} \hldef{=} \hlnum{10}\hldef{)}
+## For ease
+rd2 <- randomdata[1:10, ]
 
-\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlnum{10}\hldef{) \{}
-    \hldef{pv2[i]} \hlkwb{<-} \hlkwd{t.test}\hldef{(rd2[i, ]} \hlopt{~} \hldef{class)}\hlopt{$}\hldef{p.value}
-\hldef{\}}
+## Where we will store results
+pv2 <- vector(length = 10)
 
-\hldef{pv2}
+for(i in 1:10) {
+    pv2[i] <- t.test(rd2[i, ] ~ class)$p.value
+}
 
-\hlcom{## Compare with}
-\hldef{pvalues[}\hlnum{1}\hlopt{:}\hlnum{10}\hldef{]}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
+pv2
+
+## Compare with
+pvalues[1:10]
+
+@
 
 Ahora usamos apply. No lo hemos dicho explícitamente, pero cuando usamos apply estamos pasando una función (nuestra función anónima) a otra función. Esto es algo muy común y fácil en R: pasar funciones a otras funciones.
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{apply}\hldef{(rd2,} \hlnum{1}\hldef{,} \hlkwa{function}\hldef{(}\hlkwc{z}\hldef{)} \hlkwd{t.test}\hldef{(z} \hlopt{~} \hldef{class)}\hlopt{$}\hldef{p.value)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
+<<activ1_c, eval=TRUE, echo=TRUE, results=FALSE>>=
+apply(rd2, 1, function(z) t.test(z ~ class)$p.value)
+@
 
 Or very verbose (this is unnecessarily verbose):
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hldef{myfunction} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{y}\hldef{,} \hlkwc{classfactor} \hldef{= class) \{}
-    \hlkwd{t.test}\hldef{(y} \hlopt{~} \hldef{classfactor)}\hlopt{$}\hldef{p.value}
-\hldef{\}}
+<<activ1_d, eval=TRUE, echo=TRUE, results=FALSE>>=
 
-\hlkwd{apply}\hldef{(rd2,} \hlnum{1}\hldef{, myfunction)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
+myfunction <- function(y, classfactor = class) {
+    t.test(y ~ classfactor)$p.value
+}
+
+apply(rd2, 1, myfunction)
+
+@
 
 
 \section{La consola de R para cálculos interactivos}
 Independientemente de cómo interactuemos con R, una vez que iniciemos una sesión interactiva de R, siempre habrá una consola, que es donde podemos introducir comandos para que sean ejecutados por R. En RStudio, por ejemplo, la consola suele estar situada en la parte inferior izquierda.Todos los prompts en la consola empiezan con >.
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlnum{1} \hlopt{+} \hlnum{2}
-\end{alltt}
-\begin{verbatim}
-## [1] 3
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
+<<>>=
+1 + 2
+@
 
 Mira la salida. En este documento, los trozos de código, si muestran salida, mostrarán la salida precedida por \#\#. En R (como en Python), \# es el carácter de comentario. En la consola, NO veremos el \#\# precediendo a la salida. Esto es sólo la forma en que está formateado en este documento (al igual que no se ve el > antes del comando). Fíjate también en que ves un [1], antes del 3. ¿Por qué? Porque la salida de esa operación es, en realidad, un vector de longitud 1, y R está mostrando su índice. Aquí no ayuda mucho, pero lo haría si imprimiéramos 40 números:
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlnum{1}\hlopt{:}\hlnum{40}
-\end{alltt}
-\begin{verbatim}
-##  [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
-## [26] 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
+<<>>=
+1:40
+@
 
 Se puede asignar 1 + 2 a una variable mediante <-. También se puede utilizar =, pero no se aconseja. Para ver el valor de una variable, se puede escribir simplemente el nombre de la variable, utilizar print o hacer la asignación entre paréntesis (eso realiza la asignación y muestra el resultado por pantalla).
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hldef{(v1} \hlkwb{<-} \hlnum{1} \hlopt{+} \hlnum{2}\hldef{)}
-\end{alltt}
-\begin{verbatim}
-## [1] 3
-\end{verbatim}
-\begin{alltt}
-\hlkwd{print}\hldef{(v1)}
-\end{alltt}
-\begin{verbatim}
-## [1] 3
-\end{verbatim}
-\begin{alltt}
-\hldef{v1}
-\end{alltt}
-\begin{verbatim}
-## [1] 3
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
+<<>>=
+(v1 <- 1 + 2)
+print(v1)
+v1
+@
 
 %1020 - p. 19
 \end{document}
