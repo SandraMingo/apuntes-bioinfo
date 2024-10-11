@@ -32,6 +32,10 @@ Este curso es una introducción rápida a un «entorno para la computación esta
 \maketitle
 
 \tableofcontents
+<<include=FALSE>>=
+rm(list = ls())
+options(width = 65)
+@
 
 %Quick intro to R and a minimal of stats
 %R programming with a modicum of stats

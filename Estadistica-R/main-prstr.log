@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.10.11)  11 OCT 2024 18:54
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.10.11)  11 OCT 2024 23:43
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2053,16 +2053,16 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.94 \chapter
+l.95 \chapter
              {Introducción en R y estadística} [1]
 Cap\'{\imath }tulo I.
 LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 1
-00.
+01.
 (C:\Users\Sandra\AppData\Local\Programs\MiKTeX\tex/latex/base\t1cmtt.fd
 File: t1cmtt.fd 2023/04/13 v2.5m Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <12> not available
-(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 102.
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 103.
 
 
 [2
@@ -2072,29 +2072,23 @@ LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <12> not available
 [3]
 
 [4]
-<figure/unnamed-chunk-6-1.pdf, id=79, 505.89pt x 505.89pt>
-File: figure/unnamed-chunk-6-1.pdf Graphic file (type pdf)
-<use figure/unnamed-chunk-6-1.pdf>
-Package pdftex.def Info: figure/unnamed-chunk-6-1.pdf  used on input line 182.
+<figure/unnamed-chunk-7-1.pdf, id=79, 505.89pt x 505.89pt>
+File: figure/unnamed-chunk-7-1.pdf Graphic file (type pdf)
+<use figure/unnamed-chunk-7-1.pdf>
+Package pdftex.def Info: figure/unnamed-chunk-7-1.pdf  used on input line 183.
 (pdftex.def)             Requested size: 418.25545pt x 418.25981pt.
 
-Overfull \hbox (17.62482pt too wide) in paragraph at lines 182--183
+Overfull \hbox (17.62482pt too wide) in paragraph at lines 183--184
 [][] 
  []
 
 
 
-[5 <./figure/unnamed-chunk-6-1.pdf>]
+[5 <./figure/unnamed-chunk-7-1.pdf>]
 
 [6]
 
 [7]
-Overfull \hbox (87.97093pt too wide) in paragraph at lines 319--319
-[]\T1/cmtt/m/n/12 ##  [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18
- 19 20 21 22 23 24 25[] 
- []
-
-
 
 [8] 
 enddocument/afterlastpage: lastpage setting LastPage.
@@ -2136,7 +2130,7 @@ e1/public/amsfonts/cm/cmr8.pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/f
 onts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Sandra/AppData/Local/Program
 s/MiKTeX/fonts/type1/public/lm/lmssbx10.pfb><C:/Users/Sandra/AppData/Local/Prog
 rams/MiKTeX/fonts/type1/urw/palatino/uplr8a.pfb>
-Output written on main-prstr.pdf (9 pages, 245223 bytes).
+Output written on main-prstr.pdf (9 pages, 245104 bytes).
 PDF statistics:
  490 PDF objects out of 1000 (max. 8388607)
  15 named destinations out of 1000 (max. 500000)
