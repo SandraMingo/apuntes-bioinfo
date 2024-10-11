@@ -139,8 +139,26 @@ A veces los paquetes dependen de otros paquetes. Si este es el caso, por defecto
 
 Siempre puedes simplemente matar RStudio; pero eso no es agradable. En todos los sistemas escribir q() en el símbolo del sistema debería detener R/RStudio. También habrá entradas de menú (por ejemplo, «Salir de RStudio» en «Archivo», etc). A continuación sale la pregunta de si se debe guardar el workspace, y en general querremos decir que no.
 
-\section{Ejemplo: problema de las pruebas múltiples}
-Es posible que hayamos oído hablar del problema de las pruebas múltiples con los microarrays: si observamos los p-valores de un gran número de pruebas, podemos ser inducidos a pensar erróneamente que está ocurriendo algo (es decir, que hay genes expresados de forma diferencial) cuando, en realidad, no hay absolutamente ninguna señal en los datos. A nosotros esto nos convence. Pero tienes un colega testarudo que no lo está. Ha decidido utilizar un ejemplo numérico sencillo para mostrarle el problema. Este es el escenario ficticio: 50 sujetos, de los cuales 30 tienen cáncer y 20 no. Medimos 1000 genes, pero ninguno de los genes tiene diferencias reales entre los dos grupos; para simplificar, todos los genes tienen la misma distribución. Haremos una prueba t por gen, mostrará un histograma de los valores p e informaremos del número de genes «significativos» (genes con p < 0,05). Este es el código R:
+\section{Ejemplo}
+\subsection{Introducción al test de la t}
+En un test de la t, la hipótesis nula ($H_0$) suele representar lo contrario de lo que se desea demostrar. Por ejemplo, si nuestro objetivo es comprobar si hay diferencias entre dos muestras, la hipótesis nula establece que ambas son iguales. A continuación, se utiliza la fórmula de la t para obtener un valor estadístico, cuya distribución se examina bajo la suposición de que $H_0$ es cierta. Luego, se calcula la probabilidad de observar un resultado tan extremo o más extremo que el obtenido bajo $H_0$. Esta probabilidad se denomina p-valor, y su interpretación indica cuánta evidencia hay en contra de $H_0$: un p-valor bajo sugiere que lo observado es improbable bajo $H_0$.
+
+\[
+t = \frac{x_A - x_B}{SD_{x_A, x_B}}
+\]
+
+Es importante aclarar que el p-valor no representa la probabilidad de que $H_0$ sea cierta, ni la probabilidad de que $H_0$ o la hipótesis alternativa ($H_1$) se cumplan dado los datos. Lo que el p-valor señala es que, o bien $H_0$ es falsa, o ha ocurrido un evento tan improbable como el valor observado. No se "rechaza" $H_0$ de manera concluyente, sino que simplemente no se acepta si el p-valor es suficientemente bajo. En este análisis, se compara el resultado observado con todos aquellos más extremos, algo que es distinto de seleccionar el valor que hace los datos lo más probables posible (como se hace en la máxima verosimilitud).
+
+Por ejemplo, una moneda perfectamente equilibrada tiene una probabilidad de $0.5^6$ de que al lanzarla seis veces, salga exactamente tres veces cara y tres veces cruz. Aunque este número es pequeño, no implica que la hipótesis alternativa sea necesariamente más probable, ya que otros resultados también podrían ser igualmente o más improbables. En la mayoría de los casos de comparación de medias, los datos no están restringidos a un único valor.
+
+Cuando $H_0$ es cierta:
+$$Pr(p-valor \leq 0,05) = 0,05$$
+$$Pr(p-valor \leq 0,01) = 0,01$$
+
+En muchos casos se comprueba más de una $H_0$. En un screening, se analizan 20.000 genes y se decide elegir todos aquellos que tengan un p-valor inferior a 0,05. Esa lista, sobre el total de los genes, la probabilidad de rechazar $H_0$ cuando es cierta, es muy superior al 5\%, aunque se cumpla para cada gen individual. Así, se debe trasladar la lógica al test múltiple, puesto que si no se va a rechazar $H_0$ en muchas ocasiones cuando no se debería.
+
+\subsection{Problema de las pruebas múltiples}
+Es posible que hayamos oído hablar del problema de las pruebas múltiples con los microarrays: si observamos los p-valores de un gran número de pruebas, podemos ser inducidos a pensar erróneamente que está ocurriendo algo (es decir, que hay genes expresados de forma diferencial) cuando, en realidad, no hay absolutamente ninguna señal en los datos. A nosotros esto nos convence. Pero tienes un colega testarudo que no lo está. Ha decidido utilizar un ejemplo numérico sencillo para mostrarle el problema. Este es el escenario ficticio: 50 sujetos, de los cuales 30 tienen cáncer y 20 no. Medimos 1000 genes, pero ninguno de los genes tiene diferencias reales entre los dos grupos; para simplificar, todos los genes tienen la misma distribución (una distribución normal). Haremos una prueba t por gen, mostrará un histograma de los valores p e informaremos del número de genes «significativos» (genes con p < 0,05). Este es el código R:
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
@@ -149,22 +167,43 @@ Es posible que hayamos oído hablar del problema de las pruebas múltiples con l
 \hldef{class} \hlkwb{<-} \hlkwd{factor}\hldef{(}\hlkwd{c}\hldef{(}\hlkwd{rep}\hldef{(}\hlsng{"NC"}\hldef{,} \hlnum{20}\hldef{),} \hlkwd{rep}\hldef{(}\hlsng{"cancer"}\hldef{,} \hlnum{30}\hldef{)))}
 \hldef{pvalues} \hlkwb{<-} \hlkwd{apply}\hldef{(randomdata,} \hlnum{1}\hldef{,}
                  \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{t.test}\hldef{(x} \hlopt{~} \hldef{class)}\hlopt{$}\hldef{p.value)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+Para leer el código, se empieza por la función más interna, que en este caso es \texttt{rnorm}. Así, primero se generan 50.000 entradas de distribución normal (1000 genes por 50 personas) de los que se quiere realizar 1000 contrastes de hipótesis (uno por gen) y representar el aspecto de la distribución (que será uniforme). Todas las entradas se organizan en una matriz con 50 columnas. Después, se crean los dos grupos que se están analizando mediante repeticiones (función \texttt{rep}). El comando de \texttt{factor} crea las etiquetas. En R, se puede llamar al test de la t de varias maneras, siendo una estándar con la interfaz de tipo fórmula (x $\sim$ class), dividiendo así x en los distintos niveles que se han creado previamente. La sintaxis siempre es una variable que va cambiando (en este caso, las filas) antes de la virgulilla y una variable constante después de la virgulilla (los distintos niveles). La función \texttt{apply} permite aplicar una función a un objeto o conjunto de datos, evitando así tener que realizar un bucle for. El primer argumento es el objeto, el segundo la dimensión del objeto a lo que se quiere aplicar (si se recorren filas, columnas, etc.), y el tercero la función que se va a aplicar. La función \texttt{t.test} devuelve objetos a los que se puede acceder, como el valor t, df, p-valor, la media de cada grupo, etc. Se puede acceder al nombre de todos los valores mediante \texttt{names(t.test(x $\sim$ class))}. En nuestro caso, x es el valor que irá adquiriendo el número de filas a recorrer. En este caso, se define la función en el momento de llamarla, pero también se puede definir antes y utilizarla en el apply. En este caso se define dentro porque es una función corta que solo se utilizará en ese momento, por lo que no es necesario crearla fuera. Si por el contrario fuese una función a la que quisiéramos acceder posteriormente o que fuese compleja con varias líneas, se suele crear fuera. Por último, se accede a los p-valores y se guardan en la variable \texttt{pvalues}. Esos p-valores se pueden representar a continuación en un histograma y calcular todos aquellos que sean menores o iguales que 0,05.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
 \hlkwd{hist}\hldef{(pvalues)}
 \end{alltt}
 \end{kframe}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-5-1} 
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-6-1} 
 \begin{kframe}\begin{alltt}
-\hlkwd{sum}\hldef{(pvalues} \hlopt{<} \hlnum{0.05}\hldef{)}
+\hlkwd{sum}\hldef{(pvalues} \hlopt{<=} \hlnum{0.05}\hldef{)}
 \end{alltt}
 \begin{verbatim}
-## [1] 48
+## [1] 56
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
 
-En un test de la t, tenemos una hipótesis nula ($H_0$) que normalmente es lo contrario de lo que queremos ver (es decir, si queremos ver si hay diferencias entre dos muestras, la hipótesis nula es que son iguales). Después, se aplica la fórmula de la t y se obtiene un valor, que es el que se quiere ver cómo se distribuye si $H_0$ es cierta. A continuación se mira cómo de probable es que lo que se observa se observe desde $H_0$. Eso produce el p-valor, que indica si algo bajo $H_0$ es probable o improbable (evidencia contra la hipótesis nula).
+Al realizar la suma de una lógica booleana, se coercia para que los valores falsos se conviertan en 0 y los verdaderos en 1. Así, al sumarlos, el resultado es numérico. 
 
-%10/10 - PDF
+En resumen, en este ejemplo hemos visto los siguientes objetos:
+\begin{itemize}
+\item Vectores: colección de uno o más datos del mismo tipo.
+\item Matrices: conjunto de datos indexados por filas y columnas del mismo tipo. 
+\item Arrays: generalización de una matriz que no tiene límite de dimensiones (pero debe tener una estrucrtura rectangular). 
+\item Data frames: estructura rectangular de dos dimensiones (filas y columnas) en la que cada columna puede ser de un tipo diferente. 
+\item Listas: cajón desastre en el que se pueden meter muchas cosas de muchos tipos distintos. Muchas funciones devuelven listas u objetos que contienen listas.
+\item Factores: vectores de un tipo especial (variable categórica).
+\item Funciones: objetos que realizan una operación y devuelven algo. 
+\end{itemize}
+
+En el siguiente código se muestran las distintas maneras de acceder a una matriz. La indexación funciona [filas, columnas], y si un campo está sin rellenar implica todos sus datos.
+
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -173,10 +212,26 @@ En un test de la t, tenemos una hipótesis nula ($H_0$) que normalmente es lo co
 \hldef{randomdata[}\hlnum{2}\hldef{, ]}
 \hldef{randomdata[,} \hlnum{2}\hldef{]}
 \hldef{randomdata[}\hlnum{2}\hldef{,} \hlnum{3}\hldef{]}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 
+Al ejecutar la variable \texttt{class} creada anteriormente, no solo devuelve la lista de los elementos con las distintas etiquetas, si no que también muestra al final los distintos niveles. Como \texttt{factor} por detrás les asignó un valor entero que corresponda a la etiqueta dada, cuando se pide convertir en numérico, se devuelve el entero. La asignación de los valores se realiza por orden alfanumérico.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
 \hldef{class}
 \hlkwd{as.numeric}\hldef{(class)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
 \hldef{pvalues[}\hlnum{1}\hldef{]}
 
 \hlkwd{t.test}\hldef{(randomdata[}\hlnum{1}\hldef{, ]} \hlopt{~} \hldef{class)}
@@ -222,7 +277,7 @@ Ahora usamos apply. No lo hemos dicho explícitamente, pero cuando usamos apply 
 \end{kframe}
 \end{knitrout}
 
-Or very verbose (this is unnecessarily verbose):
+Esta es otra forma de hacerlo, pero es más verbosa (quizás incluso innecesariamente verbosa):
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
