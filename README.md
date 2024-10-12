@@ -10,3 +10,6 @@ Para escribir en LaTeX, hay muchas opciones que van desde el editor de texto pla
 
 ## Estos apuntes
 Para que estos apuntes compilen bien en LaTeX, es necesario que en el espacio en el que se encuentre el documento .tex esté la carpeta config. En el repositorio, dicha carpeta se encuentra en cada una de las asignaturas para que se puedan descargar directamente y no se rompa ni haya que tocar nada. También hay en cada carpeta un PDF del .tex ya compilado para visualizarlo directamente. Para solucionar fallos o propuestas de modificaciones, se puede hacer por [pull request](https://github.com/SandraMingo/apuntes-bioinfo/pulls).
+
+**Programación y Estadística con R**: para esta asignatura, los apuntes están tomados en .Rnw. Esto no es más que un documento que mezcla LaTeX con partes de código que son ejecutables en programas o editores como RStudio. 
+
