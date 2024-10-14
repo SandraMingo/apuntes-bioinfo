@@ -185,7 +185,7 @@ Para leer el código, se empieza por la función más interna, que en este caso 
 \hlkwd{sum}\hldef{(pvalues} \hlopt{<=} \hlnum{0.05}\hldef{)}
 \end{alltt}
 \begin{verbatim}
-## [1] 43
+## [1] 54
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -292,7 +292,7 @@ Esta es otra forma de hacerlo, pero es más verbosa (quizás incluso innecesaria
 \end{kframe}
 \end{knitrout}
 
-
+%14/10 - Ramón
 \section{La consola de R para cálculos interactivos}
 Independientemente de cómo interactuemos con R, una vez que iniciemos una sesión interactiva de R, siempre habrá una consola, que es donde podemos introducir comandos para que sean ejecutados por R. En RStudio, por ejemplo, la consola suele estar situada en la parte inferior izquierda.Todos los prompts en la consola empiezan con >.
 
@@ -307,7 +307,7 @@ Independientemente de cómo interactuemos con R, una vez que iniciemos una sesi�
 \end{kframe}
 \end{knitrout}
 
-Mira la salida. En este documento, los trozos de código, si muestran salida, mostrarán la salida precedida por \#\#. En R (como en Python), \# es el carácter de comentario. En la consola, NO veremos el \#\# precediendo a la salida. Esto es sólo la forma en que está formateado en este documento (al igual que no se ve el > antes del comando). Fíjate también en que ves un [1], antes del 3. ¿Por qué? Porque la salida de esa operación es, en realidad, un vector de longitud 1, y R está mostrando su índice. Aquí no ayuda mucho, pero lo haría si imprimiéramos 40 números:
+Mira la salida. En este documento, los trozos de código, si muestran salida, mostrarán la salida precedida por \#\#. En R (como en Python), \# es el carácter de comentario. En la consola, NO veremos el \#\# precediendo a la salida. Esto es sólo la forma en que está formateado en este documento (al igual que no se ve el > antes del comando). Fíjate también en que ves un [1], antes del 3. Esto se debe a que la salida de esa operación es, en realidad, un vector de longitud 1, y R está mostrando su índice. Aquí no ayuda mucho, pero lo haría si imprimiéramos 40 números:
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
@@ -321,7 +321,7 @@ Mira la salida. En este documento, los trozos de código, si muestran salida, mo
 \end{kframe}
 \end{knitrout}
 
-Se puede asignar 1 + 2 a una variable mediante <-. También se puede utilizar =, pero no se aconseja. Para ver el valor de una variable, se puede escribir simplemente el nombre de la variable, utilizar print o hacer la asignación entre paréntesis (eso realiza la asignación y muestra el resultado por pantalla).
+Se puede asignar 1 + 2 a una variable mediante <-. También se puede utilizar =, pero no se aconseja. Esto se debe a que se suele utilizar = cuando se pasan argumentos a una función, y utilizar la flecha permite diferenciar a simplevista las asignaciones. Para ver el valor de una variable, se puede escribir simplemente el nombre de la variable, utilizar print o hacer la asignación entre paréntesis (eso realiza la asignación y muestra el resultado por pantalla).
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
@@ -346,5 +346,272 @@ Se puede asignar 1 + 2 a una variable mediante <-. También se puede utilizar =,
 \end{kframe}
 \end{knitrout}
 
-%1020 - p. 19
+Se pueden separar dos comandos con un punto y coma (;), pero utilizarlo es raramente una buena idea, solo en casos muy concretos. 
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{v1} \hlkwb{<-} \hlnum{1} \hlopt{+} \hlnum{2}\hldef{; v1}
+\end{alltt}
+\begin{verbatim}
+## [1] 3
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+Es posible dividir comandos en varias líneas si R puede entender que la expresión no se ha terminado: 
+\begin{verbatim}
+v2 <-  4 - ( 3 * [Enter]
+2)
+\end{verbatim}
+
+Cuando se hace esto, se ve un + que indica que la línea se continúa y que R sigue esperando más input. No obstante, hay ocasiones en las que esto puede ser confuso, y se puede cancelar mediante Ctrl + c en Linux o pulsando Escape para abortar la operación. 
+
+Los paréntesis se ponen cuando el usuario opine que es apropiado y que facilite el entendimiento de una expresión. R utiliza las normas de precedencia usuales, pero en caso de duda, se pueden utilizar paréntesis.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{v11} \hlkwb{<-} \hlnum{3} \hlopt{*} \hldef{(} \hlnum{5} \hlopt{+} \hlkwd{sqrt}\hldef{(}\hlnum{13}\hldef{)} \hlopt{-} \hlnum{3}\hlopt{^}\hldef{(}\hlnum{1}\hlopt{/}\hldef{(}\hlnum{4} \hlopt{+} \hlnum{1}\hldef{)))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\subsection{Nombrar variables}
+Anteriormente hemos creado las variables \texttt{v1} y \texttt{v2}. Los nombres de las variables deben comenzar con una letra. También pueden empezar por un punto, pero entonces estarán ocultas. A continuación se pueden mezclar letras, números, puntos y barras bajas. Los nombres de las variables son case-sensitive, es decir, se diferencia entre las mayúsculas y minúsculas (v1 es diferente a V1). Una vez que se ha creado una variable, se puede utilizar la variable en lugar del contenido:
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{v3} \hlkwb{<-} \hlnum{5}
+\hldef{(v4} \hlkwb{<-} \hldef{v1} \hlopt{+} \hldef{v3)}
+\end{alltt}
+\begin{verbatim}
+## [1] 8
+\end{verbatim}
+\begin{alltt}
+\hldef{(v5} \hlkwb{<-} \hldef{v1} \hlopt{*} \hldef{v3)}
+\end{alltt}
+\begin{verbatim}
+## [1] 15
+\end{verbatim}
+\begin{alltt}
+\hldef{(v6} \hlkwb{<-} \hldef{v1} \hlopt{/} \hldef{v3)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.6
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+Las asignaciones posteriores sobreescriben las asignaciones previas.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{(z2} \hlkwb{<-} \hlnum{33}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 33
+\end{verbatim}
+\begin{alltt}
+\hldef{z2} \hlkwb{<-} \hlnum{999}
+\hldef{z2}
+\end{alltt}
+\begin{verbatim}
+## [1] 999
+\end{verbatim}
+\begin{alltt}
+\hldef{z2} \hlkwb{<-} \hlsng{"Now z2 is a sentence"}
+\hldef{z2}
+\end{alltt}
+\begin{verbatim}
+## [1] "Now z2 is a sentence"
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+Se puede borrar una variable de la siguiente forma:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{rm}\hldef{(z2)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\subsection{Obtener ayuda}
+Se puede acceder a la página de ayuda mediante:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{help}\hldef{(mean)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+También se puede utilizar la siguiente sintaxis:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlopt{?}\hldef{mean}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+Hay otras formas de buscar ayuda sobre cómo hacer algo con R. Se puede buscar en Google, utilizar StackOverflow, etc. También hay un paquete \texttt{sos} que ayuda a buscar funciones y demás en paquetes que no están instalados, hacer un ranking de resultados de búsqueda, etc. A su vez, RStudio incluye un navegador de ayuda integrado. Todas las ayudas cuentan con una descripción de la función, los argumentos que admiten ( y su orden en caso de pasarlos sin nombre; en general es mejor añadir el nombre de cada parámetro a la hora de pasarlo) y el valor, es decir, lo que devuelve. En algunos casos se especifican las fuentes y referencias. También hay una sección de ejemplos de uso de la función.
+
+Lo visto anteriormente proporciona información de funciones concretas. No obstante, hay veces que no sabemos exactamente cómo se llama la función que buscamos. Para ello, se puede utilizar las siguientes formas:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{apropos}\hldef{(}\hlsng{"normal"}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] "normal_print"  "normalizePath"
+\end{verbatim}
+\begin{alltt}
+\hlcom{# help.search("normal")}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+El comando \texttt{apropos} busca todos los paquetes que contengan en el nombre lo que se esté buscando. Por el contrario, \texttt{help.search} busca todos aquellos paquetes que, en la página de ayuda, tengan lo que se esté buscando. 
+
+La función \texttt{args} devuelve los argumentos que se le puede pasar a una función.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{args}\hldef{(rnorm)}
+\end{alltt}
+\begin{verbatim}
+## function (n, mean = 0, sd = 1) 
+## NULL
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\subsection{Mensajes de error}
+Los mensajes de error pueden ser un poco crípticos, pero en muchos casos leerlos ayuda a entender qué está pasando y cómo solucionar el problema. La mejor forma de parsear el mensaje de error es ir a la última línea que se ha ejecutado e ir ascendiendo para ver dónde puede estar el problema. A continuación se muestran algunos ejemplos de mensajes de errores:
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{apply}\hldef{(something,} \hlnum{1}\hldef{, mean)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: objeto 'something' no encontrado}}\begin{alltt}
+\hlkwd{apply}\hldef{(v3,} \hlnum{1}\hldef{, mean)} \hlcom{# en la ayuda se especifica qué es X}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in apply(v3, 1, mean): dim(X) debe tener una longitud positiva}}\begin{alltt}
+\hlkwd{apply}\hldef{(F,} \hlnum{1}\hldef{, mean)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in apply(F, 1, mean): dim(X) debe tener una longitud positiva}}\begin{alltt}
+\hlkwd{log}\hldef{(}\hlsng{"23"}\hldef{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in log("{}23"{}): Argumento no numérico para una función matemática}}\begin{alltt}
+\hlkwd{rnorm}\hldef{(}\hlsng{"a"}\hldef{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in rnorm("{}a"{}): NAs introducidos por coerción}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in rnorm("{}a"{}): invalid arguments}}\begin{alltt}
+\hlkwd{lug}\hldef{(}\hlnum{23}\hldef{)} \hlcom{# debería ser log}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in lug(23): no se pudo encontrar la función "{}lug"{}}}\begin{alltt}
+\hlkwd{rnorm}\hldef{(}\hlnum{23}\hldef{,} \hlnum{1}\hldef{,} \hlnum{1}\hldef{,} \hlnum{1}\hldef{,} \hlnum{34}\hldef{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in rnorm(23, 1, 1, 1, 34): los argumentos no fueron usados (1, 34)}}\begin{alltt}
+\hldef{x} \hlkwb{<-} \hlnum{1}\hlopt{:}\hlnum{10}
+\hldef{y} \hlkwb{<-} \hlnum{11}\hlopt{:}\hlnum{21}
+\hlkwd{plot}\hldef{(x, y)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in xy.coords(x, y, xlabel, ylabel, log): 'x' and 'y' lengths differ}}\begin{alltt}
+\hlkwd{lm}\hldef{(y} \hlopt{~} \hldef{x)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in model.frame.default(formula = y \textasciitilde{} x, drop.unused.levels = TRUE): las longitudes variables difieren (encontradas para 'x')}}\begin{alltt}
+\hldef{z} \hlkwb{<-} \hlnum{1}\hlopt{:}\hlnum{10}
+\hlkwd{t.test}\hldef{(x} \hlopt{~} \hldef{z)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in t.test.formula(x \textasciitilde{} z): grouping factor must have exactly 2 levels}}\end{kframe}
+\end{knitrout}
+
+En la consola, poniendo el nombre de la función, se puede acceder al código que realiza la función por detrás. Esto puede ser útil cuando la página de ayuda no sea suficiente para intentar localizar lo que intenta hacer la función y por qué falla.
+
+\subsection{Estilo del código}
+Aunque el código se escriba para la máquina, también debe ser legible por humanos, tanto uno mismo del futuro como otras personas. Por tanto, se recomienda no extenderse más allá de la columna 80 y utilizar espacios. Hay muchas guías de estilo de código, pero esas dos normas son las más básicas: si una línea de código es excesivamente larga, cuesta leerla entera al no poder verla completa a simple vista y tener que scrollear. 
+
+Existe un paquete llamado \texttt{lintr} que permite corregir el estilo del código. 
+
+Los comentarios también forman parte del estilo de código. Se suele separar la documentación para el usuario de la función (documentación de cabecera) de la documentación dentro del código que explica por qué se hacen algunas cosas.
+
+\section{Leer datos en R y guardarlos desde R}
+Hay muchas formas de cargar datos en R. Un ejemplo es \texttt{read.table} que sirve para todo tipo de datos, pero también hay algunos comandos más concretos como \texttt{read\_csv}.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{X} \hlkwb{<-} \hlkwd{read.table}\hldef{(}\hlsng{"data/hit-table-500-text.txt"}\hldef{)}
+\hlkwd{head}\hldef{(X)}
+\hlcom{## We could save what we care about in variables with better names}
+\hldef{align.length} \hlkwb{<-} \hldef{X[,} \hlnum{5}\hldef{]}
+\hldef{score} \hlkwb{<-} \hldef{X[,} \hlnum{13}\hldef{]}
+\hlkwd{summary}\hldef{(X)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+El objeto no es una matriz, si no un data frame. Otro ejemplo sería el siguiente:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{another.data.set} \hlkwb{<-} \hlkwd{read.table}\hldef{(}\hlsng{"data/AnotherDataSet.txt"}\hldef{,} \hlkwc{header} \hldef{=} \hlnum{TRUE}\hldef{)}
+\hlkwd{summary}\hldef{(another.data.set)}
+\end{alltt}
+\begin{verbatim}
+##       ID                 Age           Sex           
+##  Length:5           Min.   :12.0   Length:5          
+##  Class :character   1st Qu.:13.0   Class :character  
+##  Mode  :character   Median :14.0   Mode  :character  
+##                     Mean   :14.8                     
+##                     3rd Qu.:16.0                     
+##                     Max.   :19.0                     
+##        Y        
+##  Min.   :22.00  
+##  1st Qu.:23.40  
+##  Median :24.30  
+##  Mean   :24.14  
+##  3rd Qu.:25.00  
+##  Max.   :26.00
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+Si se pone que no hay cabecera, parece que se lee lo mismo, pero en realidad hay algunas diferencias. Cuando se especifica que hay una cabecera, la primera línea con la descripción de las columnas no está numerada, mientras que cuando no se especifica, sí se numera y se considera como la primera fila, y esto es un error. R, por defecto, pone que cabecera es falso. Cuando no se sabe si un documento tiene o no cabecera, primero se carga el documento y luego se comprueba si el contenido se ha cargado bien. Por defecto, las columnas están separadas por espacios o tabuladores.
+
+\subsection{Localización de ficheros}
+Para que R pueda leer los ficheros, debe saber dónde buscarlos. Si los ficheros se encuentran en el directorio de trabajo, no hay ningún problema, ya que R los encuentra directamente. Para conocer el directorio de trabajo, se utiliza el comando \texttt{getwd()}. Si el fichero no se encuentra en el directorio de trabajo, hay varias opciones: proporcionar el path completo o mover el directorio de trabajo al lugar donde se encuentran los ficheros mediante \texttt{setwd()}. Para esto, es recomendable evitar en el nombre de directorios espacios, acentos y otros caracteres no ASCII.
+
+\subsection{Missing values}
+Los missing values son algo muy común en estadística. Lo más sencillo es llamarlos como NA de not available. Otra forma es NaN, not a number. 
+
+Puedes especificar el carácter que R debe interpretar como valor omitido, pero los dos procedimientos estándares son sustituir el valor como NA o sustituirlo por nada. Cuando haces cualquiera de los dos, en los datos que se leen deberías ver un NA. Lo mejor es, como de costumbre, ser explícito: utilizar un NA en sus datos originales, o utilizar alguna otra cadena de caracteres especiales para identificarlos. Lo más probable es que desees utilizar NA (o utilizar alguna otra combinación de caracteres y ser explícito), especialmente para las variables de carácter.
+
 \end{document}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.10.11)  11 OCT 2024 23:43
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.10.11)  14 OCT 2024 18:58
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2072,7 +2072,7 @@ LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <12> not available
 [3]
 
 [4]
-<figure/unnamed-chunk-7-1.pdf, id=79, 505.89pt x 505.89pt>
+<figure/unnamed-chunk-7-1.pdf, id=114, 505.89pt x 505.89pt>
 File: figure/unnamed-chunk-7-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-7-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-7-1.pdf  used on input line 183.
@@ -2090,7 +2090,67 @@ Overfull \hbox (17.62482pt too wide) in paragraph at lines 183--184
 
 [7]
 
-[8] 
+[8]
+
+[9]
+
+[10]
+Overfull \hbox (20.06252pt too wide) in paragraph at lines 509--509
+[]\T1/cmtt/m/n/12 ## Error in apply(v3, 1, mean): dim(X) debe tener una longitu
+d positiva[] 
+ []
+
+
+Overfull \hbox (13.88902pt too wide) in paragraph at lines 514--514
+[]\T1/cmtt/m/n/12 ## Error in apply(F, 1, mean): dim(X) debe tener una longitud
+ positiva[] 
+ []
+
+
+Overfull \hbox (26.23601pt too wide) in paragraph at lines 519--519
+[]\T1/cmtt/m/n/12 ## Error in log("23"): Argumento no numérico para una función
+ matemática[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 536--536
+[]\T1/cmtt/m/n/12 ## Error in rnorm(23, 1, 1, 1, 34): los argumentos no fueron 
+usados
+ []
+
+
+Overfull \hbox (7.71553pt too wide) in paragraph at lines 543--543
+[]\T1/cmtt/m/n/12 ## Error in xy.coords(x, y, xlabel, ylabel, log): 'x' and 'y'
+ lengths
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 548--548
+[]\T1/cmtt/m/n/12 ## Error in model.frame.default(formula = y ~ x, drop.unused.
+levels
+ []
+
+
+Overfull \hbox (1.54204pt too wide) in paragraph at lines 554--554
+[]\T1/cmtt/m/n/12 ## Error in t.test.formula(x ~ z): grouping factor must have 
+exactly
+ []
+
+
+
+[11]
+
+[12]
+Overfull \hbox (26.23601pt too wide) in paragraph at lines 586--586
+[][]\T1/cmtt/m/n/12 another.data.set[] []<-[] []read.table[][]([][]"data/Anothe
+rDataSet.txt"[][],[] []header[] []=[] []TRUE[][])[][] 
+ []
+
+
+
+[13]
+
+[14] 
 enddocument/afterlastpage: lastpage setting LastPage.
 (main-prstr.aux
 LaTeX Info: Redefining \. on input line 8.
@@ -2101,13 +2161,13 @@ LaTeX2e <2024-06-01> patch level 2
 L3 programming layer <2024-08-30>
  ***********
 Package rerunfilecheck Info: File `main-prstr.out' has not changed.
-(rerunfilecheck)             Checksum: 5E09ADCF0C645544210839794EE24DC2;528.
+(rerunfilecheck)             Checksum: 36078E91FC56AD581CE068DCB7242E40;1088.
  ) 
 Here is how much of TeX's memory you used:
- 34433 strings out of 473899
- 620048 string characters out of 5726027
+ 34453 strings out of 473899
+ 620317 string characters out of 5726027
  1116556 words of memory out of 5000000
- 56564 multiletter control sequences out of 15000+600000
+ 56571 multiletter control sequences out of 15000+600000
  581453 words of font info for 81 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  143i,13n,173p,2304b,2146s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -2130,9 +2190,9 @@ e1/public/amsfonts/cm/cmr8.pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/f
 onts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Sandra/AppData/Local/Program
 s/MiKTeX/fonts/type1/public/lm/lmssbx10.pfb><C:/Users/Sandra/AppData/Local/Prog
 rams/MiKTeX/fonts/type1/urw/palatino/uplr8a.pfb>
-Output written on main-prstr.pdf (9 pages, 245104 bytes).
+Output written on main-prstr.pdf (15 pages, 282356 bytes).
 PDF statistics:
- 490 PDF objects out of 1000 (max. 8388607)
- 15 named destinations out of 1000 (max. 500000)
- 66 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 608 PDF objects out of 1000 (max. 8388607)
+ 28 named destinations out of 1000 (max. 500000)
+ 122 words of extra memory for PDF output out of 10000 (max. 10000000)
 
