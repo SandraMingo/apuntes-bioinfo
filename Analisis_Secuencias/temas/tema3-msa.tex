@@ -46,5 +46,105 @@ FOXP2 es un factor de transcripción. Al realizar un alineamiento de múltiples 
 \caption{Ejemplo del factor de transcripción FOXP2}
 \end{figure}
 
+%14/10 - Luis del Peso
 \section{Representación de MSA}
 Como se ha explicado anteriormente, el MSA puede utilizarse para identificar motivos/dominios funcionales y/o estructurales en un grupo de secuencias. Y lo que es más importante, una vez que hemos identificado ese motivo/dominio, puede utilizarse para buscar en bases de datos e identificar otras proteínas que compartan ese (nuevo) motivo y, como veremos, esas búsquedas son mucho más sensibles que las basadas en una secuencia de consulta. Sin embargo, para realizar dichas búsquedas, necesitamos una forma de representar el motivo/dominio revelado en el MSA. Existen varias formas de representar una región conservada, como se explica a continuación.
+
+\subsection{Secuencia consenso}
+Esta es la forma más sencilla de representar una región conservada y se utiliza ampliamente debido a su simplicidad y a su interpretación directa. Para construir una secuencia de consenso podríamos limitarnos a representar aquellos residuos que se conservan en todas las secuencias en una posición determinada. Por ejemplo, la secuencia consenso para la MSA representada en la figura \ref{fig:consensus-seq} es: TTxCxxAAxx donde x representa cualquier aminoácido. De hecho, esto se denomina consenso al 100\% de frecuencia, porque un residuo sólo se incluye en el consenso cuando está presente en el 100\% de las secuencias alineadas. El consenso puede construirse a cualquier otro nivel de porcentaje. Para el mismo alineamiento, el consenso al 50\%, que representa residuos presentes en al menos el 50\% de las secuencias, sería TTGCTCAAXT. Por último, a menudo el consenso representa el residuo más frecuente en cada posición, independientemente de su frecuencia absoluta.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.5\textwidth]{figs/consensus-seq.png}
+\caption{\textbf{Secuencia consenso.} La secuencia de consenso indica el residuo presente en al menos un determinado porcentaje de las secuencias alineadas, o simplemente el residuo más frecuente, en cada posición del MSA. La figura muestra la alineación de varias secuencias de ADN unidas por C/EBP.}
+\label{fig:consensus-seq}
+\end{figure}
+
+\subsection{Expresiones regulares o patrones}
+El problema de las secuencias de consenso es que se pierde la mayor parte de la información contenida en el alineamiento. Por ejemplo, el consenso TTxCxxAAxx implica que no hay preferencia de residuo en la tercera posición. Sin embargo, la inspección de las secuencias individuales revela que, de hecho, existe una fuerte preferencia por la guanina en esta posición.
+Por otra parte, el consenso del 50\% capta la preferencia por G en esta posición, pero no informa sobre qué otros residuos (si los hay) pueden ocupar esta posición ni sobre su frecuencia. Esta deficiencia es evidente en la décima posición del consenso del 50\%, que no muestra que en esta posición son posibles tanto la timina como la adenina. Las \textbf{expresiones regulares}, también conocidas como \textbf{patrones}, utilizan un conjunto de reglas para capturar esta diversidad. Por ejemplo, representan todos los residuos alternativos posibles en una posición determinada entre corchetes. También se puede representar aquellos residuos que nunca aparecen entre llaves. Así, el MSA de la figura \ref{fig:consensus-seq} puede representarse mediante la expresión regular:\\
+TT[GT]C[TGC][AC]AA[TGC][TA]\\
+TT[GT]C\{A\}[AC]AA\{A\}[TA]\\
+Esta representación proporciona más información que las contras correspondientes, ya que muestra que la décima posición puede estar ocupada por T o A.
+
+\subsection{Matrices de puntuación específicas para cada puesto (PSSM)}
+Aunque las expresiones regulares representan una mejora con respecto al consenso, pierden importante información orientativa. La expresión regular mostrada en la sección anterior indica que T, C o G pueden encontrarse en las posiciones quinta y novena. Sin embargo, la preferencia por la timina es mayor en la quinta posición (0,6 frente a 0,4 de frecuencia). Una estructura que captura este tipo de información cuantitativa es la Matriz de Puntuación de Posiciones Específicas (PSSM). Una PSSM no es más que una matriz que confronta todos los símbolos posibles (los 20 aminoácidos posibles o los 4 nucleótidos en las secuencias de nucleótidos) con las posiciones de alineación. Cada celda de la matriz contiene un número que representa la preferencia de cada residuo concreto en cada posición. Hasta ahí, se consideraría una PWM (position weight matrix), es decir, tomar las frecuencias de cada nucleótido para cada posición normalizadas. Formalmente, los valores de cada celda de la PSSM se calculan como la relación logarítmica entre las frecuencias de residuos observadas en cada posición y las esperadas por azar. Así, suponiendo frecuencias de fondo iguales para todos los nucleótidos, el PSSM que representa el MSA mostrado en \ref{fig:consensus-seq} sería:
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{l | l l l l l l l l l l }
+& 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\ \hline
+A & -1,2 & -1,2 & -1,2 & -1,2 & -1,2 & 0 & 1,4 & 1,4 & -1,2 & 0,4 \\
+C & -1,2 & -1,2 & -1,2 & 1,4 & -0,2 & 1,2 & 1,2 & 1,2 & 0,4 & -1,2  \\
+G & -1,2 & -1,2 & 1,2 & -1,2 & -0,2 & -1,2 & -1,2 & -1,2 & -0,2 & -1,2  \\
+T & 1,4 & 1,4 & -0,2 & -1,2 & 0,8 & -1,2 & -1,2 & -1,2 & 0,4 & 0,8  \\
+\end{tabular}
+\caption{PSSM representando el MSA de la figura \ref{fig:consensus-seq}}
+\end{table}
+
+Por ejemplo, la entrada correspondiente a la timina en la posición 1 se calcularía como $log_2 \frac{5/5}{0,25} = 1,4$. Sin embargo, como $log_2(0)$ no está definido, esta ecuación produciría un error si se aplicara a la entrada de A en la primera posición $(log_2(\frac{0/5}{0,25}))$. Para evitar este problema utilizamos \textbf{pseudoconteos}, es decir, añadimos un pequeño valor, $\beta$, a cada celda para que la frecuencia observada nunca sea cero. Así, si la frecuencia observada del símbolo $i$ en la posición $p, f_{ip}$ es $n_{ip}/N_{seq}$, donde $n_{i,p}$ es el número de residuos del tipo $i$ alineados en la columna $p$ y $N_{seq}$ es el número de secuencias alineadas, entonces la frecuencia de $i$ después de añadir pseudoconteos sería:
+$$f_{i,p} = \frac{n_{i,p} + \beta}{N_{seq} + (\beta \cdot N_s)}$$
+
+donde $N_s$ es el número de los diferentes símbolos (4 en el caso de los nucleótidos y 20 para proteínas). Obsérvese que, de hecho, esta corrección es una forma de superar la falta de datos a la hora de derivar los valores de un PSSM. Por ejemplo, en el caso de la figura \ref{fig:consensus-seq}, ¿hasta qué punto estamos seguros de que la adenina nunca se encuentra en la posición 1? Si en lugar de sólo cinco instancias de C/EBP tuviéramos 500, ¿tendrían algunas de ellas «A» en la primera columna? El valor de $\beta$ suele ser 1 para la construcción de PSSMs, lo que implica que observaríamos al menos un residuo de cada tipo en cada columna si tuviéramos datos suficientes, pero podríamos elegir cualquier otro valor. Tras aplicar pseudoconteos la entrada correspondiente a la timina en la posición 1 se calcularía como $log _2(\frac{6/9}{0,25}) = 1,41$ y la entrada de A en la primera posición sería $log_2(\frac{1/9}{0,25}) =-1,2$.
+
+El problema de este modelo es que asume la independencia entre posiciones, cuando esto es falso. Además, no se pueden representar fácilmente los gaps, solo se podría apañar haciendo una PSSM antes del gap y otra después.
+
+\subsubsection{Generación de PSSM: un caso real}
+En el siguiente ejemplo se oberva la frecuencia de nucleótidos en el motivo TATA derivado de más de 800 secuencias de promotores de mamíferos de GenBank que tenían anotados un motivo TATA.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = \textwidth]{figs/tata.png}
+\caption{Frecuencia de nucleótidos en el motivo TATA derivada de >800 secuencias promotoras de mamíferos de GenBank que tenían elementos TATA anotados a $\sim$ -30 pb del TSS.}
+\end{figure}
+
+\subsection{Secuencia de logotipos y contenido informativo}
+Los PSSM y los HMM son formas precisas de representar la MSA. Son especialmente fáciles de manipular por ordenador y, por tanto, aptos para representar motivos y dominios proteicos en bases de datos especializadas y para buscar en bases de datos. Sin embargo, no son una forma fácil de representar MSA para el ser humano.
+
+Por este motivo, en publicaciones y libros, los patrones de un conjunto de secuencias alineadas se suelen mostrar mediante una representación gráfica denominada \textbf{logo}. En un logo, los símbolos encontrados en cada posición del alineamiento se muestran apilados unos sobre otros, ordenados según su frecuencia (el símbolo más frecuente se muestra encima del resto). Además, la altura de los símbolos es proporcional a su frecuencia, de modo que se resaltan los símbolos preferidos en cada posición. Por último, la altura total de cada columna de símbolos se ajusta para significar la conservación global de los símbolos. Así, las posiciones que muestren una fuerte preferencia por un determinado tipo de residuos serán altas, mientras que las posiciones que muestren poca conservación estarán representadas por una pila corta de símbolos. La representación resultante revela claramente el patrón que definen las secuencias alineadas (véase la figura \ref{fig:logo}).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.3\textwidth]{figs/logo.png}
+\caption{\textbf{Logo}. Representación de la alineación mostrada en la figura \ref{fig:consensus-seq} como logo. El gráfico se generó con WebLogo3 sin ajustes de composición y utilizando un esquema de colores clásico.}
+\label{fig:logo}
+\end{figure}
+
+Los logos de secuencias se basan en el concepto de entropía de la teoría de la información, desarrollado por Claude Shannon. El grado de conservación de los residuos en una posición concreta de un MSA puede cuantificarse, utilizando las herramientas de la teoría de la información, como la cantidad de incertidumbre sobre los posibles residuos que pueden ocupar esa posición. Por ejemplo, dado el MSA representado en la figura \ref{fig:logo}, nuestra incertidumbre sobre el nucleótido que puede encontrarse en la posición 1 de un sitio de unión a C/EBP es muy pequeña. Así, si alguien encuentra una nueva región unida por C/EBP será fácil predecir el nucleótido presente en la primera posición antes de ver este nuevo sitio de unión. En cambio, sería mucho más difícil predecir con certeza la identidad del residuo en la novena posición. En el campo de la información, la entropía \footnote{Formalmente, se llama entropía de Shannon}, H, de una variable aleatoria discreta X con valores posibles $x_1, x_2, \ldots ,x_n$ es una medida de la cantidad de incertidumbre asociada al valor de X (cuantifica la información). La entropía de Shannon se define como:
+$$H(X) = -\sum_i P((x_i) log_2 P(x_i)$$
+donde $P(x_i)$ es la probabilidad de observar el valor $i$-ésimo de X. La entropía, $H(X)$, se mide en unidades de bits. El término bit (que no byte) es una acortación de "binary digit" y representa la unidad básica de información en comunicación computacional y digital. En ese sentido, el término $P(x_i) log_2 P(x_i)$ es 0 cuando $P(x_i) = 0$.
+
+Podemos pensar en los bits como el número mínimo de dígitos binarios necesarios para representar todos los estados de un sistema. Por ejemplo, el lanzamiento de una moneda puede dar dos resultados (estados): cara o cruz. Un solo dígito binario puede representar ambos (0 o 1). Por tanto, la entropía asociada al lanzamiento de una moneda es: $-(P_{head} log_2 P_{head} + P_{tail} log_2 P_{tail}) = 1 bit$. 
+Del mismo modo, lanzar un dado puede dar lugar a 6 estados diferentes, por lo que para representar todos los casos posibles necesitaríamos tres dígitos binarios. Nótese que, en este caso, tres dígitos binarios es un exceso, ya que pueden representar hasta 8 estados (000, 001, 010, 100, 011, 101, 110, 111), mientras que nosotros sólo necesitamos representar 6. Sin embargo, dos dígitos binarios serían insuficientes para representar los seis estados. Por eso la entropía asociada es de 2,6 bits en lugar de 3. Último ejemplo: la incertidumbre de que haya un nucleótido en una cierta posición es:
+\begin{align*}
+H(nucleotide) = - \sum_{x_i = A, C, G, T} P(x_i) log_2 P(x_i) = \\
+ - ((\frac{1}{4} \cdot log_2\frac{1}{4}) + (\frac{1}{4} \cdot log_2\frac{1}{4}) + (\frac{1}{4} \cdot log_2\frac{1}{4}) + (\frac{1}{4} \cdot log_2\frac{1}{4})) = 2 bits
+\end{align*}
+Por tanto, el genoma humano puede almacenar una capacidad máxima de información de:
+$$3,2 \cdot 10^9 pb \cdot 2 bits = 6,4 \cdot 10^9 bits = 800 Mb = 0,8 Gb$$
+Solo se tiene en cuenta una cadena y no las dos ya que, al ser complementarias, la información codificada es la misma en ambas cadenas y, por tanto, redundante. 
+Bajo los estándares actuales, esta cantidad de información es ridícula. En el ADN está toda la información necesaria para hacer cualquier individuo completo. No obstante, el genoma codificante es un 1-2\%. Esto es crítico, ya que se genera mucha complejidad con tan poca información. El tema está en que nuestro genoma no codifica la información de cada neurona, solo codifica proteínas, las cuales interaccionan entre sí y generan propiedades emergentes. Así, hay una capa superpuesta de información que no es evidente y explica toda la complejidad. 
+Nuestro genoma acumula muy poca información, pero es muy pequeño. Por unidad de volumen, la densidad de información a guardar es mucho más grande. Otra ventaja fundamental es que el ADN es muy estable, incluso almacenado de forma no óptima. Por ejemplo, los fósiles siguen teniendo ADN que se puede recuperar; no se puede decir lo mismo de un teléfono móvil 3 semanas a la intemperie. Por ello, se está intentando almacenar información en el ADN, pero el problema es cómo guardarlo y recuperarlo, ya que depende de procesos bioquímicos sensibles.
+
+Volviendo a los logos, la altura de cada columna de símbolos representa el contenido informativo de esa posición concreta. Debemos pensar en el contenido informativo como una disminución de la incertidumbre tras la recepción de algún mensaje o dato. Así, el contenido informativo o entropía relativa es la diferencia entre la entropía (es decir, la incertidumbre) antes y después del mensaje:
+$$I(X) = H_b(X) - H_a(X)$$
+donde $I(X)$ es la información, $H_b$ la incertidumbre inicial y $H_a$ la entropía después de haber recibido algunos datos.
+Por ejemplo, la incertidumbre sobre el resultado de tirar un dado antes de lanzarlo es de 2,6 bits. Si alguien tira los dados (sin que veamos el resultado) y nos informa de que el resultado ha sido un número par, entonces la entropía tras recibir este nuevo dato es de 1,6 bits. Así, podemos cuantificar la información recibida como $H_{before} - H_{after}$ correspondiente a 1 bit. En el caso de las secuencias biológicas, ver el MSA reduce nuestra incertidumbre sobre el símbolo esperado en cada posición y esta reducción se cuantifica por el contenido de información de cada posición. Nótese que hemos estado calculando el contenido de información para posiciones individuales. La ganancia total de información se obtiene sumando todas las posiciones. Al hacerlo, partimos del supuesto simplificador de que las frecuencias de una posición no se ven influidas por las de otra posición. Así, el contenido total de información para el MSA se calcula como:
+$$I = \sum_i H_i^b - H_i^a$$
+donde $i$ representa cada posición en el alineamiento.
+
+\begin{table}[htbp]
+\begin{mdframed}[backgroundcolor=black!10]
+En resumen, los logos son representaciones de los alineamientos donde se representan los nucleótidos en cada posición, siendo el tamaño del nucleótido representativo de su frecuencia. En este caso, el eje y muestra bits, que son una unidad de información. Cuantas más posibilidades (outcome, $x_i$) hay, más incertidumbre hay y, por tanto, mayor es la entropía de Shannon. 
+
+Algunas posiciones llegan a los 2 bits, es decir, almacenan toda la información que es posible almacenar. Sin embargo, hay otras posiciones que son menores que 2 bits. Esto se debe a que no se muestra la entropía, si no la información: la incertidumbre de un proceso antes y después de recibir información adicional. Antes de un alineamiento, la incertidumbre en cada posición es de 2 bits. Si tras hacer el alineamiento una posición tiene siempre un mismo nucleótido, la incertidumbre pasa a ser 0, por lo que la información es 2 - 0 = 2. Cuanto más variable sea una posición en el alineamiento, más incertidumbre hay y menos información tenemos. En los logos, la altura es el contenido de información y el tamaño de cada letra es la probabilidad de que salga.
+\end{mdframed}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = \textwidth]{figs/logo-parts.png}
+\caption{Partes de un logo.}
+\end{figure}
+
+%\subsection{Modelos de Markov ocultos (HMM)}
