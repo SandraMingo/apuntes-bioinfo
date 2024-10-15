@@ -1,5 +1,5 @@
 %08/10 - Gonzalo Martínez
-\chapter{Procesado y manejo de datos masivos}
+\chapter{Estrategias de programación para el parseo y extracción de datos}
 \section{Formatos de ficheros bioinformáticos}
 Los formatos de fichero son en formato texto, y los principales son:
 \begin{itemize}
@@ -408,4 +408,411 @@ print(x) # [100 200 300   4   5]
 \end{lstlisting}
 De ambas formas, el resultado para y es igual; la diferencia se encuentra en el array original x. En la primera variante, x no se ve modificado, mientras que en la segunda variante, los valores de x sí se han visto modificados.
 
+%15/10 - Gonzalo Martínez
+El siguiente array contiene una lista de 100 notas aleatorias de 0 a 10. Crea un array que tenga una nota cualitativa para cada nota numérica:
+\begin{lstlisting}[language=Python]
+n = 100
+np.random.seed(13)
+notas = np.random.rand(n)*10
+
+notas_cual = np.array(notas, dtype=str)
+notas_cual[notas < 5] = "SUSPENSO"
+notas_cual[(notas >= 5) & (notas < 7) ] = "APROBADO"
+notas_cual[(notas >= 7) & (notas < 9) ] = "NOTABLE"
+notas_cual[notas >= 9] = "SOBRESALIENTE"
+\end{lstlisting}
+
+Ahora cuenta el número de suspensos, aprobados, notables y sobresalientes.
+\begin{lstlisting}[language=Python]
+np.sum(notas_cual == "SUSPENSO")
+np.sum(notas_cual == "APROBADO")
+np.sum(notas_cual == "NOTABLE")
+np.sum(notas_cual == "SOBRESALIENTE")
+\end{lstlisting}
+
+Hay más funciones de Numpy que no hemos visto. Por ejemplo, \texttt{np.unique} proporciona todos los valores únicos. Así, el ejercicio anterior se podría resolver de la siguiente forma:
+\begin{lstlisting}[language=Python]
+for value in np.unique(notas_cual):
+    print("# de ", value, ":", np.sum(notas_cual == value))
+\end{lstlisting}
+\subsubsection{Operaciones con arrays}
+\paragraph{Transponer}
+La función \texttt{transpose} o \texttt{T} permite intercambiar las filas por columnas de un array. 
+\begin{lstlisting}[language=Python]
+data = np.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]])
+data.T # o data.transpose()
+\end{lstlisting}
+
+También es posible transponer arrays multidimensionales especificando los índices de los ejes que se quieren intercambiar. 
+
+\paragraph{Cambiar la forma de un array (reshape y ravel)}
+El método \texttt{ndarray.reshape()} cambia la forma de un array sin cambiar su contenido, solo lo reajusta. El número de celdas totales en ambos arrays debería ser igual. El método \texttt{ndarray.ravel()} comprime un array en uno de una sola dimensión. Además, el método \texttt{np.concatenate} concatena dos arrays a lo largo de un eje, dado que el tamaño de la otra dimensión sea igual. Algunos ejemplos son:
+\begin{lstlisting}[language=Python]
+x = np.arange(1, 13) 
+print(x)
+y = x.reshape(3, 4) #cambia a dimensiones 3x4
+print(y)
+z = y.ravel() #vuelve a 1 dimensión
+print(z)
+
+x = np.zeros((3, 4))
+print(x)
+y = np.ones((3, 2))
+print(y)
+np.concatenate((x, y), axis = 1) #el eje 1 son las columnas
+np.concatenate((x[:, :2], y), axis = 0) #eje 0 son las filas, y sólo se obtienen las primeras dos columnas de x
+\end{lstlisting}
+
 \subsection{Matplotlib}
+Matplotlib es una librería de gráficos. Se suele importar como \texttt{import matplotlib.pyplot as plt}. La función más sencilla es \texttt{plot}.
+\begin{lstlisting}[language=Python]
+x = np.linspace(0.1, 4, 40) #[0.1, 0.2, 0.3, 0.4, 0.5, ...]
+y = 1/x #[10., 5., 3.3333, 2.5, 2., ...]
+plt.plot(x, y)
+\end{lstlisting}
+
+También se pueden imprimir varias líneas a la vez:
+\begin{lstlisting}[language=Python]
+x = np.linspace(-np.pi, np.pi, 40) 
+y1 = np.sin(x)
+y2 = np.cos(x)
+# Use dummy variable _ to get the return value of plot to avoid printing its reference
+_ = plt.plot(x, y1, x, y2)
+\end{lstlisting}
+
+\paragraph{Opciones de trazado}
+Se puede especificar la forma de trazado al proporcionar una cadena que incluya un identificador. 
+\begin{lstlisting}[language=Python]
+x = np.arange(0.1,4,0.1)
+y = 1/x
+plt.plot(x, y, 'm*')
+\end{lstlisting}
+En el caso anterior, m representa el color magenta y el asterisco la forma de cada punto en el gráfico. Así, las líneas discontinuas se muestran como dos guiones, guion punto alterna ambos símbolos, la k representa el color negro, etc. Todas las opciones se pueden encontrar en \href{https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.plot.html#matplotlib.axes.Axes.plot}{la guía}.
+
+También se pueden retocar otras propiedades:
+\begin{itemize}
+\item linewidth: el ancho de la línea en píxeles
+\item markeredgecolor: el color del borde del marcador
+\item markerfacecolor: el color interno del marcador
+\item markerzie: el tamaño del marcador
+\end{itemize}
+En general, estos parámetros aplican a todo el gráfico. Sin embargo, se puede establecer anchos y colores distintos para cada una de las líneas llamando al plot varias veces:
+\begin{lstlisting}[language=Python]
+x  = np.arange(0.1,20,0.5)
+y  = np.exp(0.1*x)
+y1 = y * np.sin(x)
+y2 = y * np.cos(x)
+
+_ = plt.plot (x, y1, ':ms', linewidth=2, markeredgecolor='k', markerfacecolor='r', markersize=5)
+_ = plt.plot (x, y2, '-co', linewidth=11, markeredgecolor='b', markerfacecolor='c', markersize=11)
+\end{lstlisting}
+
+\paragraph{Tipos de gráficos}
+Se pueden crear distintos tipos de gráficos:
+\begin{itemize}
+\item Gráfico de tarta (pie plot): mediante \texttt{plt.pie(x, Explode)}, siendo Explode la distancia a la que se debe separar la fracción.
+\item Histograma: \texttt{hist(x, nbins)}. Por defecto, se crean 10 cajas o bins equidistantes. Si x es una matriz, entonces se crea un histograma por columna.
+\item Diagrama de barras (bar plot): la función \texttt{bar(x, y, width, bottom, style...} crea un gráfico de barras verticales u horizontales (\texttt{barh}). El parámetro width indica la separación entre las barras, y bottom permite poner barras apiladas.
+\item Contour: Esta función \texttt{contour(Z, n)} traza isolíneas desde la matriz Z, donde Z se interpreta como alturas con respecto al plano xy. Z debe ser al menos una matriz de 2x2. El número de niveles puede especificarse utilizando el parámetro «n»; de lo contrario, se calculan automáticamente a partir de las alturas máxima y mínima de Z.
+\item Pcolor: La función \texttt{pcolor(c)} dibuja una matriz coloreada con colores dados por C. El gráfico muestra una columna y una fila menos que las columnas y filas de la matriz. Esta función (si no se dan otros parámetros) obtiene el color para la celda (i, j) del elemento (i, j) de la matriz C usando el mapa de colores actual.
+\item Diagrama de dispersión (scatter plot): La función \texttt{scatter(x, y, s = 20, c=u'b', ...} crea un diagrama de dispersión con coordenadas x e y. Los vectores x e y deben tener el mismo tamaño. El tamaño de los puntos puede especificarse con s y su color con c. Tanto el tamaño como el color pueden darse para todos los puntos juntos utilizando un único valor o para cada punto individual utilizando un vector. Para la primera configuración, basta con dar un único escalar para el tamaño y una cadena para el color. Para la segunda, se debe dar un vector del mismo tamaño de x e y para los tamaños. Para los colores, se puede especificar un vector que contenga indixes f el mapa de colores, o un array de tamaño len(x) x 3 con colores en RGB.
+\end{itemize}
+
+\paragraph{Opciones globales para gráficos}
+Todos los gráficos admiten una serie de funciones que permiten crear un gráfico "decente":
+\begin{itemize}
+\item figure: crea una figura del tamaño especificado. En esta opción también se puede especificar el color de fondo.
+\item subplot(nrows, ncols): crea una matriz de gráficos de filas nrows y columnas ncols. El último parámetro indica sobre qué gráfico vamos a trabajar. También hay más parámetros como sharex o sharey que permite crear ejes compartidos entre todos los subgráficos. También se debe indicar mediante índice el subgráfico que se quiere modificar a continuación.
+\item xlabel ylabel: permite indicar el nombre de los ejes x e y.
+\item title: permite especificar el título del gráfico.
+\item legend: añade la leyenda al gráfico. Se debe llamar esta opción una vez se haya ejecutado la función de creación del gráfico.
+\item colorbar: incluye una barra de colores de referencia.
+\item xlim ylim: modifica los límites de los ejes que se muestren en las gráficas.
+\item xticks yticks: modifica las marcas de los ejes.
+\end{itemize}
+Un ejemplo de como aplicar todo esto sería el siguiente (el resultado se ve en la figura \ref{fig:plt1}):
+\begin{lstlisting}[language=Python]
+plt.figure(num=None, figsize=(12, 4), facecolor='c')
+
+# Data
+x = np.linspace(-np.pi,np.pi,20)
+Y1 = np.sin(x)
+Y2 = np.cos(x)
+
+# Graph using legend and labels in the axis
+plt.subplot(1,2,1) # Create a graph with two subplots. We start working on the first
+plt.xlabel('x')
+plt.ylabel('y')
+plt.plot(x, Y1, label='sen')
+plt.plot(x, Y2, label='cos')
+plt.legend(loc=2) # Called after finishing the plot
+
+# Graph with x label, title, with the limits of the axis modified
+# and also the labels for the x axis
+plt.subplot(1,2,2) # Now we use the second subplot
+plt.xlabel('x')
+plt.title('Seno y coseno')
+plt.xlim([-3,3])
+plt.xticks(range(-3,4), ['a','b','c','d','e','f','g'])
+plt.plot(x, Y1, label='sen')
+_ = plt.plot(x, Y2, label='cos')
+\end{lstlisting}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = \textwidth]{figs/plt1.png}
+\caption{Gráfico de ejemplo}
+\label{fig:plt1}
+\end{figure}
+
+Otro ejemplo sería:
+\begin{lstlisting}[language=Python]
+def sigmoid(V, V0, W=12):
+    """ Sigmoidal function
+    
+    Parameters
+    ----------
+    V: float or array of floats
+        Membrane potential
+    V0: float
+        Position of the sigmoid function
+    W: float
+        Width of the transition region
+        
+    Returns
+    -------
+    y: float or array of floats
+        Sigmoidal function    
+    """
+    return 1/(1+np.exp(-(V-V0)/W))
+
+V = np.arange(-100, 100, 1) #if we use linspace, instead of the steps we put how many values we want
+y = sigmoid(V, -40, 12)
+
+fig, axs = plt.subplots(1, 2)
+#varying V0
+ax = axs[0]
+for V0 in [-40, 0, 40]:
+    y = sigmoid(V, V0, 12)
+    ax.plot(V, y, label = f'{V0:.0f}mV')
+ax.set_xlabel('V [mV]')
+ax.legend(title = '$V_0$')
+
+#Varying W 
+ax = axs[1]
+for w in [1, 10, 20]:
+    y = sigmoid(V, 0, w)
+    ax.plot(V, y, label = f'{w:.0f}mV')
+ax.set_xlabel('V [mV]')
+ax.legend(title = '$w$')
+plt.show()
+\end{lstlisting}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.5\textwidth]{figs/plt2.png}
+\caption{Otro ejemplo}
+\label{fig:plt2}
+\end{figure}
+
+\section{Biopython}
+Biopython es una librería Python con herramientas para computación biológica. Se trata de un proyecto de código abierto miembro de la Open Bioinformatics (OBF). Una fundación que promueve el código abierto en la investigación biológica.
+El objetivo de esta librería es facilitar al máximo el uso de python en bioinformática para el análisis sintáctico de archivos, funciones para trabajar con secuencias y características, trabajar con sitios bioinformáticos online como NCBI o ExPASy, alineamientos, etc.
+
+\subsection{Seq}
+La clase Seq es la clase básica para representar secuencias en Biopython. Se representan las secuencias biológicas como cadenas. Así, se puede iterar sobre las bases, realizar slicing, concatenar secuencias y utilizar otros métodos de cadenas. Todas estas operaciones devuelven nuevos objetos de tipo Seq, que son inmutables, como los strings.
+
+Esta clase tiene métodos especiales de ADN como \texttt{complement} o \texttt{reverse\_complement}. 
+\begin{lstlisting}[language=Python]
+dna = Seq('GATTACA')
+print(dna.complement()) #CTAATGT
+print(dna.reverse_complement()) #TGTAATC
+\end{lstlisting}
+
+También permite la transcripción mediante \texttt{transcribe} y \texttt{back\_transcribe} para obtener el ARN y la traducción para obtener la secuencia de aminoácidos (\texttt{translate}). Se puede especificar la tabla de traducción y si se desea parar justo antes del primer codón de stop.
+\begin{lstlisting}[language=Python]
+cds = Seq('GTGTTTTTGGTGTGGTGA')
+mRNA = cds.transcribe()
+print(mRNA) #GUGUUUUUGGUGUGGUGA
+print(mRNA.back_transcribe()) #GTGTTTTTGGTGTGGTGA
+
+mRNA = Seq('UUGUUUUUGGUGUGGUGA')
+
+print("Translate using standard table: ", mRNA.translate()) #Translate using standard table:  LFLVW*
+print("Translate until stop codon    : ", mRNA.translate(to_stop=True)) #Translate until stop codon    :  LFLVW
+print("Using a different table       : ", mRNA.translate(table=2)) #Using a different table       :  LFLVWW
+print("by name                       : ", mRNA.translate(table="Vertebrate Mitochondrial")) #by name                       :  LFLVWW
+# This next line raises an error because the sequence is not a CDS for table=2
+#print("CDS-like RNA                  : ", mRNA.translate(table=2, cds=True)) #CDS-like RNA                  :  MFLVW
+# But it is a CDS-like sequence for table=11 (Bacterial)
+print("CDS-like RNA                  : ", mRNA.translate(table=11, cds=True)) #CDS-like RNA                  :  MFLVW
+
+cds = Seq('GTGTTTTTGGTGTGGTGA')
+prot = cds.translate(table=11, cds=True)
+prot = cds.translate()
+prot #Seq('VFLVW*')
+\end{lstlisting}
+
+Si la secuencia es un CDS, debe tener un codón de inicio y final; si no, se produce un error. No es necesario seguir el flujo natural: se pueden obtener los aminoácidos directamente desde el ADN sin tener que pasar previamente por el ARN.
+
+\subsubsection{Tablas de traducción}
+Se pueden obtener las tablas de traducción:
+\begin{lstlisting}[language=Python]
+from Bio.Data import CodonTable
+
+bacterial_table = CodonTable.unambiguous_dna_by_name['Bacterial']
+print(bacterial_table)
+\end{lstlisting}
+
+\subsection{SeqRecord}
+SeqRecord consta de una secuencia (objeto Seq) junto con id, descripción, anotaciones, características, etc. Se puede crear un SeqRecord a partir de un objeto Seq, de un archivo fasta, genbank, etc.
+\begin{lstlisting}[language=Python]
+from Bio.SeqRecord import SeqRecord
+
+sr = SeqRecord(Seq('AAA'), id='1', description='Simple seq', annotations={"molecule_type": "DNA"})
+print(sr)
+\end{lstlisting}
+
+\subsection{SeqIO}
+IO viene de Input Output. 
+Bio.SeqIO proporciona acceso a la mayoría de los formatos de archivos bioinformáticos.
+La función \texttt{read()} carga un único archivo de secuencia. Obtiene como parámetros el nombre y formato del archivo.
+Si hay más de un registro esta función genera un error. Esta función devuelve un SeqRecord.
+\begin{lstlisting}[language=Python]
+from Bio import SeqIO
+
+record = SeqIO.read("phix174/phix.fa", "fasta")
+print(record)
+\end{lstlisting}
+
+La función \texttt{parse} recupera varias secuencias de un archivo. Los parámetros son los mismos que read(): Nombre y formato del fichero. Esta función devuelve un iterador que permite recorrer todas las secuencias y puede iterar con un bucle
+\begin{lstlisting}[language=Python]
+for record in SeqIO.parse("other/ls_orchid.fasta", "fasta"):
+    print(record)
+    print()
+\end{lstlisting}
+
+Otra función es \texttt{to\_dict}, la cual crea un diccionario del iterador con todas las secuencias del fichero. El problema es que se guarda en la memoria, por lo que puede ralentizar el ordenador en caso de ficheros grandes.
+\begin{lstlisting}[language=Python]
+iterator = SeqIO.parse("other/ls_orchid.gbk", "genbank")
+records_dict = SeqIO.to_dict(iterator)
+print(records_dict['Z78533.1'])
+\end{lstlisting}
+
+La función \texttt{index()} crea un pseudo diccionario a partir de un fichero. Admite como parámetros el nombre y el formato del archivo. Esta función no almacena todo en memoria, sino que obtiene la información del disco cuando es necesario. Almacena la posición de cada secuencia en el fichero para un acceso rápido. Desde el punto de vista del usuario es como un diccionario de secuencias. Es importante cerrar el fichero cuando ya no se utilice.
+\begin{lstlisting}[language=Python]
+records_dict = SeqIO.index("other/ls_orchid.gbk", "genbank")
+print(records_dict['Z78533.1'])
+records_dict.close()
+\end{lstlisting}
+
+También se puede trabajar con ficheros comprimidos para ahorrar espacio en el disco:
+\begin{lstlisting}[language=Python]
+import gzip
+
+with gzip.open("arabidopsis_thaliana/GCF_000001735.3_TAIR10_rna.fna.gz", "rt") as f:
+    total_len = 0
+    for sr in SeqIO.parse(f, "fasta"):
+        total_len += len(sr.seq)
+    print(total_len)
+\end{lstlisting}
+
+Trabajar con índices y archivos comprimidos es más complicado, ya que la posición de cada secuencia no es fácil de obtener. El formato Blocked GNU Zip Format ofrece una buena solución. Comprime los datos por bloques para permitir la indexación. La función Index() puede trabajar con el formato de archivo BGZF.
+
+\subsection{Atributos de SeqRecord}
+Los atributos más importantes de SeqRecord son:
+\begin{itemize}
+\item id y nombre: identificador y nombre de la secuencia
+\item seq: objeto Seq que contiene la secuencia actual
+\item annotations: diccionario de Python con toda la información de la secuencia. Se pueden encontrar tipos de moléculas, topología, fecha, accessiones, versión de secuencia, gi, palabras clave, fuente, organismo, taxonomía, referencias, etc.
+\item features: lista de un objeto SeqFeature que contiene la información sobre las distintas características encontrada en una secuencia.
+\end{itemize}
+\begin{lstlisting}[language=Python]
+records_dict = SeqIO.index("other/ls_orchid.gbk", "genbank")
+record = records_dict['Z78533.1']
+records_dict.close()
+
+print("ID:",record.id, "Name:", record.name)
+print("Description:",record.description)
+print(record.annotations)
+print(record.features)
+\end{lstlisting}
+
+\subsubsection{SeqFeature: características de SeqRecord}
+SeqFeature es una clase que incluye información sobre las características de una secuencia. Sus atributos principales son:
+\begin{itemize}
+\item type: descripción de la característica. Puede ser "gene", "CDS", "region", etc. Es similar al campo 3 de un fichero gff.
+\item location: región donde se encuentra la característica. Contiene las posiciones de inicio y final. Este atributo también puede manejar características localizadas en múltiples regiones.
+\item qualifiers: un diccionario de Python con información sobre la característica.
+\end{itemize}
+\begin{lstlisting}[language=Python]
+from Bio import SeqFeature
+
+records_dict = SeqIO.index("other/ls_orchid.gbk", "genbank")
+print(len(records_dict['Z78533.1'].features), "features found")
+
+for feature in records_dict['Z78533.1'].features:
+    print("----------------------------------------")
+    print(feature)
+    
+records_dict.close()
+\end{lstlisting}
+
+Esta información está incluida en SeqRecord cuando se lee un fichero que contenga la información, como es el caso de GenBank. Por ejemplo, si se abre un fichero FASTA, SeqRecord no encontrará ninguna característica. 
+
+\paragraph{Operador in}
+El operador \texttt{in} se utiliza para comprobar si una posición concreta se encuentra en una característica. Por ejemplo, el siguiente código imprime la característica que incluye la posición 10000.
+\begin{lstlisting}[language=Python]
+record = SeqIO.read('haemophilus_influenzae/GCF_000027305.1_ASM2730v1_genomic.gbff', 'genbank')
+
+position = 10000
+for feature in record.features:
+    if position in feature:
+        print(feature)
+        print('-----------------------')
+    \end{lstlisting}
+
+Este operador también funciona con objetos Location. 
+
+\subsubsection{SeqFeature: método extract}
+El método \texttt{extract()} extrae las características de la secuencia completa. El siguiente código itera sobre las secuencias de un fichero y después sobre las características de cada secuencia, extrayendo las características CDS y generando la proteína asociada utilizando la tabla de traducción correspondiente.
+\begin{lstlisting}[language=Python]
+n_cds = 0
+file_iter = SeqIO.parse('haemophilus_influenzae/GCF_000027305.1_ASM2730v1_genomic.gbff', 'genbank')
+#file_iter = SeqIO.parse('plamodium_falciparum/GCF_000002765.3_ASM276v1_genomic.gbff', 'genbank')
+
+for seqrec in file_iter:
+    for feature in seqrec.features:
+        if feature.type == 'CDS':
+            n_cds += 1
+            mRNA = feature.extract(seqrec)
+            try:
+                transl_table = 1
+                if 'transl_table' in feature.qualifiers:
+                    transl_table = int(feature.qualifiers['transl_table'][0])
+                p = mRNA.seq.translate(table=transl_table, cds=True)
+            except:
+                print("Protein {0} in gene {1} could not be translated!".
+                      format(feature.qualifiers['protein_id'][0], seqrec.id))
+          
+print(n_cds)
+    \end{lstlisting}
+    
+\subsubsection{SeqRecord: slicing}
+Es posible utilizar slicing con SeqRecord. El SeqRecord que se devuelve contiene solo las características que se incluyen en la subsecuencia. Las anotaciones no se copian en las subsecuencias.
+
+\begin{lstlisting}[language=Python]
+record = SeqIO.read('haemophilus_influenzae/GCF_000027305.1_ASM2730v1_genomic.gbff', 'genbank')
+print(record.id)
+print("# of feature: ", len(record.features))
+print("# of annotations: ", len(record.annotations))
+print(record.features[1200])
+
+sub_record = record[612623:620000]
+print(sub_record.id)
+print("# of feature: ", len(sub_record.features))
+print("# of annotations: ", len(sub_record.annotations))
+
+print(sub_record.features[0])
+\end{lstlisting}
+    
