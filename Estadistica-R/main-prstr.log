@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.10.11)  14 OCT 2024 18:58
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.10.11)  16 OCT 2024 18:56
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1864,24 +1864,24 @@ LaTeX Info: Redefining \% on input line 8.
 )
 \openout1 = `main-prstr.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 71.
-LaTeX Font Info:    ... okay on input line 71.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 71.
-LaTeX Font Info:    ... okay on input line 71.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 71.
-LaTeX Font Info:    ... okay on input line 71.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 71.
-LaTeX Font Info:    ... okay on input line 71.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 71.
-LaTeX Font Info:    ... okay on input line 71.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 71.
-LaTeX Font Info:    ... okay on input line 71.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 71.
-LaTeX Font Info:    ... okay on input line 71.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 71.
-LaTeX Font Info:    ... okay on input line 71.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 71.
-LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
 
 (C:\Users\Sandra\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.m
 kii
@@ -1942,9 +1942,9 @@ File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 * \@reversemargintrue
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-LaTeX Info: Redefining \. on input line 71.
-LaTeX Info: Redefining \% on input line 71.
-Package hyperref Info: Link coloring ON on input line 71.
+LaTeX Info: Redefining \. on input line 73.
+LaTeX Info: Redefining \% on input line 73.
+Package hyperref Info: Link coloring ON on input line 73.
 (main-prstr.out) (main-prstr.out)
 \@outlinefile=\write5
 \openout5 = `main-prstr.out'.
@@ -1953,7 +1953,7 @@ Package hyperref Info: Link coloring ON on input line 71.
 Package todonotes Warning: The length marginparwidth is less than 2cm and will 
 most likely cause issues with the appearance of inserted todonotes. The issue c
 an be solved by adding a line like \setlength {\marginparwidth }{2cm} prior to 
-loading the todonotes package. on input line 71.
+loading the todonotes package. on input line 73.
 
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: listings package is loaded.
@@ -1974,58 +1974,58 @@ Package: lscape 2020/05/28 v3.02 Landscape Pages (DPC)
 )
 Package pdflscape Info: Auto-detected driver: pdftex on input line 81.
 ))
-LaTeX Font Info:    Trying to load font information for T1+lmss on input line 7
-9.
+LaTeX Font Info:    Trying to load font information for T1+lmss on input line 8
+1.
 (C:\Users\Sandra\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmss.fd
 File: t1lmss.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-Underfull \hbox (badness 3547) in paragraph at lines 79--79
+Underfull \hbox (badness 3547) in paragraph at lines 81--81
 \T1/cmss/m/n/10.95 agrupación, etc. Prácticamente todos los análisis
  []
 
 
-Underfull \hbox (badness 1147) in paragraph at lines 79--79
+Underfull \hbox (badness 1147) in paragraph at lines 81--81
 \T1/cmss/m/n/10.95 está bien cubierta en R: el clustering (a menudo
  []
 
 
-Underfull \hbox (badness 1226) in paragraph at lines 79--79
+Underfull \hbox (badness 1226) in paragraph at lines 81--81
 \T1/cmss/m/n/10.95 llamado ^^Sanálisis no supervisado^^T) en muchas de
  []
 
 
-Underfull \hbox (badness 1418) in paragraph at lines 79--79
+Underfull \hbox (badness 1418) in paragraph at lines 81--81
 \T1/cmss/m/n/10.95 ajuste para pruebas múltiples), la construcción de
  []
 
-LaTeX Font Info:    Trying to load font information for U+msa on input line 79.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 81.
 
 (C:\Users\Sandra\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 79.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 81.
 
 (C:\Users\Sandra\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Trying to load font information for U+bbold on input line 7
-9.
+LaTeX Font Info:    Trying to load font information for U+bbold on input line 8
+1.
 (C:\Users\Sandra\AppData\Local\Programs\MiKTeX\tex/latex/bbold\ubbold.fd)
-LaTeX Font Info:    Trying to load font information for U+stmry on input line 7
-9.
+LaTeX Font Info:    Trying to load font information for U+stmry on input line 8
+1.
 (C:\Users\Sandra\AppData\Local\Programs\MiKTeX\tex/latex/stmaryrd\ustmry.fd)
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
-(mdframed)              on input line 79.
-LaTeX Font Info:    Trying to load font information for T1+ppl on input line 79
+(mdframed)              on input line 81.
+LaTeX Font Info:    Trying to load font information for T1+ppl on input line 81
 .
 (C:\Users\Sandra\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\t1ppl.fd
 File: t1ppl.fd 2001/06/04 font definitions for T1/ppl.
 )
 Package mdframed Info: mdframed inside a box 
- mdframed uses option nobreak mdframed on input line 79.
+ mdframed uses option nobreak mdframed on input line 81.
 
-Overfull \hbox (7.83145pt too wide) in paragraph at lines 79--79
+Overfull \hbox (7.83145pt too wide) in paragraph at lines 81--81
 $[]$   $[]$
  []
 
@@ -2053,16 +2053,16 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.95 \chapter
+l.97 \chapter
              {IntroducciÃ³n en R y estadÃ­stica} [1]
 Cap\'{\imath }tulo I.
 LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 1
-01.
+03.
 (C:\Users\Sandra\AppData\Local\Programs\MiKTeX\tex/latex/base\t1cmtt.fd
 File: t1cmtt.fd 2023/04/13 v2.5m Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <12> not available
-(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 103.
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 105.
 
 
 [2
@@ -2072,13 +2072,13 @@ LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <12> not available
 [3]
 
 [4]
-<figure/unnamed-chunk-7-1.pdf, id=114, 505.89pt x 505.89pt>
+<figure/unnamed-chunk-7-1.pdf, id=149, 505.89pt x 505.89pt>
 File: figure/unnamed-chunk-7-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-7-1.pdf>
-Package pdftex.def Info: figure/unnamed-chunk-7-1.pdf  used on input line 183.
+Package pdftex.def Info: figure/unnamed-chunk-7-1.pdf  used on input line 185.
 (pdftex.def)             Requested size: 418.25545pt x 418.25981pt.
 
-Overfull \hbox (17.62482pt too wide) in paragraph at lines 183--184
+Overfull \hbox (17.62482pt too wide) in paragraph at lines 185--186
 [][] 
  []
 
@@ -2095,43 +2095,43 @@ Overfull \hbox (17.62482pt too wide) in paragraph at lines 183--184
 [9]
 
 [10]
-Overfull \hbox (20.06252pt too wide) in paragraph at lines 509--509
+Overfull \hbox (20.06252pt too wide) in paragraph at lines 511--511
 []\T1/cmtt/m/n/12 ## Error in apply(v3, 1, mean): dim(X) debe tener una longitu
 d positiva[] 
  []
 
 
-Overfull \hbox (13.88902pt too wide) in paragraph at lines 514--514
+Overfull \hbox (13.88902pt too wide) in paragraph at lines 516--516
 []\T1/cmtt/m/n/12 ## Error in apply(F, 1, mean): dim(X) debe tener una longitud
  positiva[] 
  []
 
 
-Overfull \hbox (26.23601pt too wide) in paragraph at lines 519--519
+Overfull \hbox (26.23601pt too wide) in paragraph at lines 521--521
 []\T1/cmtt/m/n/12 ## Error in log("23"): Argumento no numérico para una función
  matemática[] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 536--536
+Underfull \hbox (badness 10000) in paragraph at lines 538--538
 []\T1/cmtt/m/n/12 ## Error in rnorm(23, 1, 1, 1, 34): los argumentos no fueron 
 usados
  []
 
 
-Overfull \hbox (7.71553pt too wide) in paragraph at lines 543--543
+Overfull \hbox (7.71553pt too wide) in paragraph at lines 545--545
 []\T1/cmtt/m/n/12 ## Error in xy.coords(x, y, xlabel, ylabel, log): 'x' and 'y'
  lengths
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 548--548
+Underfull \hbox (badness 10000) in paragraph at lines 550--550
 []\T1/cmtt/m/n/12 ## Error in model.frame.default(formula = y ~ x, drop.unused.
 levels
  []
 
 
-Overfull \hbox (1.54204pt too wide) in paragraph at lines 554--554
+Overfull \hbox (1.54204pt too wide) in paragraph at lines 556--556
 []\T1/cmtt/m/n/12 ## Error in t.test.formula(x ~ z): grouping factor must have 
 exactly
  []
@@ -2141,7 +2141,7 @@ exactly
 [11]
 
 [12]
-Overfull \hbox (26.23601pt too wide) in paragraph at lines 586--586
+Overfull \hbox (26.23601pt too wide) in paragraph at lines 588--588
 [][]\T1/cmtt/m/n/12 another.data.set[] []<-[] []read.table[][]([][]"data/Anothe
 rDataSet.txt"[][],[] []header[] []=[] []TRUE[][])[][] 
  []
@@ -2149,8 +2149,45 @@ rDataSet.txt"[][],[] []header[] []=[] []TRUE[][])[][]
 
 
 [13]
+LaTeX Font Info:    Trying to load font information for TS1+cmtt on input line 
+620.
+(C:\Users\Sandra\AppData\Local\Programs\MiKTeX\tex/latex/base\ts1cmtt.fd
+File: ts1cmtt.fd 2023/04/13 v2.5m Standard LaTeX font definitions
+)
+Overfull \hbox (137.35887pt too wide) in paragraph at lines 641--641
+[][]\T1/cmtt/m/n/12 write.table[][](X,[] []file[] []=[] []"datos_guardados.txt"
+[][],[] []sep[] []=[] []"\t"[][],[] []quote[] []=[] []FALSE[][],[] []row.names[
+] []=[] []FALSE[][])[][] 
+ []
 
-[14] 
+
+
+[14]
+LaTeX Font Info:    Trying to load font information for TS1+cmss on input line 
+691.
+(C:\Users\Sandra\AppData\Local\Programs\MiKTeX\tex/latex/base\ts1cmss.fd
+File: ts1cmss.fd 2023/04/13 v2.5m Standard LaTeX font definitions
+)
+
+[15]
+Overfull \hbox (5.18738pt too wide) in paragraph at lines 696--697
+\T1/cmss/m/n/12 ne-ra muy si-mi-lar es [] []\T1/cmtt/m/n/12 R --vanilla -f scri
+pt1.R > script1.Rout  []\T1/cmss/m/n/12 Con
+ []
+
+
+
+[16]
+
+[17]
+Overfull \hbox (1.54204pt too wide) in paragraph at lines 832--832
+[]\T1/cmtt/m/n/12 ## Warning in v1 + v2: longitud de objeto mayor no es múltipl
+o de la
+ []
+
+
+
+[18] 
 enddocument/afterlastpage: lastpage setting LastPage.
 (main-prstr.aux
 LaTeX Info: Redefining \. on input line 8.
@@ -2161,38 +2198,40 @@ LaTeX2e <2024-06-01> patch level 2
 L3 programming layer <2024-08-30>
  ***********
 Package rerunfilecheck Info: File `main-prstr.out' has not changed.
-(rerunfilecheck)             Checksum: 36078E91FC56AD581CE068DCB7242E40;1088.
+(rerunfilecheck)             Checksum: 8F45F62CC1AB135646AD519CAC909583;1707.
  ) 
 Here is how much of TeX's memory you used:
- 34453 strings out of 473899
- 620317 string characters out of 5726027
- 1116556 words of memory out of 5000000
- 56571 multiletter control sequences out of 15000+600000
- 581453 words of font info for 81 fonts, out of 8000000 for 9000
+ 34511 strings out of 473899
+ 621804 string characters out of 5726027
+ 1116563 words of memory out of 5000000
+ 56609 multiletter control sequences out of 15000+600000
+ 582093 words of font info for 83 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 143i,13n,173p,2304b,2146s stack positions out of 10000i,1000n,20000p,200000b,200000s
- <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecs
-x1440.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi
-600\ecit1200.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen
-/ec/dpi600\ectt1200.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/j
-knappen/ec/dpi600\ecsx1728.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/l
-jfour/jknappen/ec/dpi600\ecss1200.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fon
-ts/pk/ljfour/jknappen/ec/dpi600\ecsx2488.pk> <C:\Users\Sandra\AppData\Local\MiK
-TeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecsi1095.pk> <C:\Users\Sandra\AppData\Lo
-cal\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecss1095.pk> <C:\Users\Sandra\App
-Data\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecsx1200.pk><C:/Users/Sand
-ra/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/
-Users/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi6
-.pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts
-/cm/cmmi8.pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/public
-/amsfonts/cm/cmr12.pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/fonts/typ
-e1/public/amsfonts/cm/cmr8.pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/f
-onts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Sandra/AppData/Local/Program
-s/MiKTeX/fonts/type1/public/lm/lmssbx10.pfb><C:/Users/Sandra/AppData/Local/Prog
-rams/MiKTeX/fonts/type1/urw/palatino/uplr8a.pfb>
-Output written on main-prstr.pdf (15 pages, 282356 bytes).
+ 143i,13n,173p,2290b,2231s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcs
+s1200.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi
+600\tctt1200.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen
+/ec/dpi600\ecsx1440.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/j
+knappen/ec/dpi600\ecit1200.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/l
+jfour/jknappen/ec/dpi600\ectt1200.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fon
+ts/pk/ljfour/jknappen/ec/dpi600\ecsx1728.pk> <C:\Users\Sandra\AppData\Local\MiK
+TeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecss1200.pk> <C:\Users\Sandra\AppData\Lo
+cal\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecsx2488.pk> <C:\Users\Sandra\App
+Data\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecsi1095.pk> <C:\Users\San
+dra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecss1095.pk> <C:\Us
+ers\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecsx1200.pk>
+<C:/Users/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/c
+mmi12.pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
+fonts/cm/cmmi6.pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/p
+ublic/amsfonts/cm/cmmi8.pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/font
+s/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/Sandra/AppData/Local/Programs/Mi
+KTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/Sandra/AppData/Local/Pro
+grams/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Sandra/AppData
+/Local/Programs/MiKTeX/fonts/type1/public/lm/lmssbx10.pfb><C:/Users/Sandra/AppD
+ata/Local/Programs/MiKTeX/fonts/type1/urw/palatino/uplr8a.pfb>
+Output written on main-prstr.pdf (19 pages, 309574 bytes).
 PDF statistics:
- 608 PDF objects out of 1000 (max. 8388607)
- 28 named destinations out of 1000 (max. 500000)
- 122 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 706 PDF objects out of 1000 (max. 8388607)
+ 40 named destinations out of 1000 (max. 500000)
+ 178 words of extra memory for PDF output out of 10000 (max. 10000000)
 

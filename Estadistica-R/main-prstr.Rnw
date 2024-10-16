@@ -15,6 +15,8 @@
 \usepackage{amsmath}
 \usepackage{array}
 
+\newcommand{\code}[1]{\texttt{#1}}
+
 <<setup,include=FALSE,cache=FALSE>>=
 require(knitr)
 opts_knit$set(concordance = TRUE)
@@ -108,7 +110,7 @@ pvalues <- apply(randomdata, 1,
                  function(x) t.test(x ~ class)$p.value)
 @
 
-Para leer el código, se empieza por la función más interna, que en este caso es \texttt{rnorm}. Así, primero se generan 50.000 entradas de distribución normal (1000 genes por 50 personas) de los que se quiere realizar 1000 contrastes de hipótesis (uno por gen) y representar el aspecto de la distribución (que será uniforme). Todas las entradas se organizan en una matriz con 50 columnas. Después, se crean los dos grupos que se están analizando mediante repeticiones (función \texttt{rep}). El comando de \texttt{factor} crea las etiquetas. En R, se puede llamar al test de la t de varias maneras, siendo una estándar con la interfaz de tipo fórmula (x $\sim$ class), dividiendo así x en los distintos niveles que se han creado previamente. La sintaxis siempre es una variable que va cambiando (en este caso, las filas) antes de la virgulilla y una variable constante después de la virgulilla (los distintos niveles). La función \texttt{apply} permite aplicar una función a un objeto o conjunto de datos, evitando así tener que realizar un bucle for. El primer argumento es el objeto, el segundo la dimensión del objeto a lo que se quiere aplicar (si se recorren filas, columnas, etc.), y el tercero la función que se va a aplicar. La función \texttt{t.test} devuelve objetos a los que se puede acceder, como el valor t, df, p-valor, la media de cada grupo, etc. Se puede acceder al nombre de todos los valores mediante \texttt{names(t.test(x $\sim$ class))}. En nuestro caso, x es el valor que irá adquiriendo el número de filas a recorrer. En este caso, se define la función en el momento de llamarla, pero también se puede definir antes y utilizarla en el apply. En este caso se define dentro porque es una función corta que solo se utilizará en ese momento, por lo que no es necesario crearla fuera. Si por el contrario fuese una función a la que quisiéramos acceder posteriormente o que fuese compleja con varias líneas, se suele crear fuera. Por último, se accede a los p-valores y se guardan en la variable \texttt{pvalues}. Esos p-valores se pueden representar a continuación en un histograma y calcular todos aquellos que sean menores o iguales que 0,05.
+Para leer el código, se empieza por la función más interna, que en este caso es \code{rnorm}. Así, primero se generan 50.000 entradas de distribución normal (1000 genes por 50 personas) de los que se quiere realizar 1000 contrastes de hipótesis (uno por gen) y representar el aspecto de la distribución (que será uniforme). Todas las entradas se organizan en una matriz con 50 columnas. Después, se crean los dos grupos que se están analizando mediante repeticiones (función \code{rep}). El comando de \code{factor} crea las etiquetas. En R, se puede llamar al test de la t de varias maneras, siendo una estándar con la interfaz de tipo fórmula (x $\sim$ class), dividiendo así x en los distintos niveles que se han creado previamente. La sintaxis siempre es una variable que va cambiando (en este caso, las filas) antes de la virgulilla y una variable constante después de la virgulilla (los distintos niveles). La función \code{apply} permite aplicar una función a un objeto o conjunto de datos, evitando así tener que realizar un bucle for. El primer argumento es el objeto, el segundo la dimensión del objeto a lo que se quiere aplicar (si se recorren filas, columnas, etc.), y el tercero la función que se va a aplicar. La función \code{t.test} devuelve objetos a los que se puede acceder, como el valor t, df, p-valor, la media de cada grupo, etc. Se puede acceder al nombre de todos los valores mediante \code{names(t.test(x $\sim$ class))}. En nuestro caso, x es el valor que irá adquiriendo el número de filas a recorrer. En este caso, se define la función en el momento de llamarla, pero también se puede definir antes y utilizarla en el apply. En este caso se define dentro porque es una función corta que solo se utilizará en ese momento, por lo que no es necesario crearla fuera. Si por el contrario fuese una función a la que quisiéramos acceder posteriormente o que fuese compleja con varias líneas, se suele crear fuera. Por último, se accede a los p-valores y se guardan en la variable \code{pvalues}. Esos p-valores se pueden representar a continuación en un histograma y calcular todos aquellos que sean menores o iguales que 0,05.
 
 <<>>=
 hist(pvalues)
@@ -138,7 +140,7 @@ randomdata[, 2]
 randomdata[2, 3]
 @
 
-Al ejecutar la variable \texttt{class} creada anteriormente, no solo devuelve la lista de los elementos con las distintas etiquetas, si no que también muestra al final los distintos niveles. Como \texttt{factor} por detrás les asignó un valor entero que corresponda a la etiqueta dada, cuando se pide convertir en numérico, se devuelve el entero. La asignación de los valores se realiza por orden alfanumérico.
+Al ejecutar la variable \code{class} creada anteriormente, no solo devuelve la lista de los elementos con las distintas etiquetas, si no que también muestra al final los distintos niveles. Como \code{factor} por detrás les asignó un valor entero que corresponda a la etiqueta dada, cuando se pide convertir en numérico, se devuelve el entero. La asignación de los valores se realiza por orden alfanumérico.
 
 <<eval=TRUE,tidy=FALSE, echo=TRUE, results=FALSE, fig.show='hide'>>=
 class
@@ -240,7 +242,7 @@ v11 <- 3 * ( 5 + sqrt(13) - 3^(1/(4 + 1)))
 @
 
 \subsection{Nombrar variables}
-Anteriormente hemos creado las variables \texttt{v1} y \texttt{v2}. Los nombres de las variables deben comenzar con una letra. También pueden empezar por un punto, pero entonces estarán ocultas. A continuación se pueden mezclar letras, números, puntos y barras bajas. Los nombres de las variables son case-sensitive, es decir, se diferencia entre las mayúsculas y minúsculas (v1 es diferente a V1). Una vez que se ha creado una variable, se puede utilizar la variable en lugar del contenido:
+Anteriormente hemos creado las variables \code{v1} y \code{v2}. Los nombres de las variables deben comenzar con una letra. También pueden empezar por un punto, pero entonces estarán ocultas. A continuación se pueden mezclar letras, números, puntos y barras bajas. Los nombres de las variables son case-sensitive, es decir, se diferencia entre las mayúsculas y minúsculas (v1 es diferente a V1). Una vez que se ha creado una variable, se puede utilizar la variable en lugar del contenido:
 
 <<>>=
 v3 <- 5
@@ -275,7 +277,7 @@ También se puede utilizar la siguiente sintaxis:
 ?mean
 @
 
-Hay otras formas de buscar ayuda sobre cómo hacer algo con R. Se puede buscar en Google, utilizar StackOverflow, etc. También hay un paquete \texttt{sos} que ayuda a buscar funciones y demás en paquetes que no están instalados, hacer un ranking de resultados de búsqueda, etc. A su vez, RStudio incluye un navegador de ayuda integrado. Todas las ayudas cuentan con una descripción de la función, los argumentos que admiten ( y su orden en caso de pasarlos sin nombre; en general es mejor añadir el nombre de cada parámetro a la hora de pasarlo) y el valor, es decir, lo que devuelve. En algunos casos se especifican las fuentes y referencias. También hay una sección de ejemplos de uso de la función.
+Hay otras formas de buscar ayuda sobre cómo hacer algo con R. Se puede buscar en Google, utilizar StackOverflow, etc. También hay un paquete \code{sos} que ayuda a buscar funciones y demás en paquetes que no están instalados, hacer un ranking de resultados de búsqueda, etc. A su vez, RStudio incluye un navegador de ayuda integrado. Todas las ayudas cuentan con una descripción de la función, los argumentos que admiten ( y su orden en caso de pasarlos sin nombre; en general es mejor añadir el nombre de cada parámetro a la hora de pasarlo) y el valor, es decir, lo que devuelve. En algunos casos se especifican las fuentes y referencias. También hay una sección de ejemplos de uso de la función.
 
 Lo visto anteriormente proporciona información de funciones concretas. No obstante, hay veces que no sabemos exactamente cómo se llama la función que buscamos. Para ello, se puede utilizar las siguientes formas:
 <<>>=
@@ -283,9 +285,9 @@ apropos("normal")
 # help.search("normal")
 @
 
-El comando \texttt{apropos} busca todos los paquetes que contengan en el nombre lo que se esté buscando. Por el contrario, \texttt{help.search} busca todos aquellos paquetes que, en la página de ayuda, tengan lo que se esté buscando. 
+El comando \code{apropos} busca todos los paquetes que contengan en el nombre lo que se esté buscando. Por el contrario, \code{help.search} busca todos aquellos paquetes que, en la página de ayuda, tengan lo que se esté buscando. 
 
-La función \texttt{args} devuelve los argumentos que se le puede pasar a una función.
+La función \code{args} devuelve los argumentos que se le puede pasar a una función.
 <<>>=
 args(rnorm)
 @
@@ -314,12 +316,12 @@ En la consola, poniendo el nombre de la función, se puede acceder al código qu
 \subsection{Estilo del código}
 Aunque el código se escriba para la máquina, también debe ser legible por humanos, tanto uno mismo del futuro como otras personas. Por tanto, se recomienda no extenderse más allá de la columna 80 y utilizar espacios. Hay muchas guías de estilo de código, pero esas dos normas son las más básicas: si una línea de código es excesivamente larga, cuesta leerla entera al no poder verla completa a simple vista y tener que scrollear. 
 
-Existe un paquete llamado \texttt{lintr} que permite corregir el estilo del código. 
+Existe un paquete llamado \code{lintr} que permite corregir el estilo del código. 
 
 Los comentarios también forman parte del estilo de código. Se suele separar la documentación para el usuario de la función (documentación de cabecera) de la documentación dentro del código que explica por qué se hacen algunas cosas.
 
 \section{Leer datos en R y guardarlos desde R}
-Hay muchas formas de cargar datos en R. Un ejemplo es \texttt{read.table} que sirve para todo tipo de datos, pero también hay algunos comandos más concretos como \texttt{read\_csv}.
+Hay muchas formas de cargar datos en R. Un ejemplo es \code{read.table} que sirve para todo tipo de datos, pero también hay algunos comandos más concretos como \code{read\_csv}.
 
 <<eval=FALSE>>=
 X <- read.table("data/hit-table-500-text.txt")
@@ -338,11 +340,127 @@ summary(another.data.set)
 Si se pone que no hay cabecera, parece que se lee lo mismo, pero en realidad hay algunas diferencias. Cuando se especifica que hay una cabecera, la primera línea con la descripción de las columnas no está numerada, mientras que cuando no se especifica, sí se numera y se considera como la primera fila, y esto es un error. R, por defecto, pone que cabecera es falso. Cuando no se sabe si un documento tiene o no cabecera, primero se carga el documento y luego se comprueba si el contenido se ha cargado bien. Por defecto, las columnas están separadas por espacios o tabuladores.
 
 \subsection{Localización de ficheros}
-Para que R pueda leer los ficheros, debe saber dónde buscarlos. Si los ficheros se encuentran en el directorio de trabajo, no hay ningún problema, ya que R los encuentra directamente. Para conocer el directorio de trabajo, se utiliza el comando \texttt{getwd()}. Si el fichero no se encuentra en el directorio de trabajo, hay varias opciones: proporcionar el path completo o mover el directorio de trabajo al lugar donde se encuentran los ficheros mediante \texttt{setwd()}. Para esto, es recomendable evitar en el nombre de directorios espacios, acentos y otros caracteres no ASCII.
+Para que R pueda leer los ficheros, debe saber dónde buscarlos. Si los ficheros se encuentran en el directorio de trabajo, no hay ningún problema, ya que R los encuentra directamente. Para conocer el directorio de trabajo, se utiliza el comando \code{getwd()}. Si el fichero no se encuentra en el directorio de trabajo, hay varias opciones: proporcionar el path completo o mover el directorio de trabajo al lugar donde se encuentran los ficheros mediante \code{setwd()}. Para esto, es recomendable evitar en el nombre de directorios espacios, acentos y otros caracteres no ASCII.
 
-\subsection{Missing values}
+\subsection{Missing values - NA}
 Los missing values son algo muy común en estadística. Lo más sencillo es llamarlos como NA de not available. Otra forma es NaN, not a number. 
 
 Puedes especificar el carácter que R debe interpretar como valor omitido, pero los dos procedimientos estándares son sustituir el valor como NA o sustituirlo por nada. Cuando haces cualquiera de los dos, en los datos que se leen deberías ver un NA. Lo mejor es, como de costumbre, ser explícito: utilizar un NA en sus datos originales, o utilizar alguna otra cadena de caracteres especiales para identificarlos. Lo más probable es que desees utilizar NA (o utilizar alguna otra combinación de caracteres y ser explícito), especialmente para las variables de carácter.
+
+%16/10
+Por defecto, R considera cualquier secuencia de blancos y tabuladores como separadores. Por tanto, si un missing value se representa con un espacio, sería necesario especificar el separador (por ejemplo, \code{sep = "\t"}) para que no dé error (al considerar R el espacio como parte del separador).
+
+Al utilizar \code{summary}, en las columnas que sean de tipo int aparece un contador con las filas que contienen un NA. Sin embargo, esto no es así en las columnas cuyo contenido sea texto. Por tanto, no nos podemos fiar si summary no nos dice que no hay, hay que comprobar que efectivamente no haya. 
+
+\subsection{Guardar tablas, datos y resultados}
+Es posible guardar los datos en uan matriz o de forma tabular con \code{write.table}:
+<<>>=
+write.table(X, file = "datos_guardados.txt")
+@
+
+El problema que tiene esto es que en el documento de salida tiene una columna adicional que indica el número de línea, y se emplean los espacios como separadores. Todo esto se puede especificar mediante argumentos concretos en la función:
+
+<<>>=
+write.table(X, file = "datos_guardados.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+@
+
+En algunos casos, puede que los nombres de las filas sean importantes (por ejemplo, que sean el identificador). En ese caso, sería interesante guardar los nombres de las filas como columna en el dataframe:
+
+<<>>=
+X$columna_nueva <- rownames(X)
+@
+
+\subsection{Guardar una sesión en R: .RData}
+R permite guardar una imagen de la sesión actual en un fichero de extensión .RData. Esto se realiza mediante la función \code{save.image}:
+
+<<echo=TRUE,results="hide">>=
+save.image(file = "this.RData")
+getwd() #donde se guarda
+@
+
+Esta función guarda el entorno global, es decir, lo que se haya añadido por el usuario: variables, ficheros (incluso los ocultos), funciones, pero no los paquetes. También se guarda el estado del generador de números aleatorios si se ha utilizado. También existe la posibilidad de guardar un objeto concreto. Esto se logra mediante \code{save(datos-a-guardar, file = "datos-guardados.RData")}.
+
+En una nueva terminal de R, se pueden cargar las imágenes (ya sea la total o de unos objetos concretos) con \code{load("datos-guardados.RData")}.
+
+Por último, es posible utilizar \code{saveRDS} para guardar objetos individuales serializados (en binario) y \code{readRDS} para leerlos posteriormente. Sirve para un único objeto, pero permite poder asignarlo a un nombre que se decide al cargarlo.
+
+\section{Scripts}
+Mantener todo el código en uno o varios scripts y ejecutarlo directamente desde el script y no desde la consola tiene varias ventajas:
+\begin{itemize}
+\item Permite mantener un registro de todo lo que se ha hecho y tenerlo organizado, con comentarios, etc.
+\item Permite realizar cálculos no interactivos. Por ejemplo, ejecutar un análisis muy largo o volver a ejecutar todo el análisis y los gráficos sin querer.
+\end{itemize}
+
+\subsection{Utilizar un script}
+Hay dos maneras básicas de utilizar un script:
+\begin{itemize}
+\item De forma interactiva; lo que se ha hecho hasta entonces. Por ejemplo, RStudio permite seleccionar una parte del código y lanzarlo al intérprete de R, ejecutándolo desde la consola.
+\item De forma no interactiva:
+\begin{itemize}
+\item Utilizando \code{source("script.R")}. En la sesión de R en la que se haya puesto esto, se importan las variables, funciones (y todo) del script. La diferencia es que, como es no interactivo, si se llaman a funciones (como por ejemplo, \code{mean(x)}), no se muestra el resultado por pantalla; para ello sería necesario utilizar print. 
+\item Desde la shell. Esto tiene la ventaja de no tener que mantener una ventana abierta con R hasta que el código finalice, por lo que es muy cómodo para los trabajos muy largos. La forma preferida es:
+
+\verb@ R --vanilla < script1.R > script1.Rout @
+
+La opción de vanilla permite que la sesión sea lo más reproducible posible, es decir, sin cargar librerías adicionales, sesiones de R anteriores, etc. Otra manera muy similar es \verb@ R --vanilla -f script1.R > script1.Rout @ Con esto lo que conseguimos es que el resultado del script1 se guarde directamente en otro fichero. 
+\end{itemize}
+\end{itemize}
+
+\section{Estructuras de datos básicas en R}
+\subsection{Vectores}
+Los vectores son la estructura de datos más simple de R. Guardan una serie de objetos del mismo tipo, uno detrás de otro, en una sola dimensión.
+
+<<>>=
+v1 <- c(1, 2, 3) #vector de números enteros 
+#               (se guardan como floats si no se fuerza)
+v2 <- c("a", "b", "cucu") #vector de strings
+v3 <- c(1.9, 2.5, 0.6) #vector de números float
+v4 <- c(4, "a") #convierte el 4 en "4"
+@
+
+La \code{c} viene de concatenar, ya que hace precisamente eso: concatena lo que se le ponga a continuación. 
+
+Muchas funciones operan directamente en vectores enteros sin necesidad de realizar un loop sobre cada uno de los objetos en él:
+<<>>=
+log(v1)
+exp(v3)
+2 * v1
+v3/0.7
+@
+
+\subsubsection{Funciones para crear vectores}
+Se pueden crear vectores concatenando elementos, pero hay otras dos funciones para crearlos que tienen algo de estructura: \code{seq} (de secuencia) y \code{rep} (de repetición). La función \code{seq} tiene cuatro formas de invocación:
+<<>>=
+seq(from = 1, to = 10)
+seq(from = 1, to = 10, by = 2)
+seq(from = 1, to = 10, length.out = 3)
+1:5
+@
+
+\code{rep} también tiene varias invocaciones comunes:
+<<>>=
+rep(2, 5)
+rep(1:3, 2)
+rep(1:3, 2:4)
+@
+
+En este caso, es importante que el segundo argumento de \code{rep} sea un único valor (y repita todos los elementos del primer argumento las veces indicadas) o un conjunto de valores de las mismas dimensiones que el primer argumento. 
+
+\subsection{Crear vectores a partir de otros vectores}
+Se pueden concatenar dos vectores:
+
+<<>>=
+v1 <- 1:4
+v2 <- 7:12
+(v3 <- c(v1, v2))
+@
+
+Si se emplean operaciones aritméticas en vectores que no son de la misma longitud, se utiliza la regla de reciclaje, es decir, se reutiliza el vector más pequeño cuando llega a su fin las veces necesarias hasta haber terminado las operaciones con el vector grande:
+
+<<>>=
+v1 <- 1:3
+v2 <- 11:12
+v1 + v2
+@
 
 \end{document}
