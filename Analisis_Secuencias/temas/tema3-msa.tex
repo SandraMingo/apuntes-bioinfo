@@ -143,8 +143,43 @@ Algunas posiciones llegan a los 2 bits, es decir, almacenan toda la información
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width = \textwidth]{figs/logo-parts.png}
+\includegraphics[width = 0.8\textwidth]{figs/logo-parts.png}
 \caption{Partes de un logo.}
 \end{figure}
 
-%\subsection{Modelos de Markov ocultos (HMM)}
+%16/10 - Luis del Peso 
+\subsection{Modelos de Markov ocultos (HMM)}
+Aunque un PSSM es un modelo cuantitativo que capta la mayor parte de la información del MSA, presenta algunas limitaciones. En concreto, los PSSM no tienen en cuenta las deleciones ni las inserciones. Además, asume la independencia de las posiciones. Para superar esta limitación, podríamos tratar los gaps en el MSA combinando las puntuaciones de los subalineamientos sin gaps. De hecho, este es el enfoque adoptado en la base de datos BLOCKS.
+
+Un enfoque más flexible y potente consiste en utilizar un modelo probabilístico denominado \textbf{Modelo de Markov Oculto (HMM)}. Los HMM son modelos probabilísticos que se desarrollaron para el reconocimiento del habla, pero ahora se utilizan ampliamente en muchos campos. En el caso de la bioinformática, los HMM se han utilizado en la segmentación\footnote{Las secuencias de ácidos nucleicos y proteínas pueden contener regiones distintas cuya composición de residuos y función biológica pueden diferir. Por ejemplo, el genoma puede segmentarse en regiones funcionales que incluyen, promotores, potenciadores, intros, exones, ... Los HMM pueden ayudarnos a definir los límites exactos de estas regiones.}, la búsqueda de genes y la alineación de secuencias, por nombrar algunos. La principal ventaja de los HMM en el análisis de secuencias es que se basan en un modelo probabilístico sólido y el modelo incluye una representación explícita de los INDEL (inserciones y deleciones, es decir, huecos). Los MSA también pueden representarse como HMM y los HMM que describen familias de secuencias relacionadas se denominan \textbf{HMM de perfil}.
+
+\textbf{Ejemplo:}
+En una secuencia, lo "visible" son los nucleótidos, mientras que la categoría invisible son las etiquetas de las regiones ricas en GC y ricas en AT. Dependiendo de la región en la que se encuentre un nucleótido, su frecuencia es diferente. Eso se recoge en la matriz de emisión: muestra la probabilidad de cada nucleótido en un estado concreto (probabilidad condicionada). Además, como se irá viendo la secuencia en dirección 5' a 3', llegará un momento de transición de una región a otra. La probabilidad de pasar de un estado a ese mismo (no cambiar de estado) o a otro estado se recoge en la matriz de transición.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.5\textwidth]{figs/transition-emission.png}
+\caption{Ejemplo}
+\end{figure}
+
+%El estado match es aquella columna en la que tenga el símbolo al menos el 50% de las secuencias
+En los \textbf{HMM de perfil}, los residuos de cada posición de la alineación pueden estar en uno de los \textbf{tres estados posibles: Match, Insert o Delete}. Los estados Match representan posiciones conservadas en el MSA (aunque no exclusivamente residuos similares), mientras que los estados Insert representan pequeños tramos de secuencia inespecífica. Los estados Delete corresponden a huecos y representan la ausencia de un residuo conservado (es decir, una posición Match) en uno o unos pocos miembros de la familia. Así, dado un MSA, las columnas que contienen sólo residuos alineados o residuos alineados en la mayoría de las secuencias se modelan como una posición de estado de coincidencia. Algunas de las secuencias pueden tener un hueco en una columna de coincidencia. Por otro lado, una columna en el alineamiento en la que la mayoría de las secuencias no tienen un residuo se considera una columna en estado de inserción. En términos prácticos, se considera que una columna está compuesta por inserciones cuando sólo una fracción específica de las secuencias (por ejemplo, menos del 50\% de las secuencias) muestran un residuo en esa columna en particular\footnote{Obsérvese que, en las columnas de inserción, las secuencias sin residuos no tienen hueco (que representa la ausencia de un residuo conservado), aunque normalmente se utiliza un guión («-», símbolo de hueco) para rellenar el espacio. De hecho, en algunos casos se utiliza un símbolo diferente (por ejemplo, un punto, para indicar la diferencia).}. Ambos estados, Match e Insert, tienen asociadas probabilidades de emisión que corresponden a las probabilidades de observar cada aminoácido en esa posición concreta del alineamiento. De forma similar a la construcción de PSSMs, cuando se produce un HMM a partir de un MSA, las probabilidades de emisión se derivan de las frecuencias observadas de residuos en cada columna M (coincidencia, match) o I (inserción, insert). Obviamente, los estados D (borrar, delete) no tienen probabilidades de emisión asociadas. Por ejemplo, en la alineación de la figura \ref{fig:prof-hmm} hay diez columnas de estado de coincidencia y una columna de inserción. Las frecuencias de los residuos en cada estado definen las \textbf{probabilidades de emisión} para ese estado. Además, la definición completa de un HMM requiere las \textbf{probabilidades de transición}. Estas probabilidades describen la frecuencia de observar una coincidencia, inserción o eliminación en la columna $i + 1$ dado el estado en la columna $i$. En el ejemplo de la figura \ref{fig:prof-hmm}, la probabilidad de transición de M1 a M2 es 1. Sin embargo, sólo 8 de las 10 secuencias van de M4 a M5 y las dos secuencias restantes tienen una inserción en la posición de nido (I4). Así, la probabilidad de transición de M4 a M5 es 0,8 y de M4 a I4 es 0,2. Obsérvese que la suma de las probabilidades de transición de un estado dado es igual a 1. Por último, los HMM incluyen dos estados denominados «inicio» y «fin» que no corresponden a ninguna columna del MSA y sólo se requieren para especificar todas las probabilidades de transición (se consideran estados «coincidentes»).
+
+En resumen, para construir el gráfico de HMM (figura \ref{fig:prof-hmm}), primero se definen las posiciones match de los alineamientos. Para ello, tenemos en cuenta que al menos el 50\% de las secuencias tengan el mismo residuo en una determinada posición. Ese valor lo hemos utilizado para el ejemplo en clase, pero en realidad está muy calculado y calibrado. Una vez definidas estas posiciones, se buscan los residuos que estén en estado de inserción o deleción. Los estados de deleción se refieren a símbolos o residuos concretos que se encuentran en una posición que está en match. En el caso de los estados de inserción, alguna secuencia presenta en una posición un residuo, pero esa posición no está presente en la mayoría de las secuencias y, por tanto, no está en match. Para diferenciar los estados de inserción y deleción en un alineamiento, se pueden utilizar los guiones para las deleciones y puntos para las posiciones que no presentan la inserción. Cada secuencia concreta sigue un camino en el gráfico. 
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/profile-hmm.png}
+\caption{\textbf{HMM de perfil}. Representación del alineamiento mostrado en la figura \ref{fig:consensus-seq} como un HMM de perfil. Nótese que se han añadido tres secuencias adicionales, incluyendo una secuencia con una inserción y dos secuencias con una deleción (las dos últimas secuencias). El panel de la izquierda del alineamiento muestra el estado de cada columna del alineamiento y debajo de cada estado sus probabilidades de emisión. El panel inferior muestra la estructura simplificada del HMM que representa el alineamiento e incluye las probabilidades de transición entre los distintos estados.}
+\label{fig:prof-hmm}
+\end{figure}
+
+Cabe mencionar que la representación gráfica del HMM de la figura \ref{fig:prof-hmm} es una versión simplificada del modelo completo, en la que se omitieron los estados no observados en el MSA. Un modelo completo debería incluir todos los estados y transiciones potencialmente posibles, como el que se muestra en la figura \ref{fig:gen-hmm}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/general-hmm.png}
+\caption{\textbf{Estructura general de un HMM de perfil.} Se muestra un HMM de perfil con 3 estados de coincidencia.}
+\label{fig:gen-hmm}
+\end{figure}
+
