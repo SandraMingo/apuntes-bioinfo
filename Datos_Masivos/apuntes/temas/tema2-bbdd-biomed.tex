@@ -6,11 +6,13 @@ En este bloque queremos acceder mediante los programas a las bases de datos biom
 Hay varias maneras de acceder a bases de datos en línea (nivel de abstracción o automatización ascendente):
 \begin{itemize}
 \item \textbf{Copiar la base de datos de manera local}: procesos manuales, pero se queda rápidamente desactualizada. Se puede descargar un fichero de un servicio web en Linux mediante \texttt{wget url/base/de/datos/fichero.txt}
-\item \textbf{Rellenar formularios}: todavía no se ha actualizado el acceso mediante API, pero se puede escribir en Python un programa que rellene el formulario como si fuera un humano para acceder a los datos cambiando los valores de los parámetros. En general, la sintaxis de una URL es la siguiente:\\
+\item \textbf{Rellenar formularios}: todavía no se ha actualizado el acceso mediante API, pero se puede escribir en Python un programa que rellene el formulario como si fuera un humano para acceder a los datos cambiando los valores de los parámetros. En general, la sintaxis de una URL es la siguiente:
+\begin{center}
 scheme:[//host]path[?query][\#fragment]\\
+\end{center}
 siendo scheme HTTP o HTTPS cuando el protocolo está cifrado y es seguro (la s viene de secure), host el servidor que contiene la base de datos que se quiere acceder, el path la ruta para llegar a una parte del servidor (como si fueran carpetas), la interrogración el marcador de los argumentos (las queries en formato nombre=valor\&nombre2=valor2). Así, lo que queremos hacer con Python es codificar los distintos argumentos para poder acceder a varias entradas de forma automática. Por ejemplo, en el formulario tipo \href{https://www.ebi.ac.uk/Tools/dbfetch/dbfetch?db=ena\_sequence\&id=J00231\&style=raw}{https://www.ebi.ac.uk/Tools/dbfetch/dbfetch?db=ena\_sequence\&id=J00231\&style=raw}, en lugar de rellenar el formulario varias veces, queremos cambiar el valor de los distintos argumentos (id=J00231, id=J00232, id=J00233, db=afdb, etc.). 
-\item Peticiones HTTP directa: esto se puede conseguir mediante la librería \texttt{requests} en Python.
-\item Uso específico de API: Hay algunos servicios que proporcionan APIs de los servidores para poder utilizarlos desde Python. Esto se conoce como APIs de alto nivel o SDKs. Esta es la mejor manera, ya que es más cómoda y más fácil de utilizar, pero no está disponible en todas las bases de datos.
+\item \textbf{Peticiones HTTP directas:} esto se puede conseguir mediante la librería \texttt{requests} en Python.
+\item \textbf{Uso específico de API:} Hay algunos servicios que proporcionan APIs de los servidores para poder utilizarlos desde Python. Esto se conoce como APIs de alto nivel o SDKs. Esta es la mejor manera, ya que es más cómoda y más fácil de utilizar, pero no está disponible en todas las bases de datos.
 \end{itemize} 
 
 \subsection{Acceso programático}
