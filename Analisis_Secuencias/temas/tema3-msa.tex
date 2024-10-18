@@ -183,3 +183,164 @@ Cabe mencionar que la representación gráfica del HMM de la figura \ref{fig:pro
 \label{fig:gen-hmm}
 \end{figure}
 
+\section{Quiz Moodle}
+\subsection{Ejercicio 1}
+Los retrovirus están asociados a una amplia variedad de cánceres en pollos, ratones, gatos y monos. Algunos retrovirus causan un tipo específico de cáncer poco después de la infección en una elevada proporción de animales, mientras que otros causan diversos cánceres tardíamente después de la infección en una proporción menor de animales.
+Los retrovirus altamente oncogénicos son recombinantes de genes virales y del huésped. Los cánceres inducidos por estos virus vienen determinados por el gen transducido del huésped.
+Los retrovirus que causan cáncer con una incidencia baja no contienen información insertada del huésped. Más bien, parecen causar cáncer a través de la alteración de la expresión de genes del huésped (celular) potencialmente oncogénicos.
+El virus del sarcoma murino Harvey induce cáncer poco después de la infección y la proteína responsable de la transformación fue aislada y denominada «Transforming protein p29» (secuencia en el archivo «RASH\_MSVHA.fasta»). Una búsqueda blast contra la base de datos de proteínas completas reveló que el gen de mamífero más cercano es el protooncogen HRAS. Para identificar las diferencias entre estas proteínas que podrían explicar la capacidad transformante de la proteína viral, las alineas utilizando BLAST (utiliza las secuencias P01115, en el archivo «RASH\_MSVHA.fasta», y P01112 en el archivo «Ras\_superfam.fasta»). La proteína viral es \textbf{51 aminoácidos más larga} que la contraparte celular debido a una \textbf{fusión en la parte N-terminal} de la proteína. 
+
+Entre las dos proteínas se encuentran 3 diferencias, pero no es viable ver cuál es la mutación oncogénica. Por ello, se realiza un MSA con toda la superfamilia Ras, incluyendo varios ortólogos y parálogos. Nos fijamos en los siguientes cambios, tomando al proteína RasH humana como índice: G12R (probable), A59T (probable), A122G (improbable) y Y71F (no hay cambio). Hay otros retrovirus que contienen oncogenes derivados de la proteína Ras, y realizando un MSA de ellos, nos fijamos en las mismas posiciones de antes: G12R (probable), A59T (improbable), A122G (improbable) y Y71F (no hay cambio). Por último, la proteína ERAS desempeña un papel importante en las propiedades de crecimiento tumoral de las células madre embrionarias. Repita el MSA de la superfamilia Ras incluyendo la secuencia de ERAS (la encontrará en el archivo «Ras\_active.fasta»). Compare el MSA de todos los miembros de la familia con o sin ERAS, cuál es el único residuo que se conserva en todos los miembros de la familia excepto ERAS50.
+
+\subsection{Ejercicio 2}
+Tenemos las siguientes frecuencias absolutas de nucleótidos en cada posición de un alineamiento:
+\begin{table}[htbp]
+\begin{tabular}{l | llllllllllllllllll}
+A & 2  & 38 & 0  & 0  & 0  & 0  & 10 & 8  & 4  & 7  & 21 & 9  & 9  & 11 & 9  & 23 & 4  & 15 \\
+C & 10 & 0  & 46 & 0  & 0  & 0  & 32 & 17 & 10 & 15 & 11 & 18 & 9  & 16 & 23 & 11 & 20 & 8  \\
+G & 10 & 8  & 0  & 46 & 0  & 46 & 2  & 17 & 21 & 13 & 14 & 15 & 27 & 8  & 13 & 8  & 16 & 22 \\
+T & 24 & 0  & 0  & 0  & 46 & 0  & 2  & 4  & 11 & 11 & 0  & 4  & 1  & 11 & 1  & 4  & 6  & 1 
+\end{tabular}
+\end{table}
+
+Primero calculamos las frecuencias con pseudocuentas sumando 1 a todas las celdas:
+\begin{table}[htbp]
+\begin{tabular}{l | llllllllllllllllll}
+A & 3  & 39 & 1  & 1  & 1  & 1  & 11 & 9  & 5  & 8  & 22 & 10 & 10 & 12 & 10 & 24 & 5  & 16 \\
+C & 11 & 1  & 47 & 1  & 1  & 1  & 33 & 18 & 11 & 16 & 12 & 19 & 10 & 17 & 24 & 12 & 21 & 9  \\
+G & 11 & 9  & 1  & 47 & 1  & 47 & 3  & 18 & 22 & 14 & 15 & 16 & 28 & 9  & 14 & 9  & 17 & 23 \\
+T & 25 & 1  & 1  & 1  & 47 & 1  & 3  & 5  & 12 & 12 & 1  & 5  & 2  & 12 & 2  & 5  & 7  & 2 
+\end{tabular}
+\end{table} 
+
+El siguiente paso es construir la tabla PWM con las frecuencias con pseudocuentas. Para ello, simplemente se toma el valor de cada celda y se divide por el sumatorio de los valores en esa posición: 
+\begin{table}[htbp]
+\begin{tabular}{l | llllllllllllllllll}
+A & 0,06 & 0,78 & 0,02 & 0,02 & 0,02 & 0,02 & 0,22 & 0,18 & 0,1  \\
+& 0,16 & 0,44 & 0,2  & 0,2  & 0,24 & 0,2  & 0,48 & 0,1  & 0,32 \\
+C & 0,22 & 0,02 & 0,94 & 0,02 & 0,02 & 0,02 & 0,66 & 0,36 & 0,22 \\
+& 0,32 & 0,24 & 0,38 & 0,2  & 0,34 & 0,48 & 0,24 & 0,42 & 0,18 \\
+G & 0,22 & 0,18 & 0,02 & 0,94 & 0,02 & 0,94 & 0,06 & 0,36 & 0,44 \\
+& 0,28 & 0,3  & 0,32 & 0,56 & 0,18 & 0,28 & 0,18 & 0,34 & 0,46 \\
+T & 0,5  & 0,02 & 0,02 & 0,02 & 0,94 & 0,02 & 0,06 & 0,1  & 0,24 \\
+& 0,24 & 0,02 & 0,1  & 0,04 & 0,24 & 0,04 & 0,1  & 0,14 & 0,04
+\end{tabular}
+\end{table}
+
+Con esa tabla, se calcula la PSSM. Para ello, se calcula $log_2(\frac{celda}{0,25})$:
+\begin{table}[htbp]
+\begin{tabular}{l | llllllllllllllllll}
+A & -2,06 & 1,64  & -3,6 & -3,64 & -3,6 & -3,6 & -0,2 & -0,5 & -1,3 \\
+& -0,6 & 0,82  & -0,32 & -0,32 & -0,1 & -0,32 & 0,94  & -1,32 & 0,36  \\
+C & -0,18 & -3,64 & 1,91 & -3,64 & -3,6 & -3,6 & 1,4  & 0,53 & -0,2 \\
+& 0,4  & -0,06 & 0,6   & -0,32 & 0,44 & 0,94  & -0,06 & 0,75  & -0,47 \\
+G & -0,18 & -0,47 & -3,6 & 1,91  & -3,6 & 1,9  & -2,1 & 0,53 & 0,82 \\
+& 0,2  & 0,26  & 0,36  & 1,16  & -0,5 & 0,16  & -0,47 & 0,44  & 0,88  \\
+T & 1  & -3,64 & -3,6 & -3,64 & 1,91 & -3,6 & -2,1 & -1,3 & -0,1 \\
+& -0,1 & -3,64 & -1,32 & -2,64 & -0,1 & -2,64 & -1,32 & -0,84 & -2,64
+\end{tabular}
+\end{table}
+
+El siguiente paso es calcular la entropía de Shannon y la información. Previamente necesitamos la tabla PWM sin pseudocuentas, que sería la siguiente:
+\begin{table}[h]
+\begin{tabular}{l | llllllllllllllllll}
+A & 0,04 & 0,83 & 0 & 0 & 0 & 0 & 0,22 & 0,17 & 0,09 \\
+& 0,2 & 0,46 & 0,2  & 0,2  & 0,24 & 0,2  & 0,5  & 0,09 & 0,33 \\
+C & 0,22  & 0    & 1 & 0 & 0 & 0 & 0,7  & 0,37 & 0,22 \\
+& 0,3 & 0,24 & 0,39 & 0,2  & 0,35 & 0,5  & 0,24 & 0,43 & 0,17 \\
+G & 0,22  & 0,17 & 0 & 1 & 0 & 1 & 0,04 & 0,37 & 0,46 \\
+& 0,3 & 0,3  & 0,33 & 0,59 & 0,17 & 0,28 & 0,17 & 0,35 & 0,48 \\
+T & 0,52 & 0    & 0 & 0 & 1 & 0 & 0,04 & 0,09 & 0,24 \\
+& 0,2 & 0    & 0,09 & 0,02 & 0,24 & 0,02 & 0,09 & 0,13 & 0,02
+\end{tabular}
+\end{table}
+\newpage
+La entropía de Shannon se calcula para cada posición. Se sigue la siguiente fórmula: $- \sum (probabilidad) \cdot log_2 (probabilidad) $. Cuando la probabilidad es 0, se considera que el logaritmo también lo es. Los valores resultantes son los siguientes:
+\begin{table}[htbp]
+\small
+\begin{tabular}{llllllllllllllllll}
+1,64 & 0,67 & 0 & 0 & 0 & 0 & 1,24 & 1,81 & 1,8 & 1,9 & 1,53 & 1,82 & 1,49 & 1,96 & 1,6 & 1,74 & 1,74 & 1,6
+\end{tabular}
+\end{table} 
+
+Por último, es necesario calcular la información. La entropía máxima para cada posición es de 2, por lo que hay que restarle la entropía de Shannon. Así, la información para cada posición es la siguiente: 
+\begin{table}[htbp]
+\small
+\begin{tabular}{llllllllllllllllll}
+0,36 & 1,33 & 2 & 2 & 2 & 2 & 0,76 & 0,19 & 0,2 & 0,1 & 0,47 & 0,18 & 0,51 & 0,04 & 0,4 & 0,26 & 0,26 & 0,4
+\end{tabular}
+\end{table}
+\newpage
+\subsection{Ejercicio 3}
+Contamos con las siguientes frecuencias relativas:
+\begin{table}[h]
+\centering
+\begin{tabular}{l | llllll}
+A & 0,68 & 0,11 & 0,02 & 0,86 & 0,16 & 0,41 \\
+C & 0,08 & 0,04 & 0,01 & 0,03 & 0,05 & 0,11 \\
+G & 0,08 & 0,8  & 0,96 & 0,04 & 0,67 & 0,24 \\
+T & 0,16 & 0,05 & 0,01 & 0,07 & 0,12 & 0,24
+\end{tabular}
+\end{table}
+
+Queremos dibujar un logo, por lo que debemos calcular la información para cada posición y la altura de cada letra en cada posición. La información se calcula como entropía anterior - entropía posterior. La entropía anterior es 2, y la entropía posterior se calcula como $- \sum (nucleotido) \cdot log_2 (nucleotido)$ para cada posición. Una vez sabiendo la información, para la altura de cada nucleótido se multiplica la altura total de la columna por la frecuencia de cada nucleótido. La tabla resultante es la siguiente:
+\begin{table}[htbp]
+\centering
+\begin{tabular}{l | llllll}
+Info (column height) & 0,62 & 0,99 & 1,70 & 1,21 & 0,61 & 0,13 \\
+A height & 0,42 & 0,11 & 0,03 & 1,04 & 0,10 & 0,05 \\
+C height & 0,05 & 0,04 & 0,02 & 0,04 & 0,03 & 0,01 \\
+G height & 0,05 & 0,79 & 1,63  & 0,05 & 0,41 & 0,03 \\
+T height & 0,10  & 0,05 & 0,012 & 0,08 & 0,07 & 0,03
+\end{tabular}
+\end{table}
+
+Por último, hay que indicar la posición del nucleótido A para cada posición en el logo. Las posiciones de los distintos residuos se determinan por la frecuencia, siendo los nucleótidos más frecuentes los que se encuentran en primera posición (más arriba). Por tanto, fijándonos en la frecuencia de A en comparación con la de los demás nucleótidos para cada posición de la secuencia, su posición en el logo será la siguiente: 1 2 2 1 2 1.
+
+\subsection{Ejercicio 4}
+Tenemos el siguiente MSA con su representación de un perfil HMM.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.5\textwidth]{figs/moodle-msa-ej4.png}
+\end{figure}
+
+A partir de este modelo, primero calculamos la matriz de emisión de match. Para ello, calculamos en cada posición match el número de veces que aparece el nucleótido en cuestión y se divide por la cantidad de secuencias que tienen match en esa posición. Por ejemplo, en la posición match 1, A aparece 2 de 8 veces, por lo que su emisión es $2/8 = 0,25$. En la posición match 2, A aparece 5 veces, pero solo 7 secuencias tienen un match en esa posición (la otra secuencia tiene un gap), por lo que en este caso su emisión sería $5/7 = 0,71$. Así, la tabla resuelta sería la siguiente:
+\begin{table}[htbp]
+\centering
+\begin{tabular}{l | l l l l l}
+& B & 1 & 2 & 3 & E \\ \hline
+A & - & 0,25 & 0,71 & 0 & - \\
+C & - & 0 & 0 & 0,375 & - \\
+G & - & 0,75 & 0,14 & 0,625 & - \\
+T & - & 0 & 0,14 & 0 & - 
+\end{tabular}
+\end{table}
+
+La matriz de emisión para las inserciones utiliza la misma lógica, pero centrándose en las inserciones. En este caso, sólo hay una posición de inserción después del match 1, y solo está presente en dos secuencias. Como las dos secuencias tienen una C como inserción, el estado de emisión de inserción para C es $2/2 = 1$.
+\begin{table}[htbp]
+\centering
+\begin{tabular}{l | l l l l l}
+& B & 1 & 2 & 3 & E \\ \hline
+A & 0 & 0 & 0 & 0 & - \\
+C & 0& 1 & 0 & 0 & - \\
+G & 0 & 0 & 0& 0 & - \\
+T & 0& 0 & 0 & 0 & - 
+\end{tabular}
+\end{table}
+
+Por último queda calcular la matriz con las probabilidades de transición. Esta matriz se divide en tres: la transición desde match, desde inserción y desde delete. La suma de los valores para cada uno debe dar 1 o 0 para cada posición. Al igual que en los casos anteriores, contamos las ocurrencias del evento que se produce (si de match pasa a match, si de match pasa a delete, etc) del total de ocurrencias. Por ejemplo, las 8 secuencias comienzan en match, por lo que la probabilidad de M-M en B (begin) es de $8/8 = 1$. Sin embargo, desde la posición 1, solo 5 secuencias pasan a match; dos pasan a insert y una a delete. Por ello, M-M equivale a $5/8 = 0,625$, M-I a $2/8 = 0,25$ y M-D a $1/8 = 0,125$. Así, la tabla completa queda de la siguiente forma:
+\begin{table}[htbp]
+\centering
+\begin{tabular}{l | l l l l l}
+& B & 1 & 2 & 3  \\ \hline
+M-M & 1 & 0,625 & 1 & 1 \\
+M-D & 0 & 0,125 & 0 & - \\
+M-I & 0 & 0,25 & 0 & 0 \\ \hline
+I-M & 0& 1 & 0 & 0 \\
+I-D & 0 & 0 & 0 & - \\
+I-I & 0 & 0 & 0 & 0 \\ \hline
+D-M & - & 0 & 1 & 0 \\
+D-D & - & 0 & 0 & - \\
+D-I & - & 0 & 0 & 0
+\end{tabular}
+\end{table}

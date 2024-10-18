@@ -95,43 +95,6 @@ Cuando hay números decimales, se redondea al siguiente número entero. Al compr
 %\includegraphics[width = \textwidth]{figs/ejercicio-blosum.png}
 %\end{figure}
 
-\subsubsection{Ejercicio}
-\textit{\textbf{Ejercicio 1:} Queremos hacer una matriz de puntuación de ADN a partir de alineaciones de secuencias de ADN que muestren un 88\% de identidad (es decir, una matriz optimizada para encontrar alineaciones con un 88\% de identidad). Supongamos que todos los desajustes son equiprobables, y que la composición tanto de los alineamientos como de las secuencias de fondo es uniforme al 25\% para cada nucleótido. Construya la matriz de probabilidad de mutación y la matriz de puntuación. Introduzca los valores para la Matriz de Probabilidad de Mutación.}
-
-Sabemos que las secuencias muestran un 88\% de identidad. Por tanto, en un 88\% de las ocasiones, las dos secuencias tienen los mismos residuos en la misma posición. Como cada nucleótido es equiprobable, $0,88/4 = 0,22$. Eso nos deja con $1 - 0,88 = 0,12$ a repartir entre los mismatches. Hay 12 posibilidades (12 casillas), y como todos son equiprobables, $0,12 / 12 = 0,01$. Ahora queda rellenar la tabla:
-
-\begin{table}[htbp]
-    \centering
-    \begin{tabularx}{\textwidth}{ X | X X X X}
-          & A & C & G & T \\ \hline
-         A & 0,22 & 0,01 & 0,01 & 0,01 \\
-         C & 0,01 & 0,22& 0,01 & 0,01 \\
-         G & 0,01 & 0,01 & 0,22 & 0,01 \\
-         T & 0,01 & 0,01 & 0,01 & 0,22 \\
-    \end{tabularx}
-\end{table}
-
-En cuanto a la matriz de puntuación, nos indican que:
-$$score = log_2(odds-ratio) = log_2(\frac{observado}{esperado})$$
-
-El valor observado es aquel que obtenemos de la matriz de sustitución. El valor esperado es la probabilidad de los nucleótidos en ambas secuencias. Como una posición tendrá dos residuos (uno de cada secuencia), y todos los residuos son equiprobables, el valor esperado en cada caso será de $0,25 \cdot 0,25 = 0,0625$. Por ejemplo:
-
-$$p_{AA} = log_2(\frac{0,22}{0,0625}) = 1,8 \approx 2$$
-$$p_{AC} = log_2(\frac{0,01}{0,0625}) = -2,64 \approx -3$$
-
-Así, la tabla resultante sería:
-
-\begin{table}[htbp]
-    \centering
-    \begin{tabularx}{\textwidth}{ X | X X X X}
-          & A & C & G & T \\ \hline
-         A & 2 & -3 & -3 & -3 \\
-         C & -3 & 2& -3 & -3 \\
-         G & -3 & -3 & 2 & -3 \\
-         T & -3 & -3 & -3 & 2 \\
-    \end{tabularx}
-\end{table}
-
 %07/10
 \subsection{Alineamientos de puntuación (scoring alignments)}
 Las matrices de sustitución ofrecen un método para puntuar posiciones individuales. Sin embargo, para comparar diferentes alineaciones, necesitamos un único valor que represente la puntuación combinada de todas las posiciones. Para calcular dicha puntuación, suponemos que cada posición del alineamiento es independiente de las demás \footnote{Nótese que esto es probablemente una simplificación excesiva porque en las proteínas reales a menudo existe una correlación entre residuos adyacentes. Por ejemplo, en una hélice anfipática los residuos polares e hidrófobos se distribuyen en caras opuestas. Por lo tanto, habrá cierta correlación entre los residuos en ciertas posiciones.} y calculamos la puntuación del alineamiento S como la suma de las puntuaciones individuales de cada una de las n posiciones, siendo s la entrada de la matriz de sustitución para los residuos a y b en la posición i.
@@ -177,28 +140,6 @@ De esa forma, si los residuos a y b son, en un alineamiento, diferentes a "-" (e
 \includegraphics[width = \textwidth]{figs/gap-penalty.png}
 \caption{Ejemplo de alineamiento con matriz de sustitución. Se han separado los valores de match y mismatch simplemente porque no cabían todos en línea. Los valores de penalización de apertura y extensión de gap los define el usuario de forma empírica. La longitud del gap se calcula de forma distinta en el algoritmo de Needleman-Wunsch que en BLAST.}
 \end{figure}
-
-\subsubsection{Ejercicio}
-Calcula la puntuación del siguiente alineamiento: \\
-TCCGGGGATCCCC-AGCA 17\\
-TC--GGGATCCCCCATCA 16\\ 
-Utilizando la siguiente matriz de puntuación:
-
-\begin{table}[htbp]
-    \centering
-    \begin{tabularx}{\textwidth}{ X X X X X}
-          & A & C & G & T \\ \hline
-         A & +1 & -4 & -4 & -4 \\
-         C & -4 & +1 & -4 & -4 \\
-         G & -4 & -4 & +1 & -4 \\
-         T & -4 & -4 & -4 & +1 \\
-    \end{tabularx}
-\end{table}
-
-y penalización de gap de acuerdo con la expresión $G+L \cdot n$, donde G y L son las penalizaciones de existencia y extensión respectivamente y n la longitud del gap. En este caso, considera que la existencia (G) es 5 y la extensión (L) es 2. 
-
-En este caso, la puntuación del alineamiento sería de:
-$$+1 +1 -(5 +2 \cdot 2) +1 +1 +1 +1 +1 +1 +1 +1 +1 -(5 +2 \cdot 1) +1 -4 +1 +1 = -6$$
 
 \subsection{Algoritmos de alineamiento}
 Una vez que tengamos un método de puntuación, podríamos encontrar la alineación óptima entre dos proteínas enumerando todas las alineaciones posibles y eligiendo la de mejor puntuación. Sin embargo, este \textbf{enfoque de fuerza bruta} es poco práctico en términos de tiempo. El número de alineaciones posibles para dos secuencias de longitud m y n es $m^n$. Esto significa que un ordenador tiene que hacer un número de cálculos proporcional a $m^n$ para encontrar el alineamiento óptimo utilizando este enfoque de fuerza bruta. Así, pueden producirse más de $10^209$ alineaciones diferentes entre dos proteínas de tamaño medio (unos 350 residuos). Incluso procesando varios miles de alineaciones por segundo, el proceso duraría más que la edad del universo utilizando los ordenadores actuales. Afortunadamente, los bioinformáticos han encontrado formas inteligentes de reducir el tiempo de cálculo necesario para encontrar el mejor alineamiento posible, como se explica en las secciones siguientes.
@@ -326,3 +267,109 @@ Como ya hemos mencionado, uno de los usos más importantes del alineamiento de s
 \caption{Representaciones gráficas de la Twilight Zone.}
 \end{figure}
 
+\section{Quiz Moodle}
+\subsection{Ejercicio 1}
+Queremos hacer una matriz de puntuación de ADN a partir de alineaciones de secuencias de ADN que muestren un 88\% de identidad (es decir, una matriz optimizada para encontrar alineaciones con un 88\% de identidad). Supongamos que todos los desajustes son equiprobables, y que la composición tanto de los alineamientos como de las secuencias de fondo es uniforme al 25\% para cada nucleótido. Construya la matriz de probabilidad de mutación y la matriz de puntuación. Introduzca los valores para la Matriz de Probabilidad de Mutación.
+
+Sabemos que las secuencias muestran un 88\% de identidad. Por tanto, en un 88\% de las ocasiones, las dos secuencias tienen los mismos residuos en la misma posición. Como cada nucleótido es equiprobable, $0,88/4 = 0,22$. Eso nos deja con $1 - 0,88 = 0,12$ a repartir entre los mismatches. Hay 12 posibilidades (12 casillas), y como todos son equiprobables, $0,12 / 12 = 0,01$. Ahora queda rellenar la tabla:
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabularx}{\textwidth}{ X | X X X X}
+          & A & C & G & T \\ \hline
+         A & 0,22 & 0,01 & 0,01 & 0,01 \\
+         C & 0,01 & 0,22& 0,01 & 0,01 \\
+         G & 0,01 & 0,01 & 0,22 & 0,01 \\
+         T & 0,01 & 0,01 & 0,01 & 0,22 \\
+    \end{tabularx}
+\end{table}
+
+En cuanto a la matriz de puntuación, nos indican que:
+$$score = log_2(odds-ratio) = log_2(\frac{observado}{esperado})$$
+
+El valor observado es aquel que obtenemos de la matriz de sustitución. El valor esperado es la probabilidad de los nucleótidos en ambas secuencias. Como una posición tendrá dos residuos (uno de cada secuencia), y todos los residuos son equiprobables, el valor esperado en cada caso será de $0,25 \cdot 0,25 = 0,0625$. Por ejemplo:
+
+$$p_{AA} = log_2(\frac{0,22}{0,0625}) = 1,8 \approx 2$$
+$$p_{AC} = log_2(\frac{0,01}{0,0625}) = -2,64 \approx -3$$
+
+Así, la tabla resultante sería:
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabularx}{\textwidth}{ X | X X X X}
+          & A & C & G & T \\ \hline
+         A & 2 & -3 & -3 & -3 \\
+         C & -3 & 2& -3 & -3 \\
+         G & -3 & -3 & 2 & -3 \\
+         T & -3 & -3 & -3 & 2 \\
+    \end{tabularx}
+\end{table}
+
+\subsection{Ejercicio 2}
+Calcula la puntuación del siguiente alineamiento: \\
+TCCGGGGATCCCC-AGCA 17\\
+TC--GGGATCCCCCATCA 16\\ 
+Utilizando la siguiente matriz de puntuación:
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabularx}{\textwidth}{ X X X X X}
+          & A & C & G & T \\ \hline
+         A & +1 & -4 & -4 & -4 \\
+         C & -4 & +1 & -4 & -4 \\
+         G & -4 & -4 & +1 & -4 \\
+         T & -4 & -4 & -4 & +1 \\
+    \end{tabularx}
+\end{table}
+
+y penalización de gap de acuerdo con la expresión $G+L \cdot n$, donde G y L son las penalizaciones de existencia y extensión respectivamente y n la longitud del gap. En este caso, considera que la existencia (G) es 5 y la extensión (L) es 2. 
+
+En este caso, la puntuación del alineamiento sería de:
+$$+1 +1 -(5 +2 \cdot 2) +1 +1 +1 +1 +1 +1 +1 +1 +1 -(5 +2 \cdot 1) +1 -4 +1 +1 = -6$$
+
+A continuación se debe realizar una \href{https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE\_TYPE=BlastSearch&BLAST\_SPEC=GlobalAln}{búsqueda en BLAST con el algoritmo de Needleman-Wunsch} utilizando como secuencias las siguientes: \\
+>Seq\_Patatin\\
+TCCGGGGATCCCCAGCA \\
+>Seq\_Pataton\\
+TCGGGATCCCCCATCA
+
+Utilizando los parámetros estándar, la puntuación del alineamiento \textbf{no coincide} con la puntuación anterior. Volvemos a calcular manualmente la puntuación, esta vez utilizando la matriz del ejercicio anterior (2/-3). 
+$$+2 +2 -(5 +2 \cdot 2) +2 +2 +2 +2 +2 +2 +2 +2 +2 -(5 +2 \cdot 1) +2 -3 +2 +2 = 9$$
+
+Este valor \textbf{sí coincide} con la puntuación del alineamiento mediante BLAST. Volvemos a repetir el alineamiento con BLAST, pero modificando los parámetros del alineamiento a 1/-4. Este nuevo alineamiento \textbf{sí coincide} con la puntuación calculada originalmente \textbf{sin cambiar} el alineamiento. 
+
+\subsection{Ejercicio 3}
+Se ha realizado un alineamiento por pares con una puntuación de 1. Para ver si la puntuación es significativa, se realiza un test de permutación; se mezclan las secuencias originales manteniendo constante su composición y se alinean estas secuencias aleatorias. Los valores de las 100 repeticiones son los siguientes ordenados de menor a mayor valor:
+\begin{table}[]
+\begin{tabular}{lllll}
+-7,386924683 & -4,738742973 & -3,452399313 & -2,611591184 & -1,238713041 \\
+-7,160051835 & -4,710721137 & -3,439791474 & -2,60033892  & -1,237674138 \\
+-6,869717584 & -4,659178062 & -3,409586646 & -2,474922874 & -1,214113095 \\
+-6,653566465 & -4,63709275  & -3,363274424 & -2,429315393 & -1,122888068 \\
+-6,124274365 & -4,612703474 & -3,332021599 & -2,385514122 & -1,120747768 \\
+-6,076476535 & -4,438688911 & -3,328023219 & -2,235346892 & -1,011586974 \\
+-5,90629003  & -4,386718128 & -3,298716186 & -2,150399103 & -0,9845287   \\
+-5,740161466 & -4,343940179 & -3,289520409 & -2,087144388 & -0,548400351 \\
+-5,613699846 & -4,264932991 & -3,238106742 & -1,999747195 & -0,394848331 \\
+-5,508104684 & -3,917282393 & -3,050155579 & -1,979142197 & 0,177228744  \\
+-5,333733228 & -3,893401511 & -3,047812892 & -1,9669356   & 0,306990406  \\
+-5,28498102  & -3,886549173 & -3,029437229 & -1,96237172  & 0,318028064  \\
+-5,254349649 & -3,810219685 & -2,89464463  & -1,958596857 & 0,319813404  \\
+-5,251032997 & -3,800893392 & -2,772603245 & -1,939735941 & 0,531471766  \\
+-5,234071091 & -3,726656829 & -2,77156715  & -1,93327599  & 0,582026954  \\
+-4,954658926 & -3,642863867 & -2,740171586 & -1,891748913 & 0,788917802  \\
+-4,916181398 & -3,577603514 & -2,686060314 & -1,889110242 & 0,881819625  \\
+-4,824052764 & -3,535598771 & -2,657014377 & -1,347063633 & 1,042087066  \\
+-4,793444929 & -3,480083228 & -2,655891317 & -1,291822233 & 1,178977833  \\
+-4,778376615 & -3,456844709 & -2,642625413 & -1,243087478 & 2,532793891 
+\end{tabular}
+\end{table}
+
+La probabilidad de obtener una puntuación igual o mayor a 1 en el alineamiento de dos proteínas no relacionadas es de 0,03, ya que se han observado 3 alineamiento aleatorios con una puntuación mayor a 1 de los 100 que se generaron (y 3/100 = 0,03). Así, la probabilidad de obtener una puntuación mayor o igual a 0 por azar sería del 0,11 (hay 11 casos de 100 en los que ha ocurrido), y para una puntuación mayor o igual a 40 del 0. Si las puntuaciones siguiesen una distribución normal, el p-valor para un alineamiento con una puntuación mayor o igual a 1,10 sería p<0,05. Esto se debe a que hay 2/100 casos en los que un alineamiento aleatorio ha superado una puntuación de 1,10.
+
+\subsection{Ejercicio 5}
+Las proteínas urinarias mayores (MUP) se encuentran en la orina de los mamíferos y recientemente se ha demostrado que desempeñan un papel en la respuesta de miedo entre especies. Los ratones pueden detectar el olor de MUP aisladas de rata y gato y sienten miedo ante ellas.
+Eres un científico que ha estado estudiando el papel del MUP26 del ratón en el comportamiento social y te preguntas si los genes MUP de la zarigüeya (\textit{Monodelphis domestica}) serían interesantes. Para empezar, estás interesado en encontrar el ortólogo del MUP26 del ratón en el genoma de la zarigüeya recientemente secuenciado.
+Para ello, obtén la secuencia de la proteína MUP26 de ratón (NP\_001009550) y realiza una búsqueda BLASTP contra las proteínas no redundantes de \textit{Monodelphis domestica}. ¿Es alguna de las proteínas de zarigüeya un verdadero ortólogo de la MUP26 de ratón?
+
+Al realizar una búsqueda en BLAST de la proteína de ratón limitando los organismos a \textit{M. domestica}, hay dos resultados sobre una proteína trichosurin-like. Ambas tienen un valor E significativo (4e-28 y 2e-25), por lo que podrían tratarse de ortólogos. No obstante, cuando realizamos la búsqueda inversa (utilizando el ID de las proteínas de zarigüeya para buscar los resultados en ratón), MUP26 no se encuentra al principio de la lista. Por tanto, podemos concluir que las proteínas \textbf{no son verdaderos ortólogos}.
