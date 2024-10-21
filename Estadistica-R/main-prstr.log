@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.10.11)  16 OCT 2024 18:56
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.10.11)  21 OCT 2024 18:54
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2072,7 +2072,7 @@ LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <12> not available
 [3]
 
 [4]
-<figure/unnamed-chunk-7-1.pdf, id=149, 505.89pt x 505.89pt>
+<figure/unnamed-chunk-7-1.pdf, id=185, 505.89pt x 505.89pt>
 File: figure/unnamed-chunk-7-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-7-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-7-1.pdf  used on input line 185.
@@ -2187,7 +2187,54 @@ o de la
 
 
 
-[18] 
+[18]
+
+[19]
+
+[20]
+Underfull \hbox (badness 4699) in paragraph at lines 1006--1006
+[]\T1/cmss/bx/n/14.4 Acceder y modificar elementos de un vector:
+ []
+
+
+
+[21]
+
+[22]
+
+[23]
+Overfull \hbox (1.54204pt too wide) in paragraph at lines 1236--1236
+[]\T1/cmtt/m/n/12 ## Warning in w[] <- 17:55: número de elementos para sustitui
+r no es
+ []
+
+
+
+[24]
+
+[25]
+
+[26]
+
+[27]
+Underfull \hbox (badness 10000) in paragraph at lines 1481--1481
+[]\T1/cmtt/m/n/12 ## Warning in matrix(1:15, nrow = 5, ncol = 2): data length [
+15] is
+ []
+
+
+
+[28]
+
+[29]
+
+[30]
+
+[31]
+
+[32]
+
+[33] 
 enddocument/afterlastpage: lastpage setting LastPage.
 (main-prstr.aux
 LaTeX Info: Redefining \. on input line 8.
@@ -2198,13 +2245,13 @@ LaTeX2e <2024-06-01> patch level 2
 L3 programming layer <2024-08-30>
  ***********
 Package rerunfilecheck Info: File `main-prstr.out' has not changed.
-(rerunfilecheck)             Checksum: 8F45F62CC1AB135646AD519CAC909583;1707.
+(rerunfilecheck)             Checksum: FE6E84AAADB932B1051345A6DB386009;2296.
  ) 
 Here is how much of TeX's memory you used:
- 34511 strings out of 473899
- 621804 string characters out of 5726027
- 1116563 words of memory out of 5000000
- 56609 multiletter control sequences out of 15000+600000
+ 34549 strings out of 473899
+ 622327 string characters out of 5726027
+ 1120563 words of memory out of 5000000
+ 56618 multiletter control sequences out of 15000+600000
  582093 words of font info for 83 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  143i,13n,173p,2290b,2231s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -2227,11 +2274,12 @@ ublic/amsfonts/cm/cmmi8.pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/font
 s/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/Sandra/AppData/Local/Programs/Mi
 KTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/Sandra/AppData/Local/Pro
 grams/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Sandra/AppData
-/Local/Programs/MiKTeX/fonts/type1/public/lm/lmssbx10.pfb><C:/Users/Sandra/AppD
-ata/Local/Programs/MiKTeX/fonts/type1/urw/palatino/uplr8a.pfb>
-Output written on main-prstr.pdf (19 pages, 309574 bytes).
+/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/Sandr
+a/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmssbx10.pfb><C:/Users/Sa
+ndra/AppData/Local/Programs/MiKTeX/fonts/type1/urw/palatino/uplr8a.pfb>
+Output written on main-prstr.pdf (34 pages, 370959 bytes).
 PDF statistics:
- 706 PDF objects out of 1000 (max. 8388607)
- 40 named destinations out of 1000 (max. 500000)
- 178 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 876 PDF objects out of 1000 (max. 8388607)
+ 69 named destinations out of 1000 (max. 500000)
+ 234 words of extra memory for PDF output out of 10000 (max. 10000000)
 

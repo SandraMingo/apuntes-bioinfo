@@ -455,12 +455,358 @@ v2 <- 7:12
 (v3 <- c(v1, v2))
 @
 
-Si se emplean operaciones aritméticas en vectores que no son de la misma longitud, se utiliza la regla de reciclaje, es decir, se reutiliza el vector más pequeño cuando llega a su fin las veces necesarias hasta haber terminado las operaciones con el vector grande:
+Si se emplean operaciones aritméticas en vectores que no son de la misma longitud, se utiliza la \textbf{regla de reciclaje}, es decir, se reutiliza el vector más pequeño cuando llega a su fin las veces necesarias hasta haber terminado las operaciones con el vector grande:
 
 <<>>=
 v1 <- 1:3
 v2 <- 11:12
 v1 + v2
 @
+
+%21/10 - Ramón
+En ocasiones se produce un warning que avisa sobre la reutilización de uno de los vectores. Sin embargo, esto no ocurre siempre, ua que el warning se suprime cuando el vector a reutilizar se repite una ronda concreta (y no se quede a medias durante el reciclaje).
+
+\subsection{Logical operations}
+Se pueden comparar los elementos de un vector con algo para obtener un vector de elementos lógicos TRUE y FALSE. Esto es común en varios lenguajes de programación, pero hay que tener en cuenta la diferencia entre \code{|} y \code{||} y entre \code{\&\&} y \code{\&}. También se puede usar \code{xor} para obtener TRUE cuando solo uno de las condiciones es verdadera (no ambas).
+
+<<>>=
+v1 <- 1:5
+v1 < 3
+(v2 <- (v1 < 3))
+v11 <- c(1, 1, 3, 5, 4)
+v1 == v11
+v1 != v11
+!(v1 == v11)
+identical(v1, v11)
+v3 <- c(TRUE, FALSE, TRUE, FALSE, TRUE)
+!v3
+v2 & v3
+v2 | v3
+(v1 > 3) & (v11 >= 2)
+(v1 > 3) | (v11 >= 2)
+xor(v2, v3)
+@
+
+\subsubsection{Valores lógicos 0 y 1}
+En R, al igual que en otros lenguajes de programación, se pueden utilizar valores lógicos como si fuesen numéricos: se puede tratar \code{TRUE} como 1 y \code{FALSE} como 0. Además, \code{TRUE} puede ser cualquier otro número diferente a 0. 
+
+El operador \code{which} opera en un vector lógico, no en el vector directamente, y devuelve las posiciones que son verdaderas. \code{length} cuenta la longitud de la salida:
+
+<<>>=
+vv <- c(1, 3, 10, 2, 9, 5, 4, 6:8)
+length(which(vv < 5))
+@
+
+Es importante remarcar no utilizar T para TRUE y F para FALSE, aunque se pueda hacer. Esto se debe a que se puede redefinir el valor de T y F a que no correspondan a TRUE y FALSE (lo cual es muy difícil de debuggear), mientras que TRUE y FALSE siempre significarán lo mismo. 
+
+\subsubsection{Cortocircuito de operaciones lógicas}
+Los operadores \code{\&\&} y \code{||} son cortocircuitos. Los dobles caracteres evalúan el segundo elemento sólo si la evaluación del primero no permite saber el resultado de la operación. Cuando se va a hacer un and y la primera condición es FALSE, no hace falta evaluar la segunda condición, ya que se conoce el resultado (de igual forma si en un or la primera condición es TRUE). Así, esto se puede utilizar para condicionar la ejecución de la segunda condición:
+
+<<>>=
+a <- "hola"
+if (is.numeric(a) && log(a)) cat("\n we entered in the if")
+@
+
+En el ejemplo anterior, sólo se quiere evaluar el logaritmo de un número. Por ello, con \&\&, primero se evalúa si la variable es un número y, en caso afirmativo, se ejecuta el logaritmo. En caso de que la variable no sea numérica (como es el caso del ejemplo), utilizar un solo \& resultaría en un error, y no sería lo que nos interesa. 
+
+<<>>=
+a1 <- c(TRUE, FALSE)
+b1 <- c(TRUE, TRUE)
+
+a1 && b1
+
+a1 || b1
+@
+
+Hay que tener en cuenta que no se deben utilizar vectores con más de un elemento con cortocircuitos, ya que sólo se evalúa el primer valor. 
+
+\subsection{Nombres de elementos}
+Los elementos de un vector pueden tener nombres (que deben ser únicos). Esto permite acceder a los vectores utilizando nombres en lugar de posiciones, lo que puede ser más intuitivo. 
+
+<<>>=
+ages <- c(Juan = 23, Maria = 35, Irene = 12, Ana = 93)
+names(ages)
+ages
+ages["Juan"]
+@
+
+\subsection{Acceder y modificar elementos de un vector: indexación y subsetting}
+\subsubsection{Indexación de vectores}
+Hay cuatro formas para acceder a elementos específicos de un vector:
+\begin{itemize}
+\item Especificando las posiciones: mediante índices
+\item Dando los nombres de los elementos
+\item Utilizando un vector lógico
+\item Utilizando cualquier expresión que genere cualquiera de las anteriores.
+\end{itemize}
+Las posiciones y nombres se dan entre corchetes ([]).
+
+Especificando las posiciones deseadas:
+<<>>=
+(w <- 9:18)
+w[1]
+w[2]
+w[c(4, 3, 2)]
+@
+
+<<>>=
+w[c(1, 3)] ## not the same as
+w[c(3, 1)]
+@
+
+<<>>=
+w[1:2]
+w[3:6]
+w[seq(1, 8, by = 3)]
+vv <- seq(1, 8, by = 3)
+w[vv]
+@
+
+
+Especificando las posiciones que no se desean (el vector original no se modifica):
+<<>>=
+w[-1]
+w[-c(1, 3)] ## of course, the same as following
+w[-c(3, 1)]
+@
+
+
+Utilizando nombres
+<<>>=
+
+ages <- c(Juan = 23, Maria = 35, Irene = 12, Ana = 93)
+ages["Irene"]
+ages[c("Irene", "Juan", "Irene")]
+@
+
+
+Utilizando un vector lógico \ldots
+<<>>=
+ages[c(FALSE, TRUE, TRUE, FALSE)]
+## what are thes doing? Avoid these things
+ages[c(FALSE, TRUE)]
+ages[c(TRUE, TRUE, FALSE)]
+@
+
+\ldots o algo que es un vector lógico implícito 
+<<>>=
+## All less than 12
+w[w < 12]
+## same, but more confusing (here, not always)
+w[!(w >= 12)]
+
+## All less than the median
+w[w < median(w)]
+@
+
+
+Si se puede acceder, también se puede modificar: 
+<<>>=
+ages["Irene"] <- 19
+ages
+w[1] <- 9999
+w
+w[vv] <- 103
+w
+@
+
+
+Pero compara esto:
+<<>>=
+w[] <- 77
+w[] <- 17:55
+w <- 17:55
+@
+
+
+\subsection{Interludio: comparación de floats}
+Comparar valores numéricos muy similares puede ser complicado y muy delicado debido al redondeo y algunos números que no se pueden representar exactamente en notación binaria. De forma predeterminada, R muestra 7 dígitos significativos.
+
+<<>>=
+x  <-  1.999999
+x
+x - 2
+x <- 1.9999999999999
+x
+x-2
+@
+
+Todos los dígitos están presentes, pero en el segundo caso, no se muestran. Además, \code{x-2} no es exactamente $-1 \times 10^{-13}$. En R se suelen redondear los números con una precisión de 53 dígitos binarios, por lo que dos números decimales no serán iguales de forma diable a menos que hayan sido calculados por el mismo algoritmo, y ni siquiera entonces: 
+\begin{verbatim}
+a <- sqrt(2)
+a * a == 2
+[1] FALSE
+a * a - 2
+[1] 4.440892e-16
+\end{verbatim}
+
+Otro ejemplo:
+<<>>=
+0.1 + 0.2 == 0.3
+(0.1 + 0.2) - 0.3
+@
+
+En resumen: desconfía extremadamente siempre que veas una comparación de igualdad de dos números en coma flotante; es poco probable que haga lo que quieres. Si sabes lo que estás haciendo, echa un vistazo a \code{all.equal} para comparaciones de igualdad de objetos casi iguales.
+
+\subsection{Factores}
+Los factores son unos tipos especiales de vectores. Los necesitamos para diferenciar entre un vector de caracteres y un vector que representa variables categóricas. El vector \code{char.vec <- c("abc", "de", "fghi")} contiene varias cadenas de caracteres. Supongamos ahora que tenemos un estudio en el que registramos el sexo de los participantes. Cuando analizamos los datos queremos que R sepa que se trata de una variable categórica, donde cada etiqueta representa un posible valor de la categoría:
+<<tidy=FALSE>>=
+
+Sex.version1 <- factor(c("Female", "Female", "Female",
+                         "Male", "Male"))
+Sex.version2 <- factor(c("XX", "XX", "XX", "XY", "XY"))
+Sex.version3 <- factor(c("Feminine", "Feminine", "Feminine",
+                         "Masculine", "Masculine"))
+Sex.version4 <- factor(c("fe", "fe", "fe", "ma", "ma"))
+
+@
+
+Queremos que todas esas codificaciones del sexo de cinco sujetos arrojen los mismos resultados de análisis, independientemente de lo que digan exactamente las etiquetas. Cada conjunto de etiquetas puede tener sus pros y sus contras (por ejemplo, la tercera probablemente está codificando el género, no el sexo; la última es demasiado críptica; la segunda sólo funciona para algunas especies; etc.). Independientemente de las etiquetas, lo que hay que tener en cuenta es que los tres primeros sujetos son del mismo tipo y los dos últimos son de un tipo diferente.
+
+Reconocer los factores es esencial cuando se trata de variables que parecen números legítimos:
+<<>>=
+postal.code <- c(28001, 28001, 28016, 28430, 28460)
+somey <- c(10, 20, 30, 40, 50)
+summary(aov(somey ~ postal.code))
+@
+
+Lo anterior está haciendo algo tonto: está ajustando una regresión lineal, porque está tomando postal.code como un valor numérico legítimo. Pero sabemos que no tiene sentido que 28009 y 28016 (dos distritos de Madrid) estén separados por 7 unidades mientras que 28430 y 28410 estén separados por 20 unidades (dos pueblos cercanos al norte de Madrid), ni esperamos encontrar relaciones lineales con (el número del) código postal en sí.
+
+A veces, al leer datos, una variable se convierte en factor, pero en realidad es una variable numérica. ¿Cómo convertirla en el conjunto original de números? Esto no funciona:
+<<eval=TRUE>>=
+x <- c(34, 89, 1000)
+y <- factor(x)
+y
+as.numeric(y)
+y
+@
+Los valores se han recodificado. Una forma sencilla de hacerlo es la siguiente:
+<<eval=TRUE>>=
+as.numeric(as.character(y))
+@
+
+\subsubsection{Factores y símbolos, colores, etc en gráficos}
+Muchas veces se puede ver código como el siguiente:
+<<eval=FALSE>>=
+plot(y ~ x, col = c("red", "blue")[group])
+@
+donde \code{group} es un factor de la longitud de x o y con dos niveles (si tuviese más, habría que proporcionar más colores). 
+
+Otro ejemplo:
+<<eval=FALSE>>=
+legend(1, 2, legend = c("A", "B"), pch = c(1, 2),
+       col = c("red", "blue")[factor(levels(group))])
+@
+En este caso, los colores se van a sacar en el mismo orden que los puntos. Aunque sea enreversado, lo que se pide son los niveles del grupo y convertirlo en un factor. Así, los niveles se ponen en el orden que se tienen, y los colores se adjudican en ese mismo orden.
+
+Un último ejemplo:
+<<>>=
+gr <- c("B", "A", "A", "B", "A")
+group <- factor(gr)
+c("red", "blue")[gr]
+c("red", "blue")[group]
+c("red", "blue")[levels(group)]
+c("red", "blue")[factor(levels(group))]
+@
+
+
+\subsection{Matrices}
+Los vectores son unidimensionales, mientras que las matrices son bidimensionales, y los arrays pueden tener un número arbitrario de dimensiones. Aquí nos quedaremos en las matrices. Como en vectores, todos los elementos de una matriz o de un array son del mismo tipo. 
+
+Las matrices se pueden crear desde un vector:
+<<>>=
+matrix(1:10, ncol = 2)
+matrix(1:10, nrow = 5)
+matrix(1:10, ncol = 2, byrow = TRUE)
+matrix(1:15, nrow = 5, ncol = 2)
+@
+
+Por defecto, R rellena la matriz por columnas, pero se puede especificar que sea por fila. 
+
+\subsubsection{Combinar vectores para crear una matriz: \code{cbind, rbind}}
+Se pueden combinar vectores en horizontal o vertical para crear una matriz:
+<<>>=
+v1 <- 1:5
+v2 <- 11:15
+rbind(v1, v2)
+cbind(v1, v2)
+@
+
+También se puede hacer lo mismo con matrices siempre que tengan las dimensiones apropiadas:
+<<>>=
+A <- matrix(1:10, nrow = 5)
+B <- matrix(11:20, nrow = 5)
+cbind(A, B)
+rbind(A, B)
+@
+
+\subsubsection{Indexación y subsetting en matrices}
+Una matriz tiene dos dimensiones, pero por lo demás funciona de forma similar a vectores. La primera dimensión son filas, y la segunda son columnas. Si no se especifica nada para una dimensión, se devuelve en su totalidad.
+<<>>=
+A <- matrix(1:15, nrow = 5)
+A[1, ] ## first row
+A[, 2] ## second column
+A[4, 2] ## fourth row, second column
+A[3, 2] <- 999
+A[1, ] <- c(90, 91, 92)
+A < 4
+@
+
+El operador \code{which} puede no hacer lo que uno espera por defecto. Si se quieren los índices, se debe especificar.
+
+<<>>=
+which(A == 999)
+which(A == 999, arr.ind = TRUE)
+@
+
+También se puede indexar mediante los nombres de filas y columnas:
+<<>>=
+B <- A
+colnames(B) <- c("A", "E", "I")
+rownames(B) <- letters[1:nrow(B)]
+B[, "E"]
+B["c", ]
+@
+
+
+Se puede utilizar una matriz para indexar otra. Esto es algo más avanzado, pero puede venir muy bien:
+<<>>=
+(m1 <- cbind(c(1, 3), c(2, 1)))
+A[m1]
+## compare with
+A[c(1, 3), c(2, 1)]
+@
+Al indexar con una matriz, se devuelven tantos elementos como filas tiene la matriz.
+
+Cuando se obtiene una sola columna, se pierde una dimensión y, en lugar de conseguir una matriz, el resultado es un vector. Para evitar esto, se puede emplear \code{drop = FALSE}
+<<>>=
+A[c(2, 4), 1, drop = FALSE]
+@
+
+\subsubsection{Operaciones con matrices}
+Hay muchas operaciones matriciales disponibles en R (abre tu libro de álgebra matricial e intenta encontrarlas, si quieres). Y muchas funciones operan directamente, por defecto, sobre toda la matriz, o sobre filas/columnas de la matriz:
+<<>>=
+sum(B)
+mean(B)
+colSums(B) #rowSums
+rowMeans(B) #colMeans 
+@
+
+También se pueden seleccionar filas y columnas utilizando esas operaciones:
+<<>>=
+B[rowMeans(B) > 9, ]
+@
+
+\subsection{Listas}
+Una lista es un contenedor general donde se pueden mezclar cosas de distintos tipos. De hecho, no debe por qué tener una estructura rectangular. Hay muchas formas de acceder a elementos de una lista. 
+<<>>=
+listA <- list(a = 1:5, b = letters[1:3])
+listA[1]
+listA[[1]]
+listA[["a"]]
+listA$a
+listA[[1]][2]
+@
+
 
 \end{document}

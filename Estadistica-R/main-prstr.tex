@@ -187,7 +187,7 @@ Para leer el código, se empieza por la función más interna, que en este caso 
 \hlkwd{sum}\hldef{(pvalues} \hlopt{<=} \hlnum{0.05}\hldef{)}
 \end{alltt}
 \begin{verbatim}
-## [1] 55
+## [1] 42
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -818,7 +818,7 @@ Se pueden concatenar dos vectores:
 \end{kframe}
 \end{knitrout}
 
-Si se emplean operaciones aritméticas en vectores que no son de la misma longitud, se utiliza la regla de reciclaje, es decir, se reutiliza el vector más pequeño cuando llega a su fin las veces necesarias hasta haber terminado las operaciones con el vector grande:
+Si se emplean operaciones aritméticas en vectores que no son de la misma longitud, se utiliza la \textbf{regla de reciclaje}, es decir, se reutiliza el vector más pequeño cuando llega a su fin las veces necesarias hasta haber terminado las operaciones con el vector grande:
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
@@ -834,5 +834,939 @@ Si se emplean operaciones aritméticas en vectores que no son de la misma longit
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
+
+%21/10 - Ramón
+En ocasiones se produce un warning que avisa sobre la reutilización de uno de los vectores. Sin embargo, esto no ocurre siempre, ua que el warning se suprime cuando el vector a reutilizar se repite una ronda concreta (y no se quede a medias durante el reciclaje).
+
+\subsection{Logical operations}
+Se pueden comparar los elementos de un vector con algo para obtener un vector de elementos lógicos TRUE y FALSE. Esto es común en varios lenguajes de programación, pero hay que tener en cuenta la diferencia entre \code{|} y \code{||} y entre \code{\&\&} y \code{\&}. También se puede usar \code{xor} para obtener TRUE cuando solo uno de las condiciones es verdadera (no ambas).
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{v1} \hlkwb{<-} \hlnum{1}\hlopt{:}\hlnum{5}
+\hldef{v1} \hlopt{<} \hlnum{3}
+\end{alltt}
+\begin{verbatim}
+## [1]  TRUE  TRUE FALSE FALSE FALSE
+\end{verbatim}
+\begin{alltt}
+\hldef{(v2} \hlkwb{<-} \hldef{(v1} \hlopt{<} \hlnum{3}\hldef{))}
+\end{alltt}
+\begin{verbatim}
+## [1]  TRUE  TRUE FALSE FALSE FALSE
+\end{verbatim}
+\begin{alltt}
+\hldef{v11} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{1}\hldef{,} \hlnum{1}\hldef{,} \hlnum{3}\hldef{,} \hlnum{5}\hldef{,} \hlnum{4}\hldef{)}
+\hldef{v1} \hlopt{==} \hldef{v11}
+\end{alltt}
+\begin{verbatim}
+## [1]  TRUE FALSE  TRUE FALSE FALSE
+\end{verbatim}
+\begin{alltt}
+\hldef{v1} \hlopt{!=} \hldef{v11}
+\end{alltt}
+\begin{verbatim}
+## [1] FALSE  TRUE FALSE  TRUE  TRUE
+\end{verbatim}
+\begin{alltt}
+\hlopt{!}\hldef{(v1} \hlopt{==} \hldef{v11)}
+\end{alltt}
+\begin{verbatim}
+## [1] FALSE  TRUE FALSE  TRUE  TRUE
+\end{verbatim}
+\begin{alltt}
+\hlkwd{identical}\hldef{(v1, v11)}
+\end{alltt}
+\begin{verbatim}
+## [1] FALSE
+\end{verbatim}
+\begin{alltt}
+\hldef{v3} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{TRUE}\hldef{,} \hlnum{FALSE}\hldef{,} \hlnum{TRUE}\hldef{,} \hlnum{FALSE}\hldef{,} \hlnum{TRUE}\hldef{)}
+\hlopt{!}\hldef{v3}
+\end{alltt}
+\begin{verbatim}
+## [1] FALSE  TRUE FALSE  TRUE FALSE
+\end{verbatim}
+\begin{alltt}
+\hldef{v2} \hlopt{&} \hldef{v3}
+\end{alltt}
+\begin{verbatim}
+## [1]  TRUE FALSE FALSE FALSE FALSE
+\end{verbatim}
+\begin{alltt}
+\hldef{v2} \hlopt{|} \hldef{v3}
+\end{alltt}
+\begin{verbatim}
+## [1]  TRUE  TRUE  TRUE FALSE  TRUE
+\end{verbatim}
+\begin{alltt}
+\hldef{(v1} \hlopt{>} \hlnum{3}\hldef{)} \hlopt{&} \hldef{(v11} \hlopt{>=} \hlnum{2}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] FALSE FALSE FALSE  TRUE  TRUE
+\end{verbatim}
+\begin{alltt}
+\hldef{(v1} \hlopt{>} \hlnum{3}\hldef{)} \hlopt{|} \hldef{(v11} \hlopt{>=} \hlnum{2}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] FALSE FALSE  TRUE  TRUE  TRUE
+\end{verbatim}
+\begin{alltt}
+\hlkwd{xor}\hldef{(v2, v3)}
+\end{alltt}
+\begin{verbatim}
+## [1] FALSE  TRUE  TRUE FALSE  TRUE
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\subsubsection{Valores lógicos 0 y 1}
+En R, al igual que en otros lenguajes de programación, se pueden utilizar valores lógicos como si fuesen numéricos: se puede tratar \code{TRUE} como 1 y \code{FALSE} como 0. Además, \code{TRUE} puede ser cualquier otro número diferente a 0. 
+
+El operador \code{which} opera en un vector lógico, no en el vector directamente, y devuelve las posiciones que son verdaderas. \code{length} cuenta la longitud de la salida:
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{vv} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{1}\hldef{,} \hlnum{3}\hldef{,} \hlnum{10}\hldef{,} \hlnum{2}\hldef{,} \hlnum{9}\hldef{,} \hlnum{5}\hldef{,} \hlnum{4}\hldef{,} \hlnum{6}\hlopt{:}\hlnum{8}\hldef{)}
+\hlkwd{length}\hldef{(}\hlkwd{which}\hldef{(vv} \hlopt{<} \hlnum{5}\hldef{))}
+\end{alltt}
+\begin{verbatim}
+## [1] 4
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+Es importante remarcar no utilizar T para TRUE y F para FALSE, aunque se pueda hacer. Esto se debe a que se puede redefinir el valor de T y F a que no correspondan a TRUE y FALSE (lo cual es muy difícil de debuggear), mientras que TRUE y FALSE siempre significarán lo mismo. 
+
+\subsubsection{Cortocircuito de operaciones lógicas}
+Los operadores \code{\&\&} y \code{||} son cortocircuitos. Los dobles caracteres evalúan el segundo elemento sólo si la evaluación del primero no permite saber el resultado de la operación. Cuando se va a hacer un and y la primera condición es FALSE, no hace falta evaluar la segunda condición, ya que se conoce el resultado (de igual forma si en un or la primera condición es TRUE). Así, esto se puede utilizar para condicionar la ejecución de la segunda condición:
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{a} \hlkwb{<-} \hlsng{"hola"}
+\hlkwa{if} \hldef{(}\hlkwd{is.numeric}\hldef{(a)} \hlopt{&&} \hlkwd{log}\hldef{(a))} \hlkwd{cat}\hldef{(}\hlsng{"\textbackslash{}n we entered in the if"}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+En el ejemplo anterior, sólo se quiere evaluar el logaritmo de un número. Por ello, con \&\&, primero se evalúa si la variable es un número y, en caso afirmativo, se ejecuta el logaritmo. En caso de que la variable no sea numérica (como es el caso del ejemplo), utilizar un solo \& resultaría en un error, y no sería lo que nos interesa. 
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{a1} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{TRUE}\hldef{,} \hlnum{FALSE}\hldef{)}
+\hldef{b1} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{TRUE}\hldef{,} \hlnum{TRUE}\hldef{)}
+
+\hldef{a1} \hlopt{&&} \hldef{b1}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in a1 \&\& b1: 'length = 2' in coercion to 'logical(1)'}}\begin{alltt}
+\hldef{a1} \hlopt{||} \hldef{b1}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in a1 || b1: 'length = 2' in coercion to 'logical(1)'}}\end{kframe}
+\end{knitrout}
+
+Hay que tener en cuenta que no se deben utilizar vectores con más de un elemento con cortocircuitos, ya que sólo se evalúa el primer valor. 
+
+\subsection{Nombres de elementos}
+Los elementos de un vector pueden tener nombres (que deben ser únicos). Esto permite acceder a los vectores utilizando nombres en lugar de posiciones, lo que puede ser más intuitivo. 
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{ages} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlkwc{Juan} \hldef{=} \hlnum{23}\hldef{,} \hlkwc{Maria} \hldef{=} \hlnum{35}\hldef{,} \hlkwc{Irene} \hldef{=} \hlnum{12}\hldef{,} \hlkwc{Ana} \hldef{=} \hlnum{93}\hldef{)}
+\hlkwd{names}\hldef{(ages)}
+\end{alltt}
+\begin{verbatim}
+## [1] "Juan"  "Maria" "Irene" "Ana"
+\end{verbatim}
+\begin{alltt}
+\hldef{ages}
+\end{alltt}
+\begin{verbatim}
+##  Juan Maria Irene   Ana 
+##    23    35    12    93
+\end{verbatim}
+\begin{alltt}
+\hldef{ages[}\hlsng{"Juan"}\hldef{]}
+\end{alltt}
+\begin{verbatim}
+## Juan 
+##   23
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\subsection{Acceder y modificar elementos de un vector: indexación y subsetting}
+\subsubsection{Indexación de vectores}
+Hay cuatro formas para acceder a elementos específicos de un vector:
+\begin{itemize}
+\item Especificando las posiciones: mediante índices
+\item Dando los nombres de los elementos
+\item Utilizando un vector lógico
+\item Utilizando cualquier expresión que genere cualquiera de las anteriores.
+\end{itemize}
+Las posiciones y nombres se dan entre corchetes ([]).
+
+Especificando las posiciones deseadas:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{(w} \hlkwb{<-} \hlnum{9}\hlopt{:}\hlnum{18}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+##  [1]  9 10 11 12 13 14 15 16 17 18
+\end{verbatim}
+\begin{alltt}
+\hldef{w[}\hlnum{1}\hldef{]}
+\end{alltt}
+\begin{verbatim}
+## [1] 9
+\end{verbatim}
+\begin{alltt}
+\hldef{w[}\hlnum{2}\hldef{]}
+\end{alltt}
+\begin{verbatim}
+## [1] 10
+\end{verbatim}
+\begin{alltt}
+\hldef{w[}\hlkwd{c}\hldef{(}\hlnum{4}\hldef{,} \hlnum{3}\hldef{,} \hlnum{2}\hldef{)]}
+\end{alltt}
+\begin{verbatim}
+## [1] 12 11 10
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{w[}\hlkwd{c}\hldef{(}\hlnum{1}\hldef{,} \hlnum{3}\hldef{)]} \hlcom{## not the same as}
+\end{alltt}
+\begin{verbatim}
+## [1]  9 11
+\end{verbatim}
+\begin{alltt}
+\hldef{w[}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{1}\hldef{)]}
+\end{alltt}
+\begin{verbatim}
+## [1] 11  9
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{w[}\hlnum{1}\hlopt{:}\hlnum{2}\hldef{]}
+\end{alltt}
+\begin{verbatim}
+## [1]  9 10
+\end{verbatim}
+\begin{alltt}
+\hldef{w[}\hlnum{3}\hlopt{:}\hlnum{6}\hldef{]}
+\end{alltt}
+\begin{verbatim}
+## [1] 11 12 13 14
+\end{verbatim}
+\begin{alltt}
+\hldef{w[}\hlkwd{seq}\hldef{(}\hlnum{1}\hldef{,} \hlnum{8}\hldef{,} \hlkwc{by} \hldef{=} \hlnum{3}\hldef{)]}
+\end{alltt}
+\begin{verbatim}
+## [1]  9 12 15
+\end{verbatim}
+\begin{alltt}
+\hldef{vv} \hlkwb{<-} \hlkwd{seq}\hldef{(}\hlnum{1}\hldef{,} \hlnum{8}\hldef{,} \hlkwc{by} \hldef{=} \hlnum{3}\hldef{)}
+\hldef{w[vv]}
+\end{alltt}
+\begin{verbatim}
+## [1]  9 12 15
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+Especificando las posiciones que no se desean (el vector original no se modifica):
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{w[}\hlopt{-}\hlnum{1}\hldef{]}
+\end{alltt}
+\begin{verbatim}
+## [1] 10 11 12 13 14 15 16 17 18
+\end{verbatim}
+\begin{alltt}
+\hldef{w[}\hlopt{-}\hlkwd{c}\hldef{(}\hlnum{1}\hldef{,} \hlnum{3}\hldef{)]} \hlcom{## of course, the same as following}
+\end{alltt}
+\begin{verbatim}
+## [1] 10 12 13 14 15 16 17 18
+\end{verbatim}
+\begin{alltt}
+\hldef{w[}\hlopt{-}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{1}\hldef{)]}
+\end{alltt}
+\begin{verbatim}
+## [1] 10 12 13 14 15 16 17 18
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+Utilizando nombres
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{ages} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlkwc{Juan} \hldef{=} \hlnum{23}\hldef{,} \hlkwc{Maria} \hldef{=} \hlnum{35}\hldef{,} \hlkwc{Irene} \hldef{=} \hlnum{12}\hldef{,} \hlkwc{Ana} \hldef{=} \hlnum{93}\hldef{)}
+\hldef{ages[}\hlsng{"Irene"}\hldef{]}
+\end{alltt}
+\begin{verbatim}
+## Irene 
+##    12
+\end{verbatim}
+\begin{alltt}
+\hldef{ages[}\hlkwd{c}\hldef{(}\hlsng{"Irene"}\hldef{,} \hlsng{"Juan"}\hldef{,} \hlsng{"Irene"}\hldef{)]}
+\end{alltt}
+\begin{verbatim}
+## Irene  Juan Irene 
+##    12    23    12
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+Utilizando un vector lógico \ldots
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{ages[}\hlkwd{c}\hldef{(}\hlnum{FALSE}\hldef{,} \hlnum{TRUE}\hldef{,} \hlnum{TRUE}\hldef{,} \hlnum{FALSE}\hldef{)]}
+\end{alltt}
+\begin{verbatim}
+## Maria Irene 
+##    35    12
+\end{verbatim}
+\begin{alltt}
+\hlcom{## what are thes doing? Avoid these things}
+\hldef{ages[}\hlkwd{c}\hldef{(}\hlnum{FALSE}\hldef{,} \hlnum{TRUE}\hldef{)]}
+\end{alltt}
+\begin{verbatim}
+## Maria   Ana 
+##    35    93
+\end{verbatim}
+\begin{alltt}
+\hldef{ages[}\hlkwd{c}\hldef{(}\hlnum{TRUE}\hldef{,} \hlnum{TRUE}\hldef{,} \hlnum{FALSE}\hldef{)]}
+\end{alltt}
+\begin{verbatim}
+##  Juan Maria   Ana 
+##    23    35    93
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\ldots o algo que es un vector lógico implícito 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{## All less than 12}
+\hldef{w[w} \hlopt{<} \hlnum{12}\hldef{]}
+\end{alltt}
+\begin{verbatim}
+## [1]  9 10 11
+\end{verbatim}
+\begin{alltt}
+\hlcom{## same, but more confusing (here, not always)}
+\hldef{w[}\hlopt{!}\hldef{(w} \hlopt{>=} \hlnum{12}\hldef{)]}
+\end{alltt}
+\begin{verbatim}
+## [1]  9 10 11
+\end{verbatim}
+\begin{alltt}
+\hlcom{## All less than the median}
+\hldef{w[w} \hlopt{<} \hlkwd{median}\hldef{(w)]}
+\end{alltt}
+\begin{verbatim}
+## [1]  9 10 11 12 13
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+Si se puede acceder, también se puede modificar: 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{ages[}\hlsng{"Irene"}\hldef{]} \hlkwb{<-} \hlnum{19}
+\hldef{ages}
+\end{alltt}
+\begin{verbatim}
+##  Juan Maria Irene   Ana 
+##    23    35    19    93
+\end{verbatim}
+\begin{alltt}
+\hldef{w[}\hlnum{1}\hldef{]} \hlkwb{<-} \hlnum{9999}
+\hldef{w}
+\end{alltt}
+\begin{verbatim}
+##  [1] 9999   10   11   12   13   14   15   16   17   18
+\end{verbatim}
+\begin{alltt}
+\hldef{w[vv]} \hlkwb{<-} \hlnum{103}
+\hldef{w}
+\end{alltt}
+\begin{verbatim}
+##  [1] 103  10  11 103  13  14 103  16  17  18
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+Pero compara esto:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{w[]} \hlkwb{<-} \hlnum{77}
+\hldef{w[]} \hlkwb{<-} \hlnum{17}\hlopt{:}\hlnum{55}
+\end{alltt}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in w[] <- 17:55: número de elementos para sustituir no es un múltiplo de la longitud del reemplazo}}\begin{alltt}
+\hldef{w} \hlkwb{<-} \hlnum{17}\hlopt{:}\hlnum{55}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+\subsection{Interludio: comparación de floats}
+Comparar valores numéricos muy similares puede ser complicado y muy delicado debido al redondeo y algunos números que no se pueden representar exactamente en notación binaria. De forma predeterminada, R muestra 7 dígitos significativos.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{x}  \hlkwb{<-}  \hlnum{1.999999}
+\hldef{x}
+\end{alltt}
+\begin{verbatim}
+## [1] 1.999999
+\end{verbatim}
+\begin{alltt}
+\hldef{x} \hlopt{-} \hlnum{2}
+\end{alltt}
+\begin{verbatim}
+## [1] -1e-06
+\end{verbatim}
+\begin{alltt}
+\hldef{x} \hlkwb{<-} \hlnum{1.9999999999999}
+\hldef{x}
+\end{alltt}
+\begin{verbatim}
+## [1] 2
+\end{verbatim}
+\begin{alltt}
+\hldef{x}\hlopt{-}\hlnum{2}
+\end{alltt}
+\begin{verbatim}
+## [1] -9.992007e-14
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+Todos los dígitos están presentes, pero en el segundo caso, no se muestran. Además, \code{x-2} no es exactamente $-1 \times 10^{-13}$. En R se suelen redondear los números con una precisión de 53 dígitos binarios, por lo que dos números decimales no serán iguales de forma diable a menos que hayan sido calculados por el mismo algoritmo, y ni siquiera entonces: 
+\begin{verbatim}
+a <- sqrt(2)
+a * a == 2
+[1] FALSE
+a * a - 2
+[1] 4.440892e-16
+\end{verbatim}
+
+Otro ejemplo:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlnum{0.1} \hlopt{+} \hlnum{0.2} \hlopt{==} \hlnum{0.3}
+\end{alltt}
+\begin{verbatim}
+## [1] FALSE
+\end{verbatim}
+\begin{alltt}
+\hldef{(}\hlnum{0.1} \hlopt{+} \hlnum{0.2}\hldef{)} \hlopt{-} \hlnum{0.3}
+\end{alltt}
+\begin{verbatim}
+## [1] 5.551115e-17
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+En resumen: desconfía extremadamente siempre que veas una comparación de igualdad de dos números en coma flotante; es poco probable que haga lo que quieres. Si sabes lo que estás haciendo, echa un vistazo a \code{all.equal} para comparaciones de igualdad de objetos casi iguales.
+
+\subsection{Factores}
+Los factores son unos tipos especiales de vectores. Los necesitamos para diferenciar entre un vector de caracteres y un vector que representa variables categóricas. El vector \code{char.vec <- c("abc", "de", "fghi")} contiene varias cadenas de caracteres. Supongamos ahora que tenemos un estudio en el que registramos el sexo de los participantes. Cuando analizamos los datos queremos que R sepa que se trata de una variable categórica, donde cada etiqueta representa un posible valor de la categoría:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{Sex.version1} \hlkwb{<-} \hlkwd{factor}\hldef{(}\hlkwd{c}\hldef{(}\hlsng{"Female"}\hldef{,} \hlsng{"Female"}\hldef{,} \hlsng{"Female"}\hldef{,}
+                         \hlsng{"Male"}\hldef{,} \hlsng{"Male"}\hldef{))}
+\hldef{Sex.version2} \hlkwb{<-} \hlkwd{factor}\hldef{(}\hlkwd{c}\hldef{(}\hlsng{"XX"}\hldef{,} \hlsng{"XX"}\hldef{,} \hlsng{"XX"}\hldef{,} \hlsng{"XY"}\hldef{,} \hlsng{"XY"}\hldef{))}
+\hldef{Sex.version3} \hlkwb{<-} \hlkwd{factor}\hldef{(}\hlkwd{c}\hldef{(}\hlsng{"Feminine"}\hldef{,} \hlsng{"Feminine"}\hldef{,} \hlsng{"Feminine"}\hldef{,}
+                         \hlsng{"Masculine"}\hldef{,} \hlsng{"Masculine"}\hldef{))}
+\hldef{Sex.version4} \hlkwb{<-} \hlkwd{factor}\hldef{(}\hlkwd{c}\hldef{(}\hlsng{"fe"}\hldef{,} \hlsng{"fe"}\hldef{,} \hlsng{"fe"}\hldef{,} \hlsng{"ma"}\hldef{,} \hlsng{"ma"}\hldef{))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+Queremos que todas esas codificaciones del sexo de cinco sujetos arrojen los mismos resultados de análisis, independientemente de lo que digan exactamente las etiquetas. Cada conjunto de etiquetas puede tener sus pros y sus contras (por ejemplo, la tercera probablemente está codificando el género, no el sexo; la última es demasiado críptica; la segunda sólo funciona para algunas especies; etc.). Independientemente de las etiquetas, lo que hay que tener en cuenta es que los tres primeros sujetos son del mismo tipo y los dos últimos son de un tipo diferente.
+
+Reconocer los factores es esencial cuando se trata de variables que parecen números legítimos:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{postal.code} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{28001}\hldef{,} \hlnum{28001}\hldef{,} \hlnum{28016}\hldef{,} \hlnum{28430}\hldef{,} \hlnum{28460}\hldef{)}
+\hldef{somey} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{10}\hldef{,} \hlnum{20}\hldef{,} \hlnum{30}\hldef{,} \hlnum{40}\hldef{,} \hlnum{50}\hldef{)}
+\hlkwd{summary}\hldef{(}\hlkwd{aov}\hldef{(somey} \hlopt{~} \hldef{postal.code))}
+\end{alltt}
+\begin{verbatim}
+##             Df Sum Sq Mean Sq F value Pr(>F)  
+## postal.code  1  782.5   782.5   10.79 0.0462 *
+## Residuals    3  217.5    72.5                 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+Lo anterior está haciendo algo tonto: está ajustando una regresión lineal, porque está tomando postal.code como un valor numérico legítimo. Pero sabemos que no tiene sentido que 28009 y 28016 (dos distritos de Madrid) estén separados por 7 unidades mientras que 28430 y 28410 estén separados por 20 unidades (dos pueblos cercanos al norte de Madrid), ni esperamos encontrar relaciones lineales con (el número del) código postal en sí.
+
+A veces, al leer datos, una variable se convierte en factor, pero en realidad es una variable numérica. ¿Cómo convertirla en el conjunto original de números? Esto no funciona:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{x} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{34}\hldef{,} \hlnum{89}\hldef{,} \hlnum{1000}\hldef{)}
+\hldef{y} \hlkwb{<-} \hlkwd{factor}\hldef{(x)}
+\hldef{y}
+\end{alltt}
+\begin{verbatim}
+## [1] 34   89   1000
+## Levels: 34 89 1000
+\end{verbatim}
+\begin{alltt}
+\hlkwd{as.numeric}\hldef{(y)}
+\end{alltt}
+\begin{verbatim}
+## [1] 1 2 3
+\end{verbatim}
+\begin{alltt}
+\hldef{y}
+\end{alltt}
+\begin{verbatim}
+## [1] 34   89   1000
+## Levels: 34 89 1000
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+Los valores se han recodificado. Una forma sencilla de hacerlo es la siguiente:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{as.numeric}\hldef{(}\hlkwd{as.character}\hldef{(y))}
+\end{alltt}
+\begin{verbatim}
+## [1]   34   89 1000
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\subsubsection{Factores y símbolos, colores, etc en gráficos}
+Muchas veces se puede ver código como el siguiente:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hldef{(y} \hlopt{~} \hldef{x,} \hlkwc{col} \hldef{=} \hlkwd{c}\hldef{(}\hlsng{"red"}\hldef{,} \hlsng{"blue"}\hldef{)[group])}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+donde \code{group} es un factor de la longitud de x o y con dos niveles (si tuviese más, habría que proporcionar más colores). 
+
+Otro ejemplo:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{legend}\hldef{(}\hlnum{1}\hldef{,} \hlnum{2}\hldef{,} \hlkwc{legend} \hldef{=} \hlkwd{c}\hldef{(}\hlsng{"A"}\hldef{,} \hlsng{"B"}\hldef{),} \hlkwc{pch} \hldef{=} \hlkwd{c}\hldef{(}\hlnum{1}\hldef{,} \hlnum{2}\hldef{),}
+       \hlkwc{col} \hldef{=} \hlkwd{c}\hldef{(}\hlsng{"red"}\hldef{,} \hlsng{"blue"}\hldef{)[}\hlkwd{factor}\hldef{(}\hlkwd{levels}\hldef{(group))])}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+En este caso, los colores se van a sacar en el mismo orden que los puntos. Aunque sea enreversado, lo que se pide son los niveles del grupo y convertirlo en un factor. Así, los niveles se ponen en el orden que se tienen, y los colores se adjudican en ese mismo orden.
+
+Un último ejemplo:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{gr} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"B"}\hldef{,} \hlsng{"A"}\hldef{,} \hlsng{"A"}\hldef{,} \hlsng{"B"}\hldef{,} \hlsng{"A"}\hldef{)}
+\hldef{group} \hlkwb{<-} \hlkwd{factor}\hldef{(gr)}
+\hlkwd{c}\hldef{(}\hlsng{"red"}\hldef{,} \hlsng{"blue"}\hldef{)[gr]}
+\end{alltt}
+\begin{verbatim}
+## [1] NA NA NA NA NA
+\end{verbatim}
+\begin{alltt}
+\hlkwd{c}\hldef{(}\hlsng{"red"}\hldef{,} \hlsng{"blue"}\hldef{)[group]}
+\end{alltt}
+\begin{verbatim}
+## [1] "blue" "red"  "red"  "blue" "red"
+\end{verbatim}
+\begin{alltt}
+\hlkwd{c}\hldef{(}\hlsng{"red"}\hldef{,} \hlsng{"blue"}\hldef{)[}\hlkwd{levels}\hldef{(group)]}
+\end{alltt}
+\begin{verbatim}
+## [1] NA NA
+\end{verbatim}
+\begin{alltt}
+\hlkwd{c}\hldef{(}\hlsng{"red"}\hldef{,} \hlsng{"blue"}\hldef{)[}\hlkwd{factor}\hldef{(}\hlkwd{levels}\hldef{(group))]}
+\end{alltt}
+\begin{verbatim}
+## [1] "red"  "blue"
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+\subsection{Matrices}
+Los vectores son unidimensionales, mientras que las matrices son bidimensionales, y los arrays pueden tener un número arbitrario de dimensiones. Aquí nos quedaremos en las matrices. Como en vectores, todos los elementos de una matriz o de un array son del mismo tipo. 
+
+Las matrices se pueden crear desde un vector:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{matrix}\hldef{(}\hlnum{1}\hlopt{:}\hlnum{10}\hldef{,} \hlkwc{ncol} \hldef{=} \hlnum{2}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+##      [,1] [,2]
+## [1,]    1    6
+## [2,]    2    7
+## [3,]    3    8
+## [4,]    4    9
+## [5,]    5   10
+\end{verbatim}
+\begin{alltt}
+\hlkwd{matrix}\hldef{(}\hlnum{1}\hlopt{:}\hlnum{10}\hldef{,} \hlkwc{nrow} \hldef{=} \hlnum{5}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+##      [,1] [,2]
+## [1,]    1    6
+## [2,]    2    7
+## [3,]    3    8
+## [4,]    4    9
+## [5,]    5   10
+\end{verbatim}
+\begin{alltt}
+\hlkwd{matrix}\hldef{(}\hlnum{1}\hlopt{:}\hlnum{10}\hldef{,} \hlkwc{ncol} \hldef{=} \hlnum{2}\hldef{,} \hlkwc{byrow} \hldef{=} \hlnum{TRUE}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+##      [,1] [,2]
+## [1,]    1    2
+## [2,]    3    4
+## [3,]    5    6
+## [4,]    7    8
+## [5,]    9   10
+\end{verbatim}
+\begin{alltt}
+\hlkwd{matrix}\hldef{(}\hlnum{1}\hlopt{:}\hlnum{15}\hldef{,} \hlkwc{nrow} \hldef{=} \hlnum{5}\hldef{,} \hlkwc{ncol} \hldef{=} \hlnum{2}\hldef{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in matrix(1:15, nrow = 5, ncol = 2): data length [15] is not a sub-multiple or multiple of the number of columns [2]}}\begin{verbatim}
+##      [,1] [,2]
+## [1,]    1    6
+## [2,]    2    7
+## [3,]    3    8
+## [4,]    4    9
+## [5,]    5   10
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+Por defecto, R rellena la matriz por columnas, pero se puede especificar que sea por fila. 
+
+\subsubsection{Combinar vectores para crear una matriz: \code{cbind, rbind}}
+Se pueden combinar vectores en horizontal o vertical para crear una matriz:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{v1} \hlkwb{<-} \hlnum{1}\hlopt{:}\hlnum{5}
+\hldef{v2} \hlkwb{<-} \hlnum{11}\hlopt{:}\hlnum{15}
+\hlkwd{rbind}\hldef{(v1, v2)}
+\end{alltt}
+\begin{verbatim}
+##    [,1] [,2] [,3] [,4] [,5]
+## v1    1    2    3    4    5
+## v2   11   12   13   14   15
+\end{verbatim}
+\begin{alltt}
+\hlkwd{cbind}\hldef{(v1, v2)}
+\end{alltt}
+\begin{verbatim}
+##      v1 v2
+## [1,]  1 11
+## [2,]  2 12
+## [3,]  3 13
+## [4,]  4 14
+## [5,]  5 15
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+También se puede hacer lo mismo con matrices siempre que tengan las dimensiones apropiadas:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{A} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{1}\hlopt{:}\hlnum{10}\hldef{,} \hlkwc{nrow} \hldef{=} \hlnum{5}\hldef{)}
+\hldef{B} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{11}\hlopt{:}\hlnum{20}\hldef{,} \hlkwc{nrow} \hldef{=} \hlnum{5}\hldef{)}
+\hlkwd{cbind}\hldef{(A, B)}
+\end{alltt}
+\begin{verbatim}
+##      [,1] [,2] [,3] [,4]
+## [1,]    1    6   11   16
+## [2,]    2    7   12   17
+## [3,]    3    8   13   18
+## [4,]    4    9   14   19
+## [5,]    5   10   15   20
+\end{verbatim}
+\begin{alltt}
+\hlkwd{rbind}\hldef{(A, B)}
+\end{alltt}
+\begin{verbatim}
+##       [,1] [,2]
+##  [1,]    1    6
+##  [2,]    2    7
+##  [3,]    3    8
+##  [4,]    4    9
+##  [5,]    5   10
+##  [6,]   11   16
+##  [7,]   12   17
+##  [8,]   13   18
+##  [9,]   14   19
+## [10,]   15   20
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\subsubsection{Indexación y subsetting en matrices}
+Una matriz tiene dos dimensiones, pero por lo demás funciona de forma similar a vectores. La primera dimensión son filas, y la segunda son columnas. Si no se especifica nada para una dimensión, se devuelve en su totalidad.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{A} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{1}\hlopt{:}\hlnum{15}\hldef{,} \hlkwc{nrow} \hldef{=} \hlnum{5}\hldef{)}
+\hldef{A[}\hlnum{1}\hldef{, ]} \hlcom{## first row}
+\end{alltt}
+\begin{verbatim}
+## [1]  1  6 11
+\end{verbatim}
+\begin{alltt}
+\hldef{A[,} \hlnum{2}\hldef{]} \hlcom{## second column}
+\end{alltt}
+\begin{verbatim}
+## [1]  6  7  8  9 10
+\end{verbatim}
+\begin{alltt}
+\hldef{A[}\hlnum{4}\hldef{,} \hlnum{2}\hldef{]} \hlcom{## fourth row, second column}
+\end{alltt}
+\begin{verbatim}
+## [1] 9
+\end{verbatim}
+\begin{alltt}
+\hldef{A[}\hlnum{3}\hldef{,} \hlnum{2}\hldef{]} \hlkwb{<-} \hlnum{999}
+\hldef{A[}\hlnum{1}\hldef{, ]} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{90}\hldef{,} \hlnum{91}\hldef{,} \hlnum{92}\hldef{)}
+\hldef{A} \hlopt{<} \hlnum{4}
+\end{alltt}
+\begin{verbatim}
+##       [,1]  [,2]  [,3]
+## [1,] FALSE FALSE FALSE
+## [2,]  TRUE FALSE FALSE
+## [3,]  TRUE FALSE FALSE
+## [4,] FALSE FALSE FALSE
+## [5,] FALSE FALSE FALSE
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+El operador \code{which} puede no hacer lo que uno espera por defecto. Si se quieren los índices, se debe especificar.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{which}\hldef{(A} \hlopt{==} \hlnum{999}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 8
+\end{verbatim}
+\begin{alltt}
+\hlkwd{which}\hldef{(A} \hlopt{==} \hlnum{999}\hldef{,} \hlkwc{arr.ind} \hldef{=} \hlnum{TRUE}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+##      row col
+## [1,]   3   2
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+También se puede indexar mediante los nombres de filas y columnas:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{B} \hlkwb{<-} \hldef{A}
+\hlkwd{colnames}\hldef{(B)} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"A"}\hldef{,} \hlsng{"E"}\hldef{,} \hlsng{"I"}\hldef{)}
+\hlkwd{rownames}\hldef{(B)} \hlkwb{<-} \hldef{letters[}\hlnum{1}\hlopt{:}\hlkwd{nrow}\hldef{(B)]}
+\hldef{B[,} \hlsng{"E"}\hldef{]}
+\end{alltt}
+\begin{verbatim}
+##   a   b   c   d   e 
+##  91   7 999   9  10
+\end{verbatim}
+\begin{alltt}
+\hldef{B[}\hlsng{"c"}\hldef{, ]}
+\end{alltt}
+\begin{verbatim}
+##   A   E   I 
+##   3 999  13
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+Se puede utilizar una matriz para indexar otra. Esto es algo más avanzado, pero puede venir muy bien:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{(m1} \hlkwb{<-} \hlkwd{cbind}\hldef{(}\hlkwd{c}\hldef{(}\hlnum{1}\hldef{,} \hlnum{3}\hldef{),} \hlkwd{c}\hldef{(}\hlnum{2}\hldef{,} \hlnum{1}\hldef{)))}
+\end{alltt}
+\begin{verbatim}
+##      [,1] [,2]
+## [1,]    1    2
+## [2,]    3    1
+\end{verbatim}
+\begin{alltt}
+\hldef{A[m1]}
+\end{alltt}
+\begin{verbatim}
+## [1] 91  3
+\end{verbatim}
+\begin{alltt}
+\hlcom{## compare with}
+\hldef{A[}\hlkwd{c}\hldef{(}\hlnum{1}\hldef{,} \hlnum{3}\hldef{),} \hlkwd{c}\hldef{(}\hlnum{2}\hldef{,} \hlnum{1}\hldef{)]}
+\end{alltt}
+\begin{verbatim}
+##      [,1] [,2]
+## [1,]   91   90
+## [2,]  999    3
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+Al indexar con una matriz, se devuelven tantos elementos como filas tiene la matriz.
+
+Cuando se obtiene una sola columna, se pierde una dimensión y, en lugar de conseguir una matriz, el resultado es un vector. Para evitar esto, se puede emplear \code{drop = FALSE}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{A[}\hlkwd{c}\hldef{(}\hlnum{2}\hldef{,} \hlnum{4}\hldef{),} \hlnum{1}\hldef{,} \hlkwc{drop} \hldef{=} \hlnum{FALSE}\hldef{]}
+\end{alltt}
+\begin{verbatim}
+##      [,1]
+## [1,]    2
+## [2,]    4
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\subsubsection{Operaciones con matrices}
+Hay muchas operaciones matriciales disponibles en R (abre tu libro de álgebra matricial e intenta encontrarlas, si quieres). Y muchas funciones operan directamente, por defecto, sobre toda la matriz, o sobre filas/columnas de la matriz:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{sum}\hldef{(B)}
+\end{alltt}
+\begin{verbatim}
+## [1] 1366
+\end{verbatim}
+\begin{alltt}
+\hlkwd{mean}\hldef{(B)}
+\end{alltt}
+\begin{verbatim}
+## [1] 91.06667
+\end{verbatim}
+\begin{alltt}
+\hlkwd{colSums}\hldef{(B)} \hlcom{#rowSums}
+\end{alltt}
+\begin{verbatim}
+##    A    E    I 
+##  104 1116  146
+\end{verbatim}
+\begin{alltt}
+\hlkwd{rowMeans}\hldef{(B)} \hlcom{#colMeans }
+\end{alltt}
+\begin{verbatim}
+##        a        b        c        d        e 
+##  91.0000   7.0000 338.3333   9.0000  10.0000
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+También se pueden seleccionar filas y columnas utilizando esas operaciones:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{B[}\hlkwd{rowMeans}\hldef{(B)} \hlopt{>} \hlnum{9}\hldef{, ]}
+\end{alltt}
+\begin{verbatim}
+##    A   E  I
+## a 90  91 92
+## c  3 999 13
+## e  5  10 15
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\subsection{Listas}
+Una lista es un contenedor general donde se pueden mezclar cosas de distintos tipos. De hecho, no debe por qué tener una estructura rectangular. Hay muchas formas de acceder a elementos de una lista. 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{listA} \hlkwb{<-} \hlkwd{list}\hldef{(}\hlkwc{a} \hldef{=} \hlnum{1}\hlopt{:}\hlnum{5}\hldef{,} \hlkwc{b} \hldef{= letters[}\hlnum{1}\hlopt{:}\hlnum{3}\hldef{])}
+\hldef{listA[}\hlnum{1}\hldef{]}
+\end{alltt}
+\begin{verbatim}
+## $a
+## [1] 1 2 3 4 5
+\end{verbatim}
+\begin{alltt}
+\hldef{listA[[}\hlnum{1}\hldef{]]}
+\end{alltt}
+\begin{verbatim}
+## [1] 1 2 3 4 5
+\end{verbatim}
+\begin{alltt}
+\hldef{listA[[}\hlsng{"a"}\hldef{]]}
+\end{alltt}
+\begin{verbatim}
+## [1] 1 2 3 4 5
+\end{verbatim}
+\begin{alltt}
+\hldef{listA}\hlopt{$}\hldef{a}
+\end{alltt}
+\begin{verbatim}
+## [1] 1 2 3 4 5
+\end{verbatim}
+\begin{alltt}
+\hldef{listA[[}\hlnum{1}\hldef{]][}\hlnum{2}\hldef{]}
+\end{alltt}
+\begin{verbatim}
+## [1] 2
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
 
 \end{document}
