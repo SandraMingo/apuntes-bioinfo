@@ -183,6 +183,83 @@ Cabe mencionar que la representación gráfica del HMM de la figura \ref{fig:pro
 \label{fig:gen-hmm}
 \end{figure}
 
+%21/10 - Luis del Peso
+\section{Bases de datos de MSA}
+Como ya se ha mencionado, una de las principales aplicaciones del MSA es la identificación de regiones conservadas (motivos y dominios) en secuencias relacionadas. A continuación, la región identificada puede representarse mediante una secuencia de consenso, un patrón, un PSSM o un HMM. Muchas regiones conservadas dentro de familias de proteínas han sido identificadas utilizando este protocolo y están depositadas en bases de datos específicas. Existen varias BD de este tipo, que difieren en cómo se codifican los motivos y cómo se construyeron. Estas BD pueden buscarse utilizando texto (es decir, una búsqueda por palabras clave) o utilizando una secuencia de consulta para encontrar motivos presentes en ella. Describiremos brevemente algunas de ellas:
+\begin{itemize}
+\item \textbf{Pfam:} La base de datos Pfam es una gran colección de motivos, dominios y familias de proteínas, cada uno de ellos representado por alineaciones de secuencias múltiples y modelos de Markov ocultos (HMM). Pfam consta de dos bases de datos. Pfam-A es una colección curada manualmente de familias de proteínas en forma de alineaciones de secuencias múltiples y perfiles HMM. Pfam-B es una base de datos derivada automáticamente de perfiles HMM.
+\item \textbf{SMART:} Simple Modular Architecture Research Tool (SMART) es otra base de datos de familias de proteínas representadas como HMM de perfil.
+\item \textbf{PROSITE:} Una base de datos de pequeños patrones en forma de expresiones regulares y reglas (expresiones regulares cortas que definen pequeños patrones de 4-5 residuos de longitud) y dominios en forma de perfiles PSSM. Todas estas expresiones se derivan manualmente del análisis de MSA y de la bibliografía. Un mismo motivo en una familia de proteínas puede definirse mediante un patrón, un perfil o ambos.
+\end{itemize}
+
+Existen recursos especializados que integran varias de las bases de datos individuales de familias de proteínas. El más popular es \href{https://www.ebi.ac.uk/interpro/}{InterPro} que, desde un único punto de entrada, permite un análisis exhaustivo de dominios y motivos proteicos.
+
+\subsection{Búsqueda de motivos con InterPro [Ejercicio]}
+Vamos a buscar los motivos y dominios de la proteína NP\_001023646 en InterPro. Tras evaluar la secuencia, se pueden observar 3 dominios descritos para la proteína en cuestión (figura \ref{fig:interpro}). Para cada dominio y motivo hay entradas en bases de datos distintas. 
+
+\begin{figure}
+\centering
+\includegraphics[width = \textwidth]{figs/interpro-ej.png}
+\caption{Resultados de la búsqueda en Interpro de la proteína NP\_001023646.}
+\label{fig:interpro}
+\end{figure}
+
+Desde la página de PFAM, se puede descargar los datos en crudo de HMM. En el fichero se encuentran los números de las distintas posiciones y tres filas para cada posición que representan respectivamente los valores de emisión en match y emisión en inserción para cada aminoácido definido en la parte superior y transición para cada estado mostrado debajo de los aminoácidos. En el caso de PROSITE, se muestra el patrón. 
+
+\section{Búsqueda avanzada en bases de datos}
+Los alineamientos de secuencias múltiples contienen mucha más información sobre una familia o dominio de proteínas que cualquier secuencia individual. Por tanto, si utilizamos como consulta una representación de un alineamiento en lugar de una secuencia individual, la búsqueda será mucho más sensible e identificará homólogos más distantes. Este es el enfoque utilizado por el Position-Specific Iterated BLAST o PSI-BLAST ($\Psi$-BLAST). Este BLAST especializado se inicia como un BLAST normal utilizando una consulta de proteínas para buscar en bases de datos de proteínas (figura \ref{fig:adv-blast}). A continuación, a partir de la lista de aciertos, selecciona aquellas proteínas que superan un determinado umbral de valor E y realiza un MSA de todas ellas junto con la consulta. A partir del MSA obtiene un PSSM y lo utiliza como consulta en una segunda iteración de búsqueda. A partir de los resultados de la segunda iteración selecciona nuevos aciertos encontrados y refina el PSSM para iniciar una tercera iteración. El proceso se repite varias veces hasta que no se encuentran nuevos aciertos (figura \ref{fig:adv-blast}).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = \textwidth]{figs/advanced-blast.png}
+\caption{\textbf{BLAST Iterado de Posición Específica}. La primera fase de PSI-BLAST es idéntica a la de una búsqueda BLAST normal. En la segunda fase, se seleccionan una serie de aciertos para producir un MSA y, a partir de él, un PSSM que se utiliza para buscar en la base de datos original. Esta segunda fase se repite tantas veces como sea necesario hasta que no se encuentren nuevos resultados significativos. Cada nueva iteración genera un nuevo PSSM a partir de los resultados de la búsqueda anterior.}
+\label{fig:adv-blast}
+\end{figure}
+
+PSI-BLAST (y también PHI-BLAST, véase más adelante) generan PSSM que luego se utilizan para buscar en bases de datos, logrando una mayor sensibilidad que las búsquedas regulares basadas en secuencias. Los HMM de perfiles son modelos probabilísticos muy potentes que también pueden utilizarse para ayudar en la identificación de miembros distantes de una familia de proteínas. HMMER comprende un conjunto de programas que utilizan modelos de Markov ocultos de perfil para el análisis de secuencias. Uno de los programas, jackhmmer en HMMER, busca iterativamente una secuencia de proteínas en una base de datos de secuencias de proteínas. Conceptualmente es similar a PSIBLAST pero, internamente, genera un perfil HMM y lo utiliza para buscar en la base de datos (figura \ref{fig:hmmer}).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = \textwidth]{figs/hmmer.png}
+\caption{Representación gráfica de HMMER.}
+\label{fig:hmmer}
+\end{figure}
+
+Otro programa BLAST especializado es Pattern-Hit initiated BLAST o PHIBLAST($\Phi$-BLAST). Este programa es muy similar a PSI-BLAST, salvo que se inicia con una secuencia de consulta y un patrón (expresión regular), de forma que sólo se devuelven los resultados que coinciden con la consulta y contienen el patrón. A partir de los resultados de la primera búsqueda, el algoritmo genera un PSSM que se utiliza en las búsquedas posteriores.
+
+\section{Técnicas de análisis de secuencias adicionales: búsquedas de motivos}
+Varios genes pueden compartir un sitio de unión de un mismo factor de transcripción. Sabiendo la secuencia de unión, se puede utilizar como patrón para buscar los match. En caso de tener una PSSM (por ejemplo, mediante ChIp-Seq) que represente el sitio de unión, se puede ir comparando la secuencia posición por posición con la PSSM y calcular la puntuación. Así, mediante ventanas deslizantes, se escanea toda la secuencia y encontrar todas las subsecuencias que sobrepasen un threshold (figura \ref{fig:motif-location}). 
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = \textwidth]{figs/motif-location.png}
+\caption{Representación gráfica de una búsqueda de un motivo.}
+\label{fig:motif-location}
+\end{figure}
+
+Recientemente se ha creado una base de datos de sitios de unión de factores de transcripción representados como PSSM y obtenidos mediante muchos métodos experimentales: \href{https://jaspar.genereg.net/}{Jaspar}. Además de las PSSMs, se podrían utilizar modelos ocultos de Markov. 
+
+El problema de las PSSM es que son muy ruidosas y es fácil encontrar las secuencias por azar. Este ruido se puede restringir a las regiones de cromatina abierta. Otra forma que se utilizaba antes de tener esta información es mediante huellas filogenéticas. 
+
+En la figura \ref{fig:conservation}, las regiones en color crema representan exones, los cuales tienen una alta presión de conservación. Fuera de las regiones exónicas, hay otras regiones que presentan una alta conservación, y que por tanto podrían representar enhancers. 
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = \textwidth]{figs/noise-reduction.png}
+\caption{Representación de regiones conservadas.}
+\label{fig:conservation}
+\end{figure}
+
+Para extender esto a muchos genes y encontrar una región de unión de un factor de transcripción presente en distintas secuencias, se podría rastrear con una matriz y un conjunto de genes que no esté expresado diferencialmente en estas condiciones.
+En naranja se representan las secuencias diferencialmente expresadas, y en azul todos los genes que en ese mismo tejido tiene la misma expresión. Así, algo que esté enriquecido en naranja, no debería estar expresado en azul. Se rastrean las secuencias con todos los factores de transcripción y se ve si la proporción de secuencias diferencialmente expresadas es mayor que las secuencias no diferencialmente expresadas en presencia y ausencia de unión al factor de transcripción. A continuación se utiliza un test de asociación como un test estadístico de Fisher o Chi cuadrado. Todo este flujo de trabajo se resume en la figura \ref{fig:enrichment}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/motivos-enriquecidos.png}
+\caption{Representación de motivos enriquecidos.}
+\label{fig:enrichment}
+\end{figure}
+
 \section{Quiz Moodle}
 \subsection{Ejercicio 1}
 Los retrovirus están asociados a una amplia variedad de cánceres en pollos, ratones, gatos y monos. Algunos retrovirus causan un tipo específico de cáncer poco después de la infección en una elevada proporción de animales, mientras que otros causan diversos cánceres tardíamente después de la infección en una proporción menor de animales.
@@ -242,6 +319,7 @@ T & 1  & -3,64 & -3,6 & -3,64 & 1,91 & -3,6 & -2,1 & -1,3 & -0,1 \\
 \end{table}
 
 El siguiente paso es calcular la entropía de Shannon y la información. Previamente necesitamos la tabla PWM sin pseudocuentas, que sería la siguiente:
+\newpage
 \begin{table}[h]
 \begin{tabular}{l | llllllllllllllllll}
 A & 0,04 & 0,83 & 0 & 0 & 0 & 0 & 0,22 & 0,17 & 0,09 \\
@@ -254,23 +332,17 @@ T & 0,52 & 0    & 0 & 0 & 1 & 0 & 0,04 & 0,09 & 0,24 \\
 & 0,2 & 0    & 0,09 & 0,02 & 0,24 & 0,02 & 0,09 & 0,13 & 0,02
 \end{tabular}
 \end{table}
-\newpage
+
 La entropía de Shannon se calcula para cada posición. Se sigue la siguiente fórmula: $- \sum (probabilidad) \cdot log_2 (probabilidad) $. Cuando la probabilidad es 0, se considera que el logaritmo también lo es. Los valores resultantes son los siguientes:
-\begin{table}[htbp]
-\small
-\begin{tabular}{llllllllllllllllll}
-1,64 & 0,67 & 0 & 0 & 0 & 0 & 1,24 & 1,81 & 1,8 & 1,9 & 1,53 & 1,82 & 1,49 & 1,96 & 1,6 & 1,74 & 1,74 & 1,6
-\end{tabular}
-\end{table} 
+
+1,64 - 0,67 - 0 - 0 - 0 - 0 - 1,24 - 1,81 - 1,8 - 1,9 - 1,53 - 1,82 - 1,49 - 1,96 - 1,6 - 1,74 - 1,74 - 1,6
+
 
 Por último, es necesario calcular la información. La entropía máxima para cada posición es de 2, por lo que hay que restarle la entropía de Shannon. Así, la información para cada posición es la siguiente: 
-\begin{table}[htbp]
-\small
-\begin{tabular}{llllllllllllllllll}
-0,36 & 1,33 & 2 & 2 & 2 & 2 & 0,76 & 0,19 & 0,2 & 0,1 & 0,47 & 0,18 & 0,51 & 0,04 & 0,4 & 0,26 & 0,26 & 0,4
-\end{tabular}
-\end{table}
-\newpage
+
+0,36 - 1,33 - 2 - 2 - 2 - 2 - 0,76 - 0,19 - 0,2 - 0,1 - 0,47 - 0,18 - 0,51 - 0,04 - 0,4 - 0,26 - 0,26 - 0,4
+
+
 \subsection{Ejercicio 3}
 Contamos con las siguientes frecuencias relativas:
 \begin{table}[h]
