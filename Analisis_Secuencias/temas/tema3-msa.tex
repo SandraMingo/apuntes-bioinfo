@@ -227,8 +227,9 @@ PSI-BLAST (y también PHI-BLAST, véase más adelante) generan PSSM que luego se
 
 Otro programa BLAST especializado es Pattern-Hit initiated BLAST o PHIBLAST($\Phi$-BLAST). Este programa es muy similar a PSI-BLAST, salvo que se inicia con una secuencia de consulta y un patrón (expresión regular), de forma que sólo se devuelven los resultados que coinciden con la consulta y contienen el patrón. A partir de los resultados de la primera búsqueda, el algoritmo genera un PSSM que se utiliza en las búsquedas posteriores.
 
-\section{Técnicas de análisis de secuencias adicionales: búsquedas de motivos}
-Varios genes pueden compartir un sitio de unión de un mismo factor de transcripción. Sabiendo la secuencia de unión, se puede utilizar como patrón para buscar los match. En caso de tener una PSSM (por ejemplo, mediante ChIp-Seq) que represente el sitio de unión, se puede ir comparando la secuencia posición por posición con la PSSM y calcular la puntuación. Así, mediante ventanas deslizantes, se escanea toda la secuencia y encontrar todas las subsecuencias que sobrepasen un threshold (figura \ref{fig:motif-location}). 
+\section{Técnicas de análisis de secuencias adicionales}
+\subsection{Búsquedas de motivos}
+Varios genes pueden compartir un sitio de unión de un mismo factor de transcripción. Sabiendo la secuencia de unión, se puede utilizar como patrón para buscar los match. En caso de tener una PSSM (por ejemplo, mediante ChIp-Seq) que represente el sitio de unión, se puede ir comparando la secuencia posición por posición con la PSSM y calcular la puntuación. Así, mediante ventanas deslizantes, se escanea toda la secuencia y encontrar todas las subsecuencias que sobrepasen un umbral y, por tanto, sean regiones de unión a ese factor de transcripción (figura \ref{fig:motif-location}). 
 
 \begin{figure}[htbp]
 \centering
@@ -245,13 +246,16 @@ En la figura \ref{fig:conservation}, las regiones en color crema representan exo
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width = \textwidth]{figs/noise-reduction.png}
+\includegraphics[width = 0.7\textwidth]{figs/noise-reduction.png}
 \caption{Representación de regiones conservadas.}
 \label{fig:conservation}
 \end{figure}
 
-Para extender esto a muchos genes y encontrar una región de unión de un factor de transcripción presente en distintas secuencias, se podría rastrear con una matriz y un conjunto de genes que no esté expresado diferencialmente en estas condiciones.
-En naranja se representan las secuencias diferencialmente expresadas, y en azul todos los genes que en ese mismo tejido tiene la misma expresión. Así, algo que esté enriquecido en naranja, no debería estar expresado en azul. Se rastrean las secuencias con todos los factores de transcripción y se ve si la proporción de secuencias diferencialmente expresadas es mayor que las secuencias no diferencialmente expresadas en presencia y ausencia de unión al factor de transcripción. A continuación se utiliza un test de asociación como un test estadístico de Fisher o Chi cuadrado. Todo este flujo de trabajo se resume en la figura \ref{fig:enrichment}.
+%23/10 - Luis del Peso
+\subsection{Enriquecimiento de motivos y análisis de asociación}
+Esta idea se puede extender de la siguiente forma: Tenemos un conjunto de genes coexpresados en una situación concreta (por ejemplo, un tumor). Se extrae el ARN y se observan genes con una expresión similar en esa situación y en una control (no tumor, órgano sano) y genes con una expresión significativamente (estadísticamente) diferentes en ambas situaciones. Estos genes se denominan como genes expresados diferencialmente (DEG por sus siglas en inglés).
+Dado este conjunto de genes, se quiere saber qué factor de transcripción los activa y causa esta expresión diferencial. Se toman genes DEG (mostrados en naranja) y genes no DEG como controles (mostrados en azul), y de ellos se toman los promotores o regiones reguladoras. A continuación se toma la lista de los factores de transcripción conocidos con sus matrices PSSM. De forma secuencial se toma cada factor de transcripción y se recorre cada una de las secuencias para ver si tiene sitio de unión para ese factor. Esto se realiza para todas las regiones reguladoras de DEG y no DEG y todos los factores de transcripción, generando una tabla como la observada en la figura \ref{fig:enrichment}. 
+Finalmente se debe realizar un test de asociación como un test estadístico de Fisher o Chi cuadrado. 
 
 \begin{figure}[htbp]
 \centering
@@ -259,6 +263,64 @@ En naranja se representan las secuencias diferencialmente expresadas, y en azul 
 \caption{Representación de motivos enriquecidos.}
 \label{fig:enrichment}
 \end{figure}
+
+Para ver si hay una asociación entre las dos variables, se realiza un test de independencia para variables categóricas, que es un test de Fisher o de Chi cuadrado. Por ejemplo, al analizar DEG en tejidos tumoral y normal, se encuentran 258 de 11483 genes con una expresión mayor en el tumor que en el tejido sano. Mediante la búsqueda de motivos, se encuentra que el factor de transcripción HIF se une en 145 de los DEG y 3766 de los otros genes expresados. Con estos números, ¿la unión a HIF está significativamente enriquecida en DEG? Para ello, calculamos una tabla de contingencia:
+\begin{table}[htbp]
+\centering
+\begin{tabular}{c | c c | c}
+Observado & DEG & no DEG & \\ \hline
+TFBS presente & 145 & 3766 & 3911 \\
+TFBS no presente & 113 & 7459 & 7572 \\ \hline
+& 258 & 11225 & 11483
+\end{tabular}
+\end{table}
+
+Con estos números, ¿se puede concluir que existe una asociación entre ser DEG y tener un sitio de unión al factor de transcripción HIF? Utilizamos la fórmula del chi cuadrado:
+$$ \chi^2 = \sum_{levels} \frac{(observado-esperado)^2}{esperado}$$
+
+Una vez sabiendo el resultado, se compara el valor con la distribución de Chi cuadrado y se ve el área debajo de la curva por encima de ese valor (la probabilidad de que eso ocurra bajo la hipótesis nula, es decir, que no haya asociación). 
+
+Para obtener los valores esperados, se debe mantener la proporción entre TFBS presentes y el total. Por ejemplo, para TFBS en DEG, se calcula:
+$$\frac{3911}{11483} * 258 \approx 88$$
+Así, la tabla completa queda de la siguiente forma:
+\begin{table}[htbp]
+\centering
+\begin{tabular}{c | c c | c}
+Esperado & DEG & no DEG & \\ \hline
+TFBS presente & 88 & 1283 & 3911 \\
+TFBS no presente & 170 & 9942 & 7572 \\ \hline
+& 258 & 11225 & 11483
+\end{tabular}
+\end{table}
+
+Tras calcular el Chi cuadrado, el resultado es significativo. Esto significa que hay una asociación a las variables, es decir, entre la unión del factor de transcripción y que los genes estén diferencialmente expresados. 
+
+Esto sirve para un solo factor de transcripción, es decir, para una columna de la tabla mostrada en la figura \ref{fig:enrichment}. Para cada columna habrá que hacer una tabla de contingencia y un test estadístico, pero esto tiene un problema: en cada test estadístico se admite un error del 5\%, y al realizar múltiples test, se debe corregir para no encontrar tantos falsos positivos (con p valor significativo por azar). Así, se debe tomar el \textbf{p valor ajustado}, no en crudo. Además, se debe tener en cuenta el \textbf{tamaño de efecto} como segundo estadístico. Cuando el tamaño de muestreo es muy grande (por ejemplo, en los GWAS), el p valor suele ser muy pequeño, por lo que es importante saber cómo de diferente son las asociaciones. En el caso de tablas de contingencia, el tamaño del efecto suele ser el odds ratio:
+$$Odds ratio = \frac{Odds_{TFBSpresente}}{Odds_{TFBSausente}}$$
+$$\frac{\frac{145}{145+3766}/1-\frac{145}{145+3766}}{\frac{113}{113+7459}/1-\frac{113}{113+7459}} = \frac{0,0385}{0,0175} = 2,2$$
+
+En este caso, el resultado es 2,2, lo que significa que hay dos veces más probabilidad de que el gen esté diferencialmente expresado si tiene sitio de unión de HIF que si no lo tiene. 
+
+\subsection{Descubrimiento de motivos}
+En los apartados anteriores, se trabajaba con factores de transcripción determinados experimentalmente y con matrices PSSM. Sin embargo, cuando un factor no se conoce, se puede identificar qué motivos tienen en común un conjunto de secuencias (por ejemplo, DEG) que no tienen otras secuencias (las secuencias control). El problema es que los factores de transcripción son algo promiscuos, uniéndose a unos motivos con una cierta flexibilidad. Hay algunos algoritmos que permiten solucionar este problema. Partiendo de las secuencias de interés (DEG), se empieza a buscar un motivo de X pares de bases. Se localizan los motivos en las distintas secuencias, viendo la secuencia y su localización. 
+
+El \textbf{algoritmo EM (expectation-maximization)} coge un conjunto de secuencias y se inventa una matriz PSSM con la que rastrea las secuencias. Se identifica así las mejores posiciones de la secuencia, con las cuales se extraen los posibles motivos y se vuelve a construir la matriz para volver a rastrear las secuencias. Esta es una búsqueda heurística, por lo que se pueden obtener máximos locales. Por ello, se suelen repetir estas búsquedas para comparar los resultados e intentar aproximarse a los máximos globales.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.5\textwidth]{figs/algoritmo-em.png}
+\caption{Esquema del algoritmo EM.}
+\label{fig:em}
+\end{figure}
+
+Una simplificación del algoritmo se puede observar en la figura \ref{fig:em-simp}.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/em-pseudocode.png}
+\caption{Simplificación del algoritmo EM. Durante la inicialización, se toman las subsecuencias de la longitud del motivo que se está buscando para las dos secuencias que se están analizando. Se cuentan las apariciones de cada nucleótido y se calculan las frecuencias. Para cada subsecuencia se calcula el score, y se repite la subsecuencia el número de veces que indique el score. Con ello, se vuelve a realizar el conteo de los nucleótidos, crear la matriz de frecuencias y se repite este proceso hasta la convergencia, es decir, cuando en uno de los pasos la matriz no cambie.}
+\label{fig:em-simp}
+\end{figure}
+
+Normalmente, los factores de transcripción tienen entre 6 y 12 pares de bases. Por ello, en estos casos se inicia el algoritmo EM con 6 pares de bases, luego con 7, luego con 8, y así sucesivamente. Si el motivo tiene 8 pares de bases, se esperaría que el motivo encontrado en la búsqueda con 6 y 7 pares de bases esté contenido en el de 8. El resultado de todo esto es obtener la matriz PSSM para la cual realizar la búsqueda descrita en los puntos anteriores. 
 
 \section{Quiz Moodle}
 \subsection{Ejercicio 1}
@@ -303,7 +365,7 @@ T & 0,5  & 0,02 & 0,02 & 0,02 & 0,94 & 0,02 & 0,06 & 0,1  & 0,24 \\
 & 0,24 & 0,02 & 0,1  & 0,04 & 0,24 & 0,04 & 0,1  & 0,14 & 0,04
 \end{tabular}
 \end{table}
-
+\newpage
 Con esa tabla, se calcula la PSSM. Para ello, se calcula $log_2(\frac{celda}{0,25})$:
 \begin{table}[htbp]
 \begin{tabular}{l | llllllllllllllllll}
@@ -319,7 +381,7 @@ T & 1  & -3,64 & -3,6 & -3,64 & 1,91 & -3,6 & -2,1 & -1,3 & -0,1 \\
 \end{table}
 
 El siguiente paso es calcular la entropía de Shannon y la información. Previamente necesitamos la tabla PWM sin pseudocuentas, que sería la siguiente:
-\newpage
+
 \begin{table}[h]
 \begin{tabular}{l | llllllllllllllllll}
 A & 0,04 & 0,83 & 0 & 0 & 0 & 0 & 0,22 & 0,17 & 0,09 \\
