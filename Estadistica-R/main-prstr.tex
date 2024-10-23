@@ -187,7 +187,7 @@ Para leer el código, se empieza por la función más interna, que en este caso 
 \hlkwd{sum}\hldef{(pvalues} \hlopt{<=} \hlnum{0.05}\hldef{)}
 \end{alltt}
 \begin{verbatim}
-## [1] 42
+## [1] 46
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1767,6 +1767,496 @@ Una lista es un contenedor general donde se pueden mezclar cosas de distintos ti
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
+
+Una lista más compleja sería la siguiente:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{(listB} \hlkwb{<-} \hlkwd{list}\hldef{(}\hlkwc{one.vector} \hldef{=} \hlnum{1}\hlopt{:}\hlnum{10}\hldef{,}  \hlkwc{hello} \hldef{=} \hlsng{"Hola"}\hldef{,}
+               \hlkwc{one.matrix} \hldef{=} \hlkwd{matrix}\hldef{(}\hlkwd{rnorm}\hldef{(}\hlnum{20}\hldef{),} \hlkwc{ncol} \hldef{=} \hlnum{5}\hldef{),}
+               \hlkwc{another.list} \hldef{=}
+               \hlkwd{list}\hldef{(}\hlkwc{a} \hldef{=} \hlnum{5}\hldef{,}
+                    \hlkwc{b} \hldef{=} \hlkwd{factor}\hldef{(}\hlkwd{c}\hldef{(}\hlsng{"male"}\hldef{,}
+                      \hlsng{"female"}\hldef{,} \hlsng{"female"}\hldef{)))))}
+\end{alltt}
+\begin{verbatim}
+## $one.vector
+##  [1]  1  2  3  4  5  6  7  8  9 10
+## 
+## $hello
+## [1] "Hola"
+## 
+## $one.matrix
+##            [,1]       [,2]       [,3]       [,4]        [,5]
+## [1,] 0.07939128  0.3018403  0.9215329 0.36594331 -1.21207421
+## [2,] 1.17819286  0.6602290 -2.3952371 2.21436878 -0.05330761
+## [3,] 1.07412109  0.4441398 -0.2182682 0.05573027  0.52152979
+## [4,] 0.71742722 -0.8057646  0.5291019 0.44359279 -0.20374550
+## 
+## $another.list
+## $another.list$a
+## [1] 5
+## 
+## $another.list$b
+## [1] male   female female
+## Levels: female male
+\end{verbatim}
+\begin{alltt}
+\hldef{listB[[}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{11}\hldef{)]]}
+\end{alltt}
+\begin{verbatim}
+## [1] -0.2182682
+\end{verbatim}
+\begin{alltt}
+\hldef{listB[[}\hlnum{3}\hldef{]][}\hlnum{11}\hldef{]}
+\end{alltt}
+\begin{verbatim}
+## [1] -0.2182682
+\end{verbatim}
+\begin{alltt}
+\hldef{listB[[}\hlnum{3}\hldef{]][}\hlnum{3}\hldef{,} \hlnum{3}\hldef{]}
+\end{alltt}
+\begin{verbatim}
+## [1] -0.2182682
+\end{verbatim}
+\begin{alltt}
+\hldef{listB[[}\hlnum{3}\hldef{]][}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{3}\hldef{)]}
+\end{alltt}
+\begin{verbatim}
+## [1] 1.074121 1.074121
+\end{verbatim}
+\begin{alltt}
+\hldef{listB[}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{4}\hldef{)]}
+\end{alltt}
+\begin{verbatim}
+## $one.matrix
+##            [,1]       [,2]       [,3]       [,4]        [,5]
+## [1,] 0.07939128  0.3018403  0.9215329 0.36594331 -1.21207421
+## [2,] 1.17819286  0.6602290 -2.3952371 2.21436878 -0.05330761
+## [3,] 1.07412109  0.4441398 -0.2182682 0.05573027  0.52152979
+## [4,] 0.71742722 -0.8057646  0.5291019 0.44359279 -0.20374550
+## 
+## $another.list
+## $another.list$a
+## [1] 5
+## 
+## $another.list$b
+## [1] male   female female
+## Levels: female male
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\subsection{Dataframes}
+Un dataframe es una lista de vectores con la misma longitud y que pueden contener distintos tipos de objetos. La estructura es rectangular. Se pueden acceder a los elementos como si fueran matrices y como si fueran listas. Además, se pueden convertir dataframes en matrices con \code{data.matrix(df)} y \code{as.matrix(df)}. Muchas operaciones de matrices, concretamente \code{rbind} y \code{cbind}, también funcionan con dataframes.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{(AB} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{ID} \hldef{=} \hlkwd{c}\hldef{(}\hlsng{"a1"}\hldef{,} \hlsng{"a2"}\hldef{,} \hlsng{"a3"}\hldef{,} \hlsng{"a4"}\hldef{,} \hlsng{"a5"}\hldef{),}
+                  \hlkwc{Age} \hldef{=} \hlkwd{c}\hldef{(}\hlnum{12}\hldef{,} \hlnum{14}\hldef{,} \hlnum{12}\hldef{,} \hlnum{16}\hldef{,} \hlnum{19}\hldef{),}
+                  \hlkwc{Sex} \hldef{=} \hlkwd{c}\hldef{(}\hlsng{"M"}\hldef{,} \hlsng{"F"}\hldef{,} \hlsng{"F"}\hldef{,} \hlsng{"M"}\hldef{,} \hlsng{"F"}\hldef{),}
+                  \hlkwc{Y} \hldef{=} \hlkwd{c}\hldef{(}\hlnum{11}\hldef{,} \hlnum{14}\hldef{,} \hlnum{15}\hldef{,} \hlnum{12}\hldef{,} \hlnum{19}\hldef{)))}
+\end{alltt}
+\begin{verbatim}
+##   ID Age Sex  Y
+## 1 a1  12   M 11
+## 2 a2  14   F 14
+## 3 a3  12   F 15
+## 4 a4  16   M 12
+## 5 a5  19   F 19
+\end{verbatim}
+\begin{alltt}
+\hldef{(AC} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{ID} \hldef{=} \hlsng{"a9"}\hldef{,} \hlkwc{Age} \hldef{=} \hlnum{14}\hldef{,} \hlkwc{Sex} \hldef{=} \hlsng{"M"}\hldef{,} \hlkwc{Y} \hldef{=} \hlnum{17}\hldef{))}
+\end{alltt}
+\begin{verbatim}
+##   ID Age Sex  Y
+## 1 a9  14   M 17
+\end{verbatim}
+\begin{alltt}
+\hldef{(AB2} \hlkwb{<-} \hlkwd{rbind}\hldef{(AB, AC))}
+\end{alltt}
+\begin{verbatim}
+##   ID Age Sex  Y
+## 1 a1  12   M 11
+## 2 a2  14   F 14
+## 3 a3  12   F 15
+## 4 a4  16   M 12
+## 5 a5  19   F 19
+## 6 a9  14   M 17
+\end{verbatim}
+\begin{alltt}
+\hlkwd{as.matrix}\hldef{(AB)} \hlcom{#convierte todo en strings}
+\end{alltt}
+\begin{verbatim}
+##      ID   Age  Sex Y   
+## [1,] "a1" "12" "M" "11"
+## [2,] "a2" "14" "F" "14"
+## [3,] "a3" "12" "F" "15"
+## [4,] "a4" "16" "M" "12"
+## [5,] "a5" "19" "F" "19"
+\end{verbatim}
+\begin{alltt}
+\hlkwd{data.matrix}\hldef{(AB)} \hlcom{#convierte todo en números}
+\end{alltt}
+\begin{verbatim}
+##      ID Age Sex  Y
+## [1,]  1  12   2 11
+## [2,]  2  14   1 14
+## [3,]  3  12   1 15
+## [4,]  4  16   2 12
+## [5,]  5  19   1 19
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+Es muy fácil añadir nuevas variables a los dataframes:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{AB2}\hlopt{$}\hldef{status} \hlkwb{<-} \hlkwd{rep}\hldef{(}\hlkwd{c}\hldef{(}\hlsng{"Z"}\hldef{,} \hlsng{"V"}\hldef{),} \hlnum{3}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\section{Números aleatorios y semillas}
+Los generadores de números aleatorios hacen lo que indica su nombre: generan números de forma aleatoria cada vez que se ejecutan. No obstante, hay veces en los que se buscan números aleatorios, pero también permitir la reproducción del código. En esos casos, se emplean semillas. En R, la forma más sencilla de fijar una semilla es con \code{set.seed()}. 
+
+\section{Plots (gráficos)}
+R puede producir una variedad de gráficos y se pueden modificar al gusto. 
+
+\subsection{Lo más básico}
+La función de gráficos básica es \code{plot}. Su página de ayuda puede ser ligeramente engañosa y muchos argumentos adicionales se explican en \code{par}. Una buena analogía para empezar es la de un lienzo en el que se van añadiendo elementos. Veamos este sencillo ejemplo:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{set.seed}\hldef{(}\hlnum{2}\hldef{)} \hlcom{## for reproducibility}
+\hldef{x} \hlkwb{<-} \hlnum{1}\hlopt{:}\hlnum{10}
+\hldef{y} \hlkwb{<-} \hlnum{2} \hlopt{*} \hldef{x} \hlopt{+} \hlkwd{rnorm}\hldef{(}\hlkwd{length}\hldef{(x))}
+\hlkwd{plot}\hldef{(x, y,} \hlkwc{xlab} \hldef{=} \hlsng{"This is the label for the x axis"}\hldef{,}
+     \hlkwc{ylab} \hldef{=} \hlsng{"Label for the y axis"}\hldef{)}
+\hlcom{## And now, we add a horizontal line:}
+\hlkwd{abline}\hldef{(}\hlkwc{h} \hldef{=} \hlnum{5}\hldef{,} \hlkwc{lty} \hldef{=} \hlnum{2}\hldef{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-72-1} 
+\end{knitrout}
+
+\subsection{Personalización de plots: colores, tipos de línea y de puntos}
+Se pueden personalizar los gráficos añadiendo colores específicos, modificando el tipo de línea y de puntos.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hldef{(}\hlkwd{c}\hldef{(}\hlnum{1}\hldef{,} \hlnum{21}\hldef{),} \hlkwd{c}\hldef{(}\hlnum{1}\hldef{,} \hlnum{2.3}\hldef{),}
+     \hlkwc{type} \hldef{=} \hlsng{"n"}\hldef{,} \hlkwc{axes} \hldef{=} \hlnum{FALSE}\hldef{,} \hlkwc{ann} \hldef{=} \hlnum{FALSE}\hldef{)}
+\hlcom{## show pch}
+\hlkwd{points}\hldef{(}\hlnum{1}\hlopt{:}\hlnum{20}\hldef{,} \hlkwd{rep}\hldef{(}\hlnum{1}\hldef{,} \hlnum{20}\hldef{),} \hlkwc{pch} \hldef{=} \hlnum{1}\hlopt{:}\hlnum{20}\hldef{)}
+\hlkwd{text}\hldef{(}\hlnum{1}\hlopt{:}\hlnum{20}\hldef{,} \hlnum{1.2}\hldef{,} \hlkwc{labels} \hldef{=} \hlnum{1}\hlopt{:}\hlnum{20}\hldef{)}
+\hlkwd{text}\hldef{(}\hlnum{11}\hldef{,} \hlnum{1.5}\hldef{,} \hlsng{"pch"}\hldef{,} \hlkwc{cex} \hldef{=} \hlnum{1.3}\hldef{)}
+
+\hlcom{## show colors for rainbow palette}
+\hlkwd{points}\hldef{(}\hlnum{1}\hlopt{:}\hlnum{20}\hldef{,} \hlkwd{rep}\hldef{(}\hlnum{2}\hldef{,} \hlnum{20}\hldef{),} \hlkwc{pch} \hldef{=} \hlnum{16}\hldef{,} \hlkwc{col} \hldef{=} \hlkwd{rainbow}\hldef{(}\hlnum{20}\hldef{))}
+\hlkwd{text}\hldef{(}\hlnum{11}\hldef{,} \hlnum{2.2}\hldef{,} \hlsng{"col"}\hldef{,} \hlkwc{cex} \hldef{=} \hlnum{1.3}\hldef{)}
+\end{alltt}
+\end{kframe}\begin{figure}
+\includegraphics[width=\maxwidth]{figure/pchcol-1} \caption[pch and col]{pch and col}\label{fig:pchcol}
+\end{figure}
+
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hldef{(}\hlkwd{c}\hldef{(}\hlnum{0.2}\hldef{,} \hlnum{5}\hldef{),} \hlkwd{c}\hldef{(}\hlnum{0.2}\hldef{,} \hlnum{5}\hldef{),} \hlkwc{type} \hldef{=} \hlsng{"n"}\hldef{,} \hlkwc{ann} \hldef{=} \hlnum{FALSE}\hldef{,} \hlkwc{axes} \hldef{=} \hlnum{FALSE}\hldef{)}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlnum{6}\hldef{) \{}
+    \hlkwd{abline}\hldef{(}\hlnum{0}\hldef{, i}\hlopt{/}\hlnum{3}\hldef{,} \hlkwc{lty} \hldef{= i,} \hlkwc{lwd} \hldef{=} \hlnum{2}\hldef{)}
+    \hlkwd{text}\hldef{(}\hlnum{2}\hldef{,} \hlnum{2} \hlopt{*} \hldef{(i}\hlopt{/}\hlnum{3}\hldef{),} \hlkwc{labels} \hldef{= i,} \hlkwc{pos} \hldef{=} \hlnum{3}\hldef{)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}\begin{figure}
+\includegraphics[width=\maxwidth]{figure/ltytype-1} \caption[lty for values 1 to 6]{lty for values 1 to 6}\label{fig:ltytype}
+\end{figure}
+
+\end{knitrout}
+
+\subsubsection{Un ejemplo de cómo mejorar gráficos}
+El gráfico básico sería el siguiente:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{hit} \hlkwb{<-} \hlkwd{read.table}\hldef{(}\hlsng{"data/hit-table-500-text.txt"}\hldef{)}
+\hlcom{## We know, from the header of the file, that}
+\hlcom{## alignment length is the fifth column,}
+\hlcom{## score is the 13th and percent identity the 3rd}
+\hlkwd{hist}\hldef{(hit[,} \hlnum{5}\hldef{])} \hlcom{## the histogram}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-73-1} 
+\begin{kframe}\begin{alltt}
+\hlkwd{plot}\hldef{(hit[,} \hlnum{13}\hldef{]} \hlopt{~} \hldef{hit[,} \hlnum{3}\hldef{])} \hlcom{## the scatterplot}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-73-2} 
+\begin{kframe}\begin{alltt}
+\hlcom{## plot(y ~ x) == plot(x, y)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+Pero esto es fácilmente mejorable:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{par}\hldef{(}\hlkwc{mfrow} \hldef{=} \hlkwd{c}\hldef{(}\hlnum{1}\hldef{,} \hlnum{2}\hldef{))} \hlcom{## two figures side by side}
+\hlkwd{hist}\hldef{(hit[,} \hlnum{5}\hldef{],} \hlkwc{breaks} \hldef{=} \hlnum{50}\hldef{,} \hlkwc{xlab} \hldef{=} \hlsng{""}\hldef{,} \hlkwc{main} \hldef{=} \hlsng{"Alignment length"}\hldef{)}
+\hlkwd{plot}\hldef{(hit[,} \hlnum{13}\hldef{]} \hlopt{~} \hldef{hit[,} \hlnum{3}\hldef{],} \hlkwc{xlab} \hldef{=} \hlsng{"Percent. identity"}\hldef{,}
+     \hlkwc{ylab} \hldef{=} \hlsng{"Bit score"}\hldef{)}
+\end{alltt}
+\end{kframe}\begin{figure}
+\includegraphics[width=\maxwidth]{figure/fig-blast-1} \caption[A quick look at the alignment results]{A quick look at the alignment results}\label{fig-blast}
+\end{figure}
+
+\end{knitrout}
+
+Por simetría, se podría añadir un título al segundo gráfico. También se pueden generar gráficos interactivos con la librería \code{car}.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hldef{(car)}
+\hlkwd{scatter3d}\hldef{(hit[,} \hlnum{13}\hldef{]} \hlopt{~} \hldef{hit[,} \hlnum{3}\hldef{]} \hlopt{+} \hldef{hit[,} \hlnum{5}\hldef{],} \hlkwc{xlab} \hldef{=} \hlsng{"Ident"}\hldef{,}
+          \hlkwc{zlab} \hldef{=} \hlsng{"Length"}\hldef{,} \hlkwc{ylab} \hldef{=} \hlsng{"Score"}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\subsection{Guardar plots}
+Se pueden guardar las gráficas como PDF, png, etc. Desde RStudio hay una ventana de gráficos. Sin embargo, es mejor especificar y determinar unas características como tamaño, extensión, etc. Se pueden utilizar las funciones \code{pdf()} y \code{png()}: \code{pdf(file="plot.pdf")}. El paquete ggplot tiene la función \code{ggsave()}.
+
+En el siguiente ejemplo se abre un PDF, se generan dos gráficos y hasta que no se ejecuta \code{dev.off()} no se guarda el contenido en el PDF. Además, cada gráfico se guarda en una página distinta del PDF. 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{pdf}\hldef{(}\hlkwc{file} \hldef{=} \hlsng{"file1.pdf"}\hldef{,} \hlkwc{width} \hldef{=} \hlnum{2}\hldef{,} \hlkwc{heigh} \hldef{=} \hlnum{3}\hldef{)}
+\hlkwd{plot}\hldef{(}\hlnum{1}\hlopt{:}\hlnum{10}\hldef{)}
+\hlkwd{abline}\hldef{(}\hlkwc{h} \hldef{=} \hlnum{4}\hldef{,} \hlkwc{lty} \hldef{=} \hlnum{2}\hldef{,} \hlkwc{col} \hldef{=} \hlsng{"blue"}\hldef{)}
+\hlkwd{hist}\hldef{(}\hlkwd{rnorm}\hldef{(}\hlnum{25}\hldef{))}
+\hlkwd{dev.off}\hldef{()}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\subsection{Tipos de gráficos}
+Hemos visto que \code{plot} genera un gráfico simple de puntos, pero hay más tipos. Por ejemplo, \code{hist} genera un histograma. En el paquete de \code{ggplot2} hay más opciones de tipos de gráficos con una mayor posibilidad de personalización.
+
+El paquete \code{car} también cuenta con varios tipos de gráficos, como scatter3d mencionado anteriormente. También tiene una función llamada \code{scatterplot}:
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hldef{(car)}
+\end{alltt}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Cargando paquete requerido: carData}}\begin{alltt}
+\hlkwd{load}\hldef{(}\hlsng{"data/anage.RData"}\hldef{)}
+\hlkwd{scatterplot}\hldef{(Metabolic.rate..W.} \hlopt{~} \hldef{Body.mass..g.,} \hlkwc{log}\hldef{=}\hlsng{"xy"}\hldef{,}
+            \hlkwc{data} \hldef{= anage)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/mrateplotx1-1} 
+\end{knitrout}
+
+Dependiendo de la figura final que se quiera, se puede ir añadiendo elementos desde plot o utilizar scatterplot y eliminar cosas.
+
+Las leyendas se introducen con la función \code{legend} en caso de utilizar plot.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hldef{(Metabolic.rate..W.} \hlopt{~} \hldef{Body.mass..g.,} \hlkwc{log}\hldef{=}\hlsng{"xy"}\hldef{,}
+     \hlkwc{col} \hldef{=} \hlkwd{c}\hldef{(}\hlsng{"salmon"}\hldef{,} \hlsng{"darkgreen"}\hldef{)[Class],} \hlkwc{data} \hldef{= anage)}
+\hlkwd{legend}\hldef{(}\hlnum{5}\hldef{,} \hlnum{5}\hldef{,} \hlkwc{legend} \hldef{=} \hlkwd{levels}\hldef{(anage}\hlopt{$}\hldef{Class),}
+       \hlkwc{col} \hldef{=} \hlkwd{c}\hldef{(}\hlsng{"salmon"}\hldef{,} \hlsng{"darkgreen"}\hldef{),}
+       \hlkwc{pch} \hldef{=} \hlnum{1}\hldef{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-76-1} 
+\end{knitrout}
+
+Si se utiliza scatterplot, la sintaxis es diferente y añade directamente la línea de regresión:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{scatterplot}\hldef{(Metabolic.rate..W.} \hlopt{~} \hldef{Body.mass..g.}\hlopt{|}\hldef{Class,} \hlkwc{log}\hldef{=}\hlsng{"xy"}\hldef{,}
+            \hlkwc{data} \hldef{= anage)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-77-1} 
+\end{knitrout}
+
+\section{Tablas}
+Tabular datos es una operación muy común. Hay fundamentalmente dos formas de realizarlo con \code{table} (la más sencilla) y \code{xtabs} (con uso más genérico):
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{table}\hldef{(AB2}\hlopt{$}\hldef{Sex, AB2}\hlopt{$}\hldef{status)}
+\end{alltt}
+\begin{verbatim}
+##    
+##     V Z
+##   F 1 2
+##   M 2 1
+\end{verbatim}
+\begin{alltt}
+\hlkwd{with}\hldef{(AB2,} \hlkwd{table}\hldef{(Sex, status))} \hlcom{## note "with"}
+\end{alltt}
+\begin{verbatim}
+##    status
+## Sex V Z
+##   F 1 2
+##   M 2 1
+\end{verbatim}
+\begin{alltt}
+\hlkwd{xtabs}\hldef{(} \hlopt{~} \hldef{Sex} \hlopt{+} \hldef{status,} \hlkwc{data} \hldef{= AB2)}
+\end{alltt}
+\begin{verbatim}
+##    status
+## Sex V Z
+##   F 1 2
+##   M 2 1
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+Tabular un dataframe completo saca varias tablas 2x2 en función de las combinaciones de los valores de las otras variables. 
+
+\subsection{Más de dos dimensiones y \code{ftable}}
+Cuando hay más de dos dimensiones, utilizar las funciones anteriores saca el mismo resultado. 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{(x} \hlkwb{<-}  \hlkwd{data.frame}\hldef{(}\hlkwc{a} \hldef{=} \hlkwd{c}\hldef{(}\hlnum{1}\hldef{,}\hlnum{2}\hldef{,}\hlnum{2}\hldef{,}\hlnum{1}\hldef{,}\hlnum{2}\hldef{,}\hlnum{2}\hldef{,}\hlnum{1}\hldef{),}
+                 \hlkwc{b} \hldef{=} \hlkwd{c}\hldef{(}\hlnum{1}\hldef{,}\hlnum{2}\hldef{,}\hlnum{2}\hldef{,}\hlnum{1}\hldef{,}\hlnum{1}\hldef{,}\hlnum{2}\hldef{,}\hlnum{1}\hldef{),}
+                 \hlkwc{c} \hldef{=} \hlkwd{c}\hldef{(}\hlnum{1}\hldef{,}\hlnum{1}\hldef{,}\hlnum{2}\hldef{,}\hlnum{1}\hldef{,}\hlnum{2}\hldef{,}\hlnum{2}\hldef{,}\hlnum{1}\hldef{)))}
+\end{alltt}
+\begin{verbatim}
+##   a b c
+## 1 1 1 1
+## 2 2 2 1
+## 3 2 2 2
+## 4 1 1 1
+## 5 2 1 2
+## 6 2 2 2
+## 7 1 1 1
+\end{verbatim}
+\begin{alltt}
+\hlcom{## Equivalent}
+\hlkwd{table}\hldef{(x)}
+\end{alltt}
+\begin{verbatim}
+## , , c = 1
+## 
+##    b
+## a   1 2
+##   1 3 0
+##   2 0 1
+## 
+## , , c = 2
+## 
+##    b
+## a   1 2
+##   1 0 0
+##   2 1 2
+\end{verbatim}
+\begin{alltt}
+\hlkwd{xtabs}\hldef{(}\hlopt{~} \hldef{a} \hlopt{+} \hldef{b} \hlopt{+} \hldef{c,} \hlkwc{data} \hldef{= x)}
+\end{alltt}
+\begin{verbatim}
+## , , c = 1
+## 
+##    b
+## a   1 2
+##   1 3 0
+##   2 0 1
+## 
+## , , c = 2
+## 
+##    b
+## a   1 2
+##   1 0 0
+##   2 1 2
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+Sin embargo, hay veces en las que buscamos una tabla plana, es decir, encajar una de las variables dentro de otra:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{ftable}\hldef{(}\hlkwd{xtabs}\hldef{(}\hlopt{~} \hldef{a} \hlopt{+} \hldef{b} \hlopt{+} \hldef{c,} \hlkwc{data} \hldef{= x))}
+\end{alltt}
+\begin{verbatim}
+##     c 1 2
+## a b      
+## 1 1   3 0
+##   2   0 0
+## 2 1   0 1
+##   2   1 2
+\end{verbatim}
+\begin{alltt}
+\hlcom{## same as ftable(table(x))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\subsection{Recuperar una tabla de un dataframe}
+Si una tabla se nos ha convertido en un dataframe, se puede volver a convertir en tabla:
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{## create a data frame with a "Freq" column:}
+\hlcom{## put the table in a data frame}
+\hldef{(dfx} \hlkwb{<-} \hlkwd{as.data.frame}\hldef{(}\hlkwd{table}\hldef{(x)))}
+\end{alltt}
+\begin{verbatim}
+##   a b c Freq
+## 1 1 1 1    3
+## 2 2 1 1    0
+## 3 1 2 1    0
+## 4 2 2 1    1
+## 5 1 1 2    0
+## 6 2 1 2    1
+## 7 1 2 2    0
+## 8 2 2 2    2
+\end{verbatim}
+\begin{alltt}
+\hlcom{## We can recover the table}
+\hlkwd{xtabs}\hldef{(Freq} \hlopt{~} \hldef{a} \hlopt{+} \hldef{b} \hlopt{+} \hldef{c,} \hlkwc{data} \hldef{= dfx)}
+\end{alltt}
+\begin{verbatim}
+## , , c = 1
+## 
+##    b
+## a   1 2
+##   1 3 0
+##   2 0 1
+## 
+## , , c = 2
+## 
+##    b
+## a   1 2
+##   1 0 0
+##   2 1 2
+\end{verbatim}
+\begin{alltt}
+\hlcom{## of course, this is the same as}
+\hlcom{## xtabs(~ a + b + c, data = x)}
+\hlcom{## or table(x)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
 
 
 \end{document}

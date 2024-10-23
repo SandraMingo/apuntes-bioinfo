@@ -808,5 +808,193 @@ listA$a
 listA[[1]][2]
 @
 
+Una lista más compleja sería la siguiente:
+<<tidy=FALSE>>=
+
+(listB <- list(one.vector = 1:10,  hello = "Hola",
+               one.matrix = matrix(rnorm(20), ncol = 5),
+               another.list =
+               list(a = 5,
+                    b = factor(c("male",
+                      "female", "female")))))
+listB[[c(3, 11)]]
+listB[[3]][11]
+listB[[3]][3, 3]
+listB[[3]][c(3, 3)]
+listB[c(3, 4)]
+@
+
+\subsection{Dataframes}
+Un dataframe es una lista de vectores con la misma longitud y que pueden contener distintos tipos de objetos. La estructura es rectangular. Se pueden acceder a los elementos como si fueran matrices y como si fueran listas. Además, se pueden convertir dataframes en matrices con \code{data.matrix(df)} y \code{as.matrix(df)}. Muchas operaciones de matrices, concretamente \code{rbind} y \code{cbind}, también funcionan con dataframes.
+
+<<>>=
+(AB <- data.frame(ID = c("a1", "a2", "a3", "a4", "a5"),
+                  Age = c(12, 14, 12, 16, 19),
+                  Sex = c("M", "F", "F", "M", "F"),
+                  Y = c(11, 14, 15, 12, 19)))
+(AC <- data.frame(ID = "a9", Age = 14, Sex = "M", Y = 17))
+(AB2 <- rbind(AB, AC))
+as.matrix(AB) #convierte todo en strings
+data.matrix(AB) #convierte todo en números
+@
+
+Es muy fácil añadir nuevas variables a los dataframes:
+<<>>=
+AB2$status <- rep(c("Z", "V"), 3)
+@
+
+\section{Números aleatorios y semillas}
+Los generadores de números aleatorios hacen lo que indica su nombre: generan números de forma aleatoria cada vez que se ejecutan. No obstante, hay veces en los que se buscan números aleatorios, pero también permitir la reproducción del código. En esos casos, se emplean semillas. En R, la forma más sencilla de fijar una semilla es con \code{set.seed()}. 
+
+\section{Plots (gráficos)}
+R puede producir una variedad de gráficos y se pueden modificar al gusto. 
+
+\subsection{Lo más básico}
+La función de gráficos básica es \code{plot}. Su página de ayuda puede ser ligeramente engañosa y muchos argumentos adicionales se explican en \code{par}. Una buena analogía para empezar es la de un lienzo en el que se van añadiendo elementos. Veamos este sencillo ejemplo:
+<<>>=
+set.seed(2) ## for reproducibility
+x <- 1:10
+y <- 2 * x + rnorm(length(x))
+plot(x, y, xlab = "This is the label for the x axis",
+     ylab = "Label for the y axis")
+## And now, we add a horizontal line:
+abline(h = 5, lty = 2)
+@
+
+\subsection{Personalización de plots: colores, tipos de línea y de puntos}
+Se pueden personalizar los gráficos añadiendo colores específicos, modificando el tipo de línea y de puntos.
+<<pchcol,fig.width=5,fig.height=3, fig.cap='pch and col', fig.lp='fig:'>>=
+plot(c(1, 21), c(1, 2.3),
+     type = "n", axes = FALSE, ann = FALSE)
+## show pch
+points(1:20, rep(1, 20), pch = 1:20)
+text(1:20, 1.2, labels = 1:20)
+text(11, 1.5, "pch", cex = 1.3)
+
+## show colors for rainbow palette
+points(1:20, rep(2, 20), pch = 16, col = rainbow(20))
+text(11, 2.2, "col", cex = 1.3)
+@
+
+<<ltytype,fig.width=4,fig.height=4, fig.cap='lty for values 1 to 6', fig.lp='fig:'>>=
+plot(c(0.2, 5), c(0.2, 5), type = "n", ann = FALSE, axes = FALSE)
+for(i in 1:6) {
+    abline(0, i/3, lty = i, lwd = 2)
+    text(2, 2 * (i/3), labels = i, pos = 3)
+}
+@
+
+\subsubsection{Un ejemplo de cómo mejorar gráficos}
+El gráfico básico sería el siguiente:
+<<>>=
+hit <- read.table("data/hit-table-500-text.txt")
+## We know, from the header of the file, that
+## alignment length is the fifth column,
+## score is the 13th and percent identity the 3rd
+hist(hit[, 5]) ## the histogram
+plot(hit[, 13] ~ hit[, 3]) ## the scatterplot
+## plot(y ~ x) == plot(x, y)
+@
+
+Pero esto es fácilmente mejorable:
+<<fig-blast,fig.height=4,fig.width=6, fig.cap="A quick look at the alignment results",fig.lp=''>>=
+par(mfrow = c(1, 2)) ## two figures side by side
+hist(hit[, 5], breaks = 50, xlab = "", main = "Alignment length")
+plot(hit[, 13] ~ hit[, 3], xlab = "Percent. identity",
+     ylab = "Bit score")
+@
+
+Por simetría, se podría añadir un título al segundo gráfico. También se pueden generar gráficos interactivos con la librería \code{car}.
+<<eval=FALSE>>=
+library(car)
+scatter3d(hit[, 13] ~ hit[, 3] + hit[, 5], xlab = "Ident",
+          zlab = "Length", ylab = "Score")
+@
+
+\subsection{Guardar plots}
+Se pueden guardar las gráficas como PDF, png, etc. Desde RStudio hay una ventana de gráficos. Sin embargo, es mejor especificar y determinar unas características como tamaño, extensión, etc. Se pueden utilizar las funciones \code{pdf()} y \code{png()}: \code{pdf(file="plot.pdf")}. El paquete ggplot tiene la función \code{ggsave()}.
+
+En el siguiente ejemplo se abre un PDF, se generan dos gráficos y hasta que no se ejecuta \code{dev.off()} no se guarda el contenido en el PDF. Además, cada gráfico se guarda en una página distinta del PDF. 
+<<eval=FALSE>>=
+pdf(file = "file1.pdf", width = 2, heigh = 3)
+plot(1:10)
+abline(h = 4, lty = 2, col = "blue")
+hist(rnorm(25))
+dev.off()
+@
+
+\subsection{Tipos de gráficos}
+Hemos visto que \code{plot} genera un gráfico simple de puntos, pero hay más tipos. Por ejemplo, \code{hist} genera un histograma. En el paquete de \code{ggplot2} hay más opciones de tipos de gráficos con una mayor posibilidad de personalización.
+
+El paquete \code{car} también cuenta con varios tipos de gráficos, como scatter3d mencionado anteriormente. También tiene una función llamada \code{scatterplot}:
+
+<<mrateplotx1,fig.width=6, fig.height=6>>=
+library(car) 
+load("data/anage.RData")
+scatterplot(Metabolic.rate..W. ~ Body.mass..g., log="xy",
+            data = anage)
+@
+
+Dependiendo de la figura final que se quiera, se puede ir añadiendo elementos desde plot o utilizar scatterplot y eliminar cosas.
+
+Las leyendas se introducen con la función \code{legend} en caso de utilizar plot.
+
+<<fig.width=4,fig.height=4>>=
+plot(Metabolic.rate..W. ~ Body.mass..g., log="xy",
+     col = c("salmon", "darkgreen")[Class], data = anage)
+legend(5, 5, legend = levels(anage$Class),
+       col = c("salmon", "darkgreen"),
+       pch = 1)
+@
+
+Si se utiliza scatterplot, la sintaxis es diferente y añade directamente la línea de regresión:
+<<fig.width=4,fig.height=4>>=
+scatterplot(Metabolic.rate..W. ~ Body.mass..g.|Class, log="xy",
+            data = anage)
+@
+
+\section{Tablas}
+Tabular datos es una operación muy común. Hay fundamentalmente dos formas de realizarlo con \code{table} (la más sencilla) y \code{xtabs} (con uso más genérico):
+<<>>=
+table(AB2$Sex, AB2$status)
+with(AB2, table(Sex, status)) ## note "with"
+xtabs( ~ Sex + status, data = AB2)
+@
+
+Tabular un dataframe completo saca varias tablas 2x2 en función de las combinaciones de los valores de las otras variables. 
+
+\subsection{Más de dos dimensiones y \code{ftable}}
+Cuando hay más de dos dimensiones, utilizar las funciones anteriores saca el mismo resultado. 
+<<ftable0>>=
+(x <-  data.frame(a = c(1,2,2,1,2,2,1),
+                 b = c(1,2,2,1,1,2,1),
+                 c = c(1,1,2,1,2,2,1)))
+## Equivalent
+table(x)
+xtabs(~ a + b + c, data = x)
+@
+
+Sin embargo, hay veces en las que buscamos una tabla plana, es decir, encajar una de las variables dentro de otra:
+<<ftable1>>=
+ftable(xtabs(~ a + b + c, data = x))
+## same as ftable(table(x))
+@
+
+\subsection{Recuperar una tabla de un dataframe}
+Si una tabla se nos ha convertido en un dataframe, se puede volver a convertir en tabla:
+
+<<>>=
+## create a data frame with a "Freq" column:
+## put the table in a data frame
+(dfx <- as.data.frame(table(x)))
+
+## We can recover the table
+xtabs(Freq ~ a + b + c, data = dfx)
+## of course, this is the same as
+## xtabs(~ a + b + c, data = x)
+## or table(x)
+@
+
+
 
 \end{document}
