@@ -143,13 +143,13 @@ import requests, sys
 server = "https://rest.ensembl.org"
 ext = "/archive/id/ENSG00000157764?"
  
-r = requests.get(server+ext, headers={ "Content-Type" : "application/json"})
+r = requests.get(server+ext, headers={ "Content-type" : "application/json"})
  
 if not r.ok:
   r.raise_for_status()
   sys.exit()
  
-decoded = r.json()
+decoded = r.json() #sería mejor utilizar json.loads 
 print(repr(decoded))
 \end{lstlisting}
 
@@ -179,7 +179,7 @@ r = requests.get(endpoint, headers={ "Content-Type" :"text/plain"})
 gene = "ENSG00000157764"
 endpoint = f"http://rest.ensembl.org/sequence/id/{gene}"
 parameters = {'species': 'homo_sapiens'}
-r = requests.get(endpoint, params = parameters, headers={"Content-Type" : "text/json"})
+r = requests.get(endpoint, params = parameters, headers={"Content-type" : "text/json"})
 
 ## POST ##
 #Especificando data en lugar de params
@@ -198,3 +198,94 @@ REST viene de REpresentational State Transfer. Realmente no es un protocolo, si 
 Los \textbf{servidores} aportan representaciones textuales de recursos (como XML, JSON o HTML), y los \textbf{clientes} piden servicios mediante los métodos HTTP (GET, POST, etc). 
 El estado no se guarda en el servidor (cada petición se responde de forma independiente sin memoria de peticiones anteriores).
 
+%24/10 - Óscar
+\section{Examen de prueba}
+\subsection{Ejercicio 1}
+(1,5 puntos) Implementa una función write\_dna\_sequece que recupere de rest.ensembl.org y escriba en un fichero, cuyo nombre se reciba como parámetro, la secuencia ADN de un identificador dado. Adicionalmente, si se especifica un parámetro opcional a la función denominado ‘analysis’ y éste tiene el valor True, la función deben imprimir también por pantalla el número total de bases, así como el número de cada una de ellas. La salida debe ser similar a la siguiente: \\
+File ‘dna\_sequence.txt' successfully written. \\
+Total number of bases: 205603 \\
+Number of 'A' bases: 60015 \\
+Number of 'C' bases: 37965 \\
+Number of 'G' bases: 40168 \\
+Number of 'T' bases: 67455 \\
+Para la implementación de la función, puedes utilizar el siguiente endpoint: \\
+GET /sequence/id/:id recupera secuencias por identificador. \\
+cuya documentación se muestra más abajo. No es necesario el uso de parámetros opcionales del endpoint.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = \textwidth]{figs/endpoint-examen.png}
+\caption{Documentación del endpoint}
+\end{figure}
+
+\begin{lstlisting}[language=Python]
+import requests
+
+def write_dna_sequence(DNA_id, file_name, analysis = False):
+	"""Función que obtiene la secuencia de Ensembl y la escribe en un fichero.
+	Input Parameters
+	----------------------
+	DNA_id: str
+		ID de la secuencia que se quiere guardar
+	file_name: str
+		nombre del fichero en el que se quiere guardar la secuencia
+	analysis: bool
+		Parámetro que imprime la cantidad total de bases y el número de bases de cada nucleótido cuando True (por defecto).
+		"""
+	server = "rest.ensembl.org/"
+	endpoint = f"sequence/id/{DNA_id}"
+	
+	response = requests.get(f"{server}{endpoint}", headers = {"Content-type":"application/text"})
+	
+	if response.ok:
+		dna_sequence = response.text
+		with open(file_out, "w") as f:
+			f.write(dna_sequence)
+		print(f"File {file_out} successfully written.")
+		
+		if analysis:
+			print(f"Total number of bases: {len(dna_sequence)}")
+			for nucleotide in "ATCG":
+				print(f"Number of {nucleotide} bases: {dna_sequence.count(nucleotide)}")
+	else:
+		print("Se ha producido un error")
+\end{lstlisting}
+
+\subsection{Ejercicio 2}
+(1 punto) El siguiente programa tiene como objetivo obtener la información de la versión más reciente de un gen específico. Desafortunadamente, no funciona como se espera. Señala y explica todos los errores, y escribe una versión corregida.
+\begin{lstlisting}[language=Python]
+import requests, sys, json
+import pprint
+
+server = "http://rest.ensembl.org"
+gene = "ENSG00000157764"
+get_gene_info_endpoint = f"/overlap/id/{gene}?feature=gene"
+r = requests.get(f"{server}{get_gene_info_endpoint}")
+
+if r.ok:
+	r.raise_for_status()
+	sys.exit()
+
+pprint(r) 
+\end{lstlisting}
+
+Primero, la comprobación de la petición está invertida: cuando la petición se ha realizado correctamente, queremos continuar con el programa, y cuando ha habido algún error, se quiere apagar el sistema. Además, como importamos el módulo \texttt{pprint}, al llamar a una función dentro de ese módulo se debe utilizar la estructura módulo.función, no solo la función. Asimismo, como queremos imprimir el contenido de la petición, esto se encuentra dentro de text. Finalmente, se está importando el módulo json y no se está utilizando. Esto no es un error en sí, solo un warning, pero se puede reemplazar pprint con \texttt{json.loads(r.text)} y un print normal. Así, el código corregido quedaría de la siguiente forma:
+\begin{lstlisting}[language=Python]
+import requests, sys, json
+import pprint
+
+server = "http://rest.ensembl.org"
+gene = "ENSG00000157764"
+get_gene_info_endpoint = f"/overlap/id/{gene}?feature=gene"
+r = requests.get(f"{server}{get_gene_info_endpoint}")
+
+if not r.ok: #r.ok == False
+	r.raise_for_status()
+	sys.exit()
+
+pprint.pprint(r.text)
+
+##Alternativa
+r_dict = json.loads(r.text)
+print(r_dict)
+\end{lstlisting}
