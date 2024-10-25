@@ -187,7 +187,7 @@ Para leer el código, se empieza por la función más interna, que en este caso 
 \hlkwd{sum}\hldef{(pvalues} \hlopt{<=} \hlnum{0.05}\hldef{)}
 \end{alltt}
 \begin{verbatim}
-## [1] 46
+## [1] 49
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1787,11 +1787,11 @@ Una lista más compleja sería la siguiente:
 ## [1] "Hola"
 ## 
 ## $one.matrix
-##            [,1]       [,2]       [,3]       [,4]        [,5]
-## [1,] 0.07939128  0.3018403  0.9215329 0.36594331 -1.21207421
-## [2,] 1.17819286  0.6602290 -2.3952371 2.21436878 -0.05330761
-## [3,] 1.07412109  0.4441398 -0.2182682 0.05573027  0.52152979
-## [4,] 0.71742722 -0.8057646  0.5291019 0.44359279 -0.20374550
+##             [,1]        [,2]       [,3]       [,4]       [,5]
+## [1,]  0.02380103 1.225394204  0.1828756 -0.4265028 -0.9551852
+## [2,] -0.51363546 0.304614684  2.8067303  0.5126886 -0.4598863
+## [3,] -0.62872821 0.734582335 -0.3324138  1.9658846 -0.3212624
+## [4,]  0.81387941 0.002095049  0.9953596  1.1081499  0.7207744
 ## 
 ## $another.list
 ## $another.list$a
@@ -1805,36 +1805,36 @@ Una lista más compleja sería la siguiente:
 \hldef{listB[[}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{11}\hldef{)]]}
 \end{alltt}
 \begin{verbatim}
-## [1] -0.2182682
+## [1] -0.3324138
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[[}\hlnum{3}\hldef{]][}\hlnum{11}\hldef{]}
 \end{alltt}
 \begin{verbatim}
-## [1] -0.2182682
+## [1] -0.3324138
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[[}\hlnum{3}\hldef{]][}\hlnum{3}\hldef{,} \hlnum{3}\hldef{]}
 \end{alltt}
 \begin{verbatim}
-## [1] -0.2182682
+## [1] -0.3324138
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[[}\hlnum{3}\hldef{]][}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{3}\hldef{)]}
 \end{alltt}
 \begin{verbatim}
-## [1] 1.074121 1.074121
+## [1] -0.6287282 -0.6287282
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{4}\hldef{)]}
 \end{alltt}
 \begin{verbatim}
 ## $one.matrix
-##            [,1]       [,2]       [,3]       [,4]        [,5]
-## [1,] 0.07939128  0.3018403  0.9215329 0.36594331 -1.21207421
-## [2,] 1.17819286  0.6602290 -2.3952371 2.21436878 -0.05330761
-## [3,] 1.07412109  0.4441398 -0.2182682 0.05573027  0.52152979
-## [4,] 0.71742722 -0.8057646  0.5291019 0.44359279 -0.20374550
+##             [,1]        [,2]       [,3]       [,4]       [,5]
+## [1,]  0.02380103 1.225394204  0.1828756 -0.4265028 -0.9551852
+## [2,] -0.51363546 0.304614684  2.8067303  0.5126886 -0.4598863
+## [3,] -0.62872821 0.734582335 -0.3324138  1.9658846 -0.3212624
+## [4,]  0.81387941 0.002095049  0.9953596  1.1081499  0.7207744
 ## 
 ## $another.list
 ## $another.list$a
@@ -2257,6 +2257,514 @@ Si una tabla se nos ha convertido en un dataframe, se puede volver a convertir e
 \end{kframe}
 \end{knitrout}
 
+%25/10 - Ramón
+\section{La familia \code{apply}}
+Una de las grandes ventajas de R es poder operar sobre vectores, arrays, listas, etc enteros. Algunas funciones son \code{apply, lapply, sapply, tapply, mapply}. 
 
+\subsection{apply}
+apply es una forma de utilizar una función sobre una cierta cantidad de elementos. Es una forma más elegante que realizando un bucle. 
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{(Z} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{c}\hldef{(}\hlnum{1}\hldef{,} \hlnum{27}\hldef{,} \hlnum{23}\hldef{,} \hlnum{13}\hldef{),} \hlkwc{nrow} \hldef{=} \hlnum{2}\hldef{))}
+\end{alltt}
+\begin{verbatim}
+##      [,1] [,2]
+## [1,]    1   23
+## [2,]   27   13
+\end{verbatim}
+\begin{alltt}
+\hlkwd{apply}\hldef{(Z,} \hlnum{1}\hldef{, median)}
+\end{alltt}
+\begin{verbatim}
+## [1] 12 20
+\end{verbatim}
+\begin{alltt}
+\hlkwd{apply}\hldef{(Z,} \hlnum{2}\hldef{, median)}
+\end{alltt}
+\begin{verbatim}
+## [1] 14 18
+\end{verbatim}
+\begin{alltt}
+\hlkwd{apply}\hldef{(Z,} \hlnum{2}\hldef{, min)}
+\end{alltt}
+\begin{verbatim}
+## [1]  1 13
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\subsection{lapply}
+Con listas se utiliza \code{lapply}, y aplica una función definida a esa lista. 
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{(listA} \hlkwb{<-} \hlkwd{list}\hldef{(}\hlkwc{one.vector} \hldef{=} \hlnum{1}\hlopt{:}\hlnum{10}\hldef{,}  \hlkwc{hello} \hldef{=} \hlsng{"Hola"}\hldef{,}
+               \hlkwc{one.matrix} \hldef{=} \hlkwd{matrix}\hldef{(}\hlkwd{rnorm}\hldef{(}\hlnum{20}\hldef{),} \hlkwc{ncol} \hldef{=} \hlnum{5}\hldef{),}
+               \hlkwc{another.list} \hldef{=} \hlkwd{list}\hldef{(}\hlkwc{a} \hldef{=} \hlnum{5}\hldef{,}
+                 \hlkwc{b} \hldef{=} \hlkwd{factor}\hldef{(}\hlkwd{c}\hldef{(}\hlsng{"male"}\hldef{,} \hlsng{"female"}\hldef{,} \hlsng{"female"}\hldef{)))))}
+\end{alltt}
+\begin{verbatim}
+## $one.vector
+##  [1]  1  2  3  4  5  6  7  8  9 10
+## 
+## $hello
+## [1] "Hola"
+## 
+## $one.matrix
+##            [,1]        [,2]       [,3]         [,4]       [,5]
+## [1,]  0.4176508  1.78222896  1.0128287  1.589638200  0.4772373
+## [2,]  0.9817528 -2.31106908  0.4322652  1.954651642 -0.5965582
+## [3,] -0.3926954  0.87860458  2.0908192  0.004937777  0.7922033
+## [4,] -1.0396690  0.03580672 -1.1999258 -2.451706388  0.2896367
+## 
+## $another.list
+## $another.list$a
+## [1] 5
+## 
+## $another.list$b
+## [1] male   female female
+## Levels: female male
+\end{verbatim}
+\begin{alltt}
+\hlkwd{lapply}\hldef{(listA,} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{) x[[}\hlnum{1}\hldef{]])}
+\end{alltt}
+\begin{verbatim}
+## $one.vector
+## [1] 1
+## 
+## $hello
+## [1] "Hola"
+## 
+## $one.matrix
+## [1] 0.4176508
+## 
+## $another.list
+## [1] 5
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\subsection{tapply y by}
+Se utiliza \code{tapply} cuando tenemos unos datos (una columna o varias) que se pueden utilizar para estratificar o seleccionar otros datos. Los dos vectores u objetos deben tener la misma longitud. 
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{(one.dataframe} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{age} \hldef{=} \hlkwd{c}\hldef{(}\hlnum{12}\hldef{,} \hlnum{13}\hldef{,} \hlnum{16}\hldef{,} \hlnum{25}\hldef{,} \hlnum{28}\hldef{),}
+                            \hlkwc{sex} \hldef{=} \hlkwd{factor}\hldef{(}\hlkwd{c}\hldef{(}\hlsng{"male"}\hldef{,} \hlsng{"female"}\hldef{,}
+                                           \hlsng{"female"}\hldef{,} \hlsng{"male"}\hldef{,} \hlsng{"male"}\hldef{)))}
+\hldef{)}
+\end{alltt}
+\begin{verbatim}
+##   age    sex
+## 1  12   male
+## 2  13 female
+## 3  16 female
+## 4  25   male
+## 5  28   male
+\end{verbatim}
+\begin{alltt}
+\hldef{one.dataframe} \hlkwb{<-} \hlkwd{rbind}\hldef{(one.dataframe, one.dataframe)}
+\hldef{one.dataframe}\hlopt{$}\hldef{age[}\hlnum{6}\hlopt{:}\hlnum{10}\hldef{]} \hlkwb{<-} \hldef{one.dataframe}\hlopt{$}\hldef{age[}\hlnum{6}\hlopt{:}\hlnum{10}\hldef{]} \hlopt{+} \hlnum{2}
+\hldef{one.dataframe}\hlopt{$}\hldef{country} \hlkwb{<-} \hlkwd{rep}\hldef{(}\hlkwd{c}\hldef{(}\hlsng{"A"}\hldef{,} \hlsng{"B"}\hldef{),} \hlkwd{c}\hldef{(}\hlnum{5}\hldef{,} \hlnum{5}\hldef{))}
+\hldef{one.dataframe}\hlopt{$}\hldef{Y} \hlkwb{<-} \hlkwd{rnorm}\hldef{(}\hlnum{10}\hldef{)}
+\hldef{one.dataframe}
+\end{alltt}
+\begin{verbatim}
+##    age    sex country          Y
+## 1   12   male       A  0.7389386
+## 2   13 female       A  0.3189604
+## 3   16 female       A  1.0761644
+## 4   25   male       A -0.2841577
+## 5   28   male       A -0.7766753
+## 6   14   male       B -0.5956605
+## 7   15 female       B -1.7259798
+## 8   18 female       B -0.9025845
+## 9   27   male       B -0.5590619
+## 10  30   male       B -0.2465126
+\end{verbatim}
+\begin{alltt}
+\hlkwd{tapply}\hldef{(one.dataframe}\hlopt{$}\hldef{age, one.dataframe}\hlopt{$}\hldef{sex, mean)}
+\end{alltt}
+\begin{verbatim}
+##   female     male 
+## 15.50000 22.66667
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+Se pueden formar grupos con dos o más variables siempre y cuando se proporcionen en forma de lista:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{tapply}\hldef{(one.dataframe}\hlopt{$}\hldef{age,}
+       \hlkwd{list}\hldef{(one.dataframe}\hlopt{$}\hldef{sex, one.dataframe}\hlopt{$}\hldef{country),}
+       \hldef{mean)}
+\end{alltt}
+\begin{verbatim}
+##               A        B
+## female 14.50000 16.50000
+## male   21.66667 23.66667
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+De igual forma, se puede utilizar una función que devuelva más que un solo valor:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{tapply}\hldef{(one.dataframe}\hlopt{$}\hldef{age,}
+       \hldef{one.dataframe}\hlopt{$}\hldef{sex,}
+       \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{c}\hldef{(}\hlkwc{Mean} \hldef{=} \hlkwd{mean}\hldef{(x),} \hlkwc{Var} \hldef{=} \hlkwd{var}\hldef{(x)))}
+\end{alltt}
+\begin{verbatim}
+## $female
+##      Mean       Var 
+## 15.500000  4.333333 
+## 
+## $male
+##     Mean      Var 
+## 22.66667 59.06667
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+El problema con esto viene cuando se quiere realizar lo anterior en base a dos o más variables. Para estos casos, se debería emplear \code{aggregate}.
+
+La función \code{by} es similar a tapply, pero para dataframes. Las salidas de ambas funciones también son diferentes:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{by}\hldef{(one.dataframe,}
+   \hlkwd{list}\hldef{(one.dataframe}\hlopt{$}\hldef{sex, one.dataframe}\hlopt{$}\hldef{country),}
+   \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{c}\hldef{(}\hlkwc{Mean_Age} \hldef{=} \hlkwd{mean}\hldef{(x}\hlopt{$}\hldef{age),} \hlkwc{SD_Age} \hldef{=} \hlkwd{sd}\hldef{(x}\hlopt{$}\hldef{age),}
+                 \hlkwc{Median_Y} \hldef{=} \hlkwd{median}\hldef{(x}\hlopt{$}\hldef{Y)))}
+\end{alltt}
+\begin{verbatim}
+## : female
+## : A
+##   Mean_Age     SD_Age   Median_Y 
+## 14.5000000  2.1213203  0.6975624 
+## ------------------------------------------------ 
+## : male
+## : A
+##   Mean_Age     SD_Age   Median_Y 
+## 21.6666667  8.5049005 -0.2841577 
+## ------------------------------------------------ 
+## : female
+## : B
+##  Mean_Age    SD_Age  Median_Y 
+## 16.500000  2.121320 -1.314282 
+## ------------------------------------------------ 
+## : male
+## : B
+##   Mean_Age     SD_Age   Median_Y 
+## 23.6666667  8.5049005 -0.5590619
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\subsection{aggregate}
+La función \code{aggregate} suele devolver la salida en un formato más conveniente. En este caso, el segundo argumento debe ser siempre una lista:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{aggregate}\hldef{(one.dataframe}\hlopt{$}\hldef{age,} \hlkwd{list}\hldef{(one.dataframe}\hlopt{$}\hldef{sex), mean)}
+\end{alltt}
+\begin{verbatim}
+##   Group.1        x
+## 1  female 15.50000
+## 2    male 22.66667
+\end{verbatim}
+\begin{alltt}
+\hlcom{## make the aggregating variable explicit,}
+\hlcom{## and give it another name}
+\hlkwd{aggregate}\hldef{(one.dataframe}\hlopt{$}\hldef{age,}
+          \hlkwd{list}\hldef{(}\hlkwc{Sexo} \hldef{= one.dataframe}\hlopt{$}\hldef{sex), mean)}
+\end{alltt}
+\begin{verbatim}
+##     Sexo        x
+## 1 female 15.50000
+## 2   male 22.66667
+\end{verbatim}
+\begin{alltt}
+\hlcom{## or use the name of the column/variable}
+\hlkwd{aggregate}\hldef{(one.dataframe}\hlopt{$}\hldef{age,}
+          \hldef{one.dataframe[}\hlnum{2}\hldef{], mean)}
+\end{alltt}
+\begin{verbatim}
+##      sex        x
+## 1 female 15.50000
+## 2   male 22.66667
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+Se puede utilizar con dos o más variables:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{aggregate}\hldef{(one.dataframe}\hlopt{$}\hldef{age,}
+          \hlkwd{list}\hldef{(}\hlkwc{Sex} \hldef{= one.dataframe}\hlopt{$}\hldef{sex,}
+               \hlkwc{Country} \hldef{= one.dataframe}\hlopt{$}\hldef{country), mean)}
+\end{alltt}
+\begin{verbatim}
+##      Sex Country        x
+## 1 female       A 14.50000
+## 2   male       A 21.66667
+## 3 female       B 16.50000
+## 4   male       B 23.66667
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+También se puede utilizar para devolver varios valores:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{aggregate}\hldef{(one.dataframe}\hlopt{$}\hldef{age,}
+          \hlkwd{list}\hldef{(}\hlkwc{Sex} \hldef{= one.dataframe}\hlopt{$}\hldef{sex,}
+               \hlkwc{Country} \hldef{= one.dataframe}\hlopt{$}\hldef{country),}
+          \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{c}\hldef{(}\hlkwc{Mean} \hldef{=} \hlkwd{mean}\hldef{(x),} \hlkwc{SD} \hldef{=} \hlkwd{sd}\hldef{(x))}
+          \hldef{)}
+\end{alltt}
+\begin{verbatim}
+##      Sex Country    x.Mean      x.SD
+## 1 female       A 14.500000  2.121320
+## 2   male       A 21.666667  8.504901
+## 3 female       B 16.500000  2.121320
+## 4   male       B 23.666667  8.504901
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\code{aggregate} también se puede llamar con una sintaxis de tipo fórmula, que puede ser más intuitiva:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{aggregate}\hldef{(age} \hlopt{~} \hldef{sex} \hlopt{+} \hldef{country,} \hlkwc{data} \hldef{= one.dataframe,}
+          \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{c}\hldef{(}\hlkwc{Mean} \hldef{=} \hlkwd{mean}\hldef{(x),} \hlkwc{SD} \hldef{=} \hlkwd{sd}\hldef{(x)))}
+\end{alltt}
+\begin{verbatim}
+##      sex country  age.Mean    age.SD
+## 1 female       A 14.500000  2.121320
+## 2   male       A 21.666667  8.504901
+## 3 female       B 16.500000  2.121320
+## 4   male       B 23.666667  8.504901
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+Esto también funciona para funciones con múltiples columnas o vectores:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{(ag1} \hlkwb{<-} \hlkwd{aggregate}\hldef{(}\hlkwd{cbind}\hldef{(age, Y)} \hlopt{~} \hldef{sex} \hlopt{+} \hldef{country,}
+                  \hlkwc{data} \hldef{= one.dataframe,}
+                  \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{c}\hldef{(}\hlkwc{Mean} \hldef{=} \hlkwd{mean}\hldef{(x),} \hlkwc{SD} \hldef{=} \hlkwd{sd}\hldef{(x))))}
+\end{alltt}
+\begin{verbatim}
+##      sex country  age.Mean    age.SD     Y.Mean       Y.SD
+## 1 female       A 14.500000  2.121320  0.6975624  0.5354240
+## 2   male       A 21.666667  8.504901 -0.1072981  0.7731305
+## 3 female       B 16.500000  2.121320 -1.3142821  0.5822284
+## 4   male       B 23.666667  8.504901 -0.4670783  0.1918901
+\end{verbatim}
+\begin{alltt}
+\hlkwd{aggregate}\hldef{(one.dataframe[,} \hlkwd{c}\hldef{(}\hlsng{"age"}\hldef{,} \hlsng{"Y"}\hldef{)],}
+          \hlkwd{list}\hldef{(}\hlkwc{Sex} \hldef{= one.dataframe}\hlopt{$}\hldef{sex,}
+               \hlkwc{Country} \hldef{= one.dataframe}\hlopt{$}\hldef{country),}
+          \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{c}\hldef{(}\hlkwc{Mean} \hldef{=} \hlkwd{mean}\hldef{(x),} \hlkwc{SD} \hldef{=} \hlkwd{sd}\hldef{(x)))}
+\end{alltt}
+\begin{verbatim}
+##      Sex Country  age.Mean    age.SD     Y.Mean       Y.SD
+## 1 female       A 14.500000  2.121320  0.6975624  0.5354240
+## 2   male       A 21.666667  8.504901 -0.1072981  0.7731305
+## 3 female       B 16.500000  2.121320 -1.3142821  0.5822284
+## 4   male       B 23.666667  8.504901 -0.4670783  0.1918901
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+Es importante mencionar que el resultado no es un dataframe de 6 columnas, si no de 4: Mean y SD forman una matriz de dos columnas dentro de una misma columna. Para que el dataframe de salida sí tenga las 6 columnas, se puede utilizar \code{do.call}:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{do.call}\hldef{(data.frame,}
+        \hlkwd{aggregate}\hldef{(}\hlkwd{cbind}\hldef{(age, Y)} \hlopt{~} \hldef{sex} \hlopt{+} \hldef{country,}
+                  \hlkwc{data} \hldef{= one.dataframe,}
+                  \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{c}\hldef{(}\hlkwc{Mean} \hldef{=} \hlkwd{mean}\hldef{(x),} \hlkwc{SD} \hldef{=} \hlkwd{sd}\hldef{(x)))}
+        \hldef{)}
+\end{alltt}
+\begin{verbatim}
+##      sex country age.Mean   age.SD     Y.Mean      Y.SD
+## 1 female       A 14.50000 2.121320  0.6975624 0.5354240
+## 2   male       A 21.66667 8.504901 -0.1072981 0.7731305
+## 3 female       B 16.50000 2.121320 -1.3142821 0.5822284
+## 4   male       B 23.66667 8.504901 -0.4670783 0.1918901
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\subsection{split}
+La función \code{split} sirve para dividir un dataframe en varios en función de una variable 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{split}\hldef{(one.dataframe, one.dataframe}\hlopt{$}\hldef{sex)}
+\end{alltt}
+\begin{verbatim}
+## $female
+##   age    sex country          Y
+## 2  13 female       A  0.3189604
+## 3  16 female       A  1.0761644
+## 7  15 female       B -1.7259798
+## 8  18 female       B -0.9025845
+## 
+## $male
+##    age  sex country          Y
+## 1   12 male       A  0.7389386
+## 4   25 male       A -0.2841577
+## 5   28 male       A -0.7766753
+## 6   14 male       B -0.5956605
+## 9   27 male       B -0.5590619
+## 10  30 male       B -0.2465126
+\end{verbatim}
+\begin{alltt}
+\hlkwd{split}\hldef{(one.dataframe,} \hlkwd{c}\hldef{(one.dataframe}\hlopt{$}\hldef{sex, one.dataframe}\hlopt{$}\hldef{country))}
+\end{alltt}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in split.default(x = seq\_len(nrow(x)), f = f, drop = drop, ...): largo de datos no es múltiplo de la variable de separación}}\begin{verbatim}
+## $`1`
+##   age    sex country          Y
+## 2  13 female       A  0.3189604
+## 3  16 female       A  1.0761644
+## 7  15 female       B -1.7259798
+## 8  18 female       B -0.9025845
+## 
+## $`2`
+##    age  sex country          Y
+## 1   12 male       A  0.7389386
+## 4   25 male       A -0.2841577
+## 5   28 male       A -0.7766753
+## 6   14 male       B -0.5956605
+## 9   27 male       B -0.5590619
+## 10  30 male       B -0.2465126
+## 
+## $A
+## [1] age     sex     country Y      
+## <0 rows> (o 0- extensión row.names)
+## 
+## $B
+## [1] age     sex     country Y      
+## <0 rows> (o 0- extensión row.names)
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+Esto se puede combinar con \code{*apply}:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{lapply}\hldef{(}\hlkwd{split}\hldef{(one.dataframe,}
+             \hlkwd{list}\hldef{(one.dataframe}\hlopt{$}\hldef{sex,}
+                  \hldef{one.dataframe}\hlopt{$}\hldef{country)),}
+       \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{lm}\hldef{(Y} \hlopt{~} \hldef{age,} \hlkwc{data} \hldef{= x))} \hlcom{#or lm(x$Y ~ x$age)}
+\end{alltt}
+\begin{verbatim}
+## $female.A
+## 
+## Call:
+## lm(formula = Y ~ age, data = x)
+## 
+## Coefficients:
+## (Intercept)          age  
+##     -2.9623       0.2524  
+## 
+## 
+## $male.A
+## 
+## Call:
+## lm(formula = Y ~ age, data = x)
+## 
+## Coefficients:
+## (Intercept)          age  
+##     1.84109     -0.08993  
+## 
+## 
+## $female.B
+## 
+## Call:
+## lm(formula = Y ~ age, data = x)
+## 
+## Coefficients:
+## (Intercept)          age  
+##     -5.8430       0.2745  
+## 
+## 
+## $male.B
+## 
+## Call:
+## lm(formula = Y ~ age, data = x)
+## 
+## Coefficients:
+## (Intercept)          age  
+##    -0.84879      0.01613
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+El procedimiento anterior está relacionado con los enfoques split-apply-combine y map-reduce. Y \texttt{by}, \texttt{aggregate}, y amigos pueden ser considerados como formas especialmente prácticas de hacer la combinación anterior de \texttt{split} con \texttt{*apply} y alguna(s) función(es) de resumen particular(es).
+
+\subsection{apply y dejar caer dimensiones en matrices}
+A menos que utilicemos \code{drop = FALSE}, si seleccionamos sólo una fila o una columna, el resultado no es una matriz, sino un vector. Pero a veces necesitamos que permanezcan como matrices. Ese es a menudo el caso en muchas operaciones matriciales, y también cuando se utiliza \code{apply} y afines.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{(E} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{1}\hlopt{:}\hlnum{9}\hldef{,} \hlkwc{nrow} \hldef{=} \hlnum{3}\hldef{))}
+\end{alltt}
+\begin{verbatim}
+##      [,1] [,2] [,3]
+## [1,]    1    4    7
+## [2,]    2    5    8
+## [3,]    3    6    9
+\end{verbatim}
+\begin{alltt}
+\hldef{E[,} \hlnum{1}\hldef{]}
+\end{alltt}
+\begin{verbatim}
+## [1] 1 2 3
+\end{verbatim}
+\begin{alltt}
+\hldef{E[,} \hlnum{1}\hldef{,} \hlkwc{drop} \hldef{=} \hlnum{FALSE}\hldef{]}
+\end{alltt}
+\begin{verbatim}
+##      [,1]
+## [1,]    1
+## [2,]    2
+## [3,]    3
+\end{verbatim}
+\begin{alltt}
+\hldef{E[}\hlnum{1}\hldef{, ]}
+\end{alltt}
+\begin{verbatim}
+## [1] 1 4 7
+\end{verbatim}
+\begin{alltt}
+\hldef{E[}\hlnum{1}\hldef{, ,} \hlkwc{drop} \hldef{=} \hlnum{FALSE}\hldef{]}
+\end{alltt}
+\begin{verbatim}
+##      [,1] [,2] [,3]
+## [1,]    1    4    7
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+Esto suele ser importante cuando se escribe código genérico y una variable solo tenga una dimensión.
+
+\subsection{Algunas apreciaciones}
+Hay otros tipos de \code{apply} que veremos más adelante, tales como \code{vapply, sapply, mapply}. Además, las operaciones con \code{apply} son fácilmente paralelizables (librería \code{parallel}).
 
 \end{document}

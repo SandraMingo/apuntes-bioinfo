@@ -995,6 +995,159 @@ xtabs(Freq ~ a + b + c, data = dfx)
 ## or table(x)
 @
 
+%25/10 - Ramón
+\section{La familia \code{apply}}
+Una de las grandes ventajas de R es poder operar sobre vectores, arrays, listas, etc enteros. Algunas funciones son \code{apply, lapply, sapply, tapply, mapply}. 
 
+\subsection{apply}
+apply es una forma de utilizar una función sobre una cierta cantidad de elementos. Es una forma más elegante que realizando un bucle. 
+
+<<apply1>>=
+(Z <- matrix(c(1, 27, 23, 13), nrow = 2))
+apply(Z, 1, median)
+apply(Z, 2, median)
+apply(Z, 2, min)
+@
+
+\subsection{lapply}
+Con listas se utiliza \code{lapply}, y aplica una función definida a esa lista. 
+
+<<tidy=FALSE>>=
+(listA <- list(one.vector = 1:10,  hello = "Hola",
+               one.matrix = matrix(rnorm(20), ncol = 5),
+               another.list = list(a = 5,
+                 b = factor(c("male", "female", "female")))))
+
+lapply(listA, function(x) x[[1]])
+@
+
+\subsection{tapply y by}
+Se utiliza \code{tapply} cuando tenemos unos datos (una columna o varias) que se pueden utilizar para estratificar o seleccionar otros datos. Los dos vectores u objetos deben tener la misma longitud. 
+
+<<tidy=FALSE>>=
+(one.dataframe <- data.frame(age = c(12, 13, 16, 25, 28),
+                            sex = factor(c("male", "female",
+                                           "female", "male", "male")))
+)
+one.dataframe <- rbind(one.dataframe, one.dataframe)
+one.dataframe$age[6:10] <- one.dataframe$age[6:10] + 2
+one.dataframe$country <- rep(c("A", "B"), c(5, 5))
+one.dataframe$Y <- rnorm(10)
+one.dataframe
+
+tapply(one.dataframe$age, one.dataframe$sex, mean)
+@
+
+Se pueden formar grupos con dos o más variables siempre y cuando se proporcionen en forma de lista:
+<<tapp1b>>=
+tapply(one.dataframe$age,
+       list(one.dataframe$sex, one.dataframe$country),
+       mean)
+@
+
+De igual forma, se puede utilizar una función que devuelva más que un solo valor:
+<<tapp2>>=
+tapply(one.dataframe$age,
+       one.dataframe$sex,
+       function(x) c(Mean = mean(x), Var = var(x)))
+@
+El problema con esto viene cuando se quiere realizar lo anterior en base a dos o más variables. Para estos casos, se debería emplear \code{aggregate}.
+
+La función \code{by} es similar a tapply, pero para dataframes. Las salidas de ambas funciones también son diferentes:
+<<>>=
+by(one.dataframe,
+   list(one.dataframe$sex, one.dataframe$country),
+   function(x) c(Mean_Age = mean(x$age), SD_Age = sd(x$age),
+                 Median_Y = median(x$Y)))
+@
+
+\subsection{aggregate}
+La función \code{aggregate} suele devolver la salida en un formato más conveniente. En este caso, el segundo argumento debe ser siempre una lista:
+<<tidy=FALSE>>=
+aggregate(one.dataframe$age, list(one.dataframe$sex), mean)
+
+## make the aggregating variable explicit,
+## and give it another name
+aggregate(one.dataframe$age,
+          list(Sexo = one.dataframe$sex), mean)
+
+## or use the name of the column/variable
+aggregate(one.dataframe$age,
+          one.dataframe[2], mean)
+@
+
+Se puede utilizar con dos o más variables:
+<<>>=
+aggregate(one.dataframe$age,
+          list(Sex = one.dataframe$sex,
+               Country = one.dataframe$country), mean)
+@
+
+También se puede utilizar para devolver varios valores:
+<<>>=
+aggregate(one.dataframe$age,
+          list(Sex = one.dataframe$sex,
+               Country = one.dataframe$country),
+          function(x) c(Mean = mean(x), SD = sd(x))
+          )
+@
+
+\code{aggregate} también se puede llamar con una sintaxis de tipo fórmula, que puede ser más intuitiva:
+<<>>=
+aggregate(age ~ sex + country, data = one.dataframe,
+          function(x) c(Mean = mean(x), SD = sd(x)))
+@
+
+Esto también funciona para funciones con múltiples columnas o vectores:
+<<>>=
+(ag1 <- aggregate(cbind(age, Y) ~ sex + country,
+                  data = one.dataframe,
+                  function(x) c(Mean = mean(x), SD = sd(x))))
+
+aggregate(one.dataframe[, c("age", "Y")],
+          list(Sex = one.dataframe$sex,
+               Country = one.dataframe$country),
+          function(x) c(Mean = mean(x), SD = sd(x)))
+@
+Es importante mencionar que el resultado no es un dataframe de 6 columnas, si no de 4: Mean y SD forman una matriz de dos columnas dentro de una misma columna. Para que el dataframe de salida sí tenga las 6 columnas, se puede utilizar \code{do.call}:
+<<>>=
+do.call(data.frame,
+        aggregate(cbind(age, Y) ~ sex + country,
+                  data = one.dataframe,
+                  function(x) c(Mean = mean(x), SD = sd(x)))
+        )
+@
+
+\subsection{split}
+La función \code{split} sirve para dividir un dataframe en varios en función de una variable 
+<<>>=
+split(one.dataframe, one.dataframe$sex)
+split(one.dataframe, c(one.dataframe$sex, one.dataframe$country))
+@
+
+Esto se puede combinar con \code{*apply}:
+<<>>=
+lapply(split(one.dataframe,
+             list(one.dataframe$sex,
+                  one.dataframe$country)),
+       function(x) lm(Y ~ age, data = x)) #or lm(x$Y ~ x$age)
+@
+
+El procedimiento anterior está relacionado con los enfoques split-apply-combine y map-reduce. Y \texttt{by}, \texttt{aggregate}, y amigos pueden ser considerados como formas especialmente prácticas de hacer la combinación anterior de \texttt{split} con \texttt{*apply} y alguna(s) función(es) de resumen particular(es).
+
+\subsection{apply y dejar caer dimensiones en matrices}
+A menos que utilicemos \code{drop = FALSE}, si seleccionamos sólo una fila o una columna, el resultado no es una matriz, sino un vector. Pero a veces necesitamos que permanezcan como matrices. Ese es a menudo el caso en muchas operaciones matriciales, y también cuando se utiliza \code{apply} y afines.
+<<>>=
+(E <- matrix(1:9, nrow = 3))
+E[, 1]
+E[, 1, drop = FALSE]
+E[1, ]
+E[1, , drop = FALSE]
+@
+
+Esto suele ser importante cuando se escribe código genérico y una variable solo tenga una dimensión.
+
+\subsection{Algunas apreciaciones}
+Hay otros tipos de \code{apply} que veremos más adelante, tales como \code{vapply, sapply, mapply}. Además, las operaciones con \code{apply} son fácilmente paralelizables (librería \code{parallel}).
 
 \end{document}
