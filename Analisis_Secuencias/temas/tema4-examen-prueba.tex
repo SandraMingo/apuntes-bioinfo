@@ -171,9 +171,9 @@ According to data in the figure, the observed mutation frequency Met/Arg is the 
 \includegraphics[width = 0.7\textwidth]{figs/aa_abbreviations.png}
 \end{figure}
 
-The observed mutation frequency is 8/1000. For the entry in the BLOSUM62 substitution matrix ($2 \cdot log_2 (odds ratio) = 2 \cdot log_2 (\frac{observed}{expected}$):
-$$S_{M, R} = 2 \cdot log_2 (\frac{8/1000}{0.025 \cdot 0.052}) = 5.243$$
-$$S_{F, N} = 2 \cdot log_2 (\frac{8/1000}{0.047 \cdot 0.045}) = 3.839$$
+The observed mutation frequency is 8/10000. For the entry in the BLOSUM62 substitution matrix ($2 \cdot log_2 (odds ratio) = 2 \cdot log_2 (\frac{observed}{expected}$):
+$$S_{M, R} = 2 \cdot log_2 (\frac{8/10000}{0.025 \cdot 0.052}) = -1.4 \approx -1$$
+$$S_{F, N} = 2 \cdot log_2 (\frac{8/10000}{0.047 \cdot 0.045}) = -2.8 \approx -3$$
 In conclusion, \textbf{Met/Arg have higher entry value than Phe/Asn}.
 
 If all the entries in the diagonal of the mutation frequency table were the same, what would be their corresponding entry in the scoring matrix? \textbf{If the observed value would be the same for the entire diagonal, their values for the scoring matrix would be determined by their expected values. W has the lowest expected value and would therefore have the highest value in the scoring matrix.}
