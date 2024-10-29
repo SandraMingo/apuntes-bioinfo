@@ -1,0 +1,71 @@
+%29/10 - Gonzalo
+\chapter{La línea de comandos de Linux}
+\section{Introducción}
+\subsection{Test inicial}
+La línea de comandos de Linux se puede abrir mediante la combinación de teclas Ctrl + Alt + t. Ejecutamos el siguiente comando: \texttt{wget archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data}. El comando wget sirve para la descarga no interactiva de ficheros desde la web, soportando los protocolos HTTP, HTTPS y FTP. Con dicho comando, nos decargamos desde la web el fichero adult.data que tiene un tamaño de 3,8 M con permisos de lectura y escritura para el usuario y grupo y solo de lectura para otros. Este fichero contiene datos demográficos de distintas personas, incluyendo la edad, empleo, educación, estado civil, etnia, sexo y país.
+\begin{lstlisting}[language=bash]
+#Valor del cuarto campo de la tercera fila
+cut -d "," -f 4 adult.data | head -n 3 | tail -n 1 #HS-grad
+
+#Cuántas líneas contienen Portugal
+grep -c "Portugal" adult.data #37
+
+#Línea en la que aparece Portugal por primera vez
+grep -n "Portugal" adult.data | head -n 1 #360
+
+#Valor del primer campo en la fila 1000 empezando por el final
+cut -d "," -f 1 adult.data | tail -n 1000 | head -n 1 #40
+
+#Contar el número de filas del fichero
+wc -l adult.data #32562
+
+#Crear un fichero con las primeras 1000 filas 
+head -n 1000 adult.data > adult-first-1000.data
+
+#Contar bytes del fichero nuevo
+wc -c adult-first-1000.data #121895
+
+#Contar las líneas que contienen el string "Married-civ-spouse"
+grep -c "Married-civ-spouse" adult.data #14976
+
+#Valor mayor y menor del primer campo
+cut -d "," -f 1 adult.data | sort -n | tail -n 1 #90 
+cut -d "," -f 1 adult.data | sort -n | head -n 2 #17, hay un blanco
+\end{lstlisting}
+
+\subsection{Redirección y tuberías}
+Se puede redireccionar la salida a un fichero mediante > y >> para sobreescribirlo o añadirlo respectivamente. 
+
+Con algunas acciones, la línea de comandos se queda bloqueada hasta que termine la tarea (por ejemplo, con gedit). Con Ctrl C se cierra el procedimiento que estaba corriendo y se recupera el control de la consola de comandos, pero los cambios sin guardar se pierden. Por tanto, se puede enviar ese trabajo al background mediante \&. Otra opción es Ctrl Z, que pausa el procedimiento y permite recuperar el control de la consola.
+
+Las tuberías permiten redireccionar la salida de un comando como input de otro sin necesidad de crear ficheros. Estas tuberías pueden ser concatenadas.
+
+\subsection{Filtros}
+Un filtro es un programa que lee la entrada estándar, realiza alguna operación sobre ella y saca el resultado por la salida estándar. Normalmente, se combinan con tuberías, y algunos comandos que pueden servir como filtros son \texttt{head, tail, tr, fmt, grep, sort}.
+
+El comando \texttt{tr} \marginpar[\footnotesize tr] \ sirve para traducir o reemplazar. Por ejemplo, \texttt{tr '[0-9]' '*'} reemplaza todos los números por asteriscos. Si se utiliza -d, se borra el parámetro que se le dé en lugar de reemplazarlo. Asimismo, -c sirve para reemplazar todo lo que no entre en el filtro a lo que se le pase como segundo parámetro. Otro argumento opcional es -s, que comprime  una serie de caracteres repetidos.
+
+Los comandos \texttt{head} y \texttt{tail} \marginpar[\footnotesize head \\ tail] \ permiten mostrar las primeras y últimas líneas respectivamente, pero también tienen algunas opciones adicionales. Cuando se utiliza \texttt{-n -100}, se excluyen las últimas 100 líneas, mientras que \texttt{-n +100} hace que empiece en la fila 100. 
+
+El comando \texttt{fmt} \marginpar[\footnotesize fmt] \ permite formatear ficheros para que las líneas sean más pequeñas, recolocar palabras, etc. Por ejemplo, \texttt{fmt -70 -s} hace que cada línea muestre como máximo 70 caracteres, mostrando los caracteres restantes en una nueva línea.
+
+\begin{lstlisting}[language=bash]
+#Muestra los 10 procesos más recientes del sistema del usuario actual
+ps -ef | tr -s ' ' | grep 'sandra ' | tail -n 10
+
+#Muestra las páginas del manual de grep con 100 caracteres por línea, sustituyendo los dígitos por asteriscos y redireccionando a un fichero
+man grep | fmt -100 | tr '[0-9] '*' > file.txt
+\end{lstlisting}
+
+El comando \texttt{split} \marginpar[\footnotesize split] \  divide un fichero en distintos bloques de 1000 líneas de forma predeterminada. Ese valor se puede modificar con -l, o se puede definir la cantidad de ficheros de tamaño equitativo sin romper líneas con -n.
+
+El comando \texttt{cut} \marginpar[\footnotesize cut] \ borra secciones de cada línea de un fichero. Con -d se define el delimitador de las distintas columnas, y con -f se selecciona la columna.
+
+El comando \texttt{paste} \marginpar[\footnotesize paste] \ permite combinar varios ficheros que consistan de distintas columnas. Se puede definir el delimitador con -d, que de forma determinada utiliza tabulador. Así, es el comando contrario a cut. 
+
+\begin{lstlisting}[language=bash]
+#Extrae las columnas 6 y 4 del fichero adult.data en ese orden.
+cat adult.data | cut -d ',' -f 6 > adult-f6.data
+cat adult.data | cut -d ',' -f 4 > adult-f4.data
+paste -d ',' adult-f6.data adult-f4.data > adult-f6-f4.data
+\end{lstlisting}
