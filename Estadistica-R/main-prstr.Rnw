@@ -1150,4 +1150,306 @@ Esto suele ser importante cuando se escribe código genérico y una variable sol
 \subsection{Algunas apreciaciones}
 Hay otros tipos de \code{apply} que veremos más adelante, tales como \code{vapply, sapply, mapply}. Además, las operaciones con \code{apply} son fácilmente paralelizables (librería \code{parallel}).
 
+%30/10 - Ramón
+\section{Programación en R}
+\subsection{Flow control}
+R tiene las típicas construcciones condicionales y estructuras de control: \code{if, ifelse, for, while, repeat, switch, break}. Un \code{for} loop rara vez es la opción adecuada, normalmente es mejor utilizar \code{apply}.
+
+<<>>=
+names.of.friends <- c("Ana", "Rebeca", "Marta",
+                      "Quique", "Virgilio")
+for(friend in names.of.friends) {
+  cat("\n I should call", friend, "\n")
+}
+@
+
+<<>>=
+
+x <- y <- 0
+iteration <- 1
+while( (x < 10) && (y < 2)) {
+  cat(" ... iteration", iteration, "\n")
+  x <- x + runif(1)
+  y <- y + rnorm(1)
+  iteration <- iteration + 1
+}
+
+x
+y
+
+@
+
+\code{while} normalmente se combina con \code{break} para salidr del bucle en cuanto pasa algo (normalmente detectado mediante \code{if}). Break sirve para salir del bloque de llaves del bucle en el que está metido, no para todo. 
+
+<<results='hide'>>=
+iteration <- 0
+while(TRUE) {
+  iteration <- iteration + 1
+  cat(" ... iteration", iteration, "\n")
+  x <- rnorm(1, mean = 5)
+  y <- rnorm(1, mean = 7)
+  z <- x * y
+  if (z < 15) break 
+}
+
+@
+
+<<>>=
+aa <- 9
+
+if (aa < 95) {
+  cat("\n aa is < 95\n")
+} else if (aa > 100) {
+  cat("\n hummm.... larger than a 100\n")
+} else {
+  cat("\n between 95 and a 100\n")
+}
+
+@
+
+\subsection{Definir funciones}
+Se pueden crear funciones en R mediante \code{function}:
+
+<<>>=
+
+multByTwo <- function(x) {
+  z <- 2 * x
+  return(z)
+}
+
+a <- 3
+multByTwo(a)
+multByTwo(45)
+@
+
+Si no se incluye \code{return}, la función devuelve el último valor generado, pero es recomendable añadirlo para facilitar la lectura. 
+
+Las funciones pueden tener varios argumentos, y es posible que tengan valores por defecto:
+
+<<results="hide",fig.keep="none">>=
+plotAndLm <- function(x, y, title = "A figure") {
+  lm1 <- lm(y ~ x)
+  cat("\n Printing the summary of x\n")
+  print(summary(x))
+  cat("\n Printing the summary of y\n")
+  print(summary(y))
+  cat("\n Printing the summary of the linear regression\n")
+  print(summary(lm1))
+  plot(y ~ x, main = title)
+  abline(lm1)
+  return(lm1)
+}
+
+x <- 1:20
+y <- 5 + 3 *x + rnorm(20, sd = 3)
+plotAndLm(x, y)
+plotAndLm(x, y, title = "A user specified title")
+@
+
+\subsection{Orden de los argumentos, argumentos con y sin nombre}
+R es bastante flexible a la hora de llamar a una función y el orden en el que se pasan los argumentos, pero hay formas mejores y peores de hacerlo. En general, se utiliza la posición de llamada solo para los primeros dos argumentos, y se recomienda evitar pasar argumentos sin nombre después de haber nombrado a algunos:
+
+<<>>=
+f1 <- function(one, two, three) {
+    cat("one = ", one,
+        " two = ", two,
+        " three = ", three, "\n")}
+
+## We are OK
+f1(1, 2, 3)
+## We are OK, but this is getting risky
+f1(two = 2, three = 3, 1)
+## We are no longer OK. Nothing "strange" happened
+## but we would need to be very careful. So avoid it.
+f1(two = 2, 3, 1)
+@
+
+\subsection{Scoping, frames y entornos}
+R puede tener variables globales y locales. 
+
+<<eval=TRUE>>=
+f1 <- function(x) {
+    x + z
+}
+
+z <- -100 #variable global
+
+f11 <- function(y) {
+    z <- 10 #variable local
+    f1(y)
+}
+
+f11(4)
+@
+
+En este caso, z podría adquirir el valor donde se definió f1 (el entorno global) o usando el valor del entorno local en el que se llamó a f1. R utiliza la primera opción: resuelve donde se definió f1, tomando el valor de z de ese entorno. Esto es igual en otros lenguajes como Python. 
+
+Este es otro ejemplo en el que, como se define una función dentro de otra, al llamarla hereda los valores de las variables del entorno local.
+<<f3v1000,eval=TRUE,results='hide'>>=
+v <- 1000
+f3 <- function(x, y) {
+    v <- 3 * x
+    f2 <- function(u) {
+        u + v
+    }
+    f2(y)
+}
+
+f3(2, 9)
+
+@
+
+\begin{description}
+\item[binding] En \code{y <- 9}, y está unida al valor 9. 
+\item[free variable] z es una variable libre en la función f1 de arriba. No está unida a nada (al menos en ese frame) 
+\item[frame] Una serie de bindings (y a 9, x a 77, etc.).
+\item[environment] Puedes pensar en ello como una secuencia de frames Cuando f2 (bueno, R) busque el valor de v lo hará a través de una secuencia de frames  De hecho, un entorno tiene dos componentes: un frame y una referencia a otro entorno, su entorno padre (o su entorno adyacente); puesto que cada entorno tiene una referencia a otro entorno, ahora puedes entender fácilmente la idea de un entorno como una secuencia de frames
+\end{description}
+
+<<eval=FALSE>>=
+search()
+@
+Esto se utiliza implícitamente o explícitamente en gran parte del código. Lo que hace es listar los distintos entornos que hay y su orden. Así, cuando se cargan librerías o se utilizan variables, se utiliza \code{search} para localizar lo que se está pidiendo. 
+
+\subsection{local}
+La función \code{local} permite crear un entorno local en el que trabajar y luego, al salir, que no tenga guardado el valor de las variables.
+
+<<>>=
+
+i <- 2
+local({cat("i ", i); i <- 99; cat(";  i = ", i)})
+i
+
+try(rm(vv))
+local({vv <- 99; cat("vv = ", vv)})
+try(vv)
+
+@
+
+\subsection{Evaluación vaga}
+La siguiente función toma 2 argumentos, pero solo utiliza 1. Por ello, cuando solo se le pasa un argumento, no se produce ningún error.
+<<lazyex1>>=
+flazy <- function(x, y) {return(2 * x)}
+flazy(4)
+@
+
+Esto no es algo a hacer de forma habitual, pero es importante entender por qué el código no se rompe. En otras palabras, la evaluación vaga es la evaluación de los valores cuando se van a utilizar, no cuando se definen.
+
+\section{Debugging y capturar excepciones}
+Debugging consiste en recorrer el código para comprobar que funciona como se espera y no se estropee. 
+
+\subsection{\code{traceback}}
+\code{traceback} muestra la última llamada y ayuda a identificar dónde se rompió el código para ver qué función tiene un problema. 
+
+<<error=TRUE>>=
+
+f1 <- function(x) 3 * x
+
+f2 <- function(x) 5 + f1(x)
+
+f3 <- function(z, u) {
+    v <- runif(z)
+    a <- f2(u)
+    b <- f2(3 * v)
+    return(a + b)
+}
+
+f3(3, 7)
+
+f3(-5, 6)
+
+traceback()
+
+f3(5, "a")
+traceback()
+@
+
+\subsection{\code{debug} and \code{browser}}
+El comando \code{debug} permite ir paso a paso ejecutando cada línea del código. Cuando se quiera parar, hay que poner simplemente \code{undebug}.
+
+<<eval=FALSE>>=
+debug(f3)
+f3(3, 5)
+undebug(f3) ## stop debugging
+f3(3, 5)
+@
+
+El comando \code{browser} para la ejecución de la expresión actual y permite acceder al intérprete de R. También se puede realizar de forma condicional.
+
+<<>>=
+## just browser
+f3 <- function(z, u) {
+    v <- runif(z)
+    a <- f2(u)
+    browser()
+    b <- f2(3 * v)
+    return(a + b)
+}
+
+## with conditional browser
+f3 <- function(z, u) {
+    v <- runif(z)
+    if (z > 5) browser()
+    a <- f2(u)
+    b <- f2(3 * v)
+    return(a + b)
+}
+
+@
+
+Desde \code{browser}, hay una serie de expresiones:
+\begin{itemize}
+\item n o enter permite ejecutar la siguiente línea.
+\item c: salir del browser y continuar la ejecución del siguiente statement.
+\item s: evalúa el siguiente statement entrando en las siguientes funciones.
+\item Q: salir de la evaluación actual e ir al sitio desde donde se llamó.
+\end{itemize}
+
+\code{debug} es como poner \code{browser} al inicio del código.
+
+\subsection{\code{trace} para ver funciones arbitrarias en sitios arbitrarios}
+Se puede utilizar \code{debug} con funciones que no hayamos escrito nosotros (por ejemplo, \code{debug(lm)}). Sin embargo, la función lm es muy larga y quizás no queremos empezar por arriba, si no que sospechamos que nuestros problemas están por el medio. Para eso, podemos utilizar \code{trace}.
+
+<<eval=FALSE>>=
+trace("lm", edit = TRUE)
+@
+
+<<eval=FALSE>>=
+as.list(body(lm))
+trace(lm, tracer = browser, at = 5)
+y <- runif(100)
+x <- 1:100
+lm(y ~ x)
+## stop tracing
+untrace(lm)
+@
+
+\subsection{Warnings}
+En R puede haber algunas funciones que no den error, pero muestren warnings. En algunos casos, los warnings pueden indicar que algo no esté funcionando, por lo que se pueden convertir los warnings en errores para que la función no se ejecute. 
+
+<<eval=FALSE>>=
+opt <- options(warn = 2)
+@
+
+Este código hace que los warnings se comporten como errores. Una vez terminado, se puede reestablecer a los valores predeterminados mediante:
+
+<<eval=FALSE>>=
+options(opt)
+@
+
+\subsection{\code{where} para cuando uno está perdido en dónde está}
+A veces, cuando se hace debugging, especialmente cuando se está dentro de varias funciones que se llaman unas a otras, uno puede perderse y no saber dónde está. En estos casos, se utiliza \code{where}, que devuelve la función en la que nos encontramos.
+
+<<eval=FALSE>>=
+debug(f1); debug(f2); debug(f3)
+f3(4, 5) ## now, keeping pressing enter or n
+         ## and you'll get deeper and deeper
+         ## while in browser mode, type where
+
+#Return things to normal
+undebug(f3)
+undebug(f2)
+undebug(f1)
+@
+
 \end{document}

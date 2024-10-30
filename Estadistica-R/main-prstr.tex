@@ -1787,11 +1787,11 @@ Una lista más compleja sería la siguiente:
 ## [1] "Hola"
 ## 
 ## $one.matrix
-##             [,1]        [,2]       [,3]       [,4]       [,5]
-## [1,]  0.02380103 1.225394204  0.1828756 -0.4265028 -0.9551852
-## [2,] -0.51363546 0.304614684  2.8067303  0.5126886 -0.4598863
-## [3,] -0.62872821 0.734582335 -0.3324138  1.9658846 -0.3212624
-## [4,]  0.81387941 0.002095049  0.9953596  1.1081499  0.7207744
+##            [,1]       [,2]       [,3]       [,4]        [,5]
+## [1,]  0.1224286  1.9063271 -0.3832589 -0.5948333 -0.29829090
+## [2,] -1.4439892  0.5005815  0.5726648 -0.1208007  1.00135789
+## [3,]  0.6924709 -0.1855967 -0.6632967  0.8624763  0.01307497
+## [4,]  0.4005168 -1.4130053  0.5411781  0.5095640  1.13267501
 ## 
 ## $another.list
 ## $another.list$a
@@ -1805,36 +1805,36 @@ Una lista más compleja sería la siguiente:
 \hldef{listB[[}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{11}\hldef{)]]}
 \end{alltt}
 \begin{verbatim}
-## [1] -0.3324138
+## [1] -0.6632967
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[[}\hlnum{3}\hldef{]][}\hlnum{11}\hldef{]}
 \end{alltt}
 \begin{verbatim}
-## [1] -0.3324138
+## [1] -0.6632967
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[[}\hlnum{3}\hldef{]][}\hlnum{3}\hldef{,} \hlnum{3}\hldef{]}
 \end{alltt}
 \begin{verbatim}
-## [1] -0.3324138
+## [1] -0.6632967
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[[}\hlnum{3}\hldef{]][}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{3}\hldef{)]}
 \end{alltt}
 \begin{verbatim}
-## [1] -0.6287282 -0.6287282
+## [1] 0.6924709 0.6924709
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{4}\hldef{)]}
 \end{alltt}
 \begin{verbatim}
 ## $one.matrix
-##             [,1]        [,2]       [,3]       [,4]       [,5]
-## [1,]  0.02380103 1.225394204  0.1828756 -0.4265028 -0.9551852
-## [2,] -0.51363546 0.304614684  2.8067303  0.5126886 -0.4598863
-## [3,] -0.62872821 0.734582335 -0.3324138  1.9658846 -0.3212624
-## [4,]  0.81387941 0.002095049  0.9953596  1.1081499  0.7207744
+##            [,1]       [,2]       [,3]       [,4]        [,5]
+## [1,]  0.1224286  1.9063271 -0.3832589 -0.5948333 -0.29829090
+## [2,] -1.4439892  0.5005815  0.5726648 -0.1208007  1.00135789
+## [3,]  0.6924709 -0.1855967 -0.6632967  0.8624763  0.01307497
+## [4,]  0.4005168 -1.4130053  0.5411781  0.5095640  1.13267501
 ## 
 ## $another.list
 ## $another.list$a
@@ -2766,5 +2766,474 @@ Esto suele ser importante cuando se escribe código genérico y una variable sol
 
 \subsection{Algunas apreciaciones}
 Hay otros tipos de \code{apply} que veremos más adelante, tales como \code{vapply, sapply, mapply}. Además, las operaciones con \code{apply} son fácilmente paralelizables (librería \code{parallel}).
+
+%30/10 - Ramón
+\section{Programación en R}
+\subsection{Flow control}
+R tiene las típicas construcciones condicionales y estructuras de control: \code{if, ifelse, for, while, repeat, switch, break}. Un \code{for} loop rara vez es la opción adecuada, normalmente es mejor utilizar \code{apply}.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{names.of.friends} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"Ana"}\hldef{,} \hlsng{"Rebeca"}\hldef{,} \hlsng{"Marta"}\hldef{,}
+                      \hlsng{"Quique"}\hldef{,} \hlsng{"Virgilio"}\hldef{)}
+\hlkwa{for}\hldef{(friend} \hlkwa{in} \hldef{names.of.friends) \{}
+  \hlkwd{cat}\hldef{(}\hlsng{"\textbackslash{}n I should call"}\hldef{, friend,} \hlsng{"\textbackslash{}n"}\hldef{)}
+\hldef{\}}
+\end{alltt}
+\begin{verbatim}
+## 
+##  I should call Ana 
+## 
+##  I should call Rebeca 
+## 
+##  I should call Marta 
+## 
+##  I should call Quique 
+## 
+##  I should call Virgilio
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{x} \hlkwb{<-} \hldef{y} \hlkwb{<-} \hlnum{0}
+\hldef{iteration} \hlkwb{<-} \hlnum{1}
+\hlkwa{while}\hldef{( (x} \hlopt{<} \hlnum{10}\hldef{)} \hlopt{&&} \hldef{(y} \hlopt{<} \hlnum{2}\hldef{)) \{}
+  \hlkwd{cat}\hldef{(}\hlsng{" ... iteration"}\hldef{, iteration,} \hlsng{"\textbackslash{}n"}\hldef{)}
+  \hldef{x} \hlkwb{<-} \hldef{x} \hlopt{+} \hlkwd{runif}\hldef{(}\hlnum{1}\hldef{)}
+  \hldef{y} \hlkwb{<-} \hldef{y} \hlopt{+} \hlkwd{rnorm}\hldef{(}\hlnum{1}\hldef{)}
+  \hldef{iteration} \hlkwb{<-} \hldef{iteration} \hlopt{+} \hlnum{1}
+\hldef{\}}
+\end{alltt}
+\begin{verbatim}
+##  ... iteration 1 
+##  ... iteration 2 
+##  ... iteration 3 
+##  ... iteration 4 
+##  ... iteration 5 
+##  ... iteration 6 
+##  ... iteration 7 
+##  ... iteration 8
+\end{verbatim}
+\begin{alltt}
+\hldef{x}
+\end{alltt}
+\begin{verbatim}
+## [1] 3.183051
+\end{verbatim}
+\begin{alltt}
+\hldef{y}
+\end{alltt}
+\begin{verbatim}
+## [1] 3.020543
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\code{while} normalmente se combina con \code{break} para salidr del bucle en cuanto pasa algo (normalmente detectado mediante \code{if}). Break sirve para salir del bloque de llaves del bucle en el que está metido, no para todo. 
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{iteration} \hlkwb{<-} \hlnum{0}
+\hlkwa{while}\hldef{(}\hlnum{TRUE}\hldef{) \{}
+  \hldef{iteration} \hlkwb{<-} \hldef{iteration} \hlopt{+} \hlnum{1}
+  \hlkwd{cat}\hldef{(}\hlsng{" ... iteration"}\hldef{, iteration,} \hlsng{"\textbackslash{}n"}\hldef{)}
+  \hldef{x} \hlkwb{<-} \hlkwd{rnorm}\hldef{(}\hlnum{1}\hldef{,} \hlkwc{mean} \hldef{=} \hlnum{5}\hldef{)}
+  \hldef{y} \hlkwb{<-} \hlkwd{rnorm}\hldef{(}\hlnum{1}\hldef{,} \hlkwc{mean} \hldef{=} \hlnum{7}\hldef{)}
+  \hldef{z} \hlkwb{<-} \hldef{x} \hlopt{*} \hldef{y}
+  \hlkwa{if} \hldef{(z} \hlopt{<} \hlnum{15}\hldef{)} \hlkwa{break}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{aa} \hlkwb{<-} \hlnum{9}
+
+\hlkwa{if} \hldef{(aa} \hlopt{<} \hlnum{95}\hldef{) \{}
+  \hlkwd{cat}\hldef{(}\hlsng{"\textbackslash{}n aa is < 95\textbackslash{}n"}\hldef{)}
+\hldef{\}} \hlkwa{else if} \hldef{(aa} \hlopt{>} \hlnum{100}\hldef{) \{}
+  \hlkwd{cat}\hldef{(}\hlsng{"\textbackslash{}n hummm.... larger than a 100\textbackslash{}n"}\hldef{)}
+\hldef{\}} \hlkwa{else} \hldef{\{}
+  \hlkwd{cat}\hldef{(}\hlsng{"\textbackslash{}n between 95 and a 100\textbackslash{}n"}\hldef{)}
+\hldef{\}}
+\end{alltt}
+\begin{verbatim}
+## 
+##  aa is < 95
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\subsection{Definir funciones}
+Se pueden crear funciones en R mediante \code{function}:
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{multByTwo} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{) \{}
+  \hldef{z} \hlkwb{<-} \hlnum{2} \hlopt{*} \hldef{x}
+  \hlkwd{return}\hldef{(z)}
+\hldef{\}}
+
+\hldef{a} \hlkwb{<-} \hlnum{3}
+\hlkwd{multByTwo}\hldef{(a)}
+\end{alltt}
+\begin{verbatim}
+## [1] 6
+\end{verbatim}
+\begin{alltt}
+\hlkwd{multByTwo}\hldef{(}\hlnum{45}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 90
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+Si no se incluye \code{return}, la función devuelve el último valor generado, pero es recomendable añadirlo para facilitar la lectura. 
+
+Las funciones pueden tener varios argumentos, y es posible que tengan valores por defecto:
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{plotAndLm} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{,} \hlkwc{y}\hldef{,} \hlkwc{title} \hldef{=} \hlsng{"A figure"}\hldef{) \{}
+  \hldef{lm1} \hlkwb{<-} \hlkwd{lm}\hldef{(y} \hlopt{~} \hldef{x)}
+  \hlkwd{cat}\hldef{(}\hlsng{"\textbackslash{}n Printing the summary of x\textbackslash{}n"}\hldef{)}
+  \hlkwd{print}\hldef{(}\hlkwd{summary}\hldef{(x))}
+  \hlkwd{cat}\hldef{(}\hlsng{"\textbackslash{}n Printing the summary of y\textbackslash{}n"}\hldef{)}
+  \hlkwd{print}\hldef{(}\hlkwd{summary}\hldef{(y))}
+  \hlkwd{cat}\hldef{(}\hlsng{"\textbackslash{}n Printing the summary of the linear regression\textbackslash{}n"}\hldef{)}
+  \hlkwd{print}\hldef{(}\hlkwd{summary}\hldef{(lm1))}
+  \hlkwd{plot}\hldef{(y} \hlopt{~} \hldef{x,} \hlkwc{main} \hldef{= title)}
+  \hlkwd{abline}\hldef{(lm1)}
+  \hlkwd{return}\hldef{(lm1)}
+\hldef{\}}
+
+\hldef{x} \hlkwb{<-} \hlnum{1}\hlopt{:}\hlnum{20}
+\hldef{y} \hlkwb{<-} \hlnum{5} \hlopt{+} \hlnum{3} \hlopt{*}\hldef{x} \hlopt{+} \hlkwd{rnorm}\hldef{(}\hlnum{20}\hldef{,} \hlkwc{sd} \hldef{=} \hlnum{3}\hldef{)}
+\hlkwd{plotAndLm}\hldef{(x, y)}
+\hlkwd{plotAndLm}\hldef{(x, y,} \hlkwc{title} \hldef{=} \hlsng{"A user specified title"}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\subsection{Orden de los argumentos, argumentos con y sin nombre}
+R es bastante flexible a la hora de llamar a una función y el orden en el que se pasan los argumentos, pero hay formas mejores y peores de hacerlo. En general, se utiliza la posición de llamada solo para los primeros dos argumentos, y se recomienda evitar pasar argumentos sin nombre después de haber nombrado a algunos:
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{f1} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{one}\hldef{,} \hlkwc{two}\hldef{,} \hlkwc{three}\hldef{) \{}
+    \hlkwd{cat}\hldef{(}\hlsng{"one = "}\hldef{, one,}
+        \hlsng{" two = "}\hldef{, two,}
+        \hlsng{" three = "}\hldef{, three,} \hlsng{"\textbackslash{}n"}\hldef{)\}}
+
+\hlcom{## We are OK}
+\hlkwd{f1}\hldef{(}\hlnum{1}\hldef{,} \hlnum{2}\hldef{,} \hlnum{3}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## one =  1  two =  2  three =  3
+\end{verbatim}
+\begin{alltt}
+\hlcom{## We are OK, but this is getting risky}
+\hlkwd{f1}\hldef{(}\hlkwc{two} \hldef{=} \hlnum{2}\hldef{,} \hlkwc{three} \hldef{=} \hlnum{3}\hldef{,} \hlnum{1}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## one =  1  two =  2  three =  3
+\end{verbatim}
+\begin{alltt}
+\hlcom{## We are no longer OK. Nothing "strange" happened}
+\hlcom{## but we would need to be very careful. So avoid it.}
+\hlkwd{f1}\hldef{(}\hlkwc{two} \hldef{=} \hlnum{2}\hldef{,} \hlnum{3}\hldef{,} \hlnum{1}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## one =  3  two =  2  three =  1
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\subsection{Scoping, frames y entornos}
+R puede tener variables globales y locales. 
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{f1} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{) \{}
+    \hldef{x} \hlopt{+} \hldef{z}
+\hldef{\}}
+
+\hldef{z} \hlkwb{<-} \hlopt{-}\hlnum{100} \hlcom{#variable global}
+
+\hldef{f11} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{y}\hldef{) \{}
+    \hldef{z} \hlkwb{<-} \hlnum{10} \hlcom{#variable local}
+    \hlkwd{f1}\hldef{(y)}
+\hldef{\}}
+
+\hlkwd{f11}\hldef{(}\hlnum{4}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] -96
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+En este caso, z podría adquirir el valor donde se definió f1 (el entorno global) o usando el valor del entorno local en el que se llamó a f1. R utiliza la primera opción: resuelve donde se definió f1, tomando el valor de z de ese entorno. Esto es igual en otros lenguajes como Python. 
+
+Este es otro ejemplo en el que, como se define una función dentro de otra, al llamarla hereda los valores de las variables del entorno local.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{v} \hlkwb{<-} \hlnum{1000}
+\hldef{f3} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{,} \hlkwc{y}\hldef{) \{}
+    \hldef{v} \hlkwb{<-} \hlnum{3} \hlopt{*} \hldef{x}
+    \hldef{f2} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{u}\hldef{) \{}
+        \hldef{u} \hlopt{+} \hldef{v}
+    \hldef{\}}
+    \hlkwd{f2}\hldef{(y)}
+\hldef{\}}
+
+\hlkwd{f3}\hldef{(}\hlnum{2}\hldef{,} \hlnum{9}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{description}
+\item[binding] En \code{y <- 9}, y está unida al valor 9. 
+\item[free variable] z es una variable libre en la función f1 de arriba. No está unida a nada (al menos en ese frame) 
+\item[frame] Una serie de bindings (y a 9, x a 77, etc.).
+\item[environment] Puedes pensar en ello como una secuencia de frames Cuando f2 (bueno, R) busque el valor de v lo hará a través de una secuencia de frames  De hecho, un entorno tiene dos componentes: un frame y una referencia a otro entorno, su entorno padre (o su entorno adyacente); puesto que cada entorno tiene una referencia a otro entorno, ahora puedes entender fácilmente la idea de un entorno como una secuencia de frames
+\end{description}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{search}\hldef{()}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+Esto se utiliza implícitamente o explícitamente en gran parte del código. Lo que hace es listar los distintos entornos que hay y su orden. Así, cuando se cargan librerías o se utilizan variables, se utiliza \code{search} para localizar lo que se está pidiendo. 
+
+\subsection{local}
+La función \code{local} permite crear un entorno local en el que trabajar y luego, al salir, que no tenga guardado el valor de las variables.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{i} \hlkwb{<-} \hlnum{2}
+\hlkwd{local}\hldef{(\{}\hlkwd{cat}\hldef{(}\hlsng{"i "}\hldef{, i); i} \hlkwb{<-} \hlnum{99}\hldef{;} \hlkwd{cat}\hldef{(}\hlsng{";  i = "}\hldef{, i)\})}
+\end{alltt}
+\begin{verbatim}
+## i  2;  i =  99
+\end{verbatim}
+\begin{alltt}
+\hldef{i}
+\end{alltt}
+\begin{verbatim}
+## [1] 2
+\end{verbatim}
+\begin{alltt}
+\hlkwd{try}\hldef{(}\hlkwd{rm}\hldef{(vv))}
+\hlkwd{local}\hldef{(\{vv} \hlkwb{<-} \hlnum{99}\hldef{;} \hlkwd{cat}\hldef{(}\hlsng{"vv = "}\hldef{, vv)\})}
+\end{alltt}
+\begin{verbatim}
+## vv =  99
+\end{verbatim}
+\begin{alltt}
+\hlkwd{try}\hldef{(vv)}
+\end{alltt}
+\begin{verbatim}
+## Error in eval(expr, envir) : objeto 'vv' no encontrado
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\subsection{Evaluación vaga}
+La siguiente función toma 2 argumentos, pero solo utiliza 1. Por ello, cuando solo se le pasa un argumento, no se produce ningún error.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{flazy} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{,} \hlkwc{y}\hldef{) \{}\hlkwd{return}\hldef{(}\hlnum{2} \hlopt{*} \hldef{x)\}}
+\hlkwd{flazy}\hldef{(}\hlnum{4}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 8
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+Esto no es algo a hacer de forma habitual, pero es importante entender por qué el código no se rompe. En otras palabras, la evaluación vaga es la evaluación de los valores cuando se van a utilizar, no cuando se definen.
+
+\section{Debugging y capturar excepciones}
+Debugging consiste en recorrer el código para comprobar que funciona como se espera y no se estropee. 
+
+\subsection{\code{traceback}}
+\code{traceback} muestra la última llamada y ayuda a identificar dónde se rompió el código para ver qué función tiene un problema. 
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{f1} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlnum{3} \hlopt{*} \hldef{x}
+
+\hldef{f2} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlnum{5} \hlopt{+} \hlkwd{f1}\hldef{(x)}
+
+\hldef{f3} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{z}\hldef{,} \hlkwc{u}\hldef{) \{}
+    \hldef{v} \hlkwb{<-} \hlkwd{runif}\hldef{(z)}
+    \hldef{a} \hlkwb{<-} \hlkwd{f2}\hldef{(u)}
+    \hldef{b} \hlkwb{<-} \hlkwd{f2}\hldef{(}\hlnum{3} \hlopt{*} \hldef{v)}
+    \hlkwd{return}\hldef{(a} \hlopt{+} \hldef{b)}
+\hldef{\}}
+
+\hlkwd{f3}\hldef{(}\hlnum{3}\hldef{,} \hlnum{7}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 36.97035 35.67900 33.98585
+\end{verbatim}
+\begin{alltt}
+\hlkwd{f3}\hldef{(}\hlopt{-}\hlnum{5}\hldef{,} \hlnum{6}\hldef{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in runif(z): invalid arguments}}\begin{alltt}
+\hlkwd{traceback}\hldef{()}
+\end{alltt}
+\begin{verbatim}
+## No traceback available
+\end{verbatim}
+\begin{alltt}
+\hlkwd{f3}\hldef{(}\hlnum{5}\hldef{,} \hlsng{"a"}\hldef{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in 3 * x: argumento no-numérico para operador binario}}\begin{alltt}
+\hlkwd{traceback}\hldef{()}
+\end{alltt}
+\begin{verbatim}
+## No traceback available
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\subsection{\code{debug} and \code{browser}}
+El comando \code{debug} permite ir paso a paso ejecutando cada línea del código. Cuando se quiera parar, hay que poner simplemente \code{undebug}.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{debug}\hldef{(f3)}
+\hlkwd{f3}\hldef{(}\hlnum{3}\hldef{,} \hlnum{5}\hldef{)}
+\hlkwd{undebug}\hldef{(f3)} \hlcom{## stop debugging}
+\hlkwd{f3}\hldef{(}\hlnum{3}\hldef{,} \hlnum{5}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+El comando \code{browser} para la ejecución de la expresión actual y permite acceder al intérprete de R. También se puede realizar de forma condicional.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{## just browser}
+\hldef{f3} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{z}\hldef{,} \hlkwc{u}\hldef{) \{}
+    \hldef{v} \hlkwb{<-} \hlkwd{runif}\hldef{(z)}
+    \hldef{a} \hlkwb{<-} \hlkwd{f2}\hldef{(u)}
+    \hlkwd{browser}\hldef{()}
+    \hldef{b} \hlkwb{<-} \hlkwd{f2}\hldef{(}\hlnum{3} \hlopt{*} \hldef{v)}
+    \hlkwd{return}\hldef{(a} \hlopt{+} \hldef{b)}
+\hldef{\}}
+
+\hlcom{## with conditional browser}
+\hldef{f3} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{z}\hldef{,} \hlkwc{u}\hldef{) \{}
+    \hldef{v} \hlkwb{<-} \hlkwd{runif}\hldef{(z)}
+    \hlkwa{if} \hldef{(z} \hlopt{>} \hlnum{5}\hldef{)} \hlkwd{browser}\hldef{()}
+    \hldef{a} \hlkwb{<-} \hlkwd{f2}\hldef{(u)}
+    \hldef{b} \hlkwb{<-} \hlkwd{f2}\hldef{(}\hlnum{3} \hlopt{*} \hldef{v)}
+    \hlkwd{return}\hldef{(a} \hlopt{+} \hldef{b)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+Desde \code{browser}, hay una serie de expresiones:
+\begin{itemize}
+\item n o enter permite ejecutar la siguiente línea.
+\item c: salir del browser y continuar la ejecución del siguiente statement.
+\item s: evalúa el siguiente statement entrando en las siguientes funciones.
+\item Q: salir de la evaluación actual e ir al sitio desde donde se llamó.
+\end{itemize}
+
+\code{debug} es como poner \code{browser} al inicio del código.
+
+\subsection{\code{trace} para ver funciones arbitrarias en sitios arbitrarios}
+Se puede utilizar \code{debug} con funciones que no hayamos escrito nosotros (por ejemplo, \code{debug(lm)}). Sin embargo, la función lm es muy larga y quizás no queremos empezar por arriba, si no que sospechamos que nuestros problemas están por el medio. Para eso, podemos utilizar \code{trace}.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{trace}\hldef{(}\hlsng{"lm"}\hldef{,} \hlkwc{edit} \hldef{=} \hlnum{TRUE}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{as.list}\hldef{(}\hlkwd{body}\hldef{(lm))}
+\hlkwd{trace}\hldef{(lm,} \hlkwc{tracer} \hldef{= browser,} \hlkwc{at} \hldef{=} \hlnum{5}\hldef{)}
+\hldef{y} \hlkwb{<-} \hlkwd{runif}\hldef{(}\hlnum{100}\hldef{)}
+\hldef{x} \hlkwb{<-} \hlnum{1}\hlopt{:}\hlnum{100}
+\hlkwd{lm}\hldef{(y} \hlopt{~} \hldef{x)}
+\hlcom{## stop tracing}
+\hlkwd{untrace}\hldef{(lm)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\subsection{Warnings}
+En R puede haber algunas funciones que no den error, pero muestren warnings. En algunos casos, los warnings pueden indicar que algo no esté funcionando, por lo que se pueden convertir los warnings en errores para que la función no se ejecute. 
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{opt} \hlkwb{<-} \hlkwd{options}\hldef{(}\hlkwc{warn} \hldef{=} \hlnum{2}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+Este código hace que los warnings se comporten como errores. Una vez terminado, se puede reestablecer a los valores predeterminados mediante:
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{options}\hldef{(opt)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\subsection{\code{where} para cuando uno está perdido en dónde está}
+A veces, cuando se hace debugging, especialmente cuando se está dentro de varias funciones que se llaman unas a otras, uno puede perderse y no saber dónde está. En estos casos, se utiliza \code{where}, que devuelve la función en la que nos encontramos.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{debug}\hldef{(f1);} \hlkwd{debug}\hldef{(f2);} \hlkwd{debug}\hldef{(f3)}
+\hlkwd{f3}\hldef{(}\hlnum{4}\hldef{,} \hlnum{5}\hldef{)} \hlcom{## now, keeping pressing enter or n}
+         \hlcom{## and you'll get deeper and deeper}
+         \hlcom{## while in browser mode, type where}
+
+\hlcom{#Return things to normal}
+\hlkwd{undebug}\hldef{(f3)}
+\hlkwd{undebug}\hldef{(f2)}
+\hlkwd{undebug}\hldef{(f1)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 
 \end{document}
