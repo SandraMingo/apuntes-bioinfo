@@ -75,78 +75,99 @@ La genómica ha liderado una revolución científica en el siglo XX, evolucionan
 La identificación de características genómicas relevantes causales de rasgos/enfermedades se basa en la anotación de variantes en bases de datos y en estudios poblacionales: hay margen de mejora y un gran éxito de la ciencia colaborativa. Hoy en día, los principales proyectos tratan no sólo de secuenciar el ADN, sino de integrar esta información con datos epidemiológicos y otros datos moleculares para comprender mejor la salud y la enfermedad.
 Las enfermedades, en función de su base genética, pueden clasificarse en monogénicas (mendelianas), oligogénicas (ej., cardiopatías familiares) y complejas (evaluadas mediante puntuaciones de riesgo poligénicas). Esta clasificación permite avanzar en la medicina de precisión, abordando enfermedades desde su origen genético para ofrecer intervenciones de salud más efectivas y personalizadas.
 
-%30/10 - Álvaro
+%30/10 - Álvaro Serrano
 \section{Métodos de secuenciación}
 La secuenciación permite pasar de la información contenida en el ADN a un dominio digital mediante una representación abstracta. 
 
-El primer método de secuenciación fue desarrollado por Maxam-Gilbert utilizando un marcador 5'. El ADN se trató con distintos químicos para romperlo de forma diferencial dependiendo de la base. Según la ruptura, se ponía en un gel de acrilamida y se realizaba una electroforesis. El revelado se hacía por autoradiografía de rayos X. En base al patrón de las bandas, se obtenía la secuencia. 
+El primer método de secuenciación fue el \textbf{método Maxam-Gilbert}, que utilizaba un marcador en el extremo 5' del ADN. En este proceso, el ADN se trataba con diferentes compuestos químicos para provocar rupturas específicas en función de cada base nitrogenada. Los fragmentos resultantes se separaban en un gel de acrilamida mediante electroforesis, y se revelaban mediante autoradiografía de rayos X. La secuencia se deducía observando el patrón de bandas resultante.
 
-El siguiente método es el método de la terminación de cadena o Sanger. Se utilizaban deoxinucleótidos, que en el grupo 2' de la pentosa tiene H en lugar de OH. Así, el extremo 5', que se une al extremo 3', no se puede unir, parando la reacción en cadena. Se obtienen moléculas de distinto tamaño a las que se va a realizar lo mismo: se añade un isótopo radioactivo unido a los distintos dinucleótidos en distintos pocillos para realizar una electroforesis. Esta técnica se modificó para utilizar fluoróforos en lugar de isótopos radioactivos. En lugar de detectar el patrón de bandas, se podía poner todo en un pocillo y medir los colores y, de ahí, la secuencia. 
-¿Cuál es la clave de este método de secuenciación? El elemento clave es el uso de dideoxinucleótidos, que permiten parar la reacción en cadena de la polimerasa. (Esto saldrá en el examen)
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.3\textwidth]{figs/maxam-gilbert.png}
+\caption{\textbf{Principio de la secuenciación Maxam-Gilbert}: Se llevaron a cabo cuatro reacciones separadas para la degradación de bases en un fragmento de ADN monocatenario: A+G, G, C+T y C. Se obtienen fragmentos de ADN de diferente longitud tras la degradación de las bases y la escisión del esqueleto de azúcar-fosfato. Los productos se cargan en cuatro pocillos separados de un gel de poliacrilamida. La secuencia se lee de abajo a arriba como GTATGC. Si se encuentra una G frente a un hueco en el gel, se confirma que se trata de 5-metilcitosina en la cadena molde.}
+\end{figure}
 
-Posteriormente se desarrolló el primer secuenciador, que fue ABI370. Podía secuenciar 5000 bases al día, tardando 16.000 años para secuenciar todo el genoma humano. Este secuenciador suponía pasar de utilizar geles a electroforesis capilar, teniendo una solución con un detector de fluorescencia. A finales de los 90 y principios de los 2000 empezó el Proyecto Genoma Humano, queriendo secuenciar todo el genoma de un ser humano. Empezó en una empresa pública, pero pasó a una empresa privada. Empezó como una competición entre ambos, pero finalmente aunaron esfuerzos, ya que sus técnicas se complementaban.
+Otro método clave es el de \textbf{terminación de cadena, o método de Sanger}. Este utiliza deoxinucleótidos modificados, que tienen un átomo de hidrógeno en el grupo 2' de la pentosa, en lugar de un grupo hidroxilo (OH). Esto impide la unión del extremo 5' al 3', deteniendo así la extensión de la cadena de ADN. El resultado es una mezcla de fragmentos de distintos tamaños, los cuales se marcan con isótopos radioactivos o, en versiones más modernas, con fluoróforos. La secuencia se obtiene mediante detección de colores en una única reacción, simplificando el análisis. La clave de este método \marginpar[\footnotesize Pregunta examen] \ es el uso de dideoxinucleótidos, que interrumpen la actividad de la ADN polimerasa, permitiendo detener la cadena de manera controlada.
 
-Con este proyecto se desarrolló el secuenciador ABI377 con varios capilares. El genoma tiene zonas altamente repetitivas (telómeros y centrómeros) que son muy difíciles de secuenciar, y hasta el año pasado no salió el paper que lo describía.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/sanger.png}
+\caption{\textbf{El método de secuenciación Sanger en 7 pasos.} (1) El fragmento de dsADN se desnaturaliza en dos fragmentos de ssADN. (2) Un fragmento de ssADN se multiplica en millones de copias. (3) Se une un cebador que corresponde a un extremo del fragmento. (4) Los fragmentos se añaden a cuatro soluciones de polimerasa. Cada solución contiene los cuatro tipos de bases pero sólo un tipo de nucleótido de terminación. (5) La cadena crece hasta que se añade aleatoriamente un nucleótido de terminación. (6) Los fragmentos de dsADN resultantes se desnaturalizan para obtener una serie de ssADN de distintas longitudes. (7) Los fragmentos se separan por electroforesis y se lee la secuencia.}
+\end{figure}
 
+El primer secuenciador automático fue el ABI370, capaz de secuenciar hasta 5000 bases al día. Sin embargo, se necesitarían aproximadamente 16,000 años para secuenciar todo el genoma humano usando esta tecnología. Este secuenciador innovador reemplazaba los geles por electroforesis capilar y un detector de fluorescencia. Durante el Proyecto Genoma Humano en los años 90 y 2000, desarrollado en colaboración entre el sector público y privado, se introdujeron mejoras significativas a los secuenciadores, como el modelo ABI377, que empleaba varios capilares para incrementar la eficiencia. Sin embargo, la secuenciación de regiones altamente repetitivas del genoma, como los telómeros y centrómeros, fue compleja, y la primera descripción completa del genoma humano fue publicada hace apenas un año.
+
+\subsection{Métodos de secuenciación empleados en el Proyecto Genoma Humano}
 Los métodos que se utilizaron en el proyecto fueron los siguientes:
+\begin{itemize}
+\item \textbf{Hierarchical Shotgun:} En este método, el ADN se clona en fragmentos más pequeños usando enzimas de restricción. Estos fragmentos se solapan y forman contigs, los cuales se ensamblan progresivamente para reconstruir la secuencia original.
+\item \textbf{Whole-genome Shotgun:} Similar al método anterior, pero se realiza directamente sobre el genoma completo en lugar de partir de cromosomas bacterianos. El ADN se clona en bacterias, se fragmenta y se ensamblan los contigs mediante solapamiento.
+\end{itemize}
 
-Hierarchical shotgun:
-se clonaba y por enzima de restricción se sacaban fragmentos que se secuenciaban. Así, se iba solapando la información de los distintos fragmentos, obteniendo los contigs. Los contigs se iban solapando para obtener la secuencia original.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/HGP-sequencing.png}
+\caption{\textbf{Estrategias de secuenciación en el Proyecto Genoma Humano.} (Izquierda) La estrategia de hierarchical shotgun (HS) consiste en descomponer el genoma en un camino de mosaico de clones BAC (bacterial artificial chromosome) superpuestos, realizar la secuenciación en cada BAC y volver a ensamblarlo, y luego fusionar las secuencias de clones adyacentes. El método tiene la ventaja de que todos los contigs de secuencias y scaffolds derivados de un BAC pertenecen a un único compartimento con respecto al anclaje al genoma. (Derecha) La estrategia WGS (Whole-genome shotgun) consiste en secuenciar todo el genoma e intentar reensamblar toda la colección. Con el método WGS, cada contig y scaffold es un componente independiente que debe anclarse al genoma. En general, muchos scaffolds no pueden anclarse sin esfuerzos dirigidos. (Los contigs son bloques contiguos de secuencia; los scaffolds son conjuntos de contigs unidos por lecturas emparejadas de ambos extremos de un inserto plasmídico).}
+\end{figure}
 
-Whole-genome shotgun:
-Es prácticamente igual, pero en lugar de partir de cromosomas bacterianos se hacía directamente del genoma. Se clonaba en bacterias, se cogía el ADN y se realizaba la misma aproximación de solapamiento. 
+La electroforesis capilar, usada en ambos métodos, permite separar fragmentos de ADN de diferentes tamaños a través de un capilar con un detector de fluorescencia, logrando una lectura precisa de aproximadamente 500 pares de bases por fragmento. Con el tiempo, los costos de secuenciación disminuyeron gracias a avances en técnicas posteriores al método de Sanger.
 
-La electroforesis capilar iba pasando los fragmentos de distinto tamaño por el capilar. Hay un detector que pilla la señal de fluorescencia y genera la lectura de la secuencia de unos 500 pares de bases.
+\subsection{NGS: la siguiente generación de tecnología de secuenciación del ADN}
+La secuenciación de segunda generación o Next-Generation Sequencing (NGS) permite una secuenciación paralela y masiva, también conocida como \textbf{high-throughput sequencing}. Los principales métodos NGS incluyen 454 Roche, Solexa Illumina, ABI/SOLiD, Complete Genomics, Pacific Biosciences, Ion Torrent y Oxford Nanopore.
 
-Cuando se empezó a secuenciar, el costo era bastante alto, pero con el tiempo el precio fue bajando (mediante técnicas diferentes a Sanger).
+\subsubsection{Preparación de librerías de NGS}
+Las librerías de secuenciación se preparan fragmentando el ADN y generando secuencias que luego se amplifican y procesan en el secuenciador, obteniendo las lecturas o reads. Estas librerías se amplifican clonalmente mediante tres métodos:
+\begin{itemize}
+\item \textbf{Beads:} pequeñas bolitas recubiertas de primers, donde el ADN se adhiere y se amplifica.
+\item \textbf{Fase sólida:} el ADN se adhiere a una superficie de cristal donde se amplifica.
+\item \textbf{Nanobolas:} se produce un ovillo de ADN amplificado en forma circular, que se adhiere a una placa metálica funcionalizada (con grupos funcionales) para secuenciación.
+\end{itemize}
 
-NGS: la siguiente ola de tecnología de secuenciación del ADN
-NGS hace referencia a la secuenciación de segunda generación. Se realiza de forma paralela y masiva, lo que se conoce como high-throughput sequencing. Los métodos de secuenciación son 454 Roche, Solexa Illumina, ABI/SOLiD, Complete Genomics, Pacific Biosciences, Ion Torrent y Oxford Nanopore. 
+La secuenciación NGS utiliza un gran número de moléculas idénticas, permitiendo una secuenciación paralela de alta eficiencia y alto rendimiento o high-throughput. La característica de la segunda generación es que utiliza la molécula de ADN original y, sobre ella, la amplifica, es decir, la utiliza como molde para generar muchas moléculas iguales. 
 
-Preparación de librerías de NGS
-Una librería de secuenciación consiste enc oger el material genético y generar una serie de secuencias que son las que luego van al secuenciador. El output del secuenciador son las lecturas (reads). La característica de la segunda generación es que utiliza la molécula de ADN original y, sobre ella, la amplifica, es decir, la utiliza como molde para generar muchas moléculas iguales. Así, primero se fragmenta el ADN para generar el molde, se amplifica clonalmente en beads (bolitas con primers que permiten que la secuencia se pegue y se amplifique), en fase sólida (es un cristal en el que se pega la molécula que se amplifica) o nanobolas (la amplificación no ocurre en fase sólida, si no circular, generando un ovillo que se secuencia sobre una placa metálica funcionalizada, es decir, con grupos químicos que permite que se adhiera). Al final se obtiene una bola o una placa con el ADN amplificado que se secuencia todo a la vez. Esto permite secuenciar de forma paralela todas las moléculas, permitiendo así un alto rendimiento o high-throughput. 
+\subsubsection{Clasificación de NGS: secuenciación por síntesis y por ligación}
+Los métodos de secuenciación de segunda generación se pueden clasificar en secuenciación por síntesis (con la enzima polimerasa) o secuenciación por ligación (con la enzima ligasa).
 
-Se pueden distinguir dos tipos de métodos de secuenciación de segunda generación: secuenicación por síntesis o por ligamiento.  La distinción viene por la enzima principal. Por síntesis, es la polimerasa, y por ligación la ligasa. 
+\begin{itemize}
+\item \textbf{Secuenciación por síntesis (SBS)}
+\begin{itemize}
+\item \textbf{Ciclo de terminación reversible (CRT):} una evolución del método Sanger. Se utiliza ADN unido a beads o cristales y se añaden dNTPs modificados con el grupo 3’ OH bloqueado, limitando así la duplicación de la polimerasa. Cada ciclo implica la incorporación de un nucleótido, seguido de una señal fluorescente específica del nucleótido unido. Posteriormente, el grupo OH se desbloquea con un químico de lavado para que el proceso continúe. La señal que se detecta no es de un único nucleótido, si no del conjunto de nucleótidos del cluster, que debido a la amplificación clonal, debería ser la misma señal amplificada. Esto se realiza por el límite de detección de fluorescencia de los microscopios. Además, la placa con los moldes tiene en los límites unos marcadores que permiten que el microscopio se enfoque a la altura a la que debe. 
 
-Secuenciación por síntesis
-Se puede distinguir por la terminación de ciclos reversibles o por adición de nucleótidos.
+Una vez terminada la secuenciación, se utiliza como primer para secuenciar la cadena contraria. Esto se debe a que el microscopio va enfocando peor y se pierde calidad. Cada señal emitida por el fluoróforo se conoce como call o llamada. Cada call tiene una confident score de Q, que se calcula mediante la fórmula $Q = - 10 log_{10} P $. Por tanto, si Q es 30, P sería $10^{-3}$, representando P la probabilidad de error. La información que se obtiene en el archivo es la secuencia obtenida con un valor Q asociado codificado en ASCII. 
 
-Terminación del ciclo reversible (CRT)
-Es la evolución del método Sanger. Se basa en utilizar dNTPs bloqueados en el extremo 3' OH. En Sanger, este grupo no estaba (eran dideoxinucleótidos), bloqueando la duplicación de la polimerasa. En este caso está bloqueado, por lo que a efectos prácticos es lo mismo. Partiendo del template, este template se une a los beads o al cristal. Una vez unido, se añade la mezcla de la reacción, que va a tener la polimerasa y el dNTP con el grupo 3'OH bloqueado y un fluoróforo. El fluoróforo va a decir qué nucleótido sería el siguiente en la secuencia. Al unirse el fluoróforo, se emite una señal. Como en la placa se ha amplificado clonalmente el template, cada copia va a emitir la señal y se recibe la señal del cluster. En el siguiente ciclo, se desbloquea el grupo OH y se permite la unión 5'-3'. Así, se repite el ciclo: se añaden nucleótidos bloqueados, se recibe la señal y se desbloquea con un químico de lavado. El microscopio que detecta la señal fluorescente tiene un límite de detección, por lo que es necesaria la amplificación. Además, la placa con los moldes tiene en los límites unos marcadores que permiten que el microscopio se enfoque a la altura a la que debe. 
-
-Una vez terminada la secuenciación, se utiliza como primer para secuenciar la cadena contraria. Esto se debe a que el microscopio va enfocando peor y se pierde calidad. Cada señal emitida por el fluoróforo se conoce como call o llamada. Cada call tiene una confident score de Q, que se calcula mediante:
-$$Q = - 10 log_{10} P $$
-
-Por tanto, si Q es 30, P sería $10^{-3}$, representando P la probabilidad de error. La información que se obtiene en el archivo es la secuencia obtenida con un valor Q asociado codificado en ASCII. 
-
-Hay microscopios de 2 y de 4 canales. Los microscopios de 4 canales tienen mayor calidad al poder distinguir cada uno de los nucleótidos. Los de 2 canales utilizan la combinación de dos fluoróforos. Esto último detecta verde, rojo, ambos o nada, pero esto último es arriesgado, ya que puede que algunos nucleótidos pierdan el fluoróforo y se considere una G. El de 2 canales es más rápido, pero tiene una peor calidad. Actualmente, se suele realizar con microscopios de 2 canales al ser más rápido y barato.
-
-El tipo de secuenciador depende del caso de uso y del dinero que se quiera gastar. 
+Los microscopios se clasifican en microscopios de 4 canales y de 2 canales. Los microscopios de 4 canales tienen una mayor calidad al poder distinguir cada uno de los nucleótidos, mientras que los de 2 canales utilizan la combinación de dos fluoróforos: se detecta verde, rojo, la combinación entre verde y rojo, y la ausencia de fluorescencia. Esto último es algo arriesgado, ya que algunos nucleótidos podrían perder el fluoróforo y se consideraría ausencia de fluorescencia. No obstante, estos microscopios de 2 canales, pese a tener una peor calidad, son más rápidos y baratos. Respecto al secuenciador, hay varios tipos, por lo que al elegir uno se tendrá que tener cuenta el caso de uso y el dinero disponible (la página de Illumina tiene tablas comparativas para elegir el mejor secuenciador para cada caso). 
 
 Las ventajas de la secuenciación CRT es que es la que produce la mayor cantidad de secuencias secuenciadas a la vez (mayor throughput). La desventaja es el límite que puede secuenciar, que es en torno a 150 bases por cada extremo. 
 
-Single Nucleotide Addition (SNA)
-En cada ciclo de la adición de nucleótidos simple, se añade solo un tipo de nucleótidos. Estos métodos detectan la adición de los nucleótidos. AL terminar el ciclo se lava y se añade otro tipo de nucleótido, midiendo cuántos se han añadido. EL problema son los homopolímeros, es decir, el mismo nucleótido repetido varias veces. Como el extremo OH no se ha incorporado, se pueden añadir varios nucleótidos seguidos, y se necesita que la señal sea proporcional al número de nucleótidos añadidos para que no haya un problema de fase.
+\item \textbf{Adición de nucleótidos simple (SNA):} en cada ciclo se añade un solo tipo de nucleótido, detectando su incorporación. Este método es sensible a los homopolímeros (repeticiones del mismo nucleótido), lo que puede generar problemas de fase si la señal no es proporcional al número de nucleótidos añadidos.
+\begin{itemize}
+\item \textbf{Pirosecuenciación:} emplea pirofosfato liberado en la síntesis de ADN. Debido a su enlace de alta energía, la acción de la pirofosfatasa acoplada a la luciferasa produce que se emita una señal de luz proporcional al número de nucleótidos añadidos. Este método es rápido, económico y preciso, aunque presenta limitaciones con secuencias largas debido al cambio de fase en el momento en el que se produzca un error. La calidad de la secuenciación es Q45 (99,997\%). 
 
-Pyrosecuenciación
-Este es el primer método que se desarrolló, y está basado en el uso del grupo pirofosfato. Cuando se produce la síntesis del ADN, se libera un grupo pirofosfato. El pirofosfato tiene un enlace de alta energía que se utiliza con la pirofosfatasa acoplada a la luciferasa. Así, se produce una cantidad de luz en función del número de nucleótidos añadidos. 
+\item \textbf{Ion Torrent proton detection:} mide el cambio de pH (cambio de potencial) que ocurre al liberar un protón durante la polimerización del ADN. Al final de cada ciclo es necesario lavar para evitar la señal cruzada. La técnica es económica y ampliamente utilizada en hospitales, pero presenta desafíos con secuencias largas debido a la falta de proporcionalidad en la señal en secuencias con regiones muy repetitivas (si se unen dos nucleótidos en lugar de uno, la señal es proporcional a los dos, pero cuando se unen 50 nucleótidos, el cambio de potencial no es proporcional a los 50).
 
-En este caso, se utilizan beads con un template amplificado clonalmente. Hay una placa con cuarzo transparente enfocado por el secuenciador. En este caso, no es un microscopio que va por posición, si no tipo fotografía. Lo que se hace es poner cada uno de los nculeótidos en cada ciclo, y con eso se va secuenicando. Este método supuso una gran ventaja con Sanger por ser más rápido y barato, y la calidad de la secuenciación es Q45 (99,997\%). El problema está con las secuencias largas, ya que cuando hay un error, hay un cambio de fase. 
+\end{itemize}
+\end{itemize}
 
-Ion Torrent proton detection
-Ion Torrent utiliza la medida del cambio de potencial. Cuando se produce la polimerización del ADN, se liebra un protón que produce un cambio de pH y, por tanto, un cambio de voltaje que es detectado. Este método de secuenicación también utiliza beads. Se une un nucleótido y se ve el cambio de potencial. CUando se uenn dos, hay un cambio proporcional a los dos. El problema es que, cuando se unen muchos, el cambio de potencial no es proporcional (si se unen 50, el cambio no es 50x). Por ello, al final de cada cilo hay que lavar para eviar la señal cruzada. 
-La ventaja de este método es que es muy barato y es por lo que se utiliza mucho en los hospitales. 
+\item \textbf{Secuenciación por ligación (SBL)}
+\begin{itemize}
+\item \textbf{Secuenciación por SOLiD:} Este método emplea sondas de ligación con dos bases complementarias a la base que se secuencia. En cada ciclo, una ligasa une una sonda marcada con un fluoróforo y luego se elimina la fluorescencia para repetir el ciclo, generando datos precisos, aunque menos comunes en la práctica. Se van mapeando dos nucleótidos a la vez, dejando un espacio de 3 nucleótidos. Por ello, se repite cinco veces añadiendo espaciadores que permitan el solapamiento de las lecturas.
 
-Secuenciación por ligación
-Seucenciación por SOLiD
-Se basa en la ligación por sondas con do sbases complementarias a la base que se va a unir. En cada ciclo se añade una sonda de 5 en las que 2 se conocen y 3 permiten que se unan a cualquier sitio. Se utiliza con beads. Se utiliza una ligasa que va a unir la sonda a la molécula de ADN. La sonda tiene un fluoróforo, por lo que se ve el color de la sonda. Cuando se ha producido la unión, se elimina el fluoróforo, y se realiza otro ciclo con otra sonda. Así, se mapean dos nucleótidos con espacios de 3. Una vez hecho esto, se repite, añadiendo un espaciador que hace que la sonda se una al siguiente sitio. Al final, cada base está codificada por la suma de dos sondas, y esto se realiza durante 5 ciclos.
+\item \textbf{Complete Genomics (Nanoballs, BGI):} Amplifica ADN mediante rolling circle para formar ovillos, que luego se hibridan en una placa. Las sondas fluorescentes hibridan de forma iterativa para secuenciar el ADN. Este método permite una alta densidad de secuencias pequeñas, teniendo así una precisión muy alta. No obstante, permite secuenciar lecturas pequeñas y, al final, se utilizan distintos adaptadores a los que se unen las sondas, permitiendo aumentar el througput. Hay partes de la tecnología que no se conocen y está principalmente disponible en China.
+\end{itemize}
+\end{itemize}
 
-Complete Genomics Nanoballs BGI
-La amplificación se realiza mediante el rolling circle. Una vez se ha realizado el ovillo, se hibrida en una placa y se utilizan sondas que por ligación y por el fluoróforo se indica el nucleótido al que se unen. Se va secuenciando de manera iterativa cada uno de los nucleótidos. La ventaja es que permite una alta densidad de bolas, tiene una precisión muy alta. No obstante, permite secuenciar lecturas pequeñas y, al final, se utilizan distintos adaptadores a los que se unen las sondas, permitiendo aumentar el througput. Hay partes de la tecnología que no se conocen y está principalmente disponible en China.
+%Importante a quedar claro: diferencia entre secuenciación por síntesis y por ligación, y dentro de ellos la diferencia entre el método CRT y SNA. Los métodos de ligación hay que saber que existen, pero no es habitual trabajar con ellos. 
 
-Importante a quedar claro: diferencia entre secuenciación por síntesis y por ligación, y dentro de ellos la diferencia entre el método CRT y SNA. Los métodos de ligación hay que saber que existen, pero no es habitual trabajar con ellos. 
+\subsubsection{Limitaciones y desafíos en NGS}
+La NGS de segunda generación presenta una tasa de error de Q25-Q35 y ciertas limitaciones:
+\begin{itemize}
+\item \textbf{Lecturas cortas} generan dificultades en el ensamblaje de genomas completos y en la identificación de variantes estructurales.
+\item \textbf{Errores de secuenciación} especialmente en regiones complejas y repetitivas, como secuencias AT/GC (SBS) y homopolímeros (SNA).
+\item \textbf{Sesgo de amplificación} algunas regiones se amplifican mejor que otras, afectando la uniformidad en las lecturas.
+\item \textbf{Alto coste de los equipos}
+\item \textbf{Fenómeno de la cadena retrasada} cuando no se incorpora un nucleótido, produciendo un descabalgamiento del ciclo de lectura real y el ciclo de lectura en el que creemos que estamos.
+\item \textbf{Persistencia de errores en los cluster} al producirse un error en el cluster, el error se queda a lo largo de la secuenciación.
+\item \textbf{Cambios epigenéticos}
+\end{itemize}
 
-Uno de los problemas que más se intenta tratar en la secuenicación de segunda generación es la tasa de error, que está en torno a un Q25-Q35. Al secuenciar mucha cantidad de bases, hay errores elevados en la secuenciación. Es imporatnte remarcar que aunque ilumina diga que tienen muy poco error porque tienen un Q30 y sus lecturas son de 150 pares de bases, realmente se leen muchas secuencias a la vez.
-Además, como las lecturas de segunda generación son pequeñas, es difícil construir genomas completos, y hay problemas a la hora de variantes estructurales. Hay errores de secuenciación en regiones complejas y repetitivas (AT o CG en SBS y homopolímeros en SNA). El coste de los equipos es muy caro. Hay un sesgo en la amplificación a la hora de la construcción de la librería, ya que hay regiones que se amplifican mejor y regiones en las que peor. Cuantos más ciclos, peor calidad. SI en uno de lso pasos no se incorpora un nucleótido, se produce el fenómeno de la cadena retrasada, habiendo un descabalgamiento del ciclo de lectura real y el ciclo de lectura en el que creemos que estamos. Al secuenciar en un cluster, cuando se produce un error en el cluster, el error se queda a lo largo de la secuenciación (si hay un error en el ciclo 1, se mantiene durante todos los demás). Además, hay cambios epigenéticos.
-
-Take-home messages
+%Take-home messages
