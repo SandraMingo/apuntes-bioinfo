@@ -172,8 +172,8 @@ file=$1
 column1=$2
 column2=$3
 
-cut -d ',' -f $column1 $file > tmp1.txt
-cut -d ',' -f $column2 $file > tmp2.txt
+cut -d ',' -f $column1 $file |sort > tmp1.txt
+cut -d ',' -f $column2 $file | sort > tmp2.txt
 join -t ',' -1 1 -2 1 tmp1.txt tmp2.txt
 
 rm tmp1.txt tmp2.txt
