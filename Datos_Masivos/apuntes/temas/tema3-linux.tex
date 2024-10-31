@@ -69,3 +69,132 @@ cat adult.data | cut -d ',' -f 6 > adult-f6.data
 cat adult.data | cut -d ',' -f 4 > adult-f4.data
 paste -d ',' adult-f6.data adult-f4.data > adult-f6-f4.data
 \end{lstlisting}
+
+%31/10 - Gonzalo
+Esto puede ser útil para combinar un fichero sin numerar con una columna que contenga la numeración.
+\begin{lstlisting}[language=bash]
+wc -l adult.data #32562
+echo {1..32562} | tr ' ' '\n' > column-numbers.txt
+paste -d ',' column-numbers.txt adult.data > adult-numbered.data
+\end{lstlisting}
+
+El comando \texttt{shuf} \marginpar[\footnotesize shuf] \  (de shuffle) permite generar permutaciones aleatorias, mezclando o barajando las líneas. Con el parámetro -r, se permiten las repeticiones, y -n permite especificar el número de mezclas.
+\begin{lstlisting}[language=bash]
+#Mezclar las primeras 10 filas
+head adult-numbered.data | shuf
+#Mezclar las primeras 5 filas
+head adult-numbered.data | shuf -n 5
+#Generar 15 filas mezcladas con repetición
+head adult-numbered.data | shuf -n 15 -r
+#Crear una permutación aleatoria de los números 2 a 9
+shuf -i 2-9
+\end{lstlisting}
+ 
+ El comando \texttt{sort} \marginpar[\footnotesize sort] \ ordena las filas utilizando ordenación alfabética ASCII (las mayúsculas están por delante de las minúsculas; Z va antes que a). Para ignorar las mayúsculas y minúsculas, se debe poner -f, y para ordenación numérica, -n o -g. 
+ 
+ El comando \texttt{uniq} \marginpar[\footnotesize uniq] \ elimina las filas adyacentes repetidas. Esto se suele utilizar junto a sort para primero ordenar las filas y luego borrar las repetidas. -c indica cuántas filas había de cada tipo. 
+\begin{lstlisting}[language=bash]
+#Extraer el tipo de región de un fichero GFF y contar cuántas filas hay de cada tipo
+cut -f 3 GCF_000002765.3_ASM276v1_genomic.gff | grep -v '#' | sort | uniq -c
+#Extraer una lista ordenada de todos los posibles valores del campo 6 de adult.data
+cut -f 6 -d , adult.data | sort | uniq -c
+\end{lstlisting}
+
+El comando \texttt{join} \marginpar[\footnotesize join] \ une líneas de dos ficheros en base a un campo en común. -1 sirve para especificar el campo del fichero 1, y -2 igual para el segundo fichero. -t permite especificar el delimitador.
+\begin{lstlisting}[language=bash]
+cut adult-numbered.data -d ',' -f 1,3 | shuf -n 1000 | sort -t ',' -k 1,1 > f13.txt
+cut adult-numbered.data -d ',' -f 1,7 | shuf -n 1000 | sort -t ',' -k 1,1 > f17.txt
+join -t ',' -1 1 -2 1 f13.txt f17.txt
+#Y lo mismo pero manteniendo todas las líneas del primer fichero
+join -t ',' -1 1 -2 1 -a 1 f13.txt f17.txt
+\end{lstlisting}
+
+El comando \texttt{comm} \marginpar[\footnotesize comm] \ sirve para comparar dos ficheros ordenados de forma alfabética. El resultado son tres columnas. En la primera, se muestran los datos únicos del primer fichero, en la segunda, los datos únicos del segundo, y en la tercera, los datos comunes en ambos ficheros. 
+
+\begin{lstlisting}[language=bash]
+#Crea un fichero a.txt con 20 números aleatorios entre 0 y 100 sin repetir; cada número debe estar en una línea distinta
+shuf -i 0-100 -n 20 | sort > a.txt
+#Crea un segundo fichero b.txt con 20 números aleatorios entre 0 y 100 sin repetir; cada número debe estar en una línea distinta
+shuf -i 0-100 -n 20 | sort > b.txt
+#Muestra los números que aparezcan en ambos ficheros
+join -t ',' -1 1 -2 2 a.txt b.txt
+comm -12 a.txt b.txt
+\end{lstlisting}
+
+\subsection{Scripts de shell}
+Todos los comandos vistos anteriormente se pueden utilizar en scripts de bash. Los script deben empezar con el intérprete.
+\begin{lstlisting}[language=bash]
+#!/bin/bash
+#Hello world script
+
+echo "Hello World!"
+\end{lstlisting}
+
+Para ejecutar un script, primero se le debe dar permisos de ejecución mediante \texttt{chmod +x hello-world.sh}. Dentro de un fichero se pueden crear variables asignando el valor con el igual sin dejar espacios. Para luego poder llamar a la variable, se debe llamar con un \$ delante del nombre.
+
+\begin{lstlisting}[language=bash]
+#!/bin/bash
+#Variables:
+input_file='adult.data'
+output_file='adult5-7.data'
+fields='5-7'
+
+#Remove spaces and get selected fields:
+cat $input_file | tr -d ' ' | cut -d ',' -f $fields > tmp.txt
+
+#Sort and get unique lines:
+sort tmp.txt | uniq > $output_file
+
+#Remove temporary file:
+rm tmp.txt
+\end{lstlisting}
+
+También es posible introducir argumentos a un script, los cuales se llaman con \$1-9. \$0 representa el nombre del fichero.
+\begin{lstlisting}[language=bash]
+#!/bin/bash
+#Remove spaces and get selected fields:
+cat $1 | tr -d ' ' | cut -d ',' -f $3 > tmp.txt
+
+#Sort and get unique lines:
+sort tmp.txt | uniq > $2
+
+#Remove temporary file:
+rm tmp.txt
+
+#Show head of new file:
+head -n 20 $2
+\end{lstlisting}
+
+Ejercicio: escribir un script que acepte tres argumentos: f, a, b. El argumento f es el nombre de un fichero csv, y los argumentos a y b son números integer. El script debe mostrar la lista de valores coincidentes en las columnas a y b del fichero f.
+\begin{lstlisting}[language=bash]
+#!/bin/bash
+file=$1
+column1=$2
+column2=$3
+
+cut -d ',' -f $column1 $file > tmp1.txt
+cut -d ',' -f $column2 $file > tmp2.txt
+join -t ',' -1 1 -2 1 tmp1.txt tmp2.txt
+
+rm tmp1.txt tmp2.txt
+\end{lstlisting}
+
+\subsection{Editores de texto}
+\texttt{vi} es un editor de texto que viene en todas las distribuciones de Linux. La ventaja es que no abre ventanas externas (como gedit). Tiene dos modos: modo de inserción y modo de comando. En modo comando, los caracteres que se pulsan se interpretan como comandos, y se puede navegar mediante hjkl. Pulsando i, se cambia al modo de inserción, pudiendo añadir texto al editor. Para salir sin guardar, se debe poner \texttt{:q!}, y para salir guardando, \texttt{:x}. Para volver al modo de comando desde el modo inserción, basta con pulsar Esc. 
+
+\section{Expresiones regulares y grep}
+El comando \texttt{grep} permite buscar texto, pero también patrones. Los patrones emplean distintos símbolos:
+\begin{itemize}
+\item $\wedge$ : inicio (por ejemplo, "$\wedge$Hola")
+\item \$: final (por ejemplo, "Pepito\$")
+\item .: comodín, cualquier carácter (por ejemplo, "Pepit." encuentra tanto Pepito como Pepita).
+\item \lbrack \rbrack: indican un conjunto de caracteres válidos ("Pepit[ao]" encuentra Pepito y Pepita, pero no Pepite).
+\item \lbrack  $\wedge$ \rbrack : en la posición de los corchetes, vale cualquier carácter menos los que se especifiquen dentro ("Pepit[$\wedge$o]" solo encuentra Pepita).
+\item *: indica un número indeterminado de repeticiones del carácter anterior, siendo 0 una posibilidad. Por ejemplo, con la expresión "[1-9][0-9]*th", se encontrarían 01th, 15th, 2th y 2333th. De 01th, solo se encontraría 1th con el patrón, ya que el 0 no está incluido en el primer conjunto. Así, tanto 01th como 2th tienen el dígito en el primer corchete, el segundo corchete se repite 0 veces y finaliza en th. En el caso de 2333th, el 2 se encontraría en el primer corchete, y los 3 en el segundo corchete, repitiéndose las veces necesarias. 
+\end{itemize} 
+
+Una expresión regular que extraiga las líneas que contengan solo números sería la siguiente:
+\begin{lstlisting}[language=bash]
+#! /bin/bash
+grep "^[0-9]*[0-9 ,]*$" $1
+\end{lstlisting}
