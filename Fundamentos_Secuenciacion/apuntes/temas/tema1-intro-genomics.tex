@@ -133,9 +133,22 @@ Los métodos de secuenciación de segunda generación se pueden clasificar en se
 \begin{itemize}
 \item \textbf{Ciclo de terminación reversible (CRT):} una evolución del método Sanger. Se utiliza ADN unido a beads o cristales y se añaden dNTPs modificados con el grupo 3’ OH bloqueado, limitando así la duplicación de la polimerasa. Cada ciclo implica la incorporación de un nucleótido, seguido de una señal fluorescente específica del nucleótido unido. Posteriormente, el grupo OH se desbloquea con un químico de lavado para que el proceso continúe. La señal que se detecta no es de un único nucleótido, si no del conjunto de nucleótidos del cluster, que debido a la amplificación clonal, debería ser la misma señal amplificada. Esto se realiza por el límite de detección de fluorescencia de los microscopios. Además, la placa con los moldes tiene en los límites unos marcadores que permiten que el microscopio se enfoque a la altura a la que debe. 
 
-Una vez terminada la secuenciación, se utiliza como primer para secuenciar la cadena contraria. Esto se debe a que el microscopio va enfocando peor y se pierde calidad. Cada señal emitida por el fluoróforo se conoce como call o llamada. Cada call tiene una confident score de Q, que se calcula mediante la fórmula $Q = - 10 log_{10} P $. Por tanto, si Q es 30, P sería $10^{-3}$, representando P la probabilidad de error. La información que se obtiene en el archivo es la secuencia obtenida con un valor Q asociado codificado en ASCII. 
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/secuenciacion-terminacion-ciclica-reversible.jpg}
+\caption{\textbf{Secuenciación por terminación cíclica reversible:}
+Esta metodología se basa en la utilización de nucleótidos marcados con fluoróforos en una reacción de síntesis de ADN. Cada vez que uno de estos nucleótidos se incorpora a la cadena, el sistema toma una captura y registra de qué tipo de nucleótido se trata. Una vez tomada la captura, se eliminan los fluoróforos de los nucleótidos que se han incorporado y se continúa la síntesis de la cadena con nuevos nucleótidos marcados. }
+\end{figure}
+
+Una vez terminada la secuenciación, se utiliza como primer para secuenciar la cadena contraria. Esto se debe a que el microscopio va enfocando peor y se pierde calidad. Cada señal emitida por el fluoróforo se conoce como call o llamada. Cada call tiene una confident score de Q, que se calcula mediante la fórmula $Q = - 10 \cdot log_{10} P $. Por tanto, si Q es 30, P sería $10^{-3}$, representando P la probabilidad de error. La información que se obtiene en el archivo es la secuencia obtenida con un valor Q asociado codificado en ASCII. 
 
 Los microscopios se clasifican en microscopios de 4 canales y de 2 canales. Los microscopios de 4 canales tienen una mayor calidad al poder distinguir cada uno de los nucleótidos, mientras que los de 2 canales utilizan la combinación de dos fluoróforos: se detecta verde, rojo, la combinación entre verde y rojo, y la ausencia de fluorescencia. Esto último es algo arriesgado, ya que algunos nucleótidos podrían perder el fluoróforo y se consideraría ausencia de fluorescencia. No obstante, estos microscopios de 2 canales, pese a tener una peor calidad, son más rápidos y baratos. Respecto al secuenciador, hay varios tipos, por lo que al elegir uno se tendrá que tener cuenta el caso de uso y el dinero disponible (la página de Illumina tiene tablas comparativas para elegir el mejor secuenciador para cada caso). 
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/microscope-channels.png}
+\caption{Comparación entre los microscopios de 4 y de 2 canales.}
+\end{figure}
 
 Las ventajas de la secuenciación CRT es que es la que produce la mayor cantidad de secuencias secuenciadas a la vez (mayor throughput). La desventaja es el límite que puede secuenciar, que es en torno a 150 bases por cada extremo. 
 
@@ -143,7 +156,20 @@ Las ventajas de la secuenciación CRT es que es la que produce la mayor cantidad
 \begin{itemize}
 \item \textbf{Pirosecuenciación:} emplea pirofosfato liberado en la síntesis de ADN. Debido a su enlace de alta energía, la acción de la pirofosfatasa acoplada a la luciferasa produce que se emita una señal de luz proporcional al número de nucleótidos añadidos. Este método es rápido, económico y preciso, aunque presenta limitaciones con secuencias largas debido al cambio de fase en el momento en el que se produzca un error. La calidad de la secuenciación es Q45 (99,997\%). 
 
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.5\textwidth]{figs/pirosecuenciacion.png}
+\caption{Esquema de la pirosecuenciación, tecnología que permite determinar el orden de una secuencia de ADN mediante luminiscencia.}
+\end{figure}
+
 \item \textbf{Ion Torrent proton detection:} mide el cambio de pH (cambio de potencial) que ocurre al liberar un protón durante la polimerización del ADN. Al final de cada ciclo es necesario lavar para evitar la señal cruzada. La técnica es económica y ampliamente utilizada en hospitales, pero presenta desafíos con secuencias largas debido a la falta de proporcionalidad en la señal en secuencias con regiones muy repetitivas (si se unen dos nucleótidos en lugar de uno, la señal es proporcional a los dos, pero cuando se unen 50 nucleótidos, el cambio de potencial no es proporcional a los 50).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/Ion-torrent-sequencing.jpg}
+\caption{\textbf{Secuenciación por Ion Conductor (Ion Torrent Sequencing):} 
+Se trata de una estrategia que se basa en la detección de las modificaciones en el pH que se producen en la síntesis de ADN. Para ello, se van incorporando nucleótidos a una cadena de ADN, provocando que se libere un protón (H+) en la reacción y, por tanto, que se vea modificado el pH. Para poder diferenciar cuál de los cuatro tipos de nucleótidos se ha introducido en cada posición de la secuencia, se repiten varios ciclos, cada uno de ellos, con la adición de un único tipo de nucleótido. }
+\end{figure}
 
 \end{itemize}
 \end{itemize}
@@ -152,11 +178,15 @@ Las ventajas de la secuenciación CRT es que es la que produce la mayor cantidad
 \begin{itemize}
 \item \textbf{Secuenciación por SOLiD:} Este método emplea sondas de ligación con dos bases complementarias a la base que se secuencia. En cada ciclo, una ligasa une una sonda marcada con un fluoróforo y luego se elimina la fluorescencia para repetir el ciclo, generando datos precisos, aunque menos comunes en la práctica. Se van mapeando dos nucleótidos a la vez, dejando un espacio de 3 nucleótidos. Por ello, se repite cinco veces añadiendo espaciadores que permitan el solapamiento de las lecturas.
 
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = \textwidth]{figs/solid-sequencing.jpg}
+\caption{\textbf{Ilustración del método de secuenciación por ligación utilizando la plataforma SOLiD.} (a) Esquema de los diferentes pasos seguidos por el método SOLiD de ligadura por cuatricromía: hibridación de primers, ligadura selectiva de las sondas, obtención de imágenes por cuatricromía y escisión de la sonda. El ciclo SOLiD se repite nueve veces más. El producto de extensión se elimina y la plantilla se reajusta con un cebador complementario a la posición n -1 para una segunda ronda de ciclos de ligación. (b) Se realizan cinco rondas de reajuste del cebador para cada etiqueta de secuencia. Mediante el procedimiento de reajuste de cebadores, prácticamente todas las bases se consultan en dos reacciones de ligación independientes con dos cebadores diferentes.}
+\end{figure}
+
 \item \textbf{Complete Genomics (Nanoballs, BGI):} Amplifica ADN mediante rolling circle para formar ovillos, que luego se hibridan en una placa. Las sondas fluorescentes hibridan de forma iterativa para secuenciar el ADN. Este método permite una alta densidad de secuencias pequeñas, teniendo así una precisión muy alta. No obstante, permite secuenciar lecturas pequeñas y, al final, se utilizan distintos adaptadores a los que se unen las sondas, permitiendo aumentar el througput. Hay partes de la tecnología que no se conocen y está principalmente disponible en China.
 \end{itemize}
 \end{itemize}
-
-%Importante a quedar claro: diferencia entre secuenciación por síntesis y por ligación, y dentro de ellos la diferencia entre el método CRT y SNA. Los métodos de ligación hay que saber que existen, pero no es habitual trabajar con ellos. 
 
 \subsubsection{Limitaciones y desafíos en NGS}
 La NGS de segunda generación presenta una tasa de error de Q25-Q35 y ciertas limitaciones:
@@ -170,4 +200,259 @@ La NGS de segunda generación presenta una tasa de error de Q25-Q35 y ciertas li
 \item \textbf{Cambios epigenéticos}
 \end{itemize}
 
-%Take-home messages
+\subsection{Resumen}
+La secuenciación ha cambiado la forma de hacer y entender la biología. La secuenciación de segunda generación o NGS permite secuenciar millones de moldes de ADN al mismo tiempo. Generalmente, el molde de ADN es amplificado clonalmente, y las llamadas se hacen mediante el consenso de los moldes clonales. Hay dos tipos de secuenciación NGS: por síntesis con la polimerasa o por ligación (SOLiD y Nanoballs). Hay dos tipos de secuenciación por síntesis. La adición simple de nucleótidos (pirosecuenciación 454 y Ion Torrent) añade un dNTP distinto en cada ciclo, pero tiene problemas con moldes homopoliméricos. La terminación cíclica reversible (Illumina) añade todos los dNTP en cada ciclo y secuencia la misma posición en el molde, pero puede sufrir de desfase.
+%Importante a quedar claro: diferencia entre secuenciación por síntesis y por ligación, y dentro de ellos la diferencia entre el método CRT y SNA. Los métodos de ligación hay que saber que existen, pero no es habitual trabajar con ellos. 
+
+\subsection{Quizz}
+\begin{enumerate}
+\item Which of the following NGS platforms offers the highest accuracy?
+\begin{itemize}
+\item Ion Torrent
+\item 454
+\item Illumina
+\item SOLiD
+\end{itemize}
+
+Answer: Illumina
+
+\item What is the reversible chain termination method (CRT)?
+\begin{itemize}
+\item A method that uses modified nucleotides to stop DNA synthesis
+\item A method that involves the use of anchors and fluorescent probes
+\item A sequencing process based on detecting pH changes
+\item A real-time PCR technique
+\end{itemize}
+
+Answer: A method that uses modified nucleotides to stop DNA synthesis
+
+\item Which sequencing method employs PCR amplification and ddNTP?
+\begin{itemize}
+\item Maxam-Gilbert
+\item Ion Torrent
+\item Sanger
+\item Nanoballs
+\end{itemize}
+
+Answer: Sanger
+
+\item What is a common problem in second generation sequencing methods?
+\begin{itemize}
+\item Low cycling efficiency
+\item Difficulty detecting homopolymers
+\item Low precision in GC regions
+\item Very long execution times
+\end{itemize}
+
+Answer: Difficulty detecting homopolymers
+
+\item What NGS technology allows real-time sequencing?
+\begin{itemize}
+\item 454
+\item SOLiD
+\item Illumina
+\item PacBio
+\end{itemize}
+
+Answer: PacBio
+
+\item What achievement was reached with the Human Genome Project (HGP)?
+\begin{itemize}
+\item Sequencing of the complete human genome
+\item Sequencing of the mouse genome
+\item The first automated sequencing
+\item Creation of the nanoball sequencing method
+\end{itemize}
+
+Answer: Sequencing of the complete human genome
+
+\item What technology uses circle displacement amplification to generate nanoballs?
+\begin{itemize}
+\item PacBio
+\item SOLiD
+\item Illumina
+\item BGI
+\end{itemize}
+
+Answer: BGI
+
+\item What was the first NGS instrument developed?
+\begin{itemize}
+\item Illumina
+\item Ion Torrent
+\item 454
+\item SOLiD
+\end{itemize}
+
+Answer: 454
+
+\item What error is common in sequencing based on the nucleotide addition method (SNA)?
+\begin{itemize}
+\item Errors from long reads
+\item Errors in low complexity regions
+\item Difficulty detecting single nucleotide polymorphisms (SNPs)
+\item Problems with homopolymers
+\end{itemize}
+
+Answer: Problems with homopolymers
+
+\item What is the basis of the Maxam-Gilbert method for DNA sequencing?
+\begin{itemize}
+\item Amplification of fragments on a solid surface
+\item Use of chemicals to break the DNA molecule
+\item Adding nucleotides iteratively
+\item Electronic detection of pH changes
+\end{itemize}
+
+Answer: Use of chemicals to break the DNA molecule
+
+\item What is one of the main advantages of massively parallel sequencing?
+\begin{itemize}
+\item Generation of long and accurate reads
+\item Ability to sequence multiple DNA templates at the same time
+\item Capability to perform sequencing at low cost
+\item Reduction of error rates in reads
+\end{itemize}
+
+Answer: Ability to sequence multiple DNA templates at the same time
+
+\item What technique uses clonal amplification of DNA on solid surfaces?
+\begin{itemize}
+\item Ion Torrent
+\item Pyrosequencing
+\item Sequencing by synthesis
+\item Nanoballs
+\end{itemize}
+
+Answer: Sequencing by synthesis
+
+\item Which sequencing platform is based on proton detection
+\begin{itemize}
+\item SOLiD
+\item Illumina
+\item Ion Torrent
+\item PacBio
+\end{itemize}
+
+Answer: Ion Torrent
+
+\item What was the main technique used in the Human Genome Project?
+\begin{itemize}
+\item Maxam-Gilbert
+\item Pyrosequencing
+\item Sanger sequencing
+\item Second generation NGS
+\end{itemize}
+
+Answer: Sanger sequencing
+
+\item Which NGS platform is known for its low cost per Mb sequenced?
+\begin{itemize}
+\item Illumina
+\item SOLiD
+\item 454
+\item Ion Torrent
+\end{itemize}
+
+Answer: Ion Torrent
+
+\item What is one of the advantages of reversible terminator sequencing technology (CTR)?
+\begin{itemize}
+\item Does not require clonal amplification
+\item Long read length
+\item High accuracy in called bases
+\item Can handle RNA templates
+\end{itemize}
+
+Answer: High accuracy in called bases
+
+\item What NGS technology uses a system of up to two colors for detection?
+\begin{itemize}
+\item Ion Torrent
+\item Illumina
+\item PacBio
+\item SOLiD
+\end{itemize}
+
+Answer: Illumina
+
+\item What are the disadvantages of second generation sequencing systems?
+\begin{itemize}
+\item Low precision in SNP detection
+\item Short read lengths
+\item High costs per sequence
+\item Low coverage of repetitive regions
+\end{itemize}
+
+Answer: Short read lengths
+
+\item What is the main limitation of pyrosequencing?
+\begin{itemize}
+\item High error rate in low complexity regions
+\item Problems with homopolymers
+\item High error rate in short segments
+\item Difficulty in detecting structural variants
+\end{itemize}
+
+Answer: Problems with homopolymers
+
+\item What is one of the main disadvantages of the SOLiD platform?
+\begin{itemize}
+\item Problems with long reads
+\item High error rate in homopolymers
+\item Low precision in variation detection
+\item Requires an additional cycle for each read
+\end{itemize}
+
+Answer: High error rate in homopolymers
+
+\item Which NGS platform is based on luminescence detection?
+\begin{itemize}
+\item 454
+\item Illumina
+\item SOLiD
+\item Ion Torrent
+\end{itemize}
+
+Answer: 454
+
+\item What is a main disadvantage of secong-generation sequencing systems?
+\begin{itemize}
+\item Low precision in SNP detection
+\item Short read lengths
+\item High costs per sequence
+\item Low coverage of repetitive regions
+\end{itemize}
+
+Answer: Short read lengths
+
+\item What key feature defines the Sanger chain termination method?
+\begin{itemize}
+\item Use of specific enzymes to emit light
+\item Use of ddNTPs to stop DNA replication
+\item Probe and anchor-based sequencing
+\item Use of a microchip with electronic sensors
+\end{itemize}
+
+Answer: Use of ddNTPs to stop DNA replication
+
+\item What type of methods are grouped under the term NGS?
+\begin{itemize}
+\item Massively parallel high-capacity sequencing methods
+\item Manual low-precision sequencing methods
+\item Methods based on RNA synthesis
+\item Methods for detecting three-dimensional structures
+\end{itemize}
+
+Answer: Massively parallel high-capacity sequencing methods
+
+\item Which sequencing technique was the first to implement the concept of sequencing by synthesis?
+\begin{itemize}
+\item Nanoballs
+\item SOLiD
+\item Sanger
+\item 454
+\end{itemize}
+
+Answer: Sanger
+\end{enumerate}
