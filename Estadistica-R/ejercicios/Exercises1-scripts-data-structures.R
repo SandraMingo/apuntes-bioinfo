@@ -33,14 +33,14 @@ d2 <- read.table('data/AnotherDataSet.txt', header = TRUE)
 d2[d2 == 23.4] <-  ''
 d2[2, 2] <-  ''
 write.table(d2, file = "d2.txt")
-read.table('d1.txt', header = TRUE, na.strings = '')
+read.table('d2.txt', header = TRUE, na.strings = '')
 
 #d3.txt, which is the same as d2.txt but without the header.
 d3 <- read.table('data/AnotherDataSet.txt', header = FALSE)
 d3[d3 == 23.4] <-  ''
 d3[2, 2] <-  ''
 write.table(d3, file = "d3.txt")
-read.table('d1.txt', header = TRUE, na.strings = '')
+read.table('d3.txt', header = TRUE, na.strings = '')
 
 ## 5. Saving objects
 #Create an object called x with value 97
@@ -176,3 +176,12 @@ ddf4
 library(dplyr)
 oxy <- read.table('data/Oxygen.txt', header = TRUE)
 left_join(ddf4, oxy)
+
+## 7. Sort and order
+sort(age)
+#Using the matrix created in exercise 6, (m2), create a new matrix that contains the exact
+#same data but such that the values are order in such a way that you first order by age and
+#then by heart rate. So you want the youngest individuals on top, and within age, you want
+#the slowest heart rates on top.
+m2sorted <- m2[order(m2[ ,'age'], m2 [ , 'hr']), ]
+m2sorted
