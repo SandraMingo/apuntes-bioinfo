@@ -458,7 +458,7 @@ Answer: Sanger
 \end{enumerate}
 
 %04/11 - Álvaro Serrano
-\section{Aligners}
+\section{Alineadores y NGS}
 \subsection{Preparación de librería}
 Una librería es una colección de fragmentos de ADN de tamaño aleatorio obtenidos a partir de una muestra que se desea secuenciar. El proceso comienza con la extracción del material genético (ADN o ARN), seguido de su fragmentación en piezas pequeñas que posteriormente serán leídas. A continuación, se añaden adaptadores a los extremos de los fragmentos, lo que permite su hibridación con una fase sólida para realizar la amplificación. Finalmente, se purifican los fragmentos para obtener solo las moléculas del tamaño deseado, dependiendo del método de secuenciación que se vaya a utilizar.
 
@@ -466,7 +466,15 @@ Una librería es una colección de fragmentos de ADN de tamaño aleatorio obteni
 Existen distintas técnicas para fragmentar el ADN, cada una con sus ventajas y desventajas:
 \begin{itemize}
 \item \textbf{Aproximación por ligación:} 
-En este método, los fragmentos de ADN se preparan añadiendo una adenina en los extremos, lo que permite la unión complementaria de los adaptadores. Esto produce fragmentos con un adaptador en cada extremo. Cada fragmento tiene así dos componentes: la secuencia del adaptador para la secuenciación y la secuencia molde de ADN. Además, cada fragmento puede llevar un identificador único (UMI, por sus siglas en inglés). Las técnicas de fragmentación por ligación incluyen:
+En este método, los fragmentos de ADN se preparan añadiendo una adenina en los extremos, lo que permite la unión complementaria de los adaptadores. Esto produce fragmentos con un adaptador en cada extremo. Cada fragmento tiene así dos componentes: la secuencia del adaptador para la secuenciación y la secuencia molde de ADN. Además, cada fragmento puede llevar un identificador único (UMI, por sus siglas en inglés). 
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/19_ng_lib-prep-frag.png}
+\caption{Esquema de la preparación de librerías por fragmentación.}
+\end{figure}
+
+Las técnicas de fragmentación por ligación incluyen:
 \begin{itemize}
 \item \textit{Fragmentación física (sonicación)}:
 Mediante un sonicador, se aplican ondas sonoras que generan vibración por resonancia, dividiendo el ADN en fragmentos. La frecuencia de las ondas determina el tamaño de los fragmentos obtenidos.
@@ -475,6 +483,12 @@ Se utilizan agentes químicos, como ácidos o bases fuertes, para romper los enl
 \item \textit{Fragmentación enzimática:}
 Se emplean endonucleasas, que son enzimas capaces de cortar las cadenas de ADN en puntos específicos, produciendo fragmentos con extremos cohesivos o romos. Este método permite una fragmentación precisa, pero puede introducir sesgos en la representatividad de la librería generada.
 \end{itemize}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = \textwidth]{figs/ligation-methods.png}
+\caption{Representación gráfica de los distintos métodos de fragmentación por ligación.}
+\end{figure}
 
 \begin{table}[htbp]
 \centering
@@ -495,10 +509,22 @@ Cons & Expensive equipment & Cations interfere with some seq methods & Fragmenta
 
 \item \textbf{Aproximación por tagmentación: }
 En este método, se utiliza la enzima tagmentasa, una transposasa que corta la secuencia de ADN e incorpora adaptadores de manera enzimática \footnote{Los transposones son elementos móviles dentro del ADN.}. La tagmentación es rápida y eficiente, pues combina la fragmentación y la adición de adaptadores en un solo paso.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/tagmentation.png}
+\caption{Representación esquemática de la fragmentación por tagmentación.}
+\end{figure}
 \end{itemize} 
 
 \subsubsection{Reparación de extremos y ligación de adaptadores}
 Después de la fragmentación del ADN, es necesario reparar los extremos de los fragmentos. Como la fragmentación no suele producir cortes limpios, los fragmentos generados suelen presentar extremos sobresalientes (overhangs). Para corregir esto, se realiza un tratamiento enzimático con polimerasas, que además añade una adenina (A) en los extremos 3’. Estos extremos, con la adenina añadida, facilitan la ligación de los adaptadores, los cuales suelen tener un overhang de timina (T) para permitir una unión complementaria con los fragmentos de ADN.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = \textwidth]{figs/adaptator.png}
+\caption{Representación de los adaptadores en caso de secuenciación simple, dual y UDI-UMI.}
+\end{figure}
 
 Los adaptadores empleados en la secuenciación tienen distintas configuraciones. Por lo general, se colocan dos tipos de adaptadores: el adaptador P5 en un extremo y el adaptador P7 en el otro. Esta disposición permite identificar las direcciones de lectura durante el proceso de secuenciación. Además, algunos adaptadores incluyen identificadores moleculares únicos, conocidos como UMIs (Unique Molecular Identifiers), que permiten rastrear de forma única cada molécula de ADN. Durante la amplificación, todas las moléculas con el mismo UMI corresponden a la misma molécula de ADN original. Esto tiene múltiples beneficios:
 \begin{itemize}
@@ -506,76 +532,160 @@ Los adaptadores empleados en la secuenciación tienen distintas configuraciones.
 \item \textbf{Disminuir el ratio de error:} La lectura de la misma molécula varias veces permite detectar posibles errores generados durante la construcción de la librería o la amplificación. Si diferentes secuencias presentan un UMI idéntico pero difieren en algún nucleótido, se puede deducir que ha habido un error, ya que las secuencias deberían ser idénticas. Esto ayuda a reducir el índice de error y a detectar variantes poco frecuentes.
 \end{itemize}
 
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = \textwidth]{figs/umi-variants.png}
+\caption{Representación de variantes con y sin UMIs.}
+\end{figure}
+
 En el método conocido como \textbf{Duplex Sequencing}, se emplean UMIs distintos en ambos extremos del fragmento de ADN. De este modo, durante el análisis de consenso, se pueden identificar las posiciones que muestran concordancia entre ambas hebras y descartar los nucleótidos mutados por error.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/duplex-sequencing.jpg}
+\caption{Visión general de la secuenciación dúplex. (a) Esquema de un adaptador de secuenciación dúplex, que muestra la etiqueta aleatoria de doble cadena y la secuencia espaciadora invariante. (b) La ligación de los adaptadores con el ADN de la muestra da lugar a una secuencia única de 12 nt en ambos extremos de la molécula. La amplificación por PCR de cada cadena de un dúplex de ADN da lugar a dos productos de PCR distintos pero relacionados. (c) Las lecturas que comparten secuencias únicas de etiquetas $\alpha$ y $\beta$ se agrupan en familias de etiquetas de forma $\alpha \beta$ o $\beta \alpha$, y se crea un SSCS (single-strand consensus sequence) para cada familia de etiquetas. Las mutaciones son de tres tipos diferentes: errores de secuenciación (puntos azules o morados); errores de PCR de primera ronda (puntos marrones); mutaciones verdaderas (puntos verdes). La formación del SSCS elimina el primer tipo de error, pero no los errores de PCR de la primera ronda. La comparación de los SSCS de las familias emparejadas con etiquetas $\alpha \beta$ y $\beta \alpha$, genera un DCS (duplex consensus sequence), que elimina estos errores de PCR de primera ronda. Las mutaciones verdaderas se puntúan si y sólo si están presentes en la misma posición en ambas cadenas del ADN. "Detecting ultralow-frequency mutations by Duplex Sequencing, Nature, 2014"}
+\end{figure}
 
 Aunque los métodos basados en UMIs son altamente eficaces para detectar variantes de muy baja frecuencia, su uso es limitado debido a su alto costo, ya que requieren múltiples lecturas de la misma secuencia para asegurar precisión.
 
 \subsubsection{Adaptadores para secuenciación de célula única (single cell)}
 En la secuenciación de célula única (Single Cell), se emplean adaptadores y primers que contienen UMIs específicos tanto para cada célula como para cada molécula de ADN. Esto permite diferenciar si las lecturas corresponden a una célula particular y, dentro de esa célula, a una molécula específica. En Single Cell, se utiliza un enfoque de consenso: las lecturas múltiples de la misma molécula permiten generar una secuencia de consenso para mejorar la precisión de los datos.
 
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/single-cell-seq.jpg}
+\caption{Descripción esquemática de la generación de GEM (gel beads-in-emulsions) y el código de barras con el flujo de trabajo del chip GEM-X. Los GEM se generan combinando perlas de gel con código de barras, una mezcla maestra que contiene células y aceite de partición en un chip GEM-X 3' o 5'. Para lograr una resolución unicelular, las células se suministran a una dilución límite, de modo que la mayoría ($\approx$90-99\%) de los GEM generados no contienen ninguna célula, mientras que el resto contiene en gran medida una sola célula.}
+\end{figure}
+
 La construcción de librerías en Single Cell se realiza mediante chips que permiten el paso de flujo de células individuales junto con liposomas que contienen la mezcla de PCR. Cada mezcla de PCR tiene adaptadores con un barcode específico de célula, pero diferentes barcodes de molécula. Esto permite identificar y diferenciar las células individuales entre sí.
 
 %Glosario
+\begin{table}[htbp]
+\begin{mdframed}[backgroundcolor=black!10]
+    \centering
+\textbf{Glosario}
+\begin{description}
+\item[Adaptadores:] Moléculas cortas de ADN fabricadas artificialmente que se unen a fragmentos de ADN y se utilizan para unirse a la célula de flujo.
+\item[Barcoding:] El proceso de identificar muestras de ADN añadiendo índices a los fragmentos de ADN durante la preparación de la librería.
+\item[Índice:] Molécula corta de ADN fabricada artificialmente que se utiliza para asignar códigos únicos a las muestras, lo que permite su identificación durante la secuenciación.
+\item[Insert:] Fragmento de ADN entre dos adaptadores.
+\item[Librería:] Una colección de fragmentos de ADN de tamaño aleatorio procedentes de una muestra determinada para ser secuenciados.
+\item[Preparación de librería por ligación:] Método para ligar adaptadores a fragmentos de ADN para ser secuenciados.
+\item[Multiplexing:] El proceso de añadir índices a los fragmentos de ADN durante la preparación de la librería.
+\item[Oligos:] Moléculas de ADN artificial unidas a la célula de flujo que se unen por complementación a los adaptadores de los fragmentos de ADN.
+\item[Lecturas/Reads:] Secuencias de pares de bases obtenidas de fragmentos de ADN.
+\item[Preparación de librería por tagmentación:] Método para cortar y ligar adaptadores a fragmentos de ADN utilizando una enzima transposasa.
+\item[Transposasa:] Enzima utilizada en la preparación de bibliotecas de marcaje para cortar y ligar adaptadores a fragmentos de ADN.
+\end{description}
+    \end{mdframed}
+\end{table}
+
 \subsection{Formatos de datos}
-El formato del alineador es el FastQ, Fast5 o HDF5 (este último solo para single cell). 
+El formato de archivo usado por los alineadores es generalmente \textbf{FastQ} para las secuencias, aunque \textbf{Fast5} o \textbf{HDF5} también se emplean en algunos casos, especialmente en secuenciación de célula única (single cell), donde se necesita un mayor nivel de detalle en el almacenamiento de datos.
 
-Cuando se trabaja con alineadores, normalmente se genera un perfil con picos a los que se asigna el nombre de la base. El alineador da un archivo final con las bases asignadas y la calidad de lectura de cada base en formato Phred33 codificado en caracteres ASCII. 
+Cuando se trabaja con alineadores, el proceso suele generar un perfil con picos que representan las bases detectadas, a cada uno de los cuales se le asigna un nombre de base. El alineador produce un archivo final que contiene tanto la secuencia de bases asignadas como la calidad de lectura de cada base en un formato codificado llamado \textbf{Phred33}, que usa caracteres ASCII para representar los valores de calidad.
 
-Antiguamente, en la cabecera del ID se daba una serie de elementos como el nombre del instrumento, el flowcell, las coordenadas x e y del cluster, el número de la muestra y si el índice del par. El formato nuevo tiene una cabecera distinta.
+En formatos antiguos, la cabecera de cada secuencia incluía datos detallados, como el nombre del instrumento de secuenciación, el identificador del flowcell, las coordenadas X e Y del clúster, el número de la muestra y el índice del par de lectura. En el formato actual, esta información en la cabecera ha sido simplificada o se presenta de manera distinta.
 
-Single-end secuencia desde un lado hacia delante. Pairend tiene una lectura en ambas direcciones, teniendo así información en ambos lados. Se puede hacer solapante (cuando se quiere tener más evidencia de lo que se secuencia) y no solapante (cuando se quiere mapear las estructuras).
-
-Al realizar un experimento de secuenciación, se pasa por un programa llamado FastQC que da la calidad a lo largo de la lectura de las bases mediante el Q score. El tipo de gráfico visual es un diagrama de barras y cajas. Lo normal es que conforme se van produciendo los ciclos de lectura, la calidad va bajando, pero debería mantenerse en un rango de confianza. 
-
-FastQC devuelve distintas métricas:
+En cuanto al tipo de secuenciación, se distinguen dos tipos:
 \begin{itemize}
-\item La calidad por la media de la secuencia
-\item Las proporciones de bases por posición
-\item El contenido de las bases por posición
-\item El contenido GC: al principio suele haber un desabarajuste debido a la secuencia de los alineadores, pero si el contenido GC se mantiene estable después, significa que la secuenciación ha salido bien y simplemente se corta el principio.
+\item \textbf{Single-end:} lee la secuencia en una sola dirección.
+\item \textbf{Paired-end:} realiza lecturas en ambas direcciones, proporcionando información desde ambos extremos del fragmento de ADN. La secuenciación puede ser solapante (overlapping) para incrementar la evidencia de la secuencia, o no solapante (non-overlapping) cuando se busca mapear estructuras más amplias sin redundancia en los extremos.
 \end{itemize}
 
-Preprocesado
-El preprocesado aumenta la calidad, mejora el mapeo, elimina los contaminantes, elimina los sesgos y elimina los segmentos no informativos. 
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/singleEndVsPairedEnd.png}
+\caption{Representación gráfica de la diferencia entre Single end y Paired end.}
+\end{figure}
 
-La secuenciación se compara con genomas de referncia. Normalmente, estos genomas están en formato Fasta. Dentro de ellos se encuentran los nucleótidos representados en el código IUPAC. Los genomas de referencia se hacían mediante la información genética de un individuo. Actualmente, se hace a través del consenso de los genomas de muchos individuos, por lo que hay posiciones que pueden tener mucha confianza, pero son diferentes entre un individuo y otro. Los genomas de referencia se pueden encontrar en \href{https://hgdownload.soe.ucsc.edu/downloads.html}{https://hgdownload.soe.ucsc.edu/downloads.html}. Es imporante conocer el genoma de referencia y la anotación (hay diferencias entre los repositorios europeos y americanos a la hora de anotar los cromosomas).
+Durante un experimento de secuenciación, se utiliza un programa llamado \textbf{FastQC} para evaluar la calidad de las bases a lo largo de la lectura mediante una métrica llamada \textbf{Q score}. La visualización de estos resultados suele hacerse a través de diagramas de barras y cajas. Normalmente, la calidad de las bases tiende a disminuir conforme avanzan los ciclos de lectura, pero debe mantenerse dentro de un rango confiable.
 
-Alineamiento
-Un alineamiento es una forma de comparar secuencias de ADN, ARN o proteínas e identificar regiones de similitud que puedan tener relaciones funcionales, estructurales o evolutivas entre especies. Los objetivos del alineamiento son: 
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = \textwidth]{figs/good-bad-fastq.png}
+\caption{La calidad de la secuencia por base, que representa la puntuación Q de la secuencia en crudo, se lee como un gráfico de caja para cada ciclo. Cuanto más alto, mejor, y en la mayoría de los ciclos se observa un descenso característico de la calidad.}
+\end{figure}
+
+FastQC proporciona varias métricas clave para evaluar la calidad: 
+\begin{itemize} 
+\item \textbf{Calidad promedio de la secuencia}: muestra la calidad media de las bases en cada posición. 
+\item \textbf{Proporciones de bases por posición}: indica la proporción de bases (A, T, C, G) en cada posición. 
+\item \textbf{Contenido de bases por posición}: permite identificar cualquier sesgo en el contenido de bases a lo largo de la secuencia. 
+\item \textbf{Contenido GC:} al inicio de la secuenciación, puede haber una variación en el contenido GC debido a la secuencia de los adaptadores, pero si se estabiliza después de las primeras bases, indica una secuenciación correcta y se pueden cortar los primeros nucleótidos. 
+\end{itemize}
+
+\subsection{Preprocesamiento y genomas de referencia} 
+El preprocesamiento de las lecturas aumenta la calidad de las secuencias, mejora el mapeo, elimina posibles contaminantes y sesgos, y descarta segmentos no informativos.
+
+Las secuencias generadas se comparan con \textbf{genomas de referencia}, que generalmente están en formato \textbf{FASTA}. En estos archivos, los nucleótidos están representados según el código IUPAC para permitir una representación estándar de variaciones. Históricamente, los genomas de referencia se creaban con la información genética de un solo individuo. Sin embargo, hoy en día, se basan en el consenso de los genomas de múltiples individuos, lo que permite identificar variantes y posiciones con alta confianza que difieren entre individuos.
+
+Los genomas de referencia y sus anotaciones se pueden encontrar en sitios como \href{https://hgdownload.soe.ucsc.edu/downloads.html}{UCSC Genome Browser}. Es importante tener en cuenta las diferencias en las anotaciones genómicas entre repositorios europeos y americanos, ya que pueden variar en la numeración y anotación de los cromosomas.
+
+\subsection{Alineamientos y mapeo}
+El alineamiento es el proceso de comparar secuencias de ADN, ARN o proteínas para identificar regiones de similitud, lo cual puede revelar relaciones funcionales, estructurales o evolutivas entre especies. Los objetivos principales del alineamiento son:
 \begin{itemize}
 \item Determinar el grado de homología para inferir relaciones filogenéticas
 \item Identificar dominios funcionales
-\item Comparar el gen con sus productos
-\item Encontrar posiciones homólogas
-\item Identificar diferencias
+\item Comparar el gen con sus productos asociados
+\item Encontrar posiciones homólogas entre secuencias
+\item Identificar diferencias entre secuencias similares
 \end{itemize}
 
-Alineamiento vs mappeo
-En el alineamiento, cada secuencia se mide con la secuencia de referncia para determinar lo buena que es la secuencia en cada posición. En el caso del mapeado, se busca los mejores loci en el que una secuencia se podría alinear. 
-
-Hay programas que permiten realizar el mapeo y se conocen como alineadores de corta lectura. Buscan tener una alta eficiencia de velocidad y memoria utilizada. Un mapeado se puede configurar de diferntes maneras: para que haya mapeados únicos, mapeados múltiples o que devuelva mapeados con calidades parciales. 
-
-Dependiendo del problema que se esté abordando, se utiliza un alineador distinto. Hay alineadores para ADN (Novoalign, Bowtie2, BWA) y alineadores para ARN (RSEM, SALMON, SLEUTH).
-
-Los algoritmos de mapeo hacen una primera etapa de indexación del genoma. Este proceso es muy lento y consume mucha memoria, pero la ventaja es que solo se hace una vez por cada programa que se utilice y por cada genoma de referencia. Utilizando hashes o índices, se utilizan k-mers que van anotando las posiciones en las que se encuentran. Mediante ventana móvil se van anotando los distintos k-mers y las posiciones en las que se encuentran. Una vez con las lecturas, se busca en el diccionario de k-mers las posiciones en las que se puede encontrar (sin utilizar ventana móvil para las lecturas). Una vez teniendo el árbol de posibilidades, se va evaluando la compatibilidad. Si hay una mutación que no coincide con la referencia, en el índice no se va a encontrar el k-mer, por lo que se realiza un alineamiento con los posibles k-mers. El mismatch se puntúa con una calidad de mapeo más baja. Ocurre lo mismo cuando la evaluación de las posiciones no es compatible. Así, los match parciales reducen la puntuación de mapeo en base a la distancia de edición. El objetivo es minimizar los gaps. 
-
-La transformación de Burrows-Wheeler utliza un algoritmo de compresión que permite buscar de manera rápida con qué mapean las lecturas en el genoma de referencia. 
-
-Una vez que se ha mapeado la secuencia al genoma, se pueden tener distintos estados de las lecturas: lecturas que no han mapeado, lecturas que han mapeado a una posición y lecturas que mapean a varias posiciones. Normalmente se trabaja con lecturas que mapean a una sola posición. De los multimappers, se pueden subdividir en alineamientos primarios y secundarios en función a su puntuación. Se puede elegir reportar todos los alineamientos, los mejores alineamientos, alineamientos aleatorios de los mejores y todos aquellos que superen un threshold. 
-
-Mapping quality
-Utiliza la misma escala que las lecturas, es decir, Phred33. Los alineamientos están en formato SAM, BAM o CRAM. SAM es un formato de texto plano, BAM en binario. Se pueden interconvertir con la herramienta samtools, especificando el grado de compresión. 
-
-La cabecera de BAM empieza con \@ y guarda la versión de SAM, si está ordenado, los contigs, la información del mapeo y la secuencia de la lectura. Todo lo que empieza por \@ es metadato, y lo que no es lectura. 
-El alineamiento tiene:
+\subsubsection{Alineamiento vs Mapeo}
+Aunque a menudo se usan indistintamente, el alineamiento y el mapeo tienen diferencias importantes:
 \begin{itemize}
-\item Nombre de la lectura
-\item Flag: si está mapeado, no mapeado, etc.
-\item Chromosoma
-\item Posición de inicio en el cromosoma
-\item Mapping quality
-\item Cigar: indica los eventos de la lectura a la hora de alinearse con la referencia; eventos de match, mismatch, insert, delete.
-\item Información donde ha mapeado la lectura y su par en caso de que sea pairend
-\end{itemize} 
+\item \textbf{Alineamiento:} Cada posición de la secuencia de consulta se compara exhaustivamente con una secuencia de referencia para evaluar su precisión en cada sitio.
+\item \textbf{Mapeo:} El objetivo es encontrar los loci más probables en la referencia donde una secuencia podría alinearse, priorizando eficiencia en velocidad y memoria.
+\end{itemize}
 
-CRAM es como BAM, pero lo utiliza el EBI fundamentalmente.
+Existen programas diseñados específicamente para el mapeo, llamados alineadores de corta lectura, que permiten configuraciones de mapeo como mapeo único, mapeo múltiple o mapeo con calidades parciales. Dependiendo del tipo de secuenciación, se emplean diferentes alineadores:
+\begin{itemize}
+\item \textbf{Para ADN:} Novoalign, Bowtie2, BWA
+\item \textbf{Para ARN:} RSEM, Salmon, Sleuth
+\end{itemize}
+
+\subsubsection{Algoritmos de mapeo por hashing}
+El mapeo inicia con una etapa de \textbf{indexación del genoma}, un proceso intensivo en tiempo y memoria que se realiza solo una vez por genoma de referencia y por programa. En esta fase, los algoritmos de alineamiento utilizan técnicas como \textbf{hashing} o \textbf{índices} basados en \textbf{k-mers} (subsecuencias de longitud fija). Con una ventana móvil, se anotan las posiciones de cada k-mer en la secuencia de referencia.
+
+Posteriormente, las lecturas se comparan con el diccionario de k-mers para localizar sus posiciones sin usar una ventana móvil adicional. A continuación, se construye un "árbol de posibilidades" que evalúa la compatibilidad de cada lectura con la referencia. Si una mutación en la lectura no coincide con la referencia, el k-mer no estará en el índice, y se buscarán los k-mers más cercanos, evaluando el mapping quality según el número de errores (mismatches) y la distancia de edición. El objetivo es minimizar los gaps (espacios sin coincidencias) para mejorar la precisión del alineamiento.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = \textwidth]{figs/hash-mapping.png}
+\caption{Mapeado basados en hash o índices. El primer paso es obtener el hash o índice del genoma de referencia completo. A continuación, se utilizan esos índices para mapear (es decir, encontrar sitios de alineamiento) las lecturas.}
+\end{figure}
+
+\subsubsection{Transformación de Burrows-Wheeler (BWT)}
+La \textbf{transformación de Burrows-Wheeler} es un método de compresión que permite realizar búsquedas rápidas de alineamiento en el genoma de referencia, optimizando el rendimiento de los alineadores.
+
+\subsubsection{Estados de lecturas post-mapeo y mapping quality}
+Una vez mapeadas las lecturas al genoma de referencia, estas pueden clasificarse en distintos estados:
+\begin{itemize}
+\item \textbf{Lecturas no mapeadas:} No encuentran ninguna coincidencia en la referencia.
+\item \textbf{Lecturas con mapeo único:} Mapean en una sola posición. Normalmente se trabaja con estas lecturas.
+\item \textbf{Lecturas con mapeo múltiple (multimappers):} Mapean en varias posiciones. Se distinguen primarios y secundarios en función de la puntuación de mapeo.
+\end{itemize}
+
+Existen opciones para reportar todos los alineamientos, solo los mejores, o aquellos que superan un umbral de calidad específico.
+
+La calidad de mapeo usa la misma escala Phred33 que las calidades de lectura, y los resultados de alineación se almacenan en formatos SAM, BAM o CRAM:
+\begin{itemize}
+\item \textbf{SAM:} Formato de texto plano.
+\item \textbf{BAM:} Versión binaria de SAM.
+\item \textbf{CRAM:} Similar a BAM, pero usado principalmente por el EBI, optimizado para almacenar datos de forma compacta.
+\end{itemize}
+
+Los formatos SAM y BAM se pueden convertir entre sí mediante la herramienta \textbf{samtools}, que permite especificar el nivel de compresión.
+
+La cabecera del archivo BAM comienza con \@ y almacena metadatos como la versión de SAM, la ordenación, los contigs y la información general del mapeo. Los datos de alineación incluyen: 
+\begin{itemize} 
+\item Nombre de la lectura 
+\item Flag: Indica si la lectura está mapeada o no, entre otras propiedades. 
+\item Cromosoma: Donde se ha mapeado la lectura. 
+\item Posición inicial en el cromosoma 
+\item Calidad de mapeo 
+\item CIGAR string: Codificación de los eventos de alineamiento (match, mismatch, inserciones, deleciones). Por ejemplo, un CIGAR de 3M1D2M1I1M indica que hay 3 match, 1 deleción, 2 match, 1 inserción y 1 match.
+\item Información sobre el mapeo del par: En caso de secuenciación paired-end, se incluye la ubicación de la pareja de la lectura. 
+\end{itemize}
+
