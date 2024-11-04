@@ -187,7 +187,7 @@ Para leer el código, se empieza por la función más interna, que en este caso 
 \hlkwd{sum}\hldef{(pvalues} \hlopt{<=} \hlnum{0.05}\hldef{)}
 \end{alltt}
 \begin{verbatim}
-## [1] 49
+## [1] 52
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1787,11 +1787,11 @@ Una lista más compleja sería la siguiente:
 ## [1] "Hola"
 ## 
 ## $one.matrix
-##            [,1]       [,2]       [,3]       [,4]        [,5]
-## [1,]  0.1224286  1.9063271 -0.3832589 -0.5948333 -0.29829090
-## [2,] -1.4439892  0.5005815  0.5726648 -0.1208007  1.00135789
-## [3,]  0.6924709 -0.1855967 -0.6632967  0.8624763  0.01307497
-## [4,]  0.4005168 -1.4130053  0.5411781  0.5095640  1.13267501
+##             [,1]        [,2]       [,3]        [,4]       [,5]
+## [1,]  0.03269034 -1.26879994  0.5216199 -0.39141748  0.2083325
+## [2,]  0.62178433 -0.16925331 -0.3062099  0.09689260  0.8701354
+## [3,]  0.72394706  0.02213798 -0.1923366  0.22351604 -1.2916442
+## [4,] -1.28638320 -0.83828716  0.9945079  0.06202947 -1.7985653
 ## 
 ## $another.list
 ## $another.list$a
@@ -1805,36 +1805,36 @@ Una lista más compleja sería la siguiente:
 \hldef{listB[[}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{11}\hldef{)]]}
 \end{alltt}
 \begin{verbatim}
-## [1] -0.6632967
+## [1] -0.1923366
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[[}\hlnum{3}\hldef{]][}\hlnum{11}\hldef{]}
 \end{alltt}
 \begin{verbatim}
-## [1] -0.6632967
+## [1] -0.1923366
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[[}\hlnum{3}\hldef{]][}\hlnum{3}\hldef{,} \hlnum{3}\hldef{]}
 \end{alltt}
 \begin{verbatim}
-## [1] -0.6632967
+## [1] -0.1923366
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[[}\hlnum{3}\hldef{]][}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{3}\hldef{)]}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.6924709 0.6924709
+## [1] 0.7239471 0.7239471
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{4}\hldef{)]}
 \end{alltt}
 \begin{verbatim}
 ## $one.matrix
-##            [,1]       [,2]       [,3]       [,4]        [,5]
-## [1,]  0.1224286  1.9063271 -0.3832589 -0.5948333 -0.29829090
-## [2,] -1.4439892  0.5005815  0.5726648 -0.1208007  1.00135789
-## [3,]  0.6924709 -0.1855967 -0.6632967  0.8624763  0.01307497
-## [4,]  0.4005168 -1.4130053  0.5411781  0.5095640  1.13267501
+##             [,1]        [,2]       [,3]        [,4]       [,5]
+## [1,]  0.03269034 -1.26879994  0.5216199 -0.39141748  0.2083325
+## [2,]  0.62178433 -0.16925331 -0.3062099  0.09689260  0.8701354
+## [3,]  0.72394706  0.02213798 -0.1923366  0.22351604 -1.2916442
+## [4,] -1.28638320 -0.83828716  0.9945079  0.06202947 -1.7985653
 ## 
 ## $another.list
 ## $another.list$a
@@ -3021,6 +3021,38 @@ Este es otro ejemplo en el que, como se define una función dentro de otra, al l
 \end{knitrout}
 Esto se utiliza implícitamente o explícitamente en gran parte del código. Lo que hace es listar los distintos entornos que hay y su orden. Así, cuando se cargan librerías o se utilizan variables, se utiliza \code{search} para localizar lo que se está pidiendo. 
 
+\subsection{Los \ldots}
+Los $\ldots$ permiten pasar argumentos adicionales en funciones que deben manejarlas.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{f0} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{,} \hlkwc{pch} \hldef{=} \hlnum{3}\hldef{,} \hlkwc{...}\hldef{) \{}\hlkwd{plot}\hldef{(x,} \hlkwc{pch} \hldef{= pch, ...)\}}
+
+\hlkwd{f0}\hldef{(}\hlnum{1}\hlopt{:}\hlnum{5}\hldef{,} \hlkwc{col} \hldef{=} \hlsng{"red"}\hldef{,} \hlkwc{type} \hldef{=} \hlsng{"b"}\hldef{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-101-1} 
+\end{knitrout}
+
+Aquí, col y type que no se han especificado en f0, se pasan directamente a la función. Como plot acepta muchos argumentos adicionales, no es necesario especificar todos, si no que se pueden poner \ldots.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{fa} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{,} \hlkwc{col} \hldef{=} \hlsng{"red"}\hldef{,} \hlkwc{...}\hldef{) \{}\hlkwd{plot}\hldef{(x,} \hlkwc{col} \hldef{= col, ...)\}}
+\hlkwd{fa}\hldef{(}\hlnum{1}\hlopt{:}\hlnum{5}\hldef{,} \hlsng{"blue"}\hldef{,} \hlkwc{pch} \hldef{=} \hlnum{8}\hldef{)}
+
+\hldef{fb} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{,} \hlkwc{col} \hldef{=} \hlsng{"red"}\hldef{,} \hlkwc{...}\hldef{) \{}\hlkwd{plot}\hldef{(x,} \hlkwc{col} \hldef{= col)\}}
+\hlkwd{fb}\hldef{(}\hlnum{1}\hlopt{:}\hlnum{5}\hldef{,} \hlsng{"blue"}\hldef{,} \hlkwc{pch} \hldef{=} \hlnum{8}\hldef{)}
+
+\hldef{fc} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{,} \hlkwc{col} \hldef{=} \hlsng{"red"}\hldef{) \{}\hlkwd{plot}\hldef{(x,} \hlkwc{col} \hldef{= col, ...)\}}
+\hlkwd{fc}\hldef{(}\hlnum{1}\hlopt{:}\hlnum{5}\hldef{,} \hlsng{"blue"}\hldef{,} \hlkwc{pch} \hldef{=} \hlnum{8}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+La función fa recoge pch dentro de los tres puntos. Además, el color se sobrescribe (el plot resultante tiene los puntos en azul). Tanto fb como fc no hacen lo que se espera, ya que les falta \ldots en la función y en el plot respectivamente. Esa ausencia hace que las funciones no hagan nada con ese argumento.
+
 \subsection{local}
 La función \code{local} permite crear un entorno local en el que trabajar y luego, al salir, que no tenga guardado el valor de las variables.
 
@@ -3235,5 +3267,471 @@ A veces, cuando se hace debugging, especialmente cuando se está dentro de varia
 \end{alltt}
 \end{kframe}
 \end{knitrout}
+
+%04/11 - Ramón
+\subsection{Protección frente a posibles fallos}
+Hay un manejo excepcional en R mediante \code{try}. Esto permite evitar que el código no falle. Cuando se va a dar un error, la variable adquiere la clase try-error.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{ft} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{) \{}
+    \hldef{tmp} \hlkwb{<-} \hlkwd{try}\hldef{(}\hlkwd{log}\hldef{(x),} \hlkwc{silent} \hldef{=} \hlnum{TRUE}\hldef{)}
+    \hlkwa{if}\hldef{(}\hlkwd{inherits}\hldef{(tmp,} \hlsng{"try-error"}\hldef{)) \{}
+        \hlkwd{warning}\hldef{(}\hlkwd{paste}\hldef{(}\hlsng{"It looks like something did not work:\textbackslash{}n"}\hldef{,}
+                      \hlsng{"   "}\hldef{, tmp))}
+    \hldef{\}} \hlkwa{else}\hldef{\{}
+        \hlkwd{return}\hldef{(tmp)}
+    \hldef{\}}
+\hldef{\}}
+
+\hlkwd{ft}\hldef{(}\hlnum{9}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 2.197225
+\end{verbatim}
+\begin{alltt}
+\hlkwd{ft}\hldef{(}\hlsng{"a"}\hldef{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in ft("{}a"{}): It looks like something did not work:\\\#\# \ \ \ \ \ Error in log(x) : Argumento no numérico para una función matemática}}\end{kframe}
+\end{knitrout}
+
+\subsection{Funciones de debugging que no son exportadas}
+Si cargamos un paquete, sirve con \code{library(paquete)}. No obstante, puede haber algunas funciones no exportadas (no se ve directamente al teclear el nombre).
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{trace}\hldef{(randomForest}\hlopt{:::}\hldef{predict.randomForest,} \hlkwc{edit} \hldef{=} \hlnum{TRUE}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\section{Programación orientada a objetos: clases S3 y S4}
+En R hay varios sistemas de programación orientada a objetos. Los sistemas originales en R son los sistemas S3 y S4, siendo los más extendidos. 
+
+\subsection{\code{methods}}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{methods}\hldef{(}\hlsng{'plot'}\hldef{)}
+\hlkwd{getAnywhere}\hldef{(plot.TukeyHSD)}
+\hlcom{#stats:::plot.TukeyHSD}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\code{getAnywhere} permite obtener las funciones no exportadas. \code{plot} realmente no hace nada, solo determina el tipo de objeto que se le ha pasado y llama a la función específica para ese objeto.
+
+Lo que se ve con \code{methods} depende de los paquetes que haya cargados y, por tanto, lo que haya en nuestro espacio de búsqueda. 
+
+En POO en R, no se define una clase dentro de la que definir métodos (como en Python). Los métodos no pertenecen a la clase, si no que hay que definirlos por separado. 
+
+Se pueden buscar todos los métodos de una clase con:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{methods}\hldef{(}\hlkwc{class} \hldef{=} \hlsng{'lm'}\hldef{)}
+\hlkwd{methods}\hldef{(}\hlkwc{class} \hldef{=} \hlsng{'lm'}\hldef{,} \hlkwc{byclass} \hldef{=} \hlnum{FALSE}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+El argumento \code{byclass} muestra el nombre completo de los métodos y si están o no exportados. 
+
+El código fuente de todas las funciones está disponible. Para todas las funciones S3 exportadas desde el namespace, se puede escribir el nombre del método en la línea de comando como generic.class. Para las funciones no exportadas, se puede utilizar \code{getAnywhere} o \code{getS3method}. Sabiendo el namespace, también se puede utilizar :::. 
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{add1.lm}
+\hlkwd{getAnywhere}\hldef{(}\hlsng{'add1.lm'}\hldef{)}
+\hldef{stats}\hlopt{:::}\hldef{add1.lm}
+\hlkwd{getS3method}\hldef{(}\hlsng{'add1'}\hldef{,} \hlsng{'lm'}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\subsection{Creación de clases y métodos}
+Vamos a suponer que queremos trabajar con unos data frames especiales con información sobre colesterol, la expresión de un gen y el tipo de experimento que lo midió. Lo primero que se quiere es convertir data frames en objetos de mi clase (y más adelante convertir matrices o vectores a objetos), crear un summary de los objetos y ajustar funciones de plot. Finalmente, hay que testear el código mediante la librería \code{testthat}.
+
+Empezamos con una función genérica de conversión al objeto y luego un método que funcione para los data frames. El objeto será Cholest\_Gene object, por lo que un conversor genérico (y sus comentarios) sería:
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# object -> Cholest_Gene object}
+\hlcom{# General converter to Cholest_Gene object.}
+\hldef{to_CG} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{,} \hlkwc{...}\hldef{) \{}
+  \hlkwd{UseMethod}\hldef{(}\hlsng{"to_CG"}\hldef{)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+El primer método será convertir un data frame al objeto:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# data.frame -> Cholest_Gene object}
+\hlcom{# Take a data frame and return (if possible) a Cholest_Gene object.}
+\hldef{to_CG.data.frame} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{) \{}
+  \hldef{cns} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"Cholesterol"}\hldef{,} \hlsng{"Gene"}\hldef{,} \hlsng{"Kind"}\hldef{)}
+  \hlkwa{if} \hldef{(}\hlopt{!}\hldef{(}\hlkwd{all}\hldef{(}\hlkwd{colnames}\hldef{(x)} \hlopt{%in%} \hldef{cns)))}
+        \hlkwd{stop}\hldef{(}\hlkwd{paste}\hldef{(}\hlsng{"Column names are not "}\hldef{, cns))}
+    \hldef{tmp} \hlkwb{<-} \hldef{x[, cns]}
+    \hlcom{## Notice I do not set this to be of data.frame class}
+    \hlkwd{class}\hldef{(tmp)} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"Cholest_Gene"}\hldef{)}
+    \hlkwd{return}\hldef{(tmp)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+Y se debe probar:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{uu} \hlkwb{<-} \hlkwd{to_CG}\hldef{(}\hlkwd{data.frame}\hldef{(}\hlkwc{Cholesterol} \hldef{=} \hlnum{1}\hlopt{:}\hlnum{10}\hldef{,} \hlkwc{Gene} \hldef{=} \hlnum{11}\hlopt{:}\hlnum{20}\hldef{,} \hlkwc{Kind} \hldef{=} \hlsng{"Cl1"}\hldef{))}
+\hldef{uu}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+El resultado de la visualización es muy feo y se debe mejorar. Esto se debe a que la clase es Cholest\_Gene y, por ello, utiliza print default. Por ello, se debe cambiar la clase del objeto a la clase Cholest\_Gene, adjuntando la clase que tenía previamente:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# data.frame -> Cholest_Gene object}
+\hlcom{# Take a data frame and return (if possible) a Cholest_Gene object.}
+\hldef{to_CG.data.frame} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{) \{}
+    \hldef{cns} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"Cholesterol"}\hldef{,} \hlsng{"Gene"}\hldef{,} \hlsng{"Kind"}\hldef{)}
+    \hlkwa{if} \hldef{(}\hlopt{!}\hldef{(}\hlkwd{all}\hldef{(}\hlkwd{colnames}\hldef{(x)} \hlopt{%in%} \hldef{cns)))}
+        \hlkwd{stop}\hldef{(}\hlkwd{paste}\hldef{(}\hlsng{"Column names are not "}\hldef{, cns))}
+    \hldef{tmp} \hlkwb{<-} \hldef{x[, cns]}
+    \hldef{tmp}\hlopt{$}\hldef{Kind} \hlkwb{<-} \hlkwd{factor}\hldef{(tmp}\hlopt{$}\hldef{Kind)}
+    \hlkwd{class}\hldef{(tmp)} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"Cholest_Gene"}\hldef{,} \hlkwd{class}\hldef{(tmp))} \hlcom{## "data.frame")}
+    \hlkwd{return}\hldef{(tmp)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+De esta forma, la visualización del objeto está bien, al igual que la salida de summary, reutilizando así las funciones existentes.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{uu} \hlkwb{<-} \hlkwd{to_CG}\hldef{(}\hlkwd{data.frame}\hldef{(}\hlkwc{Cholesterol} \hldef{=} \hlnum{1}\hlopt{:}\hlnum{10}\hldef{,} \hlkwc{Gene} \hldef{=} \hlnum{11}\hlopt{:}\hlnum{20}\hldef{,} \hlkwc{Kind} \hldef{=} \hlsng{"Cl1"}\hldef{))}
+\hlkwd{summary}\hldef{(uu)}
+\hlkwd{print}\hldef{(uu)}
+\hldef{uu}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+La siguiente función es más sofisticada:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# Cholest_Gene object -> printed Cholest_Gene object}
+\hlcom{# Print a Cholest_Gene object.}
+\hldef{print.Cholest_Gene} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{) \{}
+    \hldef{u} \hlkwb{<-} \hldef{x[,} \hlkwd{c}\hldef{(}\hlnum{1}\hldef{,} \hlnum{2}\hldef{)]}
+    \hlkwd{class}\hldef{(u)} \hlkwb{<-} \hlsng{"data.frame"}
+    \hlkwd{print}\hldef{(u)}
+    \hlkwd{cat}\hldef{(}\hlsng{"\textbackslash{}n Printing summary of first column \textbackslash{}n"}\hldef{)}
+    \hlkwd{print}\hldef{(}\hlkwd{summary}\hldef{(x[,} \hlnum{1}\hldef{]))}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+En este caso, se asigna la clase data.frame (y solo esa clase) para evitar que se llame a sí mismo.
+
+Como por el momento solo se ha creado el método para convertir data frames a nuestro objeto, se debe comprobar que el objeto que se pase sea de una clase soportada (data frame) y no se ejecute cuando la clase (por ejemplo, matriz) no está soportada. Además, esto muestra un mensaje de error personalizado.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# arbitrary object -> failure message if no method}
+\hlcom{# Return error message if there is no specific method to convert }
+\hlcom{# from that class to Cholest_Gene class}
+\hldef{to_CG.default} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{) \{}
+    \hlkwd{stop}\hldef{(}\hlsng{"For now, only methods for data.frame are available."}\hldef{)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\subsection{Testeo y test-driven development}
+El último paso es el testeo, y es algo fundamental. En los tests se van poniendo casos en los que se encuentran bugs y se arreglan. Como mínimo, se debe comprobar que se puede crear un objeto legítimo de un data frame, que falla (como esperamos) cuando al data frame le faltan columnas y que falla (como esperamos) cuando no se proporciona un data frame. El testeo se puede llevar a cabo con el paquete \code{testthat}, el cual tiene varios bloques de salidas que se pueden esperar (\code{expect\_s3\_class, expect\_error, expect\_equal, ...})
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hldef{(testthat)}
+\hlkwd{test_that}\hldef{(}\hlsng{"minimal conversions and failures"}\hldef{, \{}
+
+    \hlkwd{expect_s3_class}\hldef{(}\hlkwd{to_CG}\hldef{(}\hlkwd{data.frame}\hldef{(}\hlkwc{Cholesterol} \hldef{=} \hlnum{1}\hlopt{:}\hlnum{10}\hldef{,} \hlkwc{Gene} \hldef{=} \hlnum{11}\hlopt{:}\hlnum{20}\hldef{,}
+                                     \hlkwc{Kind} \hldef{=} \hlsng{"Cl1"}\hldef{)),} \hlsng{"Cholest_Gene"}\hldef{)}
+
+
+    \hlkwd{expect_error}\hldef{(}\hlkwd{to_CG}\hldef{(}\hlkwd{cbind}\hldef{(}\hlkwc{Cholesterol} \hldef{=} \hlnum{1}\hlopt{:}\hlnum{10}\hldef{,} \hlkwc{Gene} \hldef{=} \hlnum{11}\hlopt{:}\hlnum{20}\hldef{)),}
+                 \hlsng{"For now, only methods for data.frame are available"}\hldef{,}
+                 \hlkwc{fixed} \hldef{=} \hlnum{TRUE}\hldef{)}
+
+    \hlkwd{expect_error}\hldef{(}\hlkwd{to_CG}\hldef{(}\hlkwd{data.frame}\hldef{(}\hlkwc{Cholesterol} \hldef{=} \hlnum{1}\hlopt{:}\hlnum{10}\hldef{,} \hlkwc{Geni} \hldef{=} \hlnum{11}\hlopt{:}\hlnum{20}\hldef{,}
+                                     \hlkwc{Kind} \hldef{=} \hlsng{"Cl1"}\hldef{)),}
+                 \hlsng{"Column names are not "}\hldef{,}
+                 \hlkwc{fixed} \hldef{=} \hlnum{TRUE}\hldef{)}
+
+    \hlkwd{expect_s3_class}\hldef{(}\hlkwd{to_CG}\hldef{(}\hlkwd{data.frame}\hldef{(}\hlkwc{Cholesterol} \hldef{=} \hlnum{1}\hlopt{:}\hlnum{10}\hldef{,} \hlkwc{Gene} \hldef{=} \hlnum{11}\hlopt{:}\hlnum{20}\hldef{,}
+                                     \hlkwc{Kind} \hldef{=} \hlsng{"Cl1"}\hldef{,}
+                                     \hlkwc{whatever} \hldef{=} \hlsng{"abcd"}\hldef{)),}
+                    \hlsng{"Cholest_Gene"}\hldef{)}
+
+\hldef{\})}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+El último bloque de test ha fallado, por lo que hay que hacer debugging. 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{debugonce}\hldef{(to_CG.data.frame)}
+
+\hldef{dummy} \hlkwb{<-} \hlkwd{to_CG}\hldef{(}\hlkwd{data.frame}\hldef{(}\hlkwc{Cholesterol} \hldef{=} \hlnum{1}\hlopt{:}\hlnum{10}\hldef{,} \hlkwc{Gene} \hldef{=} \hlnum{11}\hlopt{:}\hlnum{20}\hldef{,}
+                                 \hlkwc{Kind} \hldef{=} \hlsng{"Cl1"}\hldef{,}
+                                 \hlkwc{whatever} \hldef{=} \hlsng{"abcd"}\hldef{))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+En este entorno se va viendo qué va pasando en cada línea de código, y se verifica dónde está el problema. En este caso, el if comprueba si todos los nombres de columnas están en cns, cuando debería ser al revés: que todos los nombres de cns estén en el data frame (aunque haya otras columnas adicionales). Por tanto, hay que reescribir la función invirtiendo eso:
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{to_CG.data.frame} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{) \{}
+    \hldef{cns} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"Cholesterol"}\hldef{,} \hlsng{"Gene"}\hldef{,} \hlsng{"Kind"}\hldef{)}
+    \hlkwa{if} \hldef{(}\hlopt{!}\hldef{(}\hlkwd{all}\hldef{(cns} \hlopt{%in%} \hlkwd{colnames}\hldef{(x))))}
+        \hlkwd{stop}\hldef{(}\hlkwd{paste}\hldef{(}\hlsng{"Column names are not "}\hldef{,}
+                   \hlkwd{paste}\hldef{(cns,} \hlkwc{collapse} \hldef{=} \hlsng{" "}\hldef{)))}
+    \hldef{tmp} \hlkwb{<-} \hldef{x[, cns]}
+    \hldef{tmp}\hlopt{$}\hldef{Kind} \hlkwb{<-} \hlkwd{factor}\hldef{(tmp}\hlopt{$}\hldef{Kind)}
+    \hlkwd{class}\hldef{(tmp)} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"Cholest_Gene"}\hldef{,} \hlkwd{class}\hldef{(x))}
+    \hlkwd{return}\hldef{(tmp)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+Y volvemos a ejecutar el bloque de comprobaciones:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{test_that}\hldef{(}\hlsng{"minimal conversions and failures"}\hldef{, \{}
+    \hlkwd{expect_s3_class}\hldef{(}\hlkwd{to_CG}\hldef{(}\hlkwd{data.frame}\hldef{(}\hlkwc{Cholesterol} \hldef{=} \hlnum{1}\hlopt{:}\hlnum{10}\hldef{,}
+                                     \hlkwc{Gene} \hldef{=} \hlnum{11}\hlopt{:}\hlnum{20}\hldef{,}
+                                     \hlkwc{Kind} \hldef{=} \hlsng{"Cl1"}\hldef{)),}
+                    \hlsng{"Cholest_Gene"}\hldef{)}
+    \hlkwd{expect_error}\hldef{(}\hlkwd{to_CG}\hldef{(}\hlkwd{cbind}\hldef{(}\hlkwc{Cholesterol} \hldef{=} \hlnum{1}\hlopt{:}\hlnum{10}\hldef{,} \hlkwc{Gene} \hldef{=} \hlnum{11}\hlopt{:}\hlnum{20}\hldef{)),}
+                 \hlsng{"For now, only methods for data.frame are available"}\hldef{,}
+                 \hlkwc{fixed} \hldef{=} \hlnum{TRUE}\hldef{)}
+    \hlkwd{expect_error}\hldef{(}\hlkwd{to_CG}\hldef{(}\hlkwd{data.frame}\hldef{(}\hlkwc{Cholesterol} \hldef{=} \hlnum{1}\hlopt{:}\hlnum{10}\hldef{,} \hlkwc{Geni} \hldef{=} \hlnum{11}\hlopt{:}\hlnum{20}\hldef{,}
+                                  \hlkwc{Kind} \hldef{=} \hlsng{"Cl1"}\hldef{)),}
+                 \hlsng{"Column names are not"}\hldef{,}
+                 \hlkwc{fixed} \hldef{=} \hlnum{TRUE}\hldef{)}
+    \hlkwd{expect_s3_class}\hldef{(}\hlkwd{to_CG}\hldef{(}\hlkwd{data.frame}\hldef{(}\hlkwc{Cholesterol} \hldef{=} \hlnum{1}\hlopt{:}\hlnum{10}\hldef{,} \hlkwc{Gene} \hldef{=} \hlnum{11}\hlopt{:}\hlnum{20}\hldef{,}
+                                     \hlkwc{Kind} \hldef{=} \hlsng{"Cl1"}\hldef{,}
+                                     \hlkwc{whatever} \hldef{=} \hlsng{"abcd"}\hldef{)),} \hlsng{"Cholest_Gene"}\hldef{)}
+\hldef{\})}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\subsection{Creación de función de plot}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{## Cholest_Gene object -> ggplot object}
+\hlcom{## Produce a ggplot of a Cholest_Gene object.}
+\hldef{plot.Cholest_Gene} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{,} \hlkwc{...}\hldef{) \{}
+  \hlkwd{class}\hldef{(x)} \hlkwb{<-} \hlsng{"data.frame"}
+  \hlkwd{require}\hldef{(ggplot2)}
+  \hlcom{## FIXME: should I explicitly print? Hummm.. return, as orthodox?}
+  \hlkwa{if} \hldef{(}\hlkwd{nlevels}\hldef{(x}\hlopt{$}\hldef{Kind)} \hlopt{>=} \hlnum{2}\hldef{)}
+    \hldef{p1} \hlkwb{<-} \hlkwd{ggplot}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{y} \hldef{= Cholesterol,} \hlkwc{x} \hldef{= Gene,} \hlkwc{col} \hldef{= Kind),}
+                 \hlkwc{data} \hldef{= x)} \hlopt{+}
+      \hlkwd{facet_grid}\hldef{(}\hlopt{~} \hldef{Kind)}
+  \hlkwa{else}
+    \hldef{p1} \hlkwb{<-} \hlkwd{ggplot}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{y} \hldef{= Cholesterol,} \hlkwc{x} \hldef{= Gene),} \hlkwc{data} \hldef{= x)}
+  \hldef{p1} \hlkwb{<-} \hldef{p1} \hlopt{+} \hlkwd{geom_point}\hldef{()}
+  \hlkwd{return}\hldef{(p1)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+En R, cuando se pasa un argumento, tan pronto como se utiliza en el interior de la función, se hace una copia. Así, cuando se modifica la clase dentro de una función, no se altera el argumento original, solo la copia interna. 
+
+\subsection{Clases S4}
+Las clases S4 se utilizan en algunos paquetes de BioConductor. Funcionan de forma similar a las clases S3, pero son más formales y rigurosas. 
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hldef{(Matrix)}
+\hldef{m1} \hlkwb{<-} \hlkwd{Matrix}\hldef{(}\hlnum{1}\hlopt{:}\hlnum{9}\hldef{,} \hlkwc{nrow} \hldef{=} \hlnum{3}\hldef{)}
+\hldef{m2} \hlkwb{<-} \hlkwd{Diagonal}\hldef{(}\hlnum{5}\hldef{)}
+
+\hldef{x} \hlkwb{<-} \hlnum{0}\hlopt{:}\hlnum{10}
+\hldef{y} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{26}\hldef{,} \hlnum{17}\hldef{,} \hlnum{13}\hldef{,} \hlnum{12}\hldef{,} \hlnum{20}\hldef{,} \hlnum{5}\hldef{,} \hlnum{9}\hldef{,} \hlnum{8}\hldef{,} \hlnum{5}\hldef{,} \hlnum{4}\hldef{,} \hlnum{8}\hldef{)}
+\hldef{fit1} \hlkwb{<-} \hlkwd{lm}\hldef{(y} \hlopt{~} \hldef{x)}
+
+\hlkwd{class}\hldef{(fit1)}
+\end{alltt}
+\begin{verbatim}
+## [1] "lm"
+\end{verbatim}
+\begin{alltt}
+\hlkwd{is.list}\hldef{(fit1)}
+\end{alltt}
+\begin{verbatim}
+## [1] TRUE
+\end{verbatim}
+\begin{alltt}
+\hlkwd{isS4}\hldef{(fit1)}
+\end{alltt}
+\begin{verbatim}
+## [1] FALSE
+\end{verbatim}
+\begin{alltt}
+\hlkwd{print}\hldef{(fit1)}
+\end{alltt}
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = y ~ x)
+## 
+## Coefficients:
+## (Intercept)            x  
+##      19.955       -1.682
+\end{verbatim}
+\begin{alltt}
+\hldef{stats}\hlopt{:::}\hlkwd{print.lm}\hldef{(fit1)}
+\end{alltt}
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = y ~ x)
+## 
+## Coefficients:
+## (Intercept)            x  
+##      19.955       -1.682
+\end{verbatim}
+\begin{alltt}
+\hldef{fit1}
+\end{alltt}
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = y ~ x)
+## 
+## Coefficients:
+## (Intercept)            x  
+##      19.955       -1.682
+\end{verbatim}
+\begin{alltt}
+\hlkwd{names}\hldef{(fit1)}
+\end{alltt}
+\begin{verbatim}
+##  [1] "coefficients"  "residuals"     "effects"      
+##  [4] "rank"          "fitted.values" "assign"       
+##  [7] "qr"            "df.residual"   "xlevels"      
+## [10] "call"          "terms"         "model"
+\end{verbatim}
+\begin{alltt}
+\hldef{fit1}\hlopt{$}\hldef{coefficients}
+\end{alltt}
+\begin{verbatim}
+## (Intercept)           x 
+##   19.954545   -1.681818
+\end{verbatim}
+\begin{alltt}
+\hlcom{## don't do that for real. Use coefficients}
+\hlkwd{coefficients}\hldef{(fit1)}
+\end{alltt}
+\begin{verbatim}
+## (Intercept)           x 
+##   19.954545   -1.681818
+\end{verbatim}
+\begin{alltt}
+\hlkwd{isS4}\hldef{(m1)}
+\end{alltt}
+\begin{verbatim}
+## [1] TRUE
+\end{verbatim}
+\begin{alltt}
+\hlkwd{is.list}\hldef{(m1)}
+\end{alltt}
+\begin{verbatim}
+## [1] FALSE
+\end{verbatim}
+\begin{alltt}
+\hlkwd{class}\hldef{(m1)}
+\end{alltt}
+\begin{verbatim}
+## [1] "dgeMatrix"
+## attr(,"package")
+## [1] "Matrix"
+\end{verbatim}
+\begin{alltt}
+\hlkwd{slotNames}\hldef{(m1)}
+\end{alltt}
+\begin{verbatim}
+## [1] "Dim"      "Dimnames" "x"        "factors"
+\end{verbatim}
+\begin{alltt}
+\hlkwd{slotNames}\hldef{(m2)}
+\end{alltt}
+\begin{verbatim}
+## [1] "diag"     "Dim"      "Dimnames" "x"
+\end{verbatim}
+\begin{alltt}
+\hldef{m1}
+\end{alltt}
+\begin{verbatim}
+## 3 x 3 Matrix of class "dgeMatrix"
+##      [,1] [,2] [,3]
+## [1,]    1    4    7
+## [2,]    2    5    8
+## [3,]    3    6    9
+\end{verbatim}
+\begin{alltt}
+\hldef{m1}\hlopt{@}\hlkwc{Dim}
+\end{alltt}
+\begin{verbatim}
+## [1] 3 3
+\end{verbatim}
+\begin{alltt}
+\hldef{m1}\hlopt{@}\hlkwc{x}
+\end{alltt}
+\begin{verbatim}
+## [1] 1 2 3 4 5 6 7 8 9
+\end{verbatim}
+\begin{alltt}
+\hldef{m2}\hlopt{@}\hlkwc{Dim}
+\end{alltt}
+\begin{verbatim}
+## [1] 5 5
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\subsection{Resumen sobre la programación orientada a objetos en R}
+Es recomendable familiarizarse con las clases S3 en R. En BioConductor, es posible encontrarse con las clases S4, pero en general se puede ejecutar todo con clases S3. Hay otras clases, como las R6, pero tienen un uso muy concreto en situaciones muy específicas.
+
 
 \end{document}

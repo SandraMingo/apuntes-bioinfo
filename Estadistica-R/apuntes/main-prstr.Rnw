@@ -1311,6 +1311,31 @@ search()
 @
 Esto se utiliza implícitamente o explícitamente en gran parte del código. Lo que hace es listar los distintos entornos que hay y su orden. Así, cuando se cargan librerías o se utilizan variables, se utiliza \code{search} para localizar lo que se está pidiendo. 
 
+\subsection{Los \ldots}
+Los $\ldots$ permiten pasar argumentos adicionales en funciones que deben manejarlas.
+
+<<>>=
+f0 <- function(x, pch = 3, ...) {plot(x, pch = pch, ...)}
+
+f0(1:5, col = "red", type = "b")
+@
+
+Aquí, col y type que no se han especificado en f0, se pasan directamente a la función. Como plot acepta muchos argumentos adicionales, no es necesario especificar todos, si no que se pueden poner \ldots.
+
+<<eval =FALSE, results='hide'>>=
+
+fa <- function(x, col = "red", ...) {plot(x, col = col, ...)}
+fa(1:5, "blue", pch = 8)
+
+fb <- function(x, col = "red", ...) {plot(x, col = col)}
+fb(1:5, "blue", pch = 8)
+
+fc <- function(x, col = "red") {plot(x, col = col, ...)}
+fc(1:5, "blue", pch = 8)
+
+@
+La función fa recoge pch dentro de los tres puntos. Además, el color se sobrescribe (el plot resultante tiene los puntos en azul). Tanto fb como fc no hacen lo que se espera, ya que les falta \ldots en la función y en el plot respectivamente. Esa ausencia hace que las funciones no hagan nada con ese argumento.
+
 \subsection{local}
 La función \code{local} permite crear un entorno local en el que trabajar y luego, al salir, que no tenga guardado el valor de las variables.
 
@@ -1451,5 +1476,279 @@ undebug(f3)
 undebug(f2)
 undebug(f1)
 @
+
+%04/11 - Ramón
+\subsection{Protección frente a posibles fallos}
+Hay un manejo excepcional en R mediante \code{try}. Esto permite evitar que el código no falle. Cuando se va a dar un error, la variable adquiere la clase try-error.
+
+<<>>=
+
+ft <- function(x) {
+    tmp <- try(log(x), silent = TRUE)
+    if(inherits(tmp, "try-error")) {
+        warning(paste("It looks like something did not work:\n",
+                      "   ", tmp))
+    } else{
+        return(tmp)
+    }
+}
+
+ft(9)
+
+ft("a")
+
+@
+
+\subsection{Funciones de debugging que no son exportadas}
+Si cargamos un paquete, sirve con \code{library(paquete)}. No obstante, puede haber algunas funciones no exportadas (no se ve directamente al teclear el nombre).
+
+<<eval=FALSE, results = 'hide'>>=
+trace(randomForest:::predict.randomForest, edit = TRUE)
+@
+
+\section{Programación orientada a objetos: clases S3 y S4}
+En R hay varios sistemas de programación orientada a objetos. Los sistemas originales en R son los sistemas S3 y S4, siendo los más extendidos. 
+
+\subsection{\code{methods}}
+<<eval=FALSE, results = 'hide'>>=
+methods('plot')
+getAnywhere(plot.TukeyHSD)
+#stats:::plot.TukeyHSD
+@
+
+\code{getAnywhere} permite obtener las funciones no exportadas. \code{plot} realmente no hace nada, solo determina el tipo de objeto que se le ha pasado y llama a la función específica para ese objeto.
+
+Lo que se ve con \code{methods} depende de los paquetes que haya cargados y, por tanto, lo que haya en nuestro espacio de búsqueda. 
+
+En POO en R, no se define una clase dentro de la que definir métodos (como en Python). Los métodos no pertenecen a la clase, si no que hay que definirlos por separado. 
+
+Se pueden buscar todos los métodos de una clase con:
+<<eval=FALSE, results = 'hide'>>=
+methods(class = 'lm')
+methods(class = 'lm', byclass = FALSE)
+@
+
+El argumento \code{byclass} muestra el nombre completo de los métodos y si están o no exportados. 
+
+El código fuente de todas las funciones está disponible. Para todas las funciones S3 exportadas desde el namespace, se puede escribir el nombre del método en la línea de comando como generic.class. Para las funciones no exportadas, se puede utilizar \code{getAnywhere} o \code{getS3method}. Sabiendo el namespace, también se puede utilizar :::. 
+
+<<eval=FALSE, results = 'hide'>>=
+add1.lm
+getAnywhere('add1.lm')
+stats:::add1.lm
+getS3method('add1', 'lm')
+@
+
+\subsection{Creación de clases y métodos}
+Vamos a suponer que queremos trabajar con unos data frames especiales con información sobre colesterol, la expresión de un gen y el tipo de experimento que lo midió. Lo primero que se quiere es convertir data frames en objetos de mi clase (y más adelante convertir matrices o vectores a objetos), crear un summary de los objetos y ajustar funciones de plot. Finalmente, hay que testear el código mediante la librería \code{testthat}.
+
+Empezamos con una función genérica de conversión al objeto y luego un método que funcione para los data frames. El objeto será Cholest\_Gene object, por lo que un conversor genérico (y sus comentarios) sería:
+
+<<eval = FALSE>>=
+# object -> Cholest_Gene object
+# General converter to Cholest_Gene object.
+to_CG <- function(x, ...) {
+  UseMethod("to_CG")
+}
+@
+
+El primer método será convertir un data frame al objeto:
+<<eval=FALSE>>=
+# data.frame -> Cholest_Gene object
+# Take a data frame and return (if possible) a Cholest_Gene object.
+to_CG.data.frame <- function(x) {
+  cns <- c("Cholesterol", "Gene", "Kind")
+  if (!(all(colnames(x) %in% cns)))
+        stop(paste("Column names are not ", cns))
+    tmp <- x[, cns]
+    ## Notice I do not set this to be of data.frame class
+    class(tmp) <- c("Cholest_Gene")
+    return(tmp)
+}
+@
+
+Y se debe probar:
+<<eval=FALSE>>=
+uu <- to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20, Kind = "Cl1"))
+uu
+@
+El resultado de la visualización es muy feo y se debe mejorar. Esto se debe a que la clase es Cholest\_Gene y, por ello, utiliza print default. Por ello, se debe cambiar la clase del objeto a la clase Cholest\_Gene, adjuntando la clase que tenía previamente:
+<<eval=FALSE>>=
+# data.frame -> Cholest_Gene object
+# Take a data frame and return (if possible) a Cholest_Gene object.
+to_CG.data.frame <- function(x) {
+    cns <- c("Cholesterol", "Gene", "Kind")
+    if (!(all(colnames(x) %in% cns)))
+        stop(paste("Column names are not ", cns))
+    tmp <- x[, cns]
+    tmp$Kind <- factor(tmp$Kind)
+    class(tmp) <- c("Cholest_Gene", class(tmp)) ## "data.frame")
+    return(tmp)
+}
+@
+
+De esta forma, la visualización del objeto está bien, al igual que la salida de summary, reutilizando así las funciones existentes.
+<<eval=FALSE>>=
+uu <- to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20, Kind = "Cl1"))
+summary(uu)
+print(uu)
+uu
+@
+
+La siguiente función es más sofisticada:
+<<eval=FALSE>>=
+# Cholest_Gene object -> printed Cholest_Gene object
+# Print a Cholest_Gene object.
+print.Cholest_Gene <- function(x) {
+    u <- x[, c(1, 2)]
+    class(u) <- "data.frame"
+    print(u)
+    cat("\n Printing summary of first column \n")
+    print(summary(x[, 1]))
+}
+@
+
+En este caso, se asigna la clase data.frame (y solo esa clase) para evitar que se llame a sí mismo.
+
+Como por el momento solo se ha creado el método para convertir data frames a nuestro objeto, se debe comprobar que el objeto que se pase sea de una clase soportada (data frame) y no se ejecute cuando la clase (por ejemplo, matriz) no está soportada. Además, esto muestra un mensaje de error personalizado.
+<<eval=FALSE>>=
+# arbitrary object -> failure message if no method
+# Return error message if there is no specific method to convert 
+# from that class to Cholest_Gene class
+to_CG.default <- function(x) {
+    stop("For now, only methods for data.frame are available.")
+}
+
+@
+
+\subsection{Testeo y test-driven development}
+El último paso es el testeo, y es algo fundamental. En los tests se van poniendo casos en los que se encuentran bugs y se arreglan. Como mínimo, se debe comprobar que se puede crear un objeto legítimo de un data frame, que falla (como esperamos) cuando al data frame le faltan columnas y que falla (como esperamos) cuando no se proporciona un data frame. El testeo se puede llevar a cabo con el paquete \code{testthat}, el cual tiene varios bloques de salidas que se pueden esperar (\code{expect\_s3\_class, expect\_error, expect\_equal, ...})
+
+<<eval=FALSE>>=
+library(testthat)
+test_that("minimal conversions and failures", {
+
+    expect_s3_class(to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
+                                     Kind = "Cl1")), "Cholest_Gene")
+
+
+    expect_error(to_CG(cbind(Cholesterol = 1:10, Gene = 11:20)),
+                 "For now, only methods for data.frame are available",
+                 fixed = TRUE)
+
+    expect_error(to_CG(data.frame(Cholesterol = 1:10, Geni = 11:20,
+                                     Kind = "Cl1")),
+                 "Column names are not ",
+                 fixed = TRUE)
+
+    expect_s3_class(to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
+                                     Kind = "Cl1",
+                                     whatever = "abcd")),
+                    "Cholest_Gene")
+
+})
+@
+
+El último bloque de test ha fallado, por lo que hay que hacer debugging. 
+<<eval=FALSE>>=
+debugonce(to_CG.data.frame)
+
+dummy <- to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
+                                 Kind = "Cl1",
+                                 whatever = "abcd"))
+@
+
+En este entorno se va viendo qué va pasando en cada línea de código, y se verifica dónde está el problema. En este caso, el if comprueba si todos los nombres de columnas están en cns, cuando debería ser al revés: que todos los nombres de cns estén en el data frame (aunque haya otras columnas adicionales). Por tanto, hay que reescribir la función invirtiendo eso:
+
+<<eval=FALSE>>=
+to_CG.data.frame <- function(x) {
+    cns <- c("Cholesterol", "Gene", "Kind")
+    if (!(all(cns %in% colnames(x))))
+        stop(paste("Column names are not ",
+                   paste(cns, collapse = " ")))
+    tmp <- x[, cns]
+    tmp$Kind <- factor(tmp$Kind)
+    class(tmp) <- c("Cholest_Gene", class(x))
+    return(tmp)
+}
+@
+
+Y volvemos a ejecutar el bloque de comprobaciones:
+<<eval=FALSE>>=
+test_that("minimal conversions and failures", {
+    expect_s3_class(to_CG(data.frame(Cholesterol = 1:10,
+                                     Gene = 11:20,
+                                     Kind = "Cl1")),
+                    "Cholest_Gene")
+    expect_error(to_CG(cbind(Cholesterol = 1:10, Gene = 11:20)),
+                 "For now, only methods for data.frame are available",
+                 fixed = TRUE)
+    expect_error(to_CG(data.frame(Cholesterol = 1:10, Geni = 11:20,
+                                  Kind = "Cl1")),
+                 "Column names are not",
+                 fixed = TRUE)
+    expect_s3_class(to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
+                                     Kind = "Cl1",
+                                     whatever = "abcd")), "Cholest_Gene")
+})
+@
+
+\subsection{Creación de función de plot}
+<<eval=FALSE>>=
+## Cholest_Gene object -> ggplot object
+## Produce a ggplot of a Cholest_Gene object.
+plot.Cholest_Gene <- function(x, ...) {
+  class(x) <- "data.frame"
+  require(ggplot2)
+  ## FIXME: should I explicitly print? Hummm.. return, as orthodox?
+  if (nlevels(x$Kind) >= 2)
+    p1 <- ggplot(aes(y = Cholesterol, x = Gene, col = Kind),
+                 data = x) +
+      facet_grid(~ Kind)
+  else
+    p1 <- ggplot(aes(y = Cholesterol, x = Gene), data = x)
+  p1 <- p1 + geom_point()
+  return(p1)
+}
+@
+
+En R, cuando se pasa un argumento, tan pronto como se utiliza en el interior de la función, se hace una copia. Así, cuando se modifica la clase dentro de una función, no se altera el argumento original, solo la copia interna. 
+
+\subsection{Clases S4}
+Las clases S4 se utilizan en algunos paquetes de BioConductor. Funcionan de forma similar a las clases S3, pero son más formales y rigurosas. 
+
+<<eval=TRUE>>=
+library(Matrix)
+m1 <- Matrix(1:9, nrow = 3)
+m2 <- Diagonal(5)
+
+x <- 0:10
+y <- c(26, 17, 13, 12, 20, 5, 9, 8, 5, 4, 8)
+fit1 <- lm(y ~ x)
+
+class(fit1) 
+is.list(fit1)
+isS4(fit1) 
+print(fit1)
+stats:::print.lm(fit1)
+fit1
+names(fit1)
+fit1$coefficients
+## don't do that for real. Use coefficients
+coefficients(fit1)
+isS4(m1) 
+is.list(m1) 
+class(m1) 
+slotNames(m1)
+slotNames(m2)
+m1
+m1@Dim
+m1@x
+m2@Dim
+@
+
+\subsection{Resumen sobre la programación orientada a objetos en R}
+Es recomendable familiarizarse con las clases S3 en R. En BioConductor, es posible encontrarse con las clases S4, pero en general se puede ejecutar todo con clases S3. Hay otras clases, como las R6, pero tienen un uso muy concreto en situaciones muy específicas.
+
 
 \end{document}

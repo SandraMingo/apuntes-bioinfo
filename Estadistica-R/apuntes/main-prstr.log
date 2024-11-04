@@ -1,10 +1,12 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.10.30)  30 OCT 2024 16:59
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.10.30)  4 NOV 2024 16:54
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**C:/Users/Sandra/Documents/GitHub/apuntes-bioinfo/Estadistica-R/main-prstr.tex
+**C:/Users/Sandra/Documents/GitHub/apuntes-bioinfo/Estadistica-R/apuntes/main-p
+rstr.tex
 
-(C:/Users/Sandra/Documents/GitHub/apuntes-bioinfo/Estadistica-R/main-prstr.tex
+(C:/Users/Sandra/Documents/GitHub/apuntes-bioinfo/Estadistica-R/apuntes/main-pr
+str.tex
 LaTeX2e <2024-06-01> patch level 2
 L3 programming layer <2024-10-09>
 (config/apuntes.cls
@@ -2074,7 +2076,7 @@ LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <12> not available
 [4]
 
 [5]
-<figure/unnamed-chunk-7-1.pdf, id=345, 505.89pt x 505.89pt>
+<figure/unnamed-chunk-7-1.pdf, id=395, 505.89pt x 505.89pt>
 File: figure/unnamed-chunk-7-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-7-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-7-1.pdf  used on input line 185.
@@ -2243,7 +2245,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 1481--1481
 [36]
 
 [37]
-<figure/unnamed-chunk-72-1.pdf, id=529, 505.89pt x 505.89pt>
+<figure/unnamed-chunk-72-1.pdf, id=579, 505.89pt x 505.89pt>
 File: figure/unnamed-chunk-72-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-72-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-72-1.pdf  used on input line 1942
@@ -2257,12 +2259,12 @@ Overfull \hbox (17.62482pt too wide) in paragraph at lines 1942--1944
 
 
 [38 <./figure/unnamed-chunk-72-1.pdf>]
-<figure/pchcol-1.pdf, id=540, 361.35pt x 216.81pt>
+<figure/pchcol-1.pdf, id=590, 361.35pt x 216.81pt>
 File: figure/pchcol-1.pdf Graphic file (type pdf)
 <use figure/pchcol-1.pdf>
 Package pdftex.def Info: figure/pchcol-1.pdf  used on input line 1962.
 (pdftex.def)             Requested size: 361.34912pt x 216.80946pt.
-<figure/ltytype-1.pdf, id=541, 289.08pt x 289.08pt>
+<figure/ltytype-1.pdf, id=591, 289.08pt x 289.08pt>
 File: figure/ltytype-1.pdf Graphic file (type pdf)
 <use figure/ltytype-1.pdf>
 Package pdftex.def Info: figure/ltytype-1.pdf  used on input line 1977.
@@ -2270,7 +2272,7 @@ Package pdftex.def Info: figure/ltytype-1.pdf  used on input line 1977.
 
 
 [39 <./figure/pchcol-1.pdf>]
-<figure/unnamed-chunk-73-1.pdf, id=555, 505.89pt x 505.89pt>
+<figure/unnamed-chunk-73-1.pdf, id=605, 505.89pt x 505.89pt>
 File: figure/unnamed-chunk-73-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-73-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-73-1.pdf  used on input line 1994
@@ -2284,7 +2286,7 @@ Overfull \hbox (17.62482pt too wide) in paragraph at lines 1994--1995
 
 
 [40 <./figure/ltytype-1.pdf>]
-<figure/unnamed-chunk-73-2.pdf, id=567, 505.89pt x 505.89pt>
+<figure/unnamed-chunk-73-2.pdf, id=617, 505.89pt x 505.89pt>
 File: figure/unnamed-chunk-73-2.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-73-2.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-73-2.pdf  used on input line 1999
@@ -2298,7 +2300,7 @@ Overfull \hbox (17.62482pt too wide) in paragraph at lines 1999--2000
 
 
 [41 <./figure/unnamed-chunk-73-1.pdf>]
-<figure/fig-blast-1.pdf, id=579, 433.62pt x 289.08pt>
+<figure/fig-blast-1.pdf, id=629, 433.62pt x 289.08pt>
 File: figure/fig-blast-1.pdf Graphic file (type pdf)
 <use figure/fig-blast-1.pdf>
 Package pdftex.def Info: figure/fig-blast-1.pdf  used on input line 2016.
@@ -2308,7 +2310,7 @@ Package pdftex.def Info: figure/fig-blast-1.pdf  used on input line 2016.
 [42 <./figure/unnamed-chunk-73-2.pdf>]
 
 [43 <./figure/fig-blast-1.pdf>]
-<figure/mrateplotx1-1.pdf, id=603, 433.62pt x 433.62pt>
+<figure/mrateplotx1-1.pdf, id=653, 433.62pt x 433.62pt>
 File: figure/mrateplotx1-1.pdf Graphic file (type pdf)
 <use figure/mrateplotx1-1.pdf>
 Package pdftex.def Info: figure/mrateplotx1-1.pdf  used on input line 2066.
@@ -2325,13 +2327,13 @@ Overfull \vbox (0.83946pt too high) detected at line 2082
 
 
 [44 <./figure/mrateplotx1-1.pdf>]
-<figure/unnamed-chunk-76-1.pdf, id=615, 289.08pt x 289.08pt>
+<figure/unnamed-chunk-76-1.pdf, id=665, 289.08pt x 289.08pt>
 File: figure/unnamed-chunk-76-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-76-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-76-1.pdf  used on input line 2083
 .
 (pdftex.def)             Requested size: 289.07928pt x 289.09251pt.
-<figure/unnamed-chunk-77-1.pdf, id=616, 289.08pt x 289.08pt>
+<figure/unnamed-chunk-77-1.pdf, id=666, 289.08pt x 289.08pt>
 File: figure/unnamed-chunk-77-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-77-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-77-1.pdf  used on input line 2094
@@ -2395,22 +2397,119 @@ Overfull \hbox (7.71553pt too wide) in paragraph at lines 2639--2639
 [60]
 
 [61]
+<figure/unnamed-chunk-101-1.pdf, id=767, 505.89pt x 505.89pt>
+File: figure/unnamed-chunk-101-1.pdf Graphic file (type pdf)
+<use figure/unnamed-chunk-101-1.pdf>
+Package pdftex.def Info: figure/unnamed-chunk-101-1.pdf  used on input line 303
+5.
+(pdftex.def)             Requested size: 418.25545pt x 418.25981pt.
+
+Overfull \hbox (17.62482pt too wide) in paragraph at lines 3035--3037
+[][]
+ []
+
+
 
 [62]
 
-[63]
+[63 <./figure/unnamed-chunk-101-1.pdf>]
 
 [64]
-Underfull \hbox (badness 3735) in paragraph at lines 3174--3174
+
+[65]
+Underfull \hbox (badness 3735) in paragraph at lines 3206--3206
 []\T1/cmtt/m/n/14.4 trace \T1/cmss/bx/n/14.4 para ver funciones arbitrarias en 
 sitios
  []
 
 
 
-[65]
+[66]
+Overfull \hbox (44.75648pt too wide) in paragraph at lines 3298--3298
+\T1/cmtt/m/n/12 ##      Error in log(x) : Argumento no numérico para una funció
+n matemática[] 
+ []
 
-[66] 
+
+
+[67]
+
+[68]
+
+[69]
+Overfull \hbox (20.06252pt too wide) in paragraph at lines 3397--3397
+[][]\T1/cmtt/m/n/12 uu[] []<-[] []to_CG[][]([][]data.frame[][]([][]Cholesterol[
+] []=[] []1[][]:[][]10[][],[] []Gene[] []=[] []11[][]:[][]20[][],[] []Kind[] []
+=[] []"Cl1"[][]))[][] 
+ []
+
+
+Overfull \hbox (20.06252pt too wide) in paragraph at lines 3425--3425
+[][]\T1/cmtt/m/n/12 uu[] []<-[] []to_CG[][]([][]data.frame[][]([][]Cholesterol[
+] []=[] []1[][]:[][]10[][],[] []Gene[] []=[] []11[][]:[][]20[][],[] []Kind[] []
+=[] []"Cl1"[][]))[][] 
+ []
+
+
+
+[70]
+Overfull \hbox (13.88902pt too wide) in paragraph at lines 3475--3475
+[]    []\T1/cmtt/m/n/12 expect_s3_class[][]([][]to_CG[][]([][]data.frame[][]([]
+[]Cholesterol[] []=[] []1[][]:[][]10[][],[] []Gene[] []=[] []11[][]:[][]20[][],
+[][] 
+ []
+
+
+Overfull \hbox (1.54204pt too wide) in paragraph at lines 3476--3476
+[]                                     []\T1/cmtt/m/n/12 Kind[] []=[] []"Cl1"[]
+[])),[] []"Cholest_Gene"[][])[][] 
+ []
+
+
+Overfull \hbox (13.88902pt too wide) in paragraph at lines 3480--3480
+[]                 []\T1/cmtt/m/n/12 "For now, only methods for data.frame are 
+available"[][],[][] 
+ []
+
+
+Overfull \hbox (13.88902pt too wide) in paragraph at lines 3488--3488
+[]    []\T1/cmtt/m/n/12 expect_s3_class[][]([][]to_CG[][]([][]data.frame[][]([]
+[]Cholesterol[] []=[] []1[][]:[][]10[][],[] []Gene[] []=[] []11[][]:[][]20[][],
+[][] 
+ []
+
+
+
+[71]
+Overfull \hbox (13.88902pt too wide) in paragraph at lines 3540--3540
+[]                 []\T1/cmtt/m/n/12 "For now, only methods for data.frame are 
+available"[][],[][] 
+ []
+
+
+Overfull \hbox (13.88902pt too wide) in paragraph at lines 3546--3546
+[]    []\T1/cmtt/m/n/12 expect_s3_class[][]([][]to_CG[][]([][]data.frame[][]([]
+[]Cholesterol[] []=[] []1[][]:[][]10[][],[] []Gene[] []=[] []11[][]:[][]20[][],
+[][] 
+ []
+
+
+Overfull \hbox (32.4095pt too wide) in paragraph at lines 3548--3548
+[]                                     []\T1/cmtt/m/n/12 whatever[] []=[] []"ab
+cd"[][])),[] []"Cholest_Gene"[][])[][] 
+ []
+
+
+
+[72]
+
+[73]
+
+[74]
+
+[75]
+
+[76] 
 enddocument/afterlastpage: lastpage setting LastPage.
 (main-prstr.aux
 LaTeX Info: Redefining \. on input line 8.
@@ -2421,16 +2520,16 @@ LaTeX2e <2024-06-01> patch level 2
 L3 programming layer <2024-10-09>
  ***********
 Package rerunfilecheck Info: File `main-prstr.out' has not changed.
-(rerunfilecheck)             Checksum: DA8C6BB9084F36617B7FDECA234137B7;4896.
+(rerunfilecheck)             Checksum: 5264E430390E94222B15181EB3432481;5875.
  ) 
 Here is how much of TeX's memory you used:
- 34769 strings out of 473897
- 627193 string characters out of 5725989
- 1126917 words of memory out of 5000000
- 56768 multiletter control sequences out of 15000+600000
+ 34808 strings out of 473897
+ 628087 string characters out of 5725989
+ 1126920 words of memory out of 5000000
+ 56787 multiletter control sequences out of 15000+600000
  583842 words of font info for 87 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 143i,13n,173p,2290b,2364s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 143i,13n,173p,2298b,2364s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tci
 t1200.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi
 600\ectt1728.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen
@@ -2458,9 +2557,9 @@ pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/
 cm/cmsy8.pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/public/
 lm/lmssbx10.pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/urw/
 palatino/uplr8a.pfb>
-Output written on main-prstr.pdf (67 pages, 626124 bytes).
+Output written on main-prstr.pdf (77 pages, 665821 bytes).
 PDF statistics:
- 1386 PDF objects out of 1440 (max. 8388607)
- 137 named destinations out of 1000 (max. 500000)
- 527 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1516 PDF objects out of 1728 (max. 8388607)
+ 157 named destinations out of 1000 (max. 500000)
+ 612 words of extra memory for PDF output out of 10000 (max. 10000000)
 
