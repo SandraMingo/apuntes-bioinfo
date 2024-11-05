@@ -187,7 +187,7 @@ Para leer el código, se empieza por la función más interna, que en este caso 
 \hlkwd{sum}\hldef{(pvalues} \hlopt{<=} \hlnum{0.05}\hldef{)}
 \end{alltt}
 \begin{verbatim}
-## [1] 52
+## [1] 59
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -198,7 +198,7 @@ En resumen, en este ejemplo hemos visto los siguientes objetos:
 \begin{itemize}
 \item Vectores: colección de uno o más datos del mismo tipo.
 \item Matrices: conjunto de datos indexados por filas y columnas del mismo tipo. 
-\item Arrays: generalización de una matriz que no tiene límite de dimensiones (pero debe tener una estrucrtura rectangular). 
+\item Arrays: generalización de una matriz que no tiene límite de dimensiones (pero debe tener una estructura rectangular). 
 \item Data frames: estructura rectangular de dos dimensiones (filas y columnas) en la que cada columna puede ser de un tipo diferente. 
 \item Listas: cajón desastre en el que se pueden meter muchas cosas de muchos tipos distintos. Muchas funciones devuelven listas u objetos que contienen listas.
 \item Factores: vectores de un tipo especial (variable categórica).
@@ -210,7 +210,6 @@ En el siguiente código se muestran las distintas maneras de acceder a una matri
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{randomdata[}\hlnum{1}\hldef{, ]}
 \hldef{randomdata[,} \hlnum{1}\hldef{]}
 \hldef{randomdata[}\hlnum{2}\hldef{, ]}
 \hldef{randomdata[,} \hlnum{2}\hldef{]}
@@ -348,7 +347,7 @@ Se puede asignar 1 + 2 a una variable mediante <-. También se puede utilizar =,
 \end{kframe}
 \end{knitrout}
 
-Se pueden separar dos comandos con un punto y coma (;), pero utilizarlo es raramente una buena idea, solo en casos muy concretos. 
+Se pueden separar dos comandos con un punto y coma (;), pero utilizarlo no suele ser una buena idea, solo en casos muy concretos. 
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
@@ -628,9 +627,7 @@ Es posible guardar los datos en uan matriz o de forma tabular con \code{write.ta
 \begin{alltt}
 \hlkwd{write.table}\hldef{(X,} \hlkwc{file} \hldef{=} \hlsng{"datos_guardados.txt"}\hldef{)}
 \end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: objeto 'X' no encontrado}}\end{kframe}
+\end{kframe}
 \end{knitrout}
 
 El problema que tiene esto es que en el documento de salida tiene una columna adicional que indica el número de línea, y se emplean los espacios como separadores. Todo esto se puede especificar mediante argumentos concretos en la función:
@@ -638,11 +635,10 @@ El problema que tiene esto es que en el documento de salida tiene una columna ad
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{write.table}\hldef{(X,} \hlkwc{file} \hldef{=} \hlsng{"datos_guardados.txt"}\hldef{,} \hlkwc{sep} \hldef{=} \hlsng{"\textbackslash{}t"}\hldef{,} \hlkwc{quote} \hldef{=} \hlnum{FALSE}\hldef{,} \hlkwc{row.names} \hldef{=} \hlnum{FALSE}\hldef{)}
+\hlkwd{write.table}\hldef{(X,} \hlkwc{file} \hldef{=} \hlsng{"datos_guardados.txt"}\hldef{,} \hlkwc{sep} \hldef{=} \hlsng{"\textbackslash{}t"}\hldef{,}
+            \hlkwc{quote} \hldef{=} \hlnum{FALSE}\hldef{,} \hlkwc{row.names} \hldef{=} \hlnum{FALSE}\hldef{)}
 \end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: objeto 'X' no encontrado}}\end{kframe}
+\end{kframe}
 \end{knitrout}
 
 En algunos casos, puede que los nombres de las filas sean importantes (por ejemplo, que sean el identificador). En ese caso, sería interesante guardar los nombres de las filas como columna en el dataframe:
@@ -652,9 +648,7 @@ En algunos casos, puede que los nombres de las filas sean importantes (por ejemp
 \begin{alltt}
 \hldef{X}\hlopt{$}\hldef{columna_nueva} \hlkwb{<-} \hlkwd{rownames}\hldef{(X)}
 \end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: objeto 'X' no encontrado}}\end{kframe}
+\end{kframe}
 \end{knitrout}
 
 \subsection{Guardar una sesión en R: .RData}
@@ -800,7 +794,7 @@ Se pueden crear vectores concatenando elementos, pero hay otras dos funciones pa
 \end{kframe}
 \end{knitrout}
 
-En este caso, es importante que el segundo argumento de \code{rep} sea un único valor (y repita todos los elementos del primer argumento las veces indicadas) o un conjunto de valores de las mismas dimensiones que el primer argumento. 
+En este caso, es importante que el segundo argumento de \code{rep} sea un único valor (y repita todos los elementos del primer argumento las veces indicadas) o un conjunto de valores de las mismas dimensiones que el primer argumento (y se asigne a cada valor su respectivo número de repetición). 
 
 \subsection{Crear vectores a partir de otros vectores}
 Se pueden concatenar dos vectores:
@@ -938,7 +932,7 @@ El operador \code{which} opera en un vector lógico, no en el vector directament
 \end{kframe}
 \end{knitrout}
 
-Es importante remarcar no utilizar T para TRUE y F para FALSE, aunque se pueda hacer. Esto se debe a que se puede redefinir el valor de T y F a que no correspondan a TRUE y FALSE (lo cual es muy difícil de debuggear), mientras que TRUE y FALSE siempre significarán lo mismo. 
+Es importante remarcar no utilizar T para TRUE y F para FALSE, aunque se pueda hacer. Esto se debe a que se puede redefinir el valor de T y F a que no correspondan a TRUE y FALSE (lo cual es muy difícil de debuggear), mientras que TRUE y FALSE siempre significarán lo mismo al no poder redefinirse. 
 
 \subsubsection{Cortocircuito de operaciones lógicas}
 Los operadores \code{\&\&} y \code{||} son cortocircuitos. Los dobles caracteres evalúan el segundo elemento sólo si la evaluación del primero no permite saber el resultado de la operación. Cuando se va a hacer un and y la primera condición es FALSE, no hace falta evaluar la segunda condición, ya que se conoce el resultado (de igual forma si en un or la primera condición es TRUE). Así, esto se puede utilizar para condicionar la ejecución de la segunda condición:
@@ -1787,11 +1781,11 @@ Una lista más compleja sería la siguiente:
 ## [1] "Hola"
 ## 
 ## $one.matrix
-##             [,1]        [,2]       [,3]        [,4]       [,5]
-## [1,]  0.03269034 -1.26879994  0.5216199 -0.39141748  0.2083325
-## [2,]  0.62178433 -0.16925331 -0.3062099  0.09689260  0.8701354
-## [3,]  0.72394706  0.02213798 -0.1923366  0.22351604 -1.2916442
-## [4,] -1.28638320 -0.83828716  0.9945079  0.06202947 -1.7985653
+##            [,1]        [,2]       [,3]       [,4]       [,5]
+## [1,]  0.0920279  1.03975237 -1.2380195  0.1806442 -0.3339129
+## [2,] -0.7956758  1.79239757  0.1462222 -0.5048045 -1.2486738
+## [3,]  1.2558761  0.08216092  0.7761052  0.0840628 -0.3764323
+## [4,]  0.6201011 -1.53646396 -0.2317764  1.8781362  1.1149862
 ## 
 ## $another.list
 ## $another.list$a
@@ -1805,36 +1799,36 @@ Una lista más compleja sería la siguiente:
 \hldef{listB[[}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{11}\hldef{)]]}
 \end{alltt}
 \begin{verbatim}
-## [1] -0.1923366
+## [1] 0.7761052
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[[}\hlnum{3}\hldef{]][}\hlnum{11}\hldef{]}
 \end{alltt}
 \begin{verbatim}
-## [1] -0.1923366
+## [1] 0.7761052
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[[}\hlnum{3}\hldef{]][}\hlnum{3}\hldef{,} \hlnum{3}\hldef{]}
 \end{alltt}
 \begin{verbatim}
-## [1] -0.1923366
+## [1] 0.7761052
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[[}\hlnum{3}\hldef{]][}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{3}\hldef{)]}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.7239471 0.7239471
+## [1] 1.255876 1.255876
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{4}\hldef{)]}
 \end{alltt}
 \begin{verbatim}
 ## $one.matrix
-##             [,1]        [,2]       [,3]        [,4]       [,5]
-## [1,]  0.03269034 -1.26879994  0.5216199 -0.39141748  0.2083325
-## [2,]  0.62178433 -0.16925331 -0.3062099  0.09689260  0.8701354
-## [3,]  0.72394706  0.02213798 -0.1923366  0.22351604 -1.2916442
-## [4,] -1.28638320 -0.83828716  0.9945079  0.06202947 -1.7985653
+##            [,1]        [,2]       [,3]       [,4]       [,5]
+## [1,]  0.0920279  1.03975237 -1.2380195  0.1806442 -0.3339129
+## [2,] -0.7956758  1.79239757  0.1462222 -0.5048045 -1.2486738
+## [3,]  1.2558761  0.08216092  0.7761052  0.0840628 -0.3764323
+## [4,]  0.6201011 -1.53646396 -0.2317764  1.8781362  1.1149862
 ## 
 ## $another.list
 ## $another.list$a

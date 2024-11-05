@@ -123,7 +123,7 @@ En resumen, en este ejemplo hemos visto los siguientes objetos:
 \begin{itemize}
 \item Vectores: colección de uno o más datos del mismo tipo.
 \item Matrices: conjunto de datos indexados por filas y columnas del mismo tipo. 
-\item Arrays: generalización de una matriz que no tiene límite de dimensiones (pero debe tener una estrucrtura rectangular). 
+\item Arrays: generalización de una matriz que no tiene límite de dimensiones (pero debe tener una estructura rectangular). 
 \item Data frames: estructura rectangular de dos dimensiones (filas y columnas) en la que cada columna puede ser de un tipo diferente. 
 \item Listas: cajón desastre en el que se pueden meter muchas cosas de muchos tipos distintos. Muchas funciones devuelven listas u objetos que contienen listas.
 \item Factores: vectores de un tipo especial (variable categórica).
@@ -133,7 +133,7 @@ En resumen, en este ejemplo hemos visto los siguientes objetos:
 En el siguiente código se muestran las distintas maneras de acceder a una matriz. La indexación funciona [filas, columnas], y si un campo está sin rellenar implica todos sus datos.
 
 <<eval=TRUE,tidy=FALSE, echo=TRUE, results=FALSE, fig.show='hide'>>=
-randomdata[1, ] 
+
 randomdata[, 1] 
 randomdata[2, ] 
 randomdata[, 2] 
@@ -179,7 +179,6 @@ pv2
 
 ## Compare with
 pvalues[1:10]
-
 @
 
 Ahora usamos apply. No lo hemos dicho explícitamente, pero cuando usamos apply estamos pasando una función (nuestra función anónima) a otra función. Esto es algo muy común y fácil en R: pasar funciones a otras funciones.
@@ -221,7 +220,7 @@ print(v1)
 v1
 @
 
-Se pueden separar dos comandos con un punto y coma (;), pero utilizarlo es raramente una buena idea, solo en casos muy concretos. 
+Se pueden separar dos comandos con un punto y coma (;), pero utilizarlo no suele ser una buena idea, solo en casos muy concretos. 
 
 <<>>=
 v1 <- 1 + 2; v1
@@ -323,7 +322,7 @@ Los comentarios también forman parte del estilo de código. Se suele separar la
 \section{Leer datos en R y guardarlos desde R}
 Hay muchas formas de cargar datos en R. Un ejemplo es \code{read.table} que sirve para todo tipo de datos, pero también hay algunos comandos más concretos como \code{read\_csv}.
 
-<<eval=FALSE>>=
+<<results='hide'>>=
 X <- read.table("data/hit-table-500-text.txt")
 head(X) 
 ## We could save what we care about in variables with better names
@@ -354,14 +353,15 @@ Al utilizar \code{summary}, en las columnas que sean de tipo int aparece un cont
 
 \subsection{Guardar tablas, datos y resultados}
 Es posible guardar los datos en uan matriz o de forma tabular con \code{write.table}:
-<<>>=
+<<eval=FALSE>>=
 write.table(X, file = "datos_guardados.txt")
 @
 
 El problema que tiene esto es que en el documento de salida tiene una columna adicional que indica el número de línea, y se emplean los espacios como separadores. Todo esto se puede especificar mediante argumentos concretos en la función:
 
-<<>>=
-write.table(X, file = "datos_guardados.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+<<eval=FALSE>>=
+write.table(X, file = "datos_guardados.txt", sep = "\t", 
+            quote = FALSE, row.names = FALSE)
 @
 
 En algunos casos, puede que los nombres de las filas sean importantes (por ejemplo, que sean el identificador). En ese caso, sería interesante guardar los nombres de las filas como columna en el dataframe:
@@ -373,7 +373,7 @@ X$columna_nueva <- rownames(X)
 \subsection{Guardar una sesión en R: .RData}
 R permite guardar una imagen de la sesión actual en un fichero de extensión .RData. Esto se realiza mediante la función \code{save.image}:
 
-<<echo=TRUE,results="hide">>=
+<<echo=TRUE,eval=FALSE,results="hide">>=
 save.image(file = "this.RData")
 getwd() #donde se guarda
 @
@@ -444,7 +444,7 @@ rep(1:3, 2)
 rep(1:3, 2:4)
 @
 
-En este caso, es importante que el segundo argumento de \code{rep} sea un único valor (y repita todos los elementos del primer argumento las veces indicadas) o un conjunto de valores de las mismas dimensiones que el primer argumento. 
+En este caso, es importante que el segundo argumento de \code{rep} sea un único valor (y repita todos los elementos del primer argumento las veces indicadas) o un conjunto de valores de las mismas dimensiones que el primer argumento (y se asigne a cada valor su respectivo número de repetición). 
 
 \subsection{Crear vectores a partir de otros vectores}
 Se pueden concatenar dos vectores:
@@ -497,7 +497,7 @@ vv <- c(1, 3, 10, 2, 9, 5, 4, 6:8)
 length(which(vv < 5))
 @
 
-Es importante remarcar no utilizar T para TRUE y F para FALSE, aunque se pueda hacer. Esto se debe a que se puede redefinir el valor de T y F a que no correspondan a TRUE y FALSE (lo cual es muy difícil de debuggear), mientras que TRUE y FALSE siempre significarán lo mismo. 
+Es importante remarcar no utilizar T para TRUE y F para FALSE, aunque se pueda hacer. Esto se debe a que se puede redefinir el valor de T y F a que no correspondan a TRUE y FALSE (lo cual es muy difícil de debuggear), mientras que TRUE y FALSE siempre significarán lo mismo al no poder redefinirse. 
 
 \subsubsection{Cortocircuito de operaciones lógicas}
 Los operadores \code{\&\&} y \code{||} son cortocircuitos. Los dobles caracteres evalúan el segundo elemento sólo si la evaluación del primero no permite saber el resultado de la operación. Cuando se va a hacer un and y la primera condición es FALSE, no hace falta evaluar la segunda condición, ya que se conoce el resultado (de igual forma si en un or la primera condición es TRUE). Así, esto se puede utilizar para condicionar la ejecución de la segunda condición:
