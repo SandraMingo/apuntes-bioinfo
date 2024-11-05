@@ -48,7 +48,6 @@ El comando \texttt{tr} \marginpar[\footnotesize tr] \ sirve para traducir o reem
 Los comandos \texttt{head} y \texttt{tail} \marginpar[\footnotesize head \\ tail] \ permiten mostrar las primeras y últimas líneas respectivamente, pero también tienen algunas opciones adicionales. Cuando se utiliza \texttt{-n -100}, se excluyen las últimas 100 líneas, mientras que \texttt{-n +100} hace que empiece en la fila 100. 
 
 El comando \texttt{fmt} \marginpar[\footnotesize fmt] \ permite formatear ficheros para que las líneas sean más pequeñas, recolocar palabras, etc. Por ejemplo, \texttt{fmt -70 -s} hace que cada línea muestre como máximo 70 caracteres, mostrando los caracteres restantes en una nueva línea.
-
 \begin{lstlisting}[language=bash]
 #Muestra los 10 procesos más recientes del sistema del usuario actual
 ps -ef | tr -s ' ' | grep 'sandra ' | tail -n 10
@@ -197,4 +196,174 @@ Una expresión regular que extraiga las líneas que contengan solo números ser�
 \begin{lstlisting}[language=bash]
 #! /bin/bash
 grep "^[0-9]*[0-9 ,]*$" $1
+\end{lstlisting}
+
+%05/11 - Gonzalo
+Para los símbolos especiales (como un punto o un circunflejo), se debe preceder el símbolo con una barra invertida para mostrar que el carácter es el que se quiere buscar, no por su significado en los patrones. Es decir, para buscar todas las líneas que empiecen con una letra mayúscula y terminen en un punto, se debe poner:
+\begin{lstlisting}[language=bash]
+#! /bin/bash
+grep '^[A-Z].*\.$'
+\end{lstlisting}
+
+Y las líneas que empiecen con circunflejo:
+\begin{lstlisting}[language=bash]
+#! /bin/bash
+grep '^\^' 
+\end{lstlisting}
+
+\subsection{Expresiones reguladas extendidas}
+\subsubsection{Agrupamientos}
+En algunas ocasiones se quieren agrupar expresiones. Esto se realiza con paréntesis, donde se especifica la cadena completa a buscar. Si queremos que los paréntesis se interpreten como delimitadores de grupos, se debe escapar de ellos con las barras invertidas. 
+\begin{lstlisting}[language=bash]
+#Buscar la cadena GTA seguida de cero o más repeticiones de GTA
+grep 'GTA\(GTA\)*'
+#Buscar la cadena GTA seguida de cero o más repeticiones de (GTA)
+grep 'GTA(GTA)*'
+\end{lstlisting}
+
+La opción -E permite interpretar patrones más extensos, entendiendo directamente los paréntesis como delimitadores de grupos. Así, cuando escapemos de ellos, lo que se interpreta es que se busque el símbolo del paréntesis dentro del patrón.
+\begin{lstlisting}[language=bash]
+#Buscar la cadena GTA seguida de cero o más repeticiones de (GTA)
+grep -E 'GTA\(GTA\)*'
+#Buscar la cadena GTA seguida de cero o más repeticiones de GTA
+grep -E 'GTA(GTA)*'
+\end{lstlisting}
+
+\subsubsection{Alternancia}
+También se pueden utilizar tuberías que funcionan como "or". 
+\begin{lstlisting}[language=bash]
+grep -E 'GACC|TCAG'
+grep -E '(AA|GG|TT|CC)(AA|GG|TT|CC)*'
+\end{lstlisting}
+
+\subsubsection{Cuantificadores}
+El símbolo ? indica una o ninguna repetición, mientras que + indica una o más repeticiones.
+\begin{lstlisting}[language=bash]
+grep -E '(GACC)?' #0 o 1
+grep -E '(GACC)+' #1 o más
+grep -E '(GACC)*' #0 o más
+\end{lstlisting}
+
+También es posible especificar el número de veces que se repita una serie de caracteres:
+\begin{lstlisting}[language=bash]
+#La cadena se repite exactamente 3 veces
+grep -E '(GACC){3}'
+#La cadena se repite entre 3 y 5 veces.
+grep -E '(GACC){3,5}'
+\end{lstlisting}
+
+Ejercicios: 
+\begin{lstlisting}[language=bash]
+#Escribir una expresión regular que encuentre cadenas sin T y con un número impar de G
+grep -E '[^TG]*G([^GT]*G[^GT]*G)*[^GT]*'
+
+#Escribir una expresión regular que encuentre direcciones de e-mail
+grep -E ' ^[a-z] (a-z0-9_)*\.(a-z0-9_)*@[a-z]*\.(es|com)'
+\end{lstlisting}
+
+\section{Expansiones}
+\subsection{Expansión aritmética}
+Para hacer operaciones aritméticas en la consola, se debe poner \texttt{\$(( operación ))}. 
+\begin{lstlisting}[language=bash]
+echo $((4+3))
+\end{lstlisting}
+
+\subsection{Expansión de llaves}
+Se pueden crear listas con llaves:
+\begin{lstlisting}[language=bash]
+{list}
+
+#Imprimir la lista A B C
+echo {A, B, C}
+
+#Imprimir la lista horse home hope horoscope
+echo ho{rs, m, p, roscop}e
+\end{lstlisting}
+
+Se pueden utilizar dos puntos que implican el rango entre los dos valores. Así, \texttt{{x..z}} genera la lista x y z. También se puede anidar:
+\begin{lstlisting}[language=bash]
+echo {z..a}
+echo{1..9}
+echo{X{1,2}, Y{3,4}}
+echo{X,Y}{1..4}
+\end{lstlisting}
+
+\section{Sustitución de comandos}
+Mediante la sustitución de comandos se puede utilizar la salida de un comando como expansión.
+\begin{lstlisting}[language=bash]
+$(comando)
+
+#Imprimir con echo la salida de ls
+echo $(ls)
+#Crear directorios con los nombres de los valores únicos de la cuarta columna de adult.data
+mkdir $(cut -d ',' -f 4 adult.data | sort | uniq)
+\end{lstlisting}
+
+\section{El comando \texttt{sed}}
+Sed permite editar documentos de texto sin editor. Por ejemplo, \texttt{sed 's/dog/cat/g'} sustituye (s) cada aparición (g) de dog por cat. Esto lo saca por pantalla, pero se puede redireccionar a otro fichero. En el caso de \texttt{sed '10,20s/dog/cat/g'}, la sustitución se realiza solo de las líneas 10 a 20. Si se eliminase la g, en una línea con varias apariciones solo se reemplazaría la primera.
+
+Los comandos básicos son d para borrar la línea actual, p para imprimir la línea actual y n. La línea puede ser un número, un rango o una expresión regular.
+\begin{lstlisting}[language=bash]
+sed '125s/dog/cat/' #sustituye solo la línea 125
+sed '$s/dog/cat/' #sustituye la última línea del fichero
+sed '1i\Header' #agrega el texto "Header" antes de la primera línea.
+sed '2~2s/dog/cat/' #sustituye las líneas pares
+sed '/^[A-Z]/s/dog/cat' #sustituye líneas que empiecen por mayúscula
+
+sed '10,20d' #borra las líneas 10 a 20
+sed '10,20!/s/dog/cat/' #reemplaza dog por cat en todas las líneas excepto de la 10 a la 20
+\end{lstlisting}
+
+También se pueden agrupar comandos.
+\begin{lstlisting}[language=bash]
+sed '/^$/d' #elimina todas las líneas que empiezan y acaban sin tener nada entre medias, es decir, las líneas en blanco
+seq 1 20 | sed -n '3,10p' #imprime las filas 3 y 10 de la salida de seq
+seq 1 20 | sed -n '/[26]/{s/1/5/;p}' #muestra las líneas que tengan un 2 o un 6, sustituyendo en ellas el 1 por el 5
+\end{lstlisting}
+
+\section{El comando \texttt{awk}}
+Este comando sirve para procesar texto línea a línea de cada fichero (como Excel en línea de comandos). awk sigue unas normas en la forma patrón \{acción\}. 
+\begin{lstlisting}[language=bash]
+awk 'BEGIN {print "Hello world"}' #imprime Hello world
+awk '/regexp/ { print $0 }' input-file #imprime las líneas que cumplan la expresión regular
+awk '/regexp/' input-file #igual que antes; la acción predeterminada es la impresión
+awk '/regexp/ {}' input-file #no hace nada
+awk 'length($0) > 50' input-file #imprime las líneas que tienen más de 50 caracteres
+\end{lstlisting}
+
+El ciclo awk es leer el fichero de entrada línea por línea. Por cada línea, awk intenta el patrón para cada norma. Para cada patrón que coincida, awk produce la acción de la norma de ese patrón. Si se cumplen varios patrones, entonces se ejecutan varias acciones. De igual forma, si no se cumple ningún patrón, no se ejecuta ninguna acción.
+
+Awk lee la entrada en unidades llamadas registros. Los registros están separados por un carácter llamado separador de registros. El separador de registros es, por defecto, el carácter de nueva línea, por lo que los registros suelen ser líneas. El separador de registros puede cambiarse asignando un valor diferente a la variable RS. Awk lleva la cuenta del número de registros que se han leído en la variable NR. 
+
+Cada registro se divide en partes llamadas campos. Por defecto, los campos están separados por espacios en blanco (uno o más espacios, tabuladores o nuevas líneas). El separador de campos se puede cambiar asignando la variable FS, o en la línea de comandos con la opción -F. El número de campos de un registro se almacena en la variable NF Se hace referencia a los campos con el signo \$:
+\begin{itemize}
+\item \$0 es todo el registro
+\item \$i, siendo i un número mayor que 0, es el campo número i.
+\item \$NF es el último campo
+\end{itemize}
+
+En el siguiente código, se imprime la longitud de la línea más larga. Al compienzo se inicializa la variable max que se va actualizando según se van pasando las líneas del fichero.
+\begin{lstlisting}[language=bash]
+awk 'BEGIN { max = 0 }
+	{ if (length($0) > max) max = length($0) }
+	END { print max }' adult.data
+\end{lstlisting}
+
+Otro ejemplo: imprimir la suma de los tamaños de los ficheros del usuario sandra:
+\begin{lstlisting}[language=bash]
+ls -l | awk 'BEGIN { sum = 0 } 
+	$3 == "sandra" { sum += $5 }
+	END {print sum }'
+\end{lstlisting}
+
+OFS es el separador de campo de salida. Así, se puede leer un fichero separado por comas y que el fichero de salida esté separado por punto y coma, por ejemplo.
+\begin{lstlisting}[language=bash]
+#Se cambia el delimitador de espacio a dos puntos, el segundo valor (b) se reemplaza por un string vacío, se crea una sexta variable (nueva) con valor new, se imprime la línea y se imprime el número de registros.
+echo a b c d | awk '{ OFS = ":"; $2 = "";
+										$6 = "new"; print $0;
+										print NF }'
+
+#Se imprime el número total de registros (6, a-f), se cambia NF a un valor de 3 (a-c), se asigna a la variable 1 el valor de la variable 1 y se imprime toda la línea (que como se ha modificado NF a 3, la línea ya no es abcdef, si no solo abc).
+echo a b c d e f | awk '{ print "NF =", NF; NF = 3;
+											$1 = $1; print $0 }'
 \end{lstlisting}
