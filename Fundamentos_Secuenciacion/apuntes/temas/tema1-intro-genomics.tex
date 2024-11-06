@@ -671,17 +671,24 @@ Existen opciones para reportar todos los alineamientos, solo los mejores, o aque
 
 La calidad de mapeo usa la misma escala Phred33 que las calidades de lectura, y los resultados de alineación se almacenan en formatos SAM, BAM o CRAM:
 \begin{itemize}
-\item \textbf{SAM:} Formato de texto plano.
+\item \textbf{SAM:} Formato de texto plano que se puede leer por la terminar.
 \item \textbf{BAM:} Versión binaria de SAM.
-\item \textbf{CRAM:} Similar a BAM, pero usado principalmente por el EBI, optimizado para almacenar datos de forma compacta.
+\item \textbf{CRAM:} Similar a BAM, pero usado principalmente por el EBI, optimizado para almacenar una cantidad masiva de datos de forma compacta.
 \end{itemize}
 
-Los formatos SAM y BAM se pueden convertir entre sí mediante la herramienta \textbf{samtools}, que permite especificar el nivel de compresión.
+Los formatos SAM y BAM se pueden convertir entre sí mediante la herramienta \textbf{samtools}, que permite especificar el grado de compresión.
 
-La cabecera del archivo BAM comienza con \@ y almacena metadatos como la versión de SAM, la ordenación, los contigs y la información general del mapeo. Los datos de alineación incluyen: 
+La cabecera del archivo S/BAM comienza con \@ y almacena metadatos como la versión de SAM, la ordenación, los contigs y la información general del mapeo. 
+\begin{figure}
+\centering
+\includegraphics[width = \textwidth]{figs/sam-header.png}
+\caption{Campos que incluye la cabecera de los ficheros SAM y BAM.}
+\end{figure}
+
+Los datos de alineación incluyen: 
 \begin{itemize} 
 \item Nombre de la lectura 
-\item Flag: Indica si la lectura está mapeada o no, entre otras propiedades. 
+\item Flag: Indica si la lectura está mapeada o no, entre otras propiedades. Sigue la codificación de \href{https://broadinstitute.github.io/picard/explain-flags.html}{picard}.
 \item Cromosoma: Donde se ha mapeado la lectura. 
 \item Posición inicial en el cromosoma 
 \item Calidad de mapeo 
@@ -689,3 +696,377 @@ La cabecera del archivo BAM comienza con \@ y almacena metadatos como la versió
 \item Información sobre el mapeo del par: En caso de secuenciación paired-end, se incluye la ubicación de la pareja de la lectura. 
 \end{itemize}
 
+%06/11 - Álvaro Serrano
+\subsubsection{Otros formatos de ficheros en bioinformática}
+\paragraph{Bed para intervalos}
+Este formato da información de coordenadas. Tiene 3 columnas obligatorias: cromosoma, posición de inicio (0 based) y posición de fin (1 based). Estas posiciones se pueden restar para obtener el tamaño del fragmento. Bed es un formato abierto que puede incluir otras columnas: nombre, score, strand, etc. Estos ficheros son de texto plano, aunque tienen la extensión .bed. 
+
+\paragraph{VCF para llamada de variantes}
+Las variantes son posiciones en el genoma que se marcan como mutadas. Tiene una cabecera que empieza con una doble almohadilla. Es un fichero de texto plano, que se puede binarizar en un fichero bcf. Dentro del cuerpo, las columnas son cromosoma, posición de la mutación, ID, nucleótido en la referencia, alternativa (nucleótido observado en la mutación), calidad (profundidad a la que se ha secuenciado, es decir, veces que se ha secuenciado una determinada posición), filtro , información adicional, tipo de formato y muestras. También aporta información sobre la fase, es decir, si una misma lectura detecta varias mutaciones.
+
+\paragraph{GTF y GFF para transcriptomas de referencia} 
+Estos archivos contienen anotaciones de elementos (secuencia codificante, non-coding RNA, etc) referidos al genoma, por lo que es útil para experimentos de transcriptómica. Cada característica está en una fila con nueve columnas separadas por tabuladores: nombre de la secuencia, fuente, característica, posición de inicio y de fin (ambas basadas en 1), score, strand, frame y atributos. 
+
+\paragraph{CSV y TSV para cuentas}
+No hay especificaciones de formato, ni límites en cuanto a la dimensión de la matriz. Son ficheros tabulares estándares. Es importante tener buenas prácticas, es decir, utilizar nombres intuitivos para columnas y filas, y no utilizar espacios, si no puntos o barras bajas. En las filas se guardan las observaciones, y las columnas las características. 
+
+\section{Secuenciación de tercera generación}
+La secuenciación de segunda generación, como los métodos basados en Illumina, permite obtener lecturas pequeñas (de alrededor de 100-300 pb) y de alta precisión, pero presenta limitaciones al enfrentar regiones genómicas complejas, como las altamente repetitivas, debido a la longitud de las lecturas. La secuenciación de tercera generación surge para superar estas limitaciones, proporcionando lecturas más largas (de varias kilobases) que permiten el análisis detallado de variantes estructurales, lo cual es esencial para estudios de genómica estructural y ensamblaje de genomas complejos.
+
+Se distinguen dos enfoques principales en la secuenciación de tercera generación:
+\begin{itemize}
+\item \textbf{Secuenciación de molécula única:} secuencia cada molécula individual sin amplificación clonal, reduciendo así el sesgo introducido por técnicas de PCR. Destacan PacBio y Oxford Nanopore, cada uno con sus características particulares en cuanto a precisión, velocidad y métodos de detección.
+\item \textbf{Aproximaciones sintéticas (basadas en Illumina):} permiten reconstruir secuencias largas a partir de lecturas cortas mediante ensamblaje. Estas no se consideran tercera generación en sentido estricto, pero comparten ciertos objetivos en cuanto a mejorar la resolución de lecturas largas (se habla de pseudotercera generación).
+\end{itemize}
+
+\subsection{Secuenciación de molécula única a tiempo real - PacBio}
+La tecnología de PacBio (Pacific Biosciences) emplea una única molécula de ADN de longitud variable, generalmente en el rango de varias kilobases. Se preparan fragmentos circulares de ADN al añadir estructuras químicas en forma de horquilla en los extremos, lo que permite la circularización de la molécula y una lectura continua de la secuencia.
+
+El secuenciador PacBio utiliza un flowcell con pocillos que contienen cámaras donde se detectan señales de fluorescencia para identificar los nucleótidos incorporados en tiempo real. Este proceso funciona gracias a una polimerasa anclada en cada pocillo que, al añadir nucleótidos marcados con fluorescencia, permite que la cámara capture el cambio y lea la secuencia. La velocidad de secuenciación es de aproximadamente 3 bases por segundo.
+
+Cada pocillo secuencia una molécula única no amplificada que proviene directamente del organismo a estudiar. Al estar la molécula circularizada, la secuenciación puede realizarse de manera continua: la polimerasa desnaturaliza la cadena, incorpora nucleótidos y la cadena sintetizada se deshibrida, permitiendo múltiples pasadas sobre la misma región.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = \textwidth]{figs/pacbio.png}
+\caption{La plataforma de secuenciación PacBio es una plataforma de secuenciación de lectura larga, también conocida como una de las tecnologías de secuenciación de tercera generación (TGS). La tecnología central, la molécula única en tiempo real (SMRT), permite generar lecturas de decenas de kilobases de longitud. Sobre la base de la «secuenciación por síntesis», la resolución de nucleótidos individuales se consigue mediante la guía de ondas de modo cero (ZMW), en la que sólo se ilumina un volumen limitado en la parte inferior (el lugar de síntesis de la molécula). Además, la secuenciación SMRT evita en gran medida el sesgo de secuencia específica en el sistema NGS, ya que la mayoría de los pasos de amplificación PCR no son necesarios en el proceso de construcción de bibliotecas.}
+\end{figure}
+
+PacBio permite dos enfoques distintos:
+\begin{itemize}
+\item \textbf{Circular Long Templates (CLT):} se secuencian fragmentos largos una sola vez para capturar grandes porciones de información estructural del ADN.
+\item \textbf{Circular Consensus Sequencing (CCS):} se secuencian fragmentos más cortos repetidamente, lo que permite asegurar la precisión en cada posición al promediar múltiples lecturas del mismo fragmento.
+\end{itemize}
+
+Este método es especialmente útil en el ensamblaje de genomas debido a la longitud de las lecturas. La calidad en el modo CCS puede alcanzar valores elevados (Q50), aunque en regiones de homopolímeros extensos puede haber dificultades en la discriminación precisa de nucleótidos individuales, generando posibles discrepancias con la secuencia real si solo se realiza una pasada.
+%PacBio Sequencing - How it works YouTube
+
+\subsection{Secuenciación por Nanoporos - Oxford Nanopore Technology (ONT)}
+La tecnología de secuenciación por nanoporos, desarrollada por Oxford Nanopore, utiliza proteínas alfa-hemolisinas que forman poros a través de los cuales pasa una cadena de ADN, generando una señal eléctrica que permite identificar los nucleótidos en tiempo real. Esta señal, medida como una interferencia de corriente (diferencia de potencial), permite la identificación directa de bases sin la necesidad de etiquetas de fluorescencia, lo cual distingue a ONT de otros métodos de secuenciación.
+
+En el caso de ADN de doble cadena, el sistema emplea una proteína motora que desnaturaliza el ADN, permitiendo que solo una cadena pase a través del poro. A medida que cada nucleótido atraviesa el poro, la interferencia generada, conocida como \textbf{"squiggle" o garabato}, se mide y se asocia con una secuencia de bases. Para traducir esta señal en una secuencia, se comparan patrones de squiggles generados experimentalmente con secuencias sintéticas (o "similares"), lo que permite identificar los nucleótidos en cada posición.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/nanopore.png}
+\caption{Una celda de flujo MinION contiene 512 canales con 4 nanoporos en cada canal, para un total de 2.048 nanoporos utilizados para secuenciar ADN o ARN. Los pocillos se insertan en una membrana de polímero resistente a la electricidad soportada por una matriz de microesqueletos conectados a un chip sensor. Cada canal se asocia a un electrodo independiente en el chip sensor y es controlado y medido individualmente por el circuito de integración de aplicaciones específicas (ASIC). La corriente iónica pasa a través del nanoporo porque se aplica un voltaje constante a través de la membrana, donde el lado trans está cargado positivamente. Bajo el control de una proteína motora, primero se desenrolla una molécula de ADN de doble cadena (o un dúplex híbrido de ARN-ADN) y, a continuación, el ADN o ARN monocatenario con carga negativa se desplaza a través del nanoporo, impulsado por el voltaje. A medida que los nucleótidos atraviesan el nanoporo, se mide un cambio de corriente característico que se utiliza para determinar el tipo de nucleótido correspondiente a unas 450 bases por s. "Nanopore sequencing technology, bioinformatics and applications, Nature, 2021"}
+\end{figure}
+
+El sistema ONT incluye una región denominada \textbf{k-mero} en el poro, que es el área de mayor estrechamiento y donde la señal de corriente es más intensa. Esto permite capturar mayor información y mejorar la precisión de la secuenciación, aunque este proceso es complejo y requiere el uso de algoritmos avanzados, como redes neuronales, para categorizar las señales y asignar los nucleótidos correspondientes.
+
+La tecnología de ONT es altamente precisa y tiene la capacidad de secuenciar hasta 500 megabases, con un tamaño promedio de lectura de entre 4-6 kilobases. Sin embargo, la calidad de las lecturas puede ser inferior a otros métodos de secuenciación, con una precisión de aproximadamente 92-93\%, debido en parte a las limitaciones en la resolución de homopolímeros y otras regiones repetitivas.
+
+A pesar de estas limitaciones, la tecnología ONT es portátil, escalable y rápida, lo que permite lecturas largas sin necesidad de amplificación por PCR. La tecnología admite modificaciones químicas en el ADN, como la adición de un "hairpin" (estructura en horquilla), que permite secuenciar ambas hebras del ADN en un solo paso.
+
+Las principales desventajas de la secuenciación por nanoporos son la elevada tasa de error y las dificultades en regiones con homopolímeros extensos, así como su dependencia de "training sets" (conjuntos de datos de entrenamiento) actualizados para mejorar la precisión en el análisis de secuencias complejas.
+
+\subsection{Consideraciones generales sobre la secuenciación de tercera generación}
+Las técnicas de secuenciación de tercera generación han revolucionado el campo de la genómica estructural, permitiendo lecturas largas que facilitan el ensamblaje de genomas completos y el análisis de variaciones estructurales. Sin embargo, en comparación con la secuenciación de segunda generación, presentan una menor precisión en general. A medida que se integran algoritmos de inteligencia artificial y técnicas avanzadas de procesamiento de señales, la precisión de estas tecnologías sigue mejorando.
+
+Un desafío específico en estas tecnologías es la susceptibilidad de las moléculas únicas a la adición de múltiples nucleótidos, lo que puede generar errores en homopolímeros y regiones complejas del ADN.
+
+\subsection{Resumen}
+La secuenciación de tercera generación permite secuenciar templates más largos, siendo así mejor para variantes estructurales. Además, no es necesaria la amplificación clonal. En \textbf{PacBio}, se utilizan templates circularizados. La polimerasa incorpora dNTPs con fluoróforos que se capturan por una cámara directamente cuando se unen. Es muy rápido (3 bases por segundo), pero sufre en regiones con homopolímeros. Se secuencian los templates largos una vez con una tasa de error alta o templates cortos varias veces para obtener el consenso. En \textbf{Nanopore}, se comprueba directamente la composición de un ssDNA mediante la interpretación de la interrupción de la corriente (el garabato o squiggle). Dentro del poro, la zona estrecha dtermina el k-mero. Éste sufre más con homopolímeros cuando el k-mero es más corto. Tiene una tasa de error alta, pero se está optimizando con machine learning. También puede haber problemas con bases modificadas. Los equipos son muy portables, lo que supone una gran ventaja.
+
+\subsection{Quizz}
+\begin{enumerate}
+\item What is an advantage of hash table-based mapping?
+\begin{itemize}
+\item Allows alignment without reference
+\item Requires less memory
+\item Higher speed and efficiency
+\item Only used with long reference genomes
+\end{itemize}
+
+Answer: Higher speed and efficiency
+
+\item What does the variant allele frequency (VAF) mean?
+\begin{itemize}
+\item The number of observed reads that match a specific variant
+\item The percentage of errors in a sequence
+\item The number of sequences in a reference genome
+\item The quality of the sequence in an alignment
+\end{itemize}
+
+Answer: The number of observed reads that match a specific variant
+
+\item What does a high Phred Q value in quality scores mean?
+\begin{itemize}
+\item Higher probability of error
+\item Higher accuracy in the called base
+\item Low quality sequences
+\item Systematic error in final bases
+\end{itemize}
+
+Answer: Hiher accuracy in the called base
+
+\item What is an example of a short read aligner (SRA)?
+\begin{itemize}
+\item ClustalW
+\item BWA
+\item Excel
+\item SnapGene
+\end{itemize}
+
+Answer: BWA
+
+\item What does 'NGS' mean?
+\begin{itemize}
+\item Next Genomic Study
+\item Next Generation Sequencing
+\item Next Generation Science
+\item Next Generation Studies
+\end{itemize}
+
+Answer: Next Generation Sequencing
+
+\item What file format is used to represent DNA sequences with their quality scores?
+\begin{itemize}
+\item VCF
+\item SAM
+\item FASTQ
+\item GFF
+\end{itemize}
+
+Answer: FASTQ
+
+\item What does a GTF/GFF file describe in bioinformatics?
+\begin{itemize}
+\item DNA mutations
+\item Genomic annotations
+\item Sequence variants
+\item Reference sequences
+\end{itemize}
+
+Answer: Genomic annotations
+
+\item What is the goal of unique molecular identifiers (UMI)?
+\begin{itemize}
+\item Identify individual molecules and reduce PCR duplicates
+\item Align reference DNA
+\item Improve the VCF file format
+\item Store alignment quality
+\end{itemize}
+
+Answer: Identify individual molecules and reduce PCR duplicates
+
+\item What type of file is used to represent genomic coordinates in interval analysis?
+\begin{itemize}
+\item FASTA
+\item BAM
+\item BED
+\item CRAM
+\end{itemize}
+
+Answer: BED
+
+\item What type of format is commonly used to store the reference genome?
+\begin{itemize}
+\item FASTA
+\item BED
+\item BAM
+\item SAM
+\end{itemize}
+
+Answer: FASTA
+
+\item What do UMIs represent in sequencing?
+\begin{itemize}
+\item Duplication indicators
+\item Unique molecular identifiers
+\item Adapter sequences
+\item Alignment marks
+\end{itemize}
+
+Answer: Unique molecular identifiers
+
+\item What is the main purpose of a library in sample preparation?
+\begin{itemize}
+\item Store sequence data
+\item Fragment DNA
+\item Generate DNA fragments from a sample for sequencing
+\item Calculate the quality of the sequence
+\end{itemize}
+
+Answer: Generate DNA fragments from a sample for sequencing
+
+\item What component in a VCF file indicates the score assigned to a variant call?
+\begin{itemize}
+\item Chr
+\item Qual
+\item Pos
+\item Alt
+\end{itemize}
+
+Answer: Qual
+
+\item What is the BED format used for in bioinformatics?
+\begin{itemize}
+\item Store alignments
+\item Represent genomic coordinates
+\item Sequence DNA
+\item Store quality data
+\end{itemize}
+
+Answer: Represent genomic coordinates
+
+\item What file format is used to report genetic variations?
+\begin{itemize}
+\item SAM
+\item FASTA
+\item GTF
+\item VCF
+\end{itemize}
+
+Answer: VCF
+
+\item What is the Phred Q value if the probability of error is 1 in 100?
+\begin{itemize}
+\item 10
+\item 20
+\item 30
+\item 40
+\end{itemize}
+
+Answer: 20
+
+\item What technology uses real-time single-molecule sequencing?
+\begin{itemize}
+\item Illumina
+\item PacBio
+\item SOLiD
+\item ABI
+\end{itemize}
+
+Answer: PacBio
+
+\item What is the CIGAR line in a SAM/BAM file?
+\begin{itemize}
+\item An ASCII code line
+\item A compressed representation of an alignment
+\item The identification of the reference sequence
+\item A metadata line
+\end{itemize}
+
+Answer: A compressed representation of an alignment
+
+\item Which of the following is a characteristic of BAM files?
+\begin{itemize}
+\item They are human-readable text files
+\item They are binary alingment files
+\item They cannot be compressed
+\item They are reference genome files
+\end{itemize}
+
+Answer: They are binary alignment files
+
+\item What is the function of adapters in NGS?
+\begin{itemize}
+\item Sequence RNA fragments
+\item Ligate DNA fragments to flow cells
+\item Fragment DNA
+\item Adjust the quality of the sequence
+\end{itemize}
+
+Answer: Ligate DNA fragments to flow cells
+
+\item What is one of the mandatory columns in a VCF file?
+\begin{itemize}
+\item Qual
+\item ID
+\item REF
+\item All of the above
+\end{itemize}
+
+Answer: All of the above
+
+\item Which of the following options is NOT a stage in library preparation?
+\begin{itemize}
+\item Fragmentation
+\item Ligate adapters
+\item Mapping analysis
+\item Purification
+\end{itemize}
+
+Answer: Mapping analysis
+
+\item What file is a human-readable text format that contains sequence alignment information?
+\begin{itemize}
+\item SAM
+\item BAM
+\end{itemize}
+
+Answer: SAM
+
+\item What file is a human-readable text format that contains sequence alignment information?
+\begin{itemize}
+\item SAM
+\item BAM
+\item VCF
+\item GFF
+\end{itemize}
+
+Answer: SAM
+
+\item What is the main feature of nanopore sequencing?
+\begin{itemize}
+\item Ionic current monitoring to detect DNA composition
+\item Use of fluorescent tags on each base
+\item Low throughput
+\item Only sequence RNA
+\end{itemize}
+
+Answer: Ionic current monitoring to detect DNA composition
+
+\item What type of alignment is characteristic of NGS?
+\begin{itemize}
+\item Alignment based on long sequences
+\item Short read alignment to a reference genome
+\item Alignment with very low quality sequences
+\item Alignment without the need for reference
+\end{itemize}
+
+Answer: Short read alignment to a reference genome
+
+\item What library preparation method uses the transposase enzyme?
+\begin{itemize}
+\item Ligate adapters directly
+\item Ligate UMIs
+\item Tagmentation
+\item Generate high-quality sequences
+\end{itemize}
+
+Answer: Tagmentation
+
+\item What file is the binary version of a SAM file?
+\begin{itemize}
+\item CRAM
+\item BAM
+\item FASTA
+\item CSV
+\end{itemize}
+
+Answer: BAM
+
+\item What file is typically used to store tabular data in bioinformatics?
+\begin{itemize}
+\item CSV/TSV
+\item BED
+\item FASTA
+\item CRAM
+\end{itemize}
+
+Answer: CSV/TSV
+
+\item What is the main advantage of third-generation sequencing?
+\begin{itemize}
+\item Low accuracy
+\item Long reads without template amplification
+\item High speed without alignment
+\item Low error rate in homopolymeric regions
+\end{itemize}
+
+Answer: Long reads without template amplification
+\end{enumerate}
+
+%aserrano@cnic.es
