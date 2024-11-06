@@ -1506,6 +1506,10 @@ Si cargamos un paquete, sirve con \code{library(paquete)}. No obstante, puede ha
 trace(randomForest:::predict.randomForest, edit = TRUE)
 @
 
+Las \textbf{funciones exportadas} son aquellas que el paquete pone a disposición del usuario final. Esto significa que cualquier persona que cargue el paquete puede llamar a estas funciones directamente. Así, cuando la función está exportada, el usuario solo necesita escribir el nombre de la función para ejecutarla, siempre que el paquete esté cargado.
+
+Las \textbf{funciones no exportadas} son aquellas que están presentes en el paquete pero no están pensadas para ser utilizadas por el usuario final. Estas funciones suelen ser de uso interno, y los desarrolladores del paquete las utilizan para realizar tareas auxiliares o para construir las funciones exportadas de manera modular. No aparecen en la lista de funciones del paquete y no son accesibles directamente.
+
 \section{Programación orientada a objetos: clases S3 y S4}
 En R hay varios sistemas de programación orientada a objetos. Los sistemas originales en R son los sistemas S3 y S4, siendo los más extendidos. 
 

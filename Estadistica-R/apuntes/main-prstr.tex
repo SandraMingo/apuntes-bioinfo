@@ -187,7 +187,7 @@ Para leer el código, se empieza por la función más interna, que en este caso 
 \hlkwd{sum}\hldef{(pvalues} \hlopt{<=} \hlnum{0.05}\hldef{)}
 \end{alltt}
 \begin{verbatim}
-## [1] 59
+## [1] 55
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1781,11 +1781,11 @@ Una lista más compleja sería la siguiente:
 ## [1] "Hola"
 ## 
 ## $one.matrix
-##            [,1]        [,2]       [,3]       [,4]       [,5]
-## [1,]  0.0920279  1.03975237 -1.2380195  0.1806442 -0.3339129
-## [2,] -0.7956758  1.79239757  0.1462222 -0.5048045 -1.2486738
-## [3,]  1.2558761  0.08216092  0.7761052  0.0840628 -0.3764323
-## [4,]  0.6201011 -1.53646396 -0.2317764  1.8781362  1.1149862
+##            [,1]         [,2]       [,3]        [,4]       [,5]
+## [1,]  0.7138685  0.006722624 -0.3526410  0.22530026  0.1095514
+## [2,] -1.0418991  0.518587239  1.6283734  0.47995543 -1.3771762
+## [3,]  1.0442272 -2.191620150  1.7483837  0.21057434 -1.2474583
+## [4,]  1.1872855  0.996322371 -0.3794757 -0.05078153 -0.1741111
 ## 
 ## $another.list
 ## $another.list$a
@@ -1799,36 +1799,36 @@ Una lista más compleja sería la siguiente:
 \hldef{listB[[}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{11}\hldef{)]]}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.7761052
+## [1] 1.748384
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[[}\hlnum{3}\hldef{]][}\hlnum{11}\hldef{]}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.7761052
+## [1] 1.748384
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[[}\hlnum{3}\hldef{]][}\hlnum{3}\hldef{,} \hlnum{3}\hldef{]}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.7761052
+## [1] 1.748384
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[[}\hlnum{3}\hldef{]][}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{3}\hldef{)]}
 \end{alltt}
 \begin{verbatim}
-## [1] 1.255876 1.255876
+## [1] 1.044227 1.044227
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{4}\hldef{)]}
 \end{alltt}
 \begin{verbatim}
 ## $one.matrix
-##            [,1]        [,2]       [,3]       [,4]       [,5]
-## [1,]  0.0920279  1.03975237 -1.2380195  0.1806442 -0.3339129
-## [2,] -0.7956758  1.79239757  0.1462222 -0.5048045 -1.2486738
-## [3,]  1.2558761  0.08216092  0.7761052  0.0840628 -0.3764323
-## [4,]  0.6201011 -1.53646396 -0.2317764  1.8781362  1.1149862
+##            [,1]         [,2]       [,3]        [,4]       [,5]
+## [1,]  0.7138685  0.006722624 -0.3526410  0.22530026  0.1095514
+## [2,] -1.0418991  0.518587239  1.6283734  0.47995543 -1.3771762
+## [3,]  1.0442272 -2.191620150  1.7483837  0.21057434 -1.2474583
+## [4,]  1.1872855  0.996322371 -0.3794757 -0.05078153 -0.1741111
 ## 
 ## $another.list
 ## $another.list$a
@@ -3302,6 +3302,10 @@ Si cargamos un paquete, sirve con \code{library(paquete)}. No obstante, puede ha
 \end{alltt}
 \end{kframe}
 \end{knitrout}
+
+Las \textbf{funciones exportadas} son aquellas que el paquete pone a disposición del usuario final. Esto significa que cualquier persona que cargue el paquete puede llamar a estas funciones directamente. Así, cuando la función está exportada, el usuario solo necesita escribir el nombre de la función para ejecutarla, siempre que el paquete esté cargado.
+
+Las \textbf{funciones no exportadas} son aquellas que están presentes en el paquete pero no están pensadas para ser utilizadas por el usuario final. Estas funciones suelen ser de uso interno, y los desarrolladores del paquete las utilizan para realizar tareas auxiliares o para construir las funciones exportadas de manera modular. No aparecen en la lista de funciones del paquete y no son accesibles directamente.
 
 \section{Programación orientada a objetos: clases S3 y S4}
 En R hay varios sistemas de programación orientada a objetos. Los sistemas originales en R son los sistemas S3 y S4, siendo los más extendidos. 

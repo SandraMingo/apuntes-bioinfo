@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.10.30)  5 NOV 2024 12:11
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.10.30)  6 NOV 2024 12:51
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2434,14 +2434,14 @@ n matemática[]
 [67]
 
 [68]
-Overfull \hbox (20.06252pt too wide) in paragraph at lines 3391--3391
+Overfull \hbox (20.06252pt too wide) in paragraph at lines 3395--3395
 [][]\T1/cmtt/m/n/12 uu[] []<-[] []to_CG[][]([][]data.frame[][]([][]Cholesterol[
 ] []=[] []1[][]:[][]10[][],[] []Gene[] []=[] []11[][]:[][]20[][],[] []Kind[] []
 =[] []"Cl1"[][]))[][] 
  []
 
 
-Overfull \hbox (20.06252pt too wide) in paragraph at lines 3419--3419
+Overfull \hbox (20.06252pt too wide) in paragraph at lines 3423--3423
 [][]\T1/cmtt/m/n/12 uu[] []<-[] []to_CG[][]([][]data.frame[][]([][]Cholesterol[
 ] []=[] []1[][]:[][]10[][],[] []Gene[] []=[] []11[][]:[][]20[][],[] []Kind[] []
 =[] []"Cl1"[][]))[][] 
@@ -2450,26 +2450,26 @@ Overfull \hbox (20.06252pt too wide) in paragraph at lines 3419--3419
 
 
 [69]
-Overfull \hbox (13.88902pt too wide) in paragraph at lines 3469--3469
+Overfull \hbox (13.88902pt too wide) in paragraph at lines 3473--3473
 []    []\T1/cmtt/m/n/12 expect_s3_class[][]([][]to_CG[][]([][]data.frame[][]([]
 []Cholesterol[] []=[] []1[][]:[][]10[][],[] []Gene[] []=[] []11[][]:[][]20[][],
 [][] 
  []
 
 
-Overfull \hbox (1.54204pt too wide) in paragraph at lines 3470--3470
+Overfull \hbox (1.54204pt too wide) in paragraph at lines 3474--3474
 []                                     []\T1/cmtt/m/n/12 Kind[] []=[] []"Cl1"[]
 [])),[] []"Cholest_Gene"[][])[][] 
  []
 
 
-Overfull \hbox (13.88902pt too wide) in paragraph at lines 3474--3474
+Overfull \hbox (13.88902pt too wide) in paragraph at lines 3478--3478
 []                 []\T1/cmtt/m/n/12 "For now, only methods for data.frame are 
 available"[][],[][] 
  []
 
 
-Overfull \hbox (13.88902pt too wide) in paragraph at lines 3482--3482
+Overfull \hbox (13.88902pt too wide) in paragraph at lines 3486--3486
 []    []\T1/cmtt/m/n/12 expect_s3_class[][]([][]to_CG[][]([][]data.frame[][]([]
 []Cholesterol[] []=[] []1[][]:[][]10[][],[] []Gene[] []=[] []11[][]:[][]20[][],
 [][] 
@@ -2478,20 +2478,20 @@ Overfull \hbox (13.88902pt too wide) in paragraph at lines 3482--3482
 
 
 [70]
-Overfull \hbox (13.88902pt too wide) in paragraph at lines 3534--3534
+Overfull \hbox (13.88902pt too wide) in paragraph at lines 3538--3538
 []                 []\T1/cmtt/m/n/12 "For now, only methods for data.frame are 
 available"[][],[][] 
  []
 
 
-Overfull \hbox (13.88902pt too wide) in paragraph at lines 3540--3540
+Overfull \hbox (13.88902pt too wide) in paragraph at lines 3544--3544
 []    []\T1/cmtt/m/n/12 expect_s3_class[][]([][]to_CG[][]([][]data.frame[][]([]
 []Cholesterol[] []=[] []1[][]:[][]10[][],[] []Gene[] []=[] []11[][]:[][]20[][],
 [][] 
  []
 
 
-Overfull \hbox (32.4095pt too wide) in paragraph at lines 3542--3542
+Overfull \hbox (32.4095pt too wide) in paragraph at lines 3546--3546
 []                                     []\T1/cmtt/m/n/12 whatever[] []=[] []"ab
 cd"[][])),[] []"Cholest_Gene"[][])[][] 
  []
@@ -2522,7 +2522,7 @@ Package rerunfilecheck Info: File `main-prstr.out' has not changed.
 Here is how much of TeX's memory you used:
  34807 strings out of 473897
  628080 string characters out of 5725989
- 1126920 words of memory out of 5000000
+ 1131920 words of memory out of 5000000
  56787 multiletter control sequences out of 15000+600000
  583842 words of font info for 87 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -2554,7 +2554,7 @@ pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/
 cm/cmsy8.pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/public/
 lm/lmssbx10.pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/urw/
 palatino/uplr8a.pfb>
-Output written on main-prstr.pdf (76 pages, 664125 bytes).
+Output written on main-prstr.pdf (76 pages, 664918 bytes).
 PDF statistics:
  1510 PDF objects out of 1728 (max. 8388607)
  156 named destinations out of 1000 (max. 500000)
