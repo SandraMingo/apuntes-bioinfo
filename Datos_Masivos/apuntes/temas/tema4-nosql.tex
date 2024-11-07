@@ -1,0 +1,81 @@
+%07/11 - Estrella
+\chapter{Bases de datos no relacionales}
+\section{Bases de datos no SQL}
+Una base de datos es un conjunto de datos interrelacionados. Los datos registran eventos significativos de cualquier tamaño y diferentes grados de complejidad. Para gestionar las bases de datos, hay sistemas de gestión de bases de datos (SGBD). Se trata de un software que permite \textit{definir los datos a almacenar} (especificando el tipo de datos, su estructura y restricciones), \textit{construir la base de datos para almacenar la información} y \textit{manipular los datos} (consultar los datos, actualizarlos y generar informes). Por ejemplo, en el caso de una base de datos para la universidad, se tendría que especificar la estructura de los datos: 5 ficheros relativos a estudiantes, asignaturas, notas, requerimientos y grupos. Se debe especificar la estructura de cada una de las tablas y los tipos de datos para cada campo. Una vez hecho eso, se va guardando los datos en cada una de las tablas. Finalmente, se pueden manipular los datos para obtener los resultados a la lista de notas del estudiante Pérez, obtener los estudiantes registrados en la asignatura X, generar un nuevo grupo de la asignatura, etc. Las bases de datos relacionales se pueden representar gráficamente mediante modelos entidad-relación y modelos relacionales. La participación total se distingue de la parcial mediante puntas de flecha rellenas o vacías respectivamente. De igual forma, puede haber una o dos puntas de flecha para diferenciar las relaciones a uno y a muchos.
+
+El sistema de gestión de bases de datos también debe asegurar la persistencia de datos, es decir, almacenar los datos de forma segura, mantener la consistencia de los datos (si alguna persona la modifica, que se actualice para todas las demás personas) y asegurar la disponibilidad de los datos mediante copias de seguridad.
+
+\subsection{Motivación para las bases de datos no SQL}
+Las bases de datos no SQL tienen cuatro razones principales:
+\begin{itemize}
+\item \textbf{Escalabilidad:} se define como escalabilidad vertical el cambio de un ordenador o servidor a otro más potente. La desventaja es que se debe parar la base de datos puntualmente durante la migración del sistema. La alternativa es la escalabilidad horizontal, es decir, formar una red de varios ordenadores o servidores conectados.
+\item \textbf{Coste:} las bases de datos tradicionales funcionan mediante licencias basadas en el número de usuarios. En el caso de las aplicaciones web, no se puede estimar el número de usuarios que van a acceder a la base de datos a todas horas. Los sistemas de gestión de noSQL son de código abierto y, por tanto, gratuitos.
+\item \textbf{Flexibilidad:} las bases de datos relacionales dependen de un buen diseño de tablas y columnas desde el principio. Además, todas las filas de la tabla tienen las mismas columnas, lo que en algunos casos puede ser un desperdicio de espacio si muchos campos se deben mantener vacíos (por ejemplo, en el caso de comercios online que venden una gran variedad de productos, cada uno con características diferentes).
+\item \textbf{Disponibilidad}
+\end{itemize}
+
+Las bases de datos tradicionales o relacionales siguen un modelo ACID: atomicidad, consistencia, aislamiento y durabilidad. La atomicidad hace referencia a operaciones indivisibles, obligando a que se ejecuten todos los pasos o ninguno. La base de datos no se puede dejar en un estado en el que se viole la integridad de los datos; debe ser consistente. Además, las transacciones no son visibles a otros usuarios hasta que la ejecución se haya completado, siendo así operaciones aisladas. Finalmente, los datos deben estar guardados en un medio persistente para que tenga una gran durabilidad. 
+
+Las bases de datos no SQL siguen un modelo BASE: básicamente disponibles, estado suave (soft state) y eventualmente consistente. Como las bases de datos siempre están en una red de servidores, están protegidos de fallos parciales. Los servidores vecinos se pueden hacer cargo de las tareas de un servidor, permitiendo que los datos estén disponibles. En algunos casos, las bases de datos pueden estar en un estado inconsistente, pero entonces se activa el proceso de replicación. El estado suave hace referencia a que el estado puede cambiar a lo largo del tiempo, habiendo instantes en el que los datos se están replicando en los servidores.
+
+\subsection{Not only SQL}
+NoSQL viene de Not Only SQL. La sintaxis utilizada es similar a SQL, pero no se utiliza como lenguaje de consulta. No se utilizan tablas ni join, y tienen una arquitectura distribuida (escalabilidad horizontal). Las ventajas son la flexibilidad de los datos. Se puede cambiar el esquema de las bases de datos sobre la marcha sin tener que parar la base de datos. Además, se pueden procesar en ordenadores con pocos recursos, y hay mecanismos de optimización para las consultas con grandes cantidades de datos. 
+
+Hay cuatro tipos de bases de datos noSQL:
+\begin{itemize}
+\item \textbf{Key-value:} estas bases de datos tienen claves que almacenan datos. Por ejemplo, en el comercio electrónico, se pueden utilizar varios pares clave-valor: accountNumber, Name, numItems y custType. Todos los clientes que utilicen esta web van a tener esas cuatro características, por lo que los nombres de las claves van precedidos de la clave primaria o un ID: cust1.accountNumber, cust2.name, cust1.numItems, etc para los customers y wrhs1.number wrhsw1.address, etc para los almacenes (warehouses). Lo importante es que la clave no se repita; es una etiqueta única. Hay espacios de nombres (namespaces) que permite la colección de identificadores. Las claves deben ser únicas dentro de un espacio de nombres. Puede haber varios espacios de nombres dentro de una misma base de datos, denominados como bucket. 
+
+Los valores pueden ser tan simples como una cadena de texto o tan complejos como imágenes. Tienen una gran flexibilidad, ya que las cadenas pueden tener una longitud indeterminada, puede haber imágenes o no estar disponible. Es importante incluir comprobaciones explícitas en los programas, ya que hay libertad total a la hora de asignar cualquier valor a una clave.
+
+En estas bases de datos no hay tablas, no hay columnas, no hay restricciones, no hay joins o claves externas y no se emplea SQL. No obstante, también hay algunas similitudes. Los buckets se pueden asemejar a los modelos relacionales.
+
+\item \textbf{Document-oriented:} los documentos hacen referencia a que la información almacenada está en formato JSON o XML. No es necesario crear un esquema previo, ya que al añadir un documento, las estructuras necesarias se crean.  En las bases de datos noSQL de clave-valor, los documentos solo se podrían acceder mediante la clave, pero en este tipo se pueden utilizar lenguajes de consulta que permiten operaciones de comparación para buscar por un valor concreto. Se pueden almacenar documentos anidados, evitando así los join. 
+
+\item \textbf{Column-oriented:} en estas bases de datos, una columna es un nombre con un valor asociado. Una fila sería un conjunto de columnas, pero diferentes filas pueden tener diferentes columnas. Cuando hay muchas columnas, se puede agrupar en colecciones. Estas bases de datos no requieren esquema y se pueden añadir columnas cuando se necesitan. Están pensadas para conjuntos de datos en los que hay muchas columnas. El lenguaje de consulta es similar a SQL, pero tiene una sintaxis específica.
+
+\item \textbf{Graph-oriented:} la forma de representación de los datos es el grafo. Cada nodo tiene flechas a objetos adyacentes. Es más rápido de buscar operaciones entre nodos que en las bases de datos relacionales, sobre todo en casos donde sería necesario utilizar join de forma recursiva. Estas bases de datos se suelen utilizar en redes sociales, sistemas de recomendación y manejo de redes.
+
+Los grafos son un conjunto de nodos (vertex) relacionados mediante arcos (edges). Cuatro ejemplos de información que se puede representar en un grafo:
+\begin{itemize}
+\item \textbf{Localización geográfica:} muestra los caminos entre distintas localizaciones en ambos sentidos.
+\item \textbf{Enfermedades infecciosas}: los nodos van a ser personas, las cuales tienen propiedades (contagiado, inmune, no contagiado con enfermedad pasada, etc). Los arcos muestran la probabilidad de pasar la enfermedad.
+\item \textbf{Part-of:} relación de todos los componentes de vehículos
+\item \textbf{Redes sociales}: grafo bipartito con dos tipos de nodos (usuarios y post) y solo hay una relación (like de un usuario a un post).
+\end{itemize}
+
+Estas bases de datos representan una serie de ventajas:
+
+\textit{Consultas más rápidas:} En una base de datos tradicional, hay una tabla para estudiantes, asignaturas y matrícula. Para saber nombres de asignaturas en las que está matriculado cada estudiante, habrá que hacer un natural join de las tres tablas. En un grafo bipartito con nodos de estudiante y asignatura, encontrar las asignaturas de cada estudiante es más sencillo, ya que es simplemente seguir los caminos de cada nodo. 
+
+\textit{Modelaje más simple:} En el caso de una red social, es más sencillo ver qué usuario da like a qué post que tener una tabla de usuarios, una de likes y una de posts y unirlas. 
+
+\textit{Múltiples relaciones entre nodos o entidades:} Los grafos permiten facilitar la búsqueda de alternativas entre los distintos nodos.
+
+Los grafos tienen cuatro elementos: nodos, arcos, caminos y ciclos. Los arcos pueden tener propiedades y estar o no dirigidos. En el programa Neo4j los grafos son todos dirigidos. Los caminos son la operación más frecuente, haciendo referencia a la sucesión de los nodos y arcos. Los ciclos se pueden interpretar como arcos de un nodo a sí mismo.
+
+Los grafos tienen tres operaciones fundamentales.
+La \textit{unión} de grafos muestra la conjunción de todos los nodos y arcos de los grafos. La \textit{intersección} muestra los nodos y arcos en común. Las \textit{operaciones de recorrido} de grafos permiten encontrar caminos que tengan determinadas especificaciones que se detallan en la consulta (empezar en el nodo X, terminar en el nodo Y, etc.).
+
+Los grafos y nodos tienen varias propiedades:
+\begin{itemize}
+\item \textbf{Isomorfismos}: son dos grafos equivalentes cuando tienen los mismos nodos y arcos, aunque tengan disposición distinta.
+\item \textbf{Orden y tamaño}: el orden de un grafo es el número de nodos, mientras que el tamaño hace referencia al número de arcos. Un tipo de grafos especiales es el clique, el cual tiene nodos que están unidos todos con todos.
+\item \textbf{Grado}: el grado de un nodo es el número de arcos que inciden en el nodo. En general, da igual que entren o salgan los arcos. En el caso de que fuera dirigido, se habla de grado de entrada y de salida. 
+\item \textbf{Cercanía}: muestra lo bien relacionado que está cada nodo, es decir, que con una menor cantidad de saltos entre nodos se llegue a la mayor cantidad de nodos. Esto es importante en las redes sociales. Se calcula mediante la fórmula $C(x) = \frac{1}{\sum_y d(y,x)}$. 
+\item \textbf{Betweenness}: se puede definir como cuánto de cuello de botella es el nodo. En otras palabras, si el nodo se ve perjudicado, en qué medida afecta a los caminos entre los demás nodos.
+\end{itemize}
+
+Hay varios tipos de grafos:
+\begin{itemize}
+\item Grafos direccionados y no direccionados
+\item Multigrafos
+\item Bipartidos: tienen dos tipos de nodos con una sola relación.
+\item Grafos con peso o ponderados: los arcos tienen un valor, como la distancia entre ciudades.
+\item Redes de flujo: grafos en los que los arcos representan capacidad, como las emisiones de gas
+\end{itemize}
+\end{itemize}
+
+\section{Pajek} %http://mrvar.fdv.uni-lj.si/pajek/default.htm
+Todas las representaciones de los grafos se encuentran en un fichero de extensión .net. Los elementos del grafo se escriben con un asterisco y se especifica la cantidad de elementos que tienen. Los vértices cuentan con un número y la etiqueta, que si se trata de una cadena de texto debe ir entre comillas. También pueden tener más etiquetas como la forma del nodo. Los edges muestran los identificadores de los dos nodos que se relacionan. También se pueden especificar distintos tipos de arcos con distintos colores. En la visualización, en caso de que alguna característica no se refleje, en Options se puede modificar. Además, se pueden generar subgrafos para cada tipo de arco desde la pestaña de Network en la pestaña principal y "Multiple Relations Network". 
+
+Los nodos pueden tener atributos, como nombre, sexo, lugar de trabajo y antigüedad. Esto se puede representar con la forma del nodo, el tamaño, etc. Esto se escribe en ficheros de extensión .vec que se deben cargar en Pajek en el apartado de vectores y seleccionar la casilla de la derecha. Se distinguen los edges (no dirigidos) de los arcs (dirigidos).  
