@@ -1,5 +1,5 @@
 %28/10 - Fátima Sánchez Cabo
-\chapter{Introducción a la genómica: caracterización del genoma mediante NGS}
+\chapter{Caracterización del genoma mediante NGS}
 \section{Introducción a la genómica traslacional}
 \subsection{Definición e importancia de la genómica}
 La genómica, el estudio integral del ADN y de la estructura, función y dinámica de los genomas, representa un pilar fundamental en la biología moderna. Marcó un cambio de paradigma, pasando de un enfoque reduccionista en biología - donde se estudiaban componentes individuales y de manera aislada - a una perspectiva integradora que analiza las interacciones y relaciones entre los distintos elementos biológicos. Esta transición permitió evolucionar de la genética clásica, basada en hipótesis concretas, hacia la genómica, que integra análisis de datos masivos sin necesidad de preguntas iniciales específicas, aunque sí en constante búsqueda de respuestas biológicas complejas.
@@ -1070,3 +1070,104 @@ Answer: Long reads without template amplification
 \end{enumerate}
 
 %aserrano@cnic.es
+%08/11 - Tomás di Domenico
+\section{Whole Genome Sequencing (WGS)}
+\subsection{Introducción a Whole Genome Sequencing}
+WGS implica secuenciar todo el genoma de telómero a telómero. Esto se debe a que antes no se solía secuenciar todo el genoma, si no algún panel o el exoma. Ahora, el genoma completo sí se está secuenciando por la disminución de los costes. 
+\begin{itemize}
+\item \textbf{Targeted panel sequencing}: como se selecciona un fragmento a secuenciar, se consigue una mayor cobertura por el mismo precio.
+\item \textbf{Whole-exome sequencing (WES):} se secuencia todo el exoma, por lo que la cobertura es intermedia.
+\item \textbf{Whole-genome sequencing (WGS):} se secuencia todo el genoma, pero con una cobertura menor.
+\end{itemize}
+
+Las ventajas de WGS es que no hay ADN "basura", y que mucha regulación ocurre en el genoma no codificante. Además, las variantes estructurales solo se ven con una perspectiva completa. En resumen, un WGS es la representación completa del genoma de un organismo. No obstante, no siempre se realiza WGS por temas económicos: los costes de secuenciación, los costes de almacenamiento y los costes de análisis. El exoma representa un 1\% del genoma, por lo que conseguir una mayor cobertura en WES es más barato que en WGS.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/wge-wgs.png}
+\caption{Comparación de las coberturas recomendadas para WGE y WGS en base a su aplicación.}
+\end{figure}
+
+WGS tiene tres aplicaciones fundamentales:
+\begin{itemize}
+\item \textbf{Ensamblajes:} El ensamblaje de un genoma es una de las principales ventajas de poder secuenciar un genoma completo. Los ensamblajes basados en NGS implican reconstruir secuencias desde lecturas cortas, lo que es muy exigente computacionalmente. De las lecturas se forman los contigs, los cuales se ensamblan en scaffolds. Finalmente, los scaffolds se pueden ensamblar en pseudocromosomas y cromosomas. La generación de un genoma completo, pese a seguir siendo caro, ha reducido su coste desde el Proyecto Genoma Humano. Es importante poder hacer un ensamblado porque el genoma de referencia no es representativo por la diversidad natural y en algunos casos tiene muchos huecos.
+\item \textbf{Genome-wide Association Studies (GWAS):} El análisis de variaciones a nivel genómico se puede realizar mediante la seuenciación de datos genómicos. No obstante, sigue habiendo problemas en cuanto a la relevancia y la estadística).
+\item \textbf{Análisis de variantes estructurales:} La variación estructural, o la reorganización de partes del genoma de varias formas solo es posible capturarla mediante la secuenciación del genoma completo.
+\end{itemize}
+
+La principal limitación de NGS es que generan lecturas muy cortas, además de tener limitaciones intrínsecas por los métodos químicos que se utilizan a la hora de secuenciar. De estos métodos, el más popular es el de la secuenciación por síntesis, que es el que implementa Illumina en su secuenciación. Después de varias rondas de extensión y escaneado, las copias de la secuencia en un cluster empieza a descoordinarse, por lo que hay una limitación del tamaño de las lecturas. Esto es particularmente exigente cuando se trata de regiones que pueden estar repetidas a lo largo del genoma, ya que los ensamblajes pueden mostrar sesgos, dando lugar a huecos en los ensamblajes de referencia. Los genomas suelen ser muy repetitivos, pero hay distintos grados de repetitividad (simple y complejo). Así, no toda la parte repetitiva impide el ensamblaje, pero causa estragos.
+
+\subsection{Práctica - lecturas cortas}
+Ahora vamos a adquirir experiencia práctica con un ensamblaje de lecturas cortas y su análisis.
+Como no tenemos tiempo ni recursos para trabajar con un genoma entero, trabajaremos con un fragmento amplificado por BAC del cromosoma 3 humano.
+Utilizaremos ABySS para ensamblar un cromosoma artificial bacteriano (BAC) de 200 kbp utilizando un carril de lecturas paired-end de la plataforma Illumina. BWA-MEM se utiliza para alinear los contigs ensamblados con el genoma humano de referencia. IGV se utiliza para visualizar estas alineaciones y variantes.
+Después de esta práctica, habremos aprendido a ensamblar un genoma pequeño, a utilizar BWA-MEM para alinear lecturas y contigs con un genoma de referencia, y a utilizar el navegador del genoma UCSC e IGV para visualizar estas alineaciones.
+
+Los BAC pueden utilizarse para amplificar un determinado fragmento de ADN de interés dentro de bacterias. Se utilizó mucho para generar el genoma humano de referencia.
+
+El primer paso es crear el directorio de trabajo:
+\begin{lstlisting}[language=bash]
+export WD=~/intro-wgs 
+mkdir -p $WD
+cd $WD
+mkdir -p data res out log 
+tree $WD
+\end{lstlisting}
+
+Ahora, como ya creamos el entorno intro-wgs con el script obtenido previamente, lo activamos mediante \texttt{conda activate intro-wgs}. Dentro del entorno podemos ver los paquetes que incluye, por ejemplo \texttt{which abyss-pe}. En este entorno se incluyen los siguientes software:
+\begin{itemize}
+\item bwa: short-read aligner
+\item abyss: short-read assembler
+\item samtools: tool to manipulate SAM format file
+\item mummer: long sequence aligner
+\item seqtk: toolkit for manipulating sequence data
+\item igv: interactive genome visualizer
+\item gnuplot: graphics library ised by mummer to generate plots
+\end{itemize}
+
+Como nos hemos descargado unos datos, o incluso los datos generados por nosotros mismos, es importante inspeccionarlos: 
+\begin{lstlisting}[language=bash]
+zcat data/30CJCAAXX_4_1.fq.gz | head -8
+
+readlen=$(zcat data/30CJCAAXX_4_1.fq.gz | head -2 | sed -n 2p | awk '{print length}')
+echo "Length of reads: ${readlen}bp"
+
+nlines1=$(zcat data/30CJCAAXX_4_1.fq.gz | wc -l)
+nlines2=$(zcat data/30CJCAAXX_4_2.fq.gz | wc -l)
+echo "The files have $nlines1 and $nlines2 lines respectively"
+
+nreads1=$(expr $nlines1 / 4)
+nreads2=$(expr $nlines2 / 4)
+total_reads=$(expr $nreads1 + $nreads2)
+echo "Files have $nreads1 and $nreads2 reads, for a total of $total_reads"
+
+nbases=$(expr $total_reads \* $readlen)
+echo "Total number of bases sequenced: $nbases"
+
+bac_length=200000
+coverage=$(expr $nbases / $bac_length)
+echo "Coverage of the 200kbp BAC: ${coverage}x"
+\end{lstlisting}
+
+La cobertura resultante es 2554x, por lo que es muy alta y se puede continuar con el ensamblaje. Primero, se crea un índice bwa para nuestro genoma, es decir, indexar el genoma en fragmentos para facilitar la búsqueda durante el mapeo:
+\begin{lstlisting}[language=bash]
+bwa index res/genome/chr3.fa
+\end{lstlisting}
+
+Ahora vamos a ensamblar nuestras lecturas en contigs usando abyss.
+Usaremos un tamaño de kmer de 48 (recomendado para lecturas de 50bp), y le diremos que nuestro objetivo es un ensamblaje de 200kb.
+\begin{lstlisting}[language=bash]
+mkdir -p out/assembly/k48
+abyss-pe -C out/assembly/k48/ name=BAC_ASSEMBLY k=48 s=200 v=-v in="$(pwd)/data/30CJCAAXX_4_1.fq.gz $(pwd)/data/30CJCAAXX_4_2.fq.gz" contigs 2>&1 | tee log/abyss.log
+\end{lstlisting}
+
+Para ver la longitud del contig más largo:
+\begin{lstlisting}[language=bash]
+grep -v ">" out/assembly/k48/BAC_ASSEMBLY-contigs.fa | awk '{print length}' | sort -n | tail -1
+\end{lstlisting}
+
+En el log se puede ver cuántas lecturas se han alineado durante el ensamblaje:
+\begin{lstlisting}[language=bash]
+grep "Mapped" log/abyss.log
+\end{lstlisting}
+El resultado es un 72,7\% mapeado, lo cual está bien (el límite se suele poner en 70\%).
