@@ -1171,3 +1171,98 @@ En el log se puede ver cuántas lecturas se han alineado durante el ensamblaje:
 grep "Mapped" log/abyss.log
 \end{lstlisting}
 El resultado es un 72,7\% mapeado, lo cual está bien (el límite se suele poner en 70\%).
+
+%11/11 - Tomás di Domenico
+El siguiente paso es alinear los contigs al genoma de referencia mediante BLAT. Primero obtenemos los encabezados de los contigs:
+\begin{lstlisting}[language=bash]
+grep ">" out/assembly/k48/BAC_ASSEMBLY-contigs.fa
+\end{lstlisting}
+
+Los contigs 93 y 96 se encuentran adyacentes. Para filtrarlos en ficheros separados, se puede utilizar samtools:
+\begin{lstlisting}[language=bash]
+samtools faidx out/assembly/k48/BAC_ASSEMBLY-contigs.fa 96 93 \
+    > out/assembly/k48/selected_contigs.fa
+\end{lstlisting}
+Ahora nos vamos a \href{http://genome.ucsc.edu}{UCSC Genome Browser} y subimos el fichero que acabamos de generar. Estos contigs alinean al cromosoma 3. De hecho, el primero es un scaffold mejorado del cromosoma 3 que todavía no está incluido en el cromosoma 3 de referencia. Para ver la banda del cromosoma, en los resultados de BLAT nos vamos al visualizador, donde se especifica la banda (en este caso q27.3). En el visualizador, también se observan barras rojas en la sección de nuestros contigs. Estas barras coinciden con las barras de "Common dbSNP", que muestra las mutaciones de los contigs, y al pulsar sobre ellas, aparece la información de la base de datos dbSNP.
+
+RepeatMasker es un programa que detecta las partes repetitivas del genoma y permite enmascararlas para que no afecten al análisis. Pulsando sobre el nombre, se expande en los distintos tipos de regiones repetitivas. En nuestro caso, los dos contigs están separados por una región repetitiva simple de TA. Hay otras regiones repetitivas en los contigs de tipo LINE o LTR, pero eso no supone ningún problema en el ensamblaje al ser regiones repetitivas del genoma, pero únicas en el fragmento. 
+
+\subsection{Long read sequencing and WGS}
+Como ya hemos mencionado, el uso de lecturas pequeñas es especialmente complicado cuando se trata de regiones que pueden repetirse a lo largo del genoma. Esta situación podría mejorarse considerablemente si se dispusiera de lecturas más largas que pudieran extenderse más allá de las regiones repetitivas. Las primeras máquinas que realizaron secuenciación de lectura larga fueron las de Pacific Biosciences (PacBio). Producen lecturas con una longitud media de unos 20k.
+
+MinION, la primera máquina de Oxford Nanopore Technologies, es capaz de producir lecturas de longitud teóricamente ilimitada; el récord actual está en 2 megabases. La tecnología aprovecha una proteína de poro para secuenciar moléculas largas (no se limita al ADN). La porina se inserta en la membrana y, mediante otras proteínas, la molécula a secuenciar pasa a través de ella para su detección. A través del poro pasa una corriente estable. Cuando «objetos» atraviesan el poro, alteran esta corriente. La variación puede detectarse y su firma asociarse a un determinado «objeto» que atraviesa el poro.
+Esto es análogo a entender qué rocas están bloqueando un agujero midiendo la cantidad de agua que lo atraviesa.
+El ciclo de secuenciación funciona de la siguiente manera: una proteína motora une la doble cadena de ADN y ayuda a llevarla hasta el poro. Una de las hebras comienza a atravesar el poro a medida que la cadena se desenreda y, finalmente, la proteína motora sale y el ciclo se reinicia.
+El proceso se desarrolla a gran velocidad, generando ingentes cantidades de datos en forma de señales eléctricas.
+
+Esta señal se muestrea con mucha frecuencia y se toman una serie de medidas discretas. A continuación, estas mediciones se segmentan para intentar identificar diferentes tramos de secuencia de longitud k (k-mers). Esto no siempre es sencillo, ya que las diferencias en los niveles de señal consecutivos pueden ser muy pequeñas.
+Tras pasar de la señal a los sucesos, el siguiente paso es traducir estos sucesos a secuencia. Esto se hace comparando el nivel de señal medido del suceso con el de una base de datos.
+Aunque trabajar con k-mers hace que el tamaño de la base de datos sea mucho mayor, también nos proporciona una forma de comprobar el solapamiento entre k-mers consecutivos a medida que la secuencia se desplaza por el poro.
+
+La secuenciación por nanoporos es un proceso de flujo continuo: se obtienen datos en cuanto se inicia la ejecución. Esto permite algunos usos exclusivos de la tecnología.
+El proceso de secuenciación puede interrumpirse en cualquier momento. Se puede lavar la celda de flujo y cargar otra muestra para secuenciarla.
+Se pueden realizar análisis en tiempo real de los datos transmitidos y el proceso se puede interrumpir cuando se hayan generado suficientes datos.
+Se puede incluso generar una base de datos de secuencias y rechazar una molécula del poro en función de su coincidencia (o no) con dicha base de datos, con lo que a) se evita que el poro se desgaste por secuencias no deseadas y b) se eliminan secuencias no deseadas de los datos de salida.
+
+Aparte de las largas lecturas obtenidas y de los flujos de trabajo run-until y read-until que acabamos de mencionar, el tamaño compacto de la tecnología abre la puerta a aplicaciones que antes eran imposibles.
+Sin embargo, como es habitual, no todo es perfecto: las lecturas individuales de PacBio y las máquinas de nanoporos tienen una tasa de error mucho mayor que, por ejemplo, las lecturas de Illumina: 5\% frente a 0,01\%. Se necesitaría un consenso de 30 lecturas para alcanzar una precisión del 99,99\%.
+Las mejoras son constantes y las actualizaciones tecnológicas periódicas siguen aumentando la precisión. Recientemente se han añadido dos puntos de chequeo para disminuir el problema de los homopolímeros.
+
+\subsection{Práctica - lecturas largas}
+Ahora vamos a adquirir experiencia práctica en el ensamblaje de lecturas largas.
+En este caso, realizaremos un trabajo exploratorio: sin información previa sobre el experimento, descargaremos algunas lecturas generadas por una máquina de secuenciación de lecturas largas, las ensamblaremos y las mapearemos en el genoma humano. A continuación, intentaremos ver qué podemos averiguar sobre los datos.
+
+Ahora, como ya creamos el entorno intro-wgs-long con el script obtenido previamente, lo activamos mediante \texttt{conda activate intro-wgs-long}. Dentro del entorno podemos ver los paquetes que incluye, por ejemplo \texttt{which abyss-pe}. En este entorno se incluyen los siguientes software:
+\begin{itemize}
+\item bwa: a sequence aligner
+\item samtools: tool to manipulate SAM format file
+\item assembly-stats: a tool to view stats on assemblies (and other sequence files)
+\item flye: a tool for manipulating alignment files
+\end{itemize}
+
+Ahora podemos descargar y descomprimir nuestro primer conjunto de datos: una serie de lecturas largas obtenidas de una muestra humana con una máquina Promethion 2 Solo de Oxford Nanopore Technologies.
+\begin{lstlisting}[language=bash]
+wget -P data https://bioinformatics.cnio.es/data/courses/intro-wgs/long_reads.fastq.gz
+\end{lstlisting}
+
+El valor N50 es una de las principales estadísticas utilizadas para evaluar la calidad de un ensamblaje. En pocas palabras, cuanto mayor sea el valor N50, más largos serán los contigs.
+Para calcular el N50, se toman los contigs más largos del ensamblaje y se suman sus longitudes hasta alcanzar el 50\% de la longitud total del genoma. La longitud del contig más corto de ese grupo es su valor N50.
+
+Dado que los experimentos de secuenciación de lectura larga producen lecturas de longitud comparable a los contigs ensamblados de secuenciación de próxima generación, el estadístico N50 se utiliza habitualmente para evaluar sus resultados.
+
+Vamos a obtener algunas estadísticas para nuestro fichero FASTQ:
+\begin{lstlisting}[language=bash]
+assembly-stats <(gunzip -c data/long_reads.fastq.gz)
+\end{lstlisting}
+
+Ahora estamos listos para probar un ensamblador basado en lectura larga.
+Usaremos el ensamblador flye. El argumento -tle dice que utilice múltiples núcleos: en un ordenador personal lo ideal sería que se configurara con un núcleo menos que el total que tiene. --nano-hqle dice que la entrada proviene de datos de nanoporos de alta calidad (lo último en química y software). Ignoraremos -gpor ahora.
+\begin{lstlisting}[language=bash]
+mkdir -p log/flye
+mkdir -p out/flye
+flye -t 7 --nano-hq data/long_reads.fastq.gz -g 1.5m -o out/flye/ 2>&1 | tee log/flye/assembly.log
+\end{lstlisting}
+En el output aparece que hemos obtenido dos fragmentos. La longitud total es aproximadamente 1550000 bases, mientras que el contig más largo es aproximadamente 1540000, por lo que tenemos prácticamente un alineamiento de punta a punta salvo por un trozo pequeño. 
+
+Ahora vamos a alinear nuestro ensamblaje con el genoma de referencia para que podamos cargarlo en el navegador del genoma de la UCSC y ver lo que tenemos. También convertiremos el SAM de salida a formato BAM y lo indexaremos.
+\begin{lstlisting}[language=bash]
+mkdir -p out/alignment
+bwa mem -t2 ~/intro-wgs/res/genome/chr3.fa out/flye/assembly.fasta > out/alignment/assembly.sam
+samtools sort -o out/alignment/assembly.bam out/alignment/assembly.sam
+samtools index out/alignment/assembly.bam
+\end{lstlisting}
+
+Ahora vamos a subir nuestro archivo de alineación y su índice a Internet, para que podamos ponerlos a disposición del navegador de la UCSC como una pista personalizada.
+Utilizaremos \href{https://uguu.se/}{Uguu}, un sitio web que permite subir temporalmente archivos que se borran automáticamente al cabo de 3 horas.
+Sube out/alignment/assembly .bam y out/alignment/assembly.bam.bai. 
+
+Ahora se puede copiar las URL haciendo clic en los iconos de la derecha, o haciendo clic con el botón derecho en las propias URL. A continuación, utilízalas en el siguiente código para sustituir:
+\begin{lstlisting}[language=bash]
+track type=bam name="My contigs" bigDataUrl=BAM_URL bigDataIndex=BAI_URL
+\end{lstlisting}
+
+A continuación, ve al navegador UCSC y haz clic en Mis datos > Pistas personalizadas, pega esa línea en la casilla PegarURL o datos y haz clic en el botón Enviar.
+
+En la página siguiente, haz clic en el botón ir a la primera anotación. Cuando aparezca el navegador, haz clic en el botón de zoom 10x.
+Si estás haciendo esta sección inmediatamente después de la lección de lecturas cortas, ya está todo listo para comparar ambos ensamblajes e intentar sacar algunas conclusiones.
+Si no tienes los contigs de lecturas cortas ya cargados en el navegador, cárgalos de nuevo pegando el contenido de $\sim$ /intro-wgs/out/assembly/k48/selected\_contigs.faen UCSC BLAT, o enviando el archivo usando los botones de la sección «File Upload» de la herramienta BLAT.
