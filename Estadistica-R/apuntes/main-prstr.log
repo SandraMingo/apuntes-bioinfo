@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.10.30)  6 NOV 2024 12:51
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.10.30)  11 NOV 2024 18:58
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2045,8 +2045,8 @@ dra/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc}{C:/Users/Sandra
 /AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}] (main-prstr.toc
 LaTeX Info: Redefining \. on input line 1.
 LaTeX Info: Redefining \% on input line 1.
-LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 4
-6.
+LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 3
+3.
 (C:\Users\Sandra\AppData\Local\Programs\MiKTeX\tex/latex/base\t1cmtt.fd
 File: t1cmtt.fd 2023/04/13 v2.5m Standard LaTeX font definitions
 )
@@ -2056,27 +2056,124 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.50 ...ine {I.10.2}lapply}{48}{subsection.1.10.2}
-                                                  % [1])
+l.37 ...rline {VI.10}Dataframes}{41}{section.6.10}
+                                                  % [1]
+Overfull \hbox (3.0368pt too wide) detected at line 39
+\T1/cmss/bx/n/12 VIII 
+ []
+
+
+Overfull \hbox (0.10745pt too wide) detected at line 40
+\T1/cmss/m/n/12 VIII.1 
+ []
+
+
+Overfull \hbox (0.10745pt too wide) detected at line 41
+\T1/cmss/m/n/12 VIII.2 
+ []
+
+
+Overfull \hbox (0.10745pt too wide) detected at line 43
+\T1/cmss/m/n/12 VIII.3 
+ []
+
+
+Overfull \hbox (0.10745pt too wide) detected at line 44
+\T1/cmss/m/n/12 VIII.4 
+ []
+
+LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <12> not available
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 48.
+
+Overfull \hbox (3.0368pt too wide) detected at line 72
+\T1/cmss/bx/n/12 XIII 
+ []
+
+
+Overfull \hbox (0.10745pt too wide) detected at line 73
+\T1/cmss/m/n/12 XIII.1 
+ []
+
+
+Overfull \hbox (0.10745pt too wide) detected at line 74
+\T1/cmss/m/n/12 XIII.2 
+ []
+
+
+Overfull \hbox (0.10745pt too wide) detected at line 75
+\T1/cmss/m/n/12 XIII.3 
+ []
+
+
+Overfull \hbox (0.10745pt too wide) detected at line 76
+\T1/cmss/m/n/12 XIII.4 
+ []
+
+
+Overfull \hbox (0.10745pt too wide) detected at line 77
+\T1/cmss/m/n/12 XIII.5 
+ []
+
+
+Overfull \hbox (0.10745pt too wide) detected at line 78
+\T1/cmss/m/n/12 XIII.6 
+ []
+
+
+
+[2]
+Overfull \hbox (3.86993pt too wide) detected at line 80
+\T1/cmss/bx/n/12 XIV 
+ []
+
+
+Overfull \hbox (0.82951pt too wide) detected at line 81
+\T1/cmss/m/n/12 XIV.1 
+ []
+
+
+Overfull \hbox (0.82951pt too wide) detected at line 82
+\T1/cmss/m/n/12 XIV.2 
+ []
+
+
+Overfull \hbox (0.82951pt too wide) detected at line 83
+\T1/cmss/m/n/12 XIV.3 
+ []
+
+
+Overfull \hbox (0.82951pt too wide) detected at line 86
+\T1/cmss/m/n/12 XIV.4 
+ []
+
+)
 \tf@toc=\write6
 \openout6 = `main-prstr.toc'.
 
 
 
-[2]
+[3]
+
+[4
+
+]
 Cap\'{\imath }tulo I.
-LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <12> not available
-(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 105.
 
 
-[3
+[5
 
 ]
 
-[4]
+[6]
+Cap\'{\imath }tulo II.
 
-[5]
-<figure/unnamed-chunk-7-1.pdf, id=395, 505.89pt x 505.89pt>
+
+[7
+
+]
+
+[8]
+<figure/unnamed-chunk-7-1.pdf, id=525, 505.89pt x 505.89pt>
 File: figure/unnamed-chunk-7-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-7-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-7-1.pdf  used on input line 185.
@@ -2088,17 +2185,21 @@ Overfull \hbox (17.62482pt too wide) in paragraph at lines 185--186
 
 
 
-[6 <./figure/unnamed-chunk-7-1.pdf>]
-
-[7]
-
-[8]
-
-[9]
+[9 <./figure/unnamed-chunk-7-1.pdf>]
 
 [10]
 
 [11]
+Cap\'{\imath }tulo III.
+
+
+[12
+
+]
+
+[13]
+
+[14]
 Overfull \hbox (20.06252pt too wide) in paragraph at lines 510--510
 []\T1/cmtt/m/n/12 ## Error in apply(v3, 1, mean): dim(X) debe tener una longitu
 d positiva[] 
@@ -2142,9 +2243,13 @@ exactly
 
 
 
-[12]
+[15]
 
-[13]
+[16]
+
+[17]
+Cap\'{\imath }tulo IV.
+
 Overfull \hbox (26.23601pt too wide) in paragraph at lines 587--587
 [][]\T1/cmtt/m/n/12 another.data.set[] []<-[] []read.table[][]([][]"data/Anothe
 rDataSet.txt"[][],[] []header[] []=[] []TRUE[][])[][] 
@@ -2152,14 +2257,19 @@ rDataSet.txt"[][],[] []header[] []=[] []TRUE[][])[][]
 
 
 
-[14]
+[18
+
+]
 LaTeX Font Info:    Trying to load font information for TS1+cmtt on input line 
 619.
 (C:\Users\Sandra\AppData\Local\Programs\MiKTeX\tex/latex/base\ts1cmtt.fd
 File: ts1cmtt.fd 2023/04/13 v2.5m Standard LaTeX font definitions
 )
 
-[15]
+[19]
+
+[20]
+Cap\'{\imath }tulo V.
 LaTeX Font Info:    Trying to load font information for TS1+cmss on input line 
 685.
 (C:\Users\Sandra\AppData\Local\Programs\MiKTeX\tex/latex/base\ts1cmss.fd
@@ -2172,11 +2282,17 @@ pt1.R > script1.Rout  []\T1/cmss/m/n/12 Con
 
 
 
-[16]
+[21
 
-[17]
+]
+Cap\'{\imath }tulo VI.
 
-[18]
+
+[22
+
+]
+
+[23]
 Overfull \hbox (1.54204pt too wide) in paragraph at lines 826--826
 []\T1/cmtt/m/n/12 ## Warning in v1 + v2: longitud de objeto mayor no es múltipl
 o de la
@@ -2184,32 +2300,7 @@ o de la
 
 
 
-[19]
-Overfull \vbox (0.1827pt too high) detected at line 932
- []
-
-
-
-[20]
-
-[21]
-Underfull \hbox (badness 4699) in paragraph at lines 1000--1000
-[]\T1/cmss/bx/n/14.4 Acceder y modificar elementos de un vector:
- []
-
-
-
-[22]
-
-[23]
-
 [24]
-Overfull \hbox (1.54204pt too wide) in paragraph at lines 1230--1230
-[]\T1/cmtt/m/n/12 ## Warning in w[] <- 17:55: número de elementos para sustitui
-r no es
- []
-
-
 
 [25]
 
@@ -2218,14 +2309,14 @@ r no es
 [27]
 
 [28]
-Underfull \hbox (badness 10000) in paragraph at lines 1475--1475
-[]\T1/cmtt/m/n/12 ## Warning in matrix(1:15, nrow = 5, ncol = 2): data length [
-15] is
+
+[29]
+Overfull \hbox (1.54204pt too wide) in paragraph at lines 1230--1230
+[]\T1/cmtt/m/n/12 ## Warning in w[] <- 17:55: número de elementos para sustitui
+r no es
  []
 
 
-
-[29]
 
 [30]
 
@@ -2234,13 +2325,41 @@ Underfull \hbox (badness 10000) in paragraph at lines 1475--1475
 [32]
 
 [33]
+Underfull \hbox (badness 10000) in paragraph at lines 1475--1475
+[]\T1/cmtt/m/n/12 ## Warning in matrix(1:15, nrow = 5, ncol = 2): data length [
+15] is
+ []
+
+
 
 [34]
+LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <14.4> not available
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 1488.
+
 
 [35]
 
 [36]
-<figure/unnamed-chunk-72-1.pdf, id=574, 505.89pt x 505.89pt>
+
+[37]
+
+[38]
+
+[39]
+
+[40]
+
+[41]
+
+[42]
+Cap\'{\imath }tulo VII.
+
+
+[43
+
+]
+Cap\'{\imath }tulo VIII.
+<figure/unnamed-chunk-72-1.pdf, id=717, 505.89pt x 505.89pt>
 File: figure/unnamed-chunk-72-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-72-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-72-1.pdf  used on input line 1936
@@ -2253,21 +2372,22 @@ Overfull \hbox (17.62482pt too wide) in paragraph at lines 1936--1938
 
 
 
-[37]
-<figure/pchcol-1.pdf, id=580, 361.35pt x 216.81pt>
+[44
+
+]
+
+[45 <./figure/unnamed-chunk-72-1.pdf>]
+<figure/pchcol-1.pdf, id=733, 361.35pt x 216.81pt>
 File: figure/pchcol-1.pdf Graphic file (type pdf)
 <use figure/pchcol-1.pdf>
 Package pdftex.def Info: figure/pchcol-1.pdf  used on input line 1956.
 (pdftex.def)             Requested size: 361.34912pt x 216.80946pt.
-
-
-[38 <./figure/unnamed-chunk-72-1.pdf>]
-<figure/ltytype-1.pdf, id=591, 289.08pt x 289.08pt>
+<figure/ltytype-1.pdf, id=734, 289.08pt x 289.08pt>
 File: figure/ltytype-1.pdf Graphic file (type pdf)
 <use figure/ltytype-1.pdf>
 Package pdftex.def Info: figure/ltytype-1.pdf  used on input line 1971.
 (pdftex.def)             Requested size: 289.07928pt x 289.09251pt.
-<figure/unnamed-chunk-73-1.pdf, id=592, 505.89pt x 505.89pt>
+<figure/unnamed-chunk-73-1.pdf, id=735, 505.89pt x 505.89pt>
 File: figure/unnamed-chunk-73-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-73-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-73-1.pdf  used on input line 1988
@@ -2280,13 +2400,13 @@ Overfull \hbox (17.62482pt too wide) in paragraph at lines 1988--1989
 
 
 
-[39 <./figure/pchcol-1.pdf>]
+[46 <./figure/pchcol-1.pdf>]
 Overfull \vbox (45.06923pt too high) has occurred while \output is active []
 
 
 
-[40 <./figure/ltytype-1.pdf> <./figure/unnamed-chunk-73-1.pdf>]
-<figure/unnamed-chunk-73-2.pdf, id=623, 505.89pt x 505.89pt>
+[47 <./figure/ltytype-1.pdf> <./figure/unnamed-chunk-73-1.pdf>]
+<figure/unnamed-chunk-73-2.pdf, id=765, 505.89pt x 505.89pt>
 File: figure/unnamed-chunk-73-2.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-73-2.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-73-2.pdf  used on input line 1993
@@ -2297,17 +2417,17 @@ Overfull \hbox (17.62482pt too wide) in paragraph at lines 1993--1994
 [][] 
  []
 
-<figure/fig-blast-1.pdf, id=624, 433.62pt x 289.08pt>
+<figure/fig-blast-1.pdf, id=766, 433.62pt x 289.08pt>
 File: figure/fig-blast-1.pdf Graphic file (type pdf)
 <use figure/fig-blast-1.pdf>
 Package pdftex.def Info: figure/fig-blast-1.pdf  used on input line 2010.
 (pdftex.def)             Requested size: 418.25545pt x 278.85017pt.
 
 
-[41 <./figure/unnamed-chunk-73-2.pdf>]
+[48 <./figure/unnamed-chunk-73-2.pdf>]
 
-[42 <./figure/fig-blast-1.pdf>]
-<figure/mrateplotx1-1.pdf, id=648, 433.62pt x 433.62pt>
+[49 <./figure/fig-blast-1.pdf>]
+<figure/mrateplotx1-1.pdf, id=790, 433.62pt x 433.62pt>
 File: figure/mrateplotx1-1.pdf Graphic file (type pdf)
 <use figure/mrateplotx1-1.pdf>
 Package pdftex.def Info: figure/mrateplotx1-1.pdf  used on input line 2060.
@@ -2323,14 +2443,14 @@ Overfull \vbox (0.83946pt too high) detected at line 2076
 
 
 
-[43 <./figure/mrateplotx1-1.pdf>]
-<figure/unnamed-chunk-76-1.pdf, id=660, 289.08pt x 289.08pt>
+[50 <./figure/mrateplotx1-1.pdf>]
+<figure/unnamed-chunk-76-1.pdf, id=802, 289.08pt x 289.08pt>
 File: figure/unnamed-chunk-76-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-76-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-76-1.pdf  used on input line 2077
 .
 (pdftex.def)             Requested size: 289.07928pt x 289.09251pt.
-<figure/unnamed-chunk-77-1.pdf, id=661, 289.08pt x 289.08pt>
+<figure/unnamed-chunk-77-1.pdf, id=803, 289.08pt x 289.08pt>
 File: figure/unnamed-chunk-77-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-77-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-77-1.pdf  used on input line 2088
@@ -2338,26 +2458,37 @@ Package pdftex.def Info: figure/unnamed-chunk-77-1.pdf  used on input line 2088
 (pdftex.def)             Requested size: 289.07928pt x 289.09251pt.
 
 
-[44 <./figure/unnamed-chunk-76-1.pdf> <./figure/unnamed-chunk-77-1.pdf>]
+[51 <./figure/unnamed-chunk-76-1.pdf> <./figure/unnamed-chunk-77-1.pdf>]
+Cap\'{\imath }tulo IX.
+
 Underfull \hbox (badness 1221) in paragraph at lines 2125--2126
 []\T1/cmss/m/n/12 Tabular un dataframe completo saca varias tablas 2x2 en funci
 ón de las
  []
 
-LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <14.4> not available
+LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <17.28> not available
 (Font)              Font shape `T1/cmtt/m/n' tried instead on input line 2127.
 
 
-[45]
+[52
 
-[46]
-LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <17.28> not available
+]
+
+[53]
+
+[54]
+
+[55]
+Cap\'{\imath }tulo X.
+LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <24.88> not available
 (Font)              Font shape `T1/cmtt/m/n' tried instead on input line 2255.
 
 
-[47]
+[56
 
-[48]
+]
+
+[57]
 Overfull \hbox (13.88902pt too wide) in paragraph at lines 2352--2352
 []                                           []\T1/cmtt/m/n/12 "female"[][],[] 
 []"male"[][],[] []"male"[][])))[][] 
@@ -2365,13 +2496,13 @@ Overfull \hbox (13.88902pt too wide) in paragraph at lines 2352--2352
 
 
 
-[49]
+[58]
 
-[50]
+[59]
 
-[51]
+[60]
 
-[52]
+[61]
 Overfull \hbox (7.71553pt too wide) in paragraph at lines 2633--2633
 []\T1/cmtt/m/n/12 ## Warning in split.default(x = seq_len(nrow(x)), f = f, drop
  = drop,
@@ -2379,22 +2510,28 @@ Overfull \hbox (7.71553pt too wide) in paragraph at lines 2633--2633
 
 
 
-[53]
+[62]
 
-[54]
+[63]
 
-[55]
+[64]
 
-[56]
+[65]
+Cap\'{\imath }tulo XI.
 
-[57]
 
-[58]
+[66
 
-[59]
+]
 
-[60]
-<figure/unnamed-chunk-101-1.pdf, id=762, 505.89pt x 505.89pt>
+[67]
+
+[68]
+
+[69]
+
+[70]
+<figure/unnamed-chunk-101-1.pdf, id=919, 505.89pt x 505.89pt>
 File: figure/unnamed-chunk-101-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-101-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-101-1.pdf  used on input line 302
@@ -2407,33 +2544,40 @@ Overfull \hbox (17.62482pt too wide) in paragraph at lines 3029--3031
 
 
 
-[61]
+[71 <./figure/unnamed-chunk-101-1.pdf>]
 
-[62 <./figure/unnamed-chunk-101-1.pdf>]
-
-[63]
-
-[64]
-Underfull \hbox (badness 3735) in paragraph at lines 3200--3200
-[]\T1/cmtt/m/n/14.4 trace \T1/cmss/bx/n/14.4 para ver funciones arbitrarias en 
-sitios
- []
+[72]
+Cap\'{\imath }tulo XII.
 
 
+[73
 
-[65]
+]
+
+[74]
+
+[75]
 Overfull \hbox (44.75648pt too wide) in paragraph at lines 3292--3292
 \T1/cmtt/m/n/12 ##      Error in log(x) : Argumento no numérico para una funció
 n matemática[] 
  []
 
 
+Underfull \hbox (badness 3449) in paragraph at lines 3295--3295
+[]\T1/cmss/bx/n/17.28 Funciones de debugging que no son
+ []
 
-[66]
 
-[67]
 
-[68]
+[76]
+
+[77]
+Cap\'{\imath }tulo XIII.
+
+
+[78
+
+]
 Overfull \hbox (20.06252pt too wide) in paragraph at lines 3395--3395
 [][]\T1/cmtt/m/n/12 uu[] []<-[] []to_CG[][]([][]data.frame[][]([][]Cholesterol[
 ] []=[] []1[][]:[][]10[][],[] []Gene[] []=[] []11[][]:[][]20[][],[] []Kind[] []
@@ -2441,6 +2585,8 @@ Overfull \hbox (20.06252pt too wide) in paragraph at lines 3395--3395
  []
 
 
+
+[79]
 Overfull \hbox (20.06252pt too wide) in paragraph at lines 3423--3423
 [][]\T1/cmtt/m/n/12 uu[] []<-[] []to_CG[][]([][]data.frame[][]([][]Cholesterol[
 ] []=[] []1[][]:[][]10[][],[] []Gene[] []=[] []11[][]:[][]20[][],[] []Kind[] []
@@ -2449,7 +2595,7 @@ Overfull \hbox (20.06252pt too wide) in paragraph at lines 3423--3423
 
 
 
-[69]
+[80]
 Overfull \hbox (13.88902pt too wide) in paragraph at lines 3473--3473
 []    []\T1/cmtt/m/n/12 expect_s3_class[][]([][]to_CG[][]([][]data.frame[][]([]
 []Cholesterol[] []=[] []1[][]:[][]10[][],[] []Gene[] []=[] []11[][]:[][]20[][],
@@ -2477,7 +2623,7 @@ Overfull \hbox (13.88902pt too wide) in paragraph at lines 3486--3486
 
 
 
-[70]
+[81]
 Overfull \hbox (13.88902pt too wide) in paragraph at lines 3538--3538
 []                 []\T1/cmtt/m/n/12 "For now, only methods for data.frame are 
 available"[][],[][] 
@@ -2498,15 +2644,88 @@ cd"[][])),[] []"Cholest_Gene"[][])[][]
 
 
 
-[71]
+[82]
 
-[72]
+[83]
 
-[73]
+[84]
 
-[74]
+[85]
 
-[75] 
+[86
+
+]
+Cap\'{\imath }tulo XIV.
+
+Overfull \hbox (38.583pt too wide) in paragraph at lines 3743--3743
+[][]\T1/cmtt/m/n/12 dp53[] []<-[] []data.frame[][]([][]p53[] []=[] []round[][](
+[][]rnorm[][]([][]23[][],[] []c[][]([][]rep[][]([][]2[][],[] []13[][]),[] []rep
+[][]([][]2.8[][],[] []10[][]))),[] []3[][]),[][] 
+ []
+
+
+Overfull \hbox (20.06252pt too wide) in paragraph at lines 3744--3744
+[]                   []\T1/cmtt/m/n/12 pten[] []=[] []round[][]([][]c[][]([][]r
+lnorm[][]([][]13[][],[] []1[][]),[] []rlnorm[][]([][]10[][],[] []1.35[][])),[] 
+[]3[][]),[][] 
+ []
+
+
+Overfull \hbox (50.92998pt too wide) in paragraph at lines 3745--3745
+[]                   []\T1/cmtt/m/n/12 brca1[] []=[] []round[][]([][]rnorm[][](
+[][]23[][],[] []c[][]([][]rep[][]([][]2[][],[] []13[][]),[] []rep[][]([][]5.8[]
+[],[] []10[][]))),[] []3[][]),[][] 
+ []
+
+
+Overfull \hbox (1.54204pt too wide) in paragraph at lines 3746--3746
+[]                   []\T1/cmtt/m/n/12 brca2[] []=[] []round[][]([][]c[][]([][]
+rep[][]([][]c[][]([][]1[][],[] []2[][],[] []3[][]),[] []length.out[] []=[] []13
+[][]),[][] 
+ []
+
+
+Overfull \hbox (81.79744pt too wide) in paragraph at lines 3749--3749
+[]                   []\T1/cmtt/m/n/12 id[] []=[] []replicate[][]([][]23[][],[]
+ []paste[][]([][]sample[][](letters,[] []10[][]),[] []collapse[] []=[] []""[][]
+)))[][] 
+ []
+
+
+
+[87
+
+]
+
+[88]
+<figure/unnamed-chunk-132-1.pdf, id=1019, 578.16pt x 578.16pt>
+File: figure/unnamed-chunk-132-1.pdf Graphic file (type pdf)
+<use figure/unnamed-chunk-132-1.pdf>
+Package pdftex.def Info: figure/unnamed-chunk-132-1.pdf  used on input line 380
+0.
+(pdftex.def)             Requested size: 418.25545pt x 418.251pt.
+
+Overfull \hbox (17.62482pt too wide) in paragraph at lines 3800--3802
+[][]
+ []
+
+
+Overfull \hbox (217.61427pt too wide) in paragraph at lines 3824--3824
+[]\T1/cmtt/m/n/12 ## alternative hypothesis: true difference in means between g
+roup Cancer and group NC is not equal to 0[] 
+ []
+
+
+
+[89 <./figure/unnamed-chunk-132-1.pdf>]
+
+[90]
+
+[91]
+
+[92]
+
+[93] 
 enddocument/afterlastpage: lastpage setting LastPage.
 (main-prstr.aux
 LaTeX Info: Redefining \. on input line 8.
@@ -2517,46 +2736,49 @@ LaTeX2e <2024-06-01> patch level 2
 L3 programming layer <2024-10-09>
  ***********
 Package rerunfilecheck Info: File `main-prstr.out' has not changed.
-(rerunfilecheck)             Checksum: 5264E430390E94222B15181EB3432481;5875.
+(rerunfilecheck)             Checksum: F7ED4F003D634A80949E3902E08389CD;7594.
  ) 
 Here is how much of TeX's memory you used:
- 34807 strings out of 473897
- 628080 string characters out of 5725989
- 1131920 words of memory out of 5000000
- 56787 multiletter control sequences out of 15000+600000
- 583842 words of font info for 87 fonts, out of 8000000 for 9000
+ 34894 strings out of 473897
+ 628803 string characters out of 5725989
+ 1123931 words of memory out of 5000000
+ 56838 multiletter control sequences out of 15000+600000
+ 587928 words of font info for 105 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 143i,13n,173p,2298b,2364s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 143i,13n,173p,2298b,2370s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tci
 t1200.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi
-600\ectt1728.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen
-/ec/dpi600\ectt1440.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/j
+600\ectt2488.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen
+/ec/dpi600\ectt1728.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/j
 knappen/ec/dpi600\ecsi1200.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/l
-jfour/jknappen/ec/dpi600\tcss1200.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fon
-ts/pk/ljfour/jknappen/ec/dpi600\tctt1200.pk> <C:\Users\Sandra\AppData\Local\MiK
-TeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecsx1440.pk> <C:\Users\Sandra\AppData\Lo
-cal\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecit1200.pk> <C:\Users\Sandra\App
-Data\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecsx1728.pk> <C:\Users\San
+jfour/jknappen/ec/dpi600\ectt1440.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fon
+ts/pk/ljfour/jknappen/ec/dpi600\tcss1200.pk> <C:\Users\Sandra\AppData\Local\MiK
+TeX\fonts/pk/ljfour/jknappen/ec/dpi600\tctt1200.pk> <C:\Users\Sandra\AppData\Lo
+cal\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecsx1728.pk> <C:\Users\Sandra\App
+Data\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecit1200.pk> <C:\Users\San
 dra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1200.pk> <C:\Us
 ers\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecss1200.pk>
- <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecsx2
-488.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi60
-0\ecsi1095.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/e
-c/dpi600\ecss1095.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jkn
-appen/ec/dpi600\ecsx1200.pk><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/font
-s/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/Sandra/AppData/Local/Programs/M
-iKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/Sandra/AppData/Local/P
-rograms/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/Sandra/AppDat
-a/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/Sand
-ra/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Us
-ers/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.
-pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/
-cm/cmsy8.pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/public/
-lm/lmssbx10.pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/urw/
-palatino/uplr8a.pfb>
-Output written on main-prstr.pdf (76 pages, 664918 bytes).
+ <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecsx1
+440.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi60
+0\ecsx2488.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/e
+c/dpi600\ecsi1095.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jkn
+appen/ec/dpi600\ecss1095.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljf
+our/jknappen/ec/dpi600\ecsx1200.pk><C:/Users/Sandra/AppData/Local/Programs/MiKT
+eX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/Sandra/AppData/Local/Pro
+grams/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/Sandra/AppData
+/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/Sandr
+a/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Us
+ers/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.p
+fb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/c
+m/cmr6.pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/public/am
+sfonts/cm/cmr8.pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/p
+ublic/amsfonts/cm/cmsy10.pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/fon
+ts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/Sandra/AppData/Local/Programs/M
+iKTeX/fonts/type1/public/lm/lmssbx10.pfb><C:/Users/Sandra/AppData/Local/Program
+s/MiKTeX/fonts/type1/urw/palatino/uplr8a.pfb>
+Output written on main-prstr.pdf (94 pages, 799058 bytes).
 PDF statistics:
- 1510 PDF objects out of 1728 (max. 8388607)
- 156 named destinations out of 1000 (max. 500000)
- 612 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1784 PDF objects out of 2073 (max. 8388607)
+ 188 named destinations out of 1000 (max. 500000)
+ 801 words of extra memory for PDF output out of 10000 (max. 10000000)
 

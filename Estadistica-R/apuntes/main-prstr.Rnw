@@ -50,8 +50,8 @@ options(width = 65)
 %Evitar tidyverse
 
 %09/10 - Ramón Díaz
-\chapter{Introducción en R y estadística}
-\section{RStudio y primeras nociones}
+\part{Programación en R}
+\chapter{RStudio y primeras nociones}
 En RStudio, se puede crear un nuevo fichero en File > New File > R script. Se abre un nuevo fichero en el que se puede programar. En R, la asignación de variables se realiza con <-. En la parte superior derecha, se pueden ver todas las variables que se han asignado en la sesión, los datos y las funciones.
 
 <<eval=FALSE>>=
@@ -82,8 +82,8 @@ A veces los paquetes dependen de otros paquetes. Si este es el caso, por defecto
 
 Siempre puedes simplemente matar RStudio; pero eso no es agradable. En todos los sistemas escribir q() en el símbolo del sistema debería detener R/RStudio. También habrá entradas de menú (por ejemplo, «Salir de RStudio» en «Archivo», etc). A continuación sale la pregunta de si se debe guardar el workspace, y en general querremos decir que no.
 
-\section{Ejemplo}
-\subsection{Introducción al test de la t}
+\chapter{Ejemplo}
+\section{Introducción al test de la t}
 En un test de la t, la hipótesis nula ($H_0$) suele representar lo contrario de lo que se desea demostrar. Por ejemplo, si nuestro objetivo es comprobar si hay diferencias entre dos muestras, la hipótesis nula establece que ambas son iguales. A continuación, se utiliza la fórmula de la t para obtener un valor estadístico, cuya distribución se examina bajo la suposición de que $H_0$ es cierta. Luego, se calcula la probabilidad de observar un resultado tan extremo o más extremo que el obtenido bajo $H_0$. Esta probabilidad se denomina p-valor, y su interpretación indica cuánta evidencia hay en contra de $H_0$: un p-valor bajo sugiere que lo observado es improbable bajo $H_0$.
 
 \[
@@ -100,7 +100,7 @@ $$Pr(p-valor \leq 0,01) = 0,01$$
 
 En muchos casos se comprueba más de una $H_0$. En un screening, se analizan 20.000 genes y se decide elegir todos aquellos que tengan un p-valor inferior a 0,05. Esa lista, sobre el total de los genes, la probabilidad de rechazar $H_0$ cuando es cierta, es muy superior al 5\%, aunque se cumpla para cada gen individual. Así, se debe trasladar la lógica al test múltiple, puesto que si no se va a rechazar $H_0$ en muchas ocasiones cuando no se debería.
 
-\subsection{Problema de las pruebas múltiples}
+\section{Problema de las pruebas múltiples}
 Es posible que hayamos oído hablar del problema de las pruebas múltiples con los microarrays: si observamos los p-valores de un gran número de pruebas, podemos ser inducidos a pensar erróneamente que está ocurriendo algo (es decir, que hay genes expresados de forma diferencial) cuando, en realidad, no hay absolutamente ninguna señal en los datos. A nosotros esto nos convence. Pero tienes un colega testarudo que no lo está. Ha decidido utilizar un ejemplo numérico sencillo para mostrarle el problema. Este es el escenario ficticio: 50 sujetos, de los cuales 30 tienen cáncer y 20 no. Medimos 1000 genes, pero ninguno de los genes tiene diferencias reales entre los dos grupos; para simplificar, todos los genes tienen la misma distribución (una distribución normal). Haremos una prueba t por gen, mostrará un histograma de los valores p e informaremos del número de genes «significativos» (genes con p < 0,05). Este es el código R:
 
 <<eval=TRUE,tidy=FALSE, fig.height=5>>=
@@ -199,7 +199,7 @@ apply(rd2, 1, myfunction)
 @
 
 %14/10 - Ramón
-\section{La consola de R para cálculos interactivos}
+\chapter{La consola de R para cálculos interactivos}
 Independientemente de cómo interactuemos con R, una vez que iniciemos una sesión interactiva de R, siempre habrá una consola, que es donde podemos introducir comandos para que sean ejecutados por R. En RStudio, por ejemplo, la consola suele estar situada en la parte inferior izquierda.Todos los prompts en la consola empiezan con >.
 
 <<>>=
@@ -240,7 +240,7 @@ Los paréntesis se ponen cuando el usuario opine que es apropiado y que facilite
 v11 <- 3 * ( 5 + sqrt(13) - 3^(1/(4 + 1)))
 @
 
-\subsection{Nombrar variables}
+\section{Nombrar variables}
 Anteriormente hemos creado las variables \code{v1} y \code{v2}. Los nombres de las variables deben comenzar con una letra. También pueden empezar por un punto, pero entonces estarán ocultas. A continuación se pueden mezclar letras, números, puntos y barras bajas. Los nombres de las variables son case-sensitive, es decir, se diferencia entre las mayúsculas y minúsculas (v1 es diferente a V1). Una vez que se ha creado una variable, se puede utilizar la variable en lugar del contenido:
 
 <<>>=
@@ -265,7 +265,7 @@ Se puede borrar una variable de la siguiente forma:
 rm(z2)
 @
 
-\subsection{Obtener ayuda}
+\section{Obtener ayuda}
 Se puede acceder a la página de ayuda mediante:
 <<eval=FALSE>>=
 help(mean)
@@ -291,7 +291,7 @@ La función \code{args} devuelve los argumentos que se le puede pasar a una func
 args(rnorm)
 @
 
-\subsection{Mensajes de error}
+\section{Mensajes de error}
 Los mensajes de error pueden ser un poco crípticos, pero en muchos casos leerlos ayuda a entender qué está pasando y cómo solucionar el problema. La mejor forma de parsear el mensaje de error es ir a la última línea que se ha ejecutado e ir ascendiendo para ver dónde puede estar el problema. A continuación se muestran algunos ejemplos de mensajes de errores:
 
 <<>>=
@@ -312,14 +312,14 @@ t.test(x ~ z)
 
 En la consola, poniendo el nombre de la función, se puede acceder al código que realiza la función por detrás. Esto puede ser útil cuando la página de ayuda no sea suficiente para intentar localizar lo que intenta hacer la función y por qué falla.
 
-\subsection{Estilo del código}
+\section{Estilo del código}
 Aunque el código se escriba para la máquina, también debe ser legible por humanos, tanto uno mismo del futuro como otras personas. Por tanto, se recomienda no extenderse más allá de la columna 80 y utilizar espacios. Hay muchas guías de estilo de código, pero esas dos normas son las más básicas: si una línea de código es excesivamente larga, cuesta leerla entera al no poder verla completa a simple vista y tener que scrollear. 
 
 Existe un paquete llamado \code{lintr} que permite corregir el estilo del código. 
 
 Los comentarios también forman parte del estilo de código. Se suele separar la documentación para el usuario de la función (documentación de cabecera) de la documentación dentro del código que explica por qué se hacen algunas cosas.
 
-\section{Leer datos en R y guardarlos desde R}
+\chapter{Leer datos en R y guardarlos desde R}
 Hay muchas formas de cargar datos en R. Un ejemplo es \code{read.table} que sirve para todo tipo de datos, pero también hay algunos comandos más concretos como \code{read\_csv}.
 
 <<results='hide'>>=
@@ -338,10 +338,10 @@ summary(another.data.set)
 @
 Si se pone que no hay cabecera, parece que se lee lo mismo, pero en realidad hay algunas diferencias. Cuando se especifica que hay una cabecera, la primera línea con la descripción de las columnas no está numerada, mientras que cuando no se especifica, sí se numera y se considera como la primera fila, y esto es un error. R, por defecto, pone que cabecera es falso. Cuando no se sabe si un documento tiene o no cabecera, primero se carga el documento y luego se comprueba si el contenido se ha cargado bien. Por defecto, las columnas están separadas por espacios o tabuladores.
 
-\subsection{Localización de ficheros}
+\section{Localización de ficheros}
 Para que R pueda leer los ficheros, debe saber dónde buscarlos. Si los ficheros se encuentran en el directorio de trabajo, no hay ningún problema, ya que R los encuentra directamente. Para conocer el directorio de trabajo, se utiliza el comando \code{getwd()}. Si el fichero no se encuentra en el directorio de trabajo, hay varias opciones: proporcionar el path completo o mover el directorio de trabajo al lugar donde se encuentran los ficheros mediante \code{setwd()}. Para esto, es recomendable evitar en el nombre de directorios espacios, acentos y otros caracteres no ASCII.
 
-\subsection{Missing values - NA}
+\section{Missing values - NA}
 Los missing values son algo muy común en estadística. Lo más sencillo es llamarlos como NA de not available. Otra forma es NaN, not a number. 
 
 Puedes especificar el carácter que R debe interpretar como valor omitido, pero los dos procedimientos estándares son sustituir el valor como NA o sustituirlo por nada. Cuando haces cualquiera de los dos, en los datos que se leen deberías ver un NA. Lo mejor es, como de costumbre, ser explícito: utilizar un NA en sus datos originales, o utilizar alguna otra cadena de caracteres especiales para identificarlos. Lo más probable es que desees utilizar NA (o utilizar alguna otra combinación de caracteres y ser explícito), especialmente para las variables de carácter.
@@ -351,7 +351,7 @@ Por defecto, R considera cualquier secuencia de blancos y tabuladores como separ
 
 Al utilizar \code{summary}, en las columnas que sean de tipo int aparece un contador con las filas que contienen un NA. Sin embargo, esto no es así en las columnas cuyo contenido sea texto. Por tanto, no nos podemos fiar si summary no nos dice que no hay, hay que comprobar que efectivamente no haya. 
 
-\subsection{Guardar tablas, datos y resultados}
+\section{Guardar tablas, datos y resultados}
 Es posible guardar los datos en uan matriz o de forma tabular con \code{write.table}:
 <<eval=FALSE>>=
 write.table(X, file = "datos_guardados.txt")
@@ -370,7 +370,7 @@ En algunos casos, puede que los nombres de las filas sean importantes (por ejemp
 X$columna_nueva <- rownames(X)
 @
 
-\subsection{Guardar una sesión en R: .RData}
+\section{Guardar una sesión en R: .RData}
 R permite guardar una imagen de la sesión actual en un fichero de extensión .RData. Esto se realiza mediante la función \code{save.image}:
 
 <<echo=TRUE,eval=FALSE,results="hide">>=
@@ -384,14 +384,14 @@ En una nueva terminal de R, se pueden cargar las imágenes (ya sea la total o de
 
 Por último, es posible utilizar \code{saveRDS} para guardar objetos individuales serializados (en binario) y \code{readRDS} para leerlos posteriormente. Sirve para un único objeto, pero permite poder asignarlo a un nombre que se decide al cargarlo.
 
-\section{Scripts}
+\chapter{Scripts}
 Mantener todo el código en uno o varios scripts y ejecutarlo directamente desde el script y no desde la consola tiene varias ventajas:
 \begin{itemize}
 \item Permite mantener un registro de todo lo que se ha hecho y tenerlo organizado, con comentarios, etc.
 \item Permite realizar cálculos no interactivos. Por ejemplo, ejecutar un análisis muy largo o volver a ejecutar todo el análisis y los gráficos sin querer.
 \end{itemize}
 
-\subsection{Utilizar un script}
+\section{Utilizar un script}
 Hay dos maneras básicas de utilizar un script:
 \begin{itemize}
 \item De forma interactiva; lo que se ha hecho hasta entonces. Por ejemplo, RStudio permite seleccionar una parte del código y lanzarlo al intérprete de R, ejecutándolo desde la consola.
@@ -406,8 +406,8 @@ La opción de vanilla permite que la sesión sea lo más reproducible posible, e
 \end{itemize}
 \end{itemize}
 
-\section{Estructuras de datos básicas en R}
-\subsection{Vectores}
+\chapter{Estructuras de datos básicas en R}
+\section{Vectores}
 Los vectores son la estructura de datos más simple de R. Guardan una serie de objetos del mismo tipo, uno detrás de otro, en una sola dimensión.
 
 <<>>=
@@ -428,7 +428,7 @@ exp(v3)
 v3/0.7
 @
 
-\subsubsection{Funciones para crear vectores}
+\subsection{Funciones para crear vectores}
 Se pueden crear vectores concatenando elementos, pero hay otras dos funciones para crearlos que tienen algo de estructura: \code{seq} (de secuencia) y \code{rep} (de repetición). La función \code{seq} tiene cuatro formas de invocación:
 <<>>=
 seq(from = 1, to = 10)
@@ -446,7 +446,7 @@ rep(1:3, 2:4)
 
 En este caso, es importante que el segundo argumento de \code{rep} sea un único valor (y repita todos los elementos del primer argumento las veces indicadas) o un conjunto de valores de las mismas dimensiones que el primer argumento (y se asigne a cada valor su respectivo número de repetición). 
 
-\subsection{Crear vectores a partir de otros vectores}
+\section{Crear vectores a partir de otros vectores}
 Se pueden concatenar dos vectores:
 
 <<>>=
@@ -466,7 +466,7 @@ v1 + v2
 %21/10 - Ramón
 En ocasiones se produce un warning que avisa sobre la reutilización de uno de los vectores. Sin embargo, esto no ocurre siempre, ua que el warning se suprime cuando el vector a reutilizar se repite una ronda concreta (y no se quede a medias durante el reciclaje).
 
-\subsection{Logical operations}
+\section{Logical operations}
 Se pueden comparar los elementos de un vector con algo para obtener un vector de elementos lógicos TRUE y FALSE. Esto es común en varios lenguajes de programación, pero hay que tener en cuenta la diferencia entre \code{|} y \code{||} y entre \code{\&\&} y \code{\&}. También se puede usar \code{xor} para obtener TRUE cuando solo uno de las condiciones es verdadera (no ambas).
 
 <<>>=
@@ -487,7 +487,7 @@ v2 | v3
 xor(v2, v3)
 @
 
-\subsubsection{Valores lógicos 0 y 1}
+\subsection{Valores lógicos 0 y 1}
 En R, al igual que en otros lenguajes de programación, se pueden utilizar valores lógicos como si fuesen numéricos: se puede tratar \code{TRUE} como 1 y \code{FALSE} como 0. Además, \code{TRUE} puede ser cualquier otro número diferente a 0. 
 
 El operador \code{which} opera en un vector lógico, no en el vector directamente, y devuelve las posiciones que son verdaderas. \code{length} cuenta la longitud de la salida:
@@ -499,7 +499,7 @@ length(which(vv < 5))
 
 Es importante remarcar no utilizar T para TRUE y F para FALSE, aunque se pueda hacer. Esto se debe a que se puede redefinir el valor de T y F a que no correspondan a TRUE y FALSE (lo cual es muy difícil de debuggear), mientras que TRUE y FALSE siempre significarán lo mismo al no poder redefinirse. 
 
-\subsubsection{Cortocircuito de operaciones lógicas}
+\subsection{Cortocircuito de operaciones lógicas}
 Los operadores \code{\&\&} y \code{||} son cortocircuitos. Los dobles caracteres evalúan el segundo elemento sólo si la evaluación del primero no permite saber el resultado de la operación. Cuando se va a hacer un and y la primera condición es FALSE, no hace falta evaluar la segunda condición, ya que se conoce el resultado (de igual forma si en un or la primera condición es TRUE). Así, esto se puede utilizar para condicionar la ejecución de la segunda condición:
 
 <<>>=
@@ -520,7 +520,7 @@ a1 || b1
 
 Hay que tener en cuenta que no se deben utilizar vectores con más de un elemento con cortocircuitos, ya que sólo se evalúa el primer valor. 
 
-\subsection{Nombres de elementos}
+\section{Nombres de elementos}
 Los elementos de un vector pueden tener nombres (que deben ser únicos). Esto permite acceder a los vectores utilizando nombres en lugar de posiciones, lo que puede ser más intuitivo. 
 
 <<>>=
@@ -530,8 +530,8 @@ ages
 ages["Juan"]
 @
 
-\subsection{Acceder y modificar elementos de un vector: indexación y subsetting}
-\subsubsection{Indexación de vectores}
+\section{Acceder y modificar elementos de un vector: indexación y subsetting}
+\subsection{Indexación de vectores}
 Hay cuatro formas para acceder a elementos específicos de un vector:
 \begin{itemize}
 \item Especificando las posiciones: mediante índices
@@ -619,7 +619,7 @@ w <- 17:55
 @
 
 
-\subsection{Interludio: comparación de floats}
+\section{Interludio: comparación de floats}
 Comparar valores numéricos muy similares puede ser complicado y muy delicado debido al redondeo y algunos números que no se pueden representar exactamente en notación binaria. De forma predeterminada, R muestra 7 dígitos significativos.
 
 <<>>=
@@ -648,7 +648,7 @@ Otro ejemplo:
 
 En resumen: desconfía extremadamente siempre que veas una comparación de igualdad de dos números en coma flotante; es poco probable que haga lo que quieres. Si sabes lo que estás haciendo, echa un vistazo a \code{all.equal} para comparaciones de igualdad de objetos casi iguales.
 
-\subsection{Factores}
+\section{Factores}
 Los factores son unos tipos especiales de vectores. Los necesitamos para diferenciar entre un vector de caracteres y un vector que representa variables categóricas. El vector \code{char.vec <- c("abc", "de", "fghi")} contiene varias cadenas de caracteres. Supongamos ahora que tenemos un estudio en el que registramos el sexo de los participantes. Cuando analizamos los datos queremos que R sepa que se trata de una variable categórica, donde cada etiqueta representa un posible valor de la categoría:
 <<tidy=FALSE>>=
 
@@ -685,7 +685,7 @@ Los valores se han recodificado. Una forma sencilla de hacerlo es la siguiente:
 as.numeric(as.character(y))
 @
 
-\subsubsection{Factores y símbolos, colores, etc en gráficos}
+\subsection{Factores y símbolos, colores, etc en gráficos}
 Muchas veces se puede ver código como el siguiente:
 <<eval=FALSE>>=
 plot(y ~ x, col = c("red", "blue")[group])
@@ -710,7 +710,7 @@ c("red", "blue")[factor(levels(group))]
 @
 
 
-\subsection{Matrices}
+\section{Matrices}
 Los vectores son unidimensionales, mientras que las matrices son bidimensionales, y los arrays pueden tener un número arbitrario de dimensiones. Aquí nos quedaremos en las matrices. Como en vectores, todos los elementos de una matriz o de un array son del mismo tipo. 
 
 Las matrices se pueden crear desde un vector:
@@ -723,7 +723,7 @@ matrix(1:15, nrow = 5, ncol = 2)
 
 Por defecto, R rellena la matriz por columnas, pero se puede especificar que sea por fila. 
 
-\subsubsection{Combinar vectores para crear una matriz: \code{cbind, rbind}}
+\subsection{Combinar vectores para crear una matriz: \code{cbind, rbind}}
 Se pueden combinar vectores en horizontal o vertical para crear una matriz:
 <<>>=
 v1 <- 1:5
@@ -740,7 +740,7 @@ cbind(A, B)
 rbind(A, B)
 @
 
-\subsubsection{Indexación y subsetting en matrices}
+\subsection{Indexación y subsetting en matrices}
 Una matriz tiene dos dimensiones, pero por lo demás funciona de forma similar a vectores. La primera dimensión son filas, y la segunda son columnas. Si no se especifica nada para una dimensión, se devuelve en su totalidad.
 <<>>=
 A <- matrix(1:15, nrow = 5)
@@ -783,7 +783,7 @@ Cuando se obtiene una sola columna, se pierde una dimensión y, en lugar de cons
 A[c(2, 4), 1, drop = FALSE]
 @
 
-\subsubsection{Operaciones con matrices}
+\subsection{Operaciones con matrices}
 Hay muchas operaciones matriciales disponibles en R (abre tu libro de álgebra matricial e intenta encontrarlas, si quieres). Y muchas funciones operan directamente, por defecto, sobre toda la matriz, o sobre filas/columnas de la matriz:
 <<>>=
 sum(B)
@@ -797,7 +797,7 @@ También se pueden seleccionar filas y columnas utilizando esas operaciones:
 B[rowMeans(B) > 9, ]
 @
 
-\subsection{Listas}
+\section{Listas}
 Una lista es un contenedor general donde se pueden mezclar cosas de distintos tipos. De hecho, no debe por qué tener una estructura rectangular. Hay muchas formas de acceder a elementos de una lista. 
 <<>>=
 listA <- list(a = 1:5, b = letters[1:3])
@@ -824,7 +824,7 @@ listB[[3]][c(3, 3)]
 listB[c(3, 4)]
 @
 
-\subsection{Dataframes}
+\section{Dataframes}
 Un dataframe es una lista de vectores con la misma longitud y que pueden contener distintos tipos de objetos. La estructura es rectangular. Se pueden acceder a los elementos como si fueran matrices y como si fueran listas. Además, se pueden convertir dataframes en matrices con \code{data.matrix(df)} y \code{as.matrix(df)}. Muchas operaciones de matrices, concretamente \code{rbind} y \code{cbind}, también funcionan con dataframes.
 
 <<>>=
@@ -843,13 +843,13 @@ Es muy fácil añadir nuevas variables a los dataframes:
 AB2$status <- rep(c("Z", "V"), 3)
 @
 
-\section{Números aleatorios y semillas}
+\chapter{Números aleatorios y semillas}
 Los generadores de números aleatorios hacen lo que indica su nombre: generan números de forma aleatoria cada vez que se ejecutan. No obstante, hay veces en los que se buscan números aleatorios, pero también permitir la reproducción del código. En esos casos, se emplean semillas. En R, la forma más sencilla de fijar una semilla es con \code{set.seed()}. 
 
-\section{Plots (gráficos)}
+\chapter{Plots (gráficos)}
 R puede producir una variedad de gráficos y se pueden modificar al gusto. 
 
-\subsection{Lo más básico}
+\section{Lo más básico}
 La función de gráficos básica es \code{plot}. Su página de ayuda puede ser ligeramente engañosa y muchos argumentos adicionales se explican en \code{par}. Una buena analogía para empezar es la de un lienzo en el que se van añadiendo elementos. Veamos este sencillo ejemplo:
 <<>>=
 set.seed(2) ## for reproducibility
@@ -861,7 +861,7 @@ plot(x, y, xlab = "This is the label for the x axis",
 abline(h = 5, lty = 2)
 @
 
-\subsection{Personalización de plots: colores, tipos de línea y de puntos}
+\section{Personalización de plots: colores, tipos de línea y de puntos}
 Se pueden personalizar los gráficos añadiendo colores específicos, modificando el tipo de línea y de puntos.
 <<pchcol,fig.width=5,fig.height=3, fig.cap='pch and col', fig.lp='fig:'>>=
 plot(c(1, 21), c(1, 2.3),
@@ -884,7 +884,7 @@ for(i in 1:6) {
 }
 @
 
-\subsubsection{Un ejemplo de cómo mejorar gráficos}
+\subsection{Un ejemplo de cómo mejorar gráficos}
 El gráfico básico sería el siguiente:
 <<>>=
 hit <- read.table("data/hit-table-500-text.txt")
@@ -911,7 +911,7 @@ scatter3d(hit[, 13] ~ hit[, 3] + hit[, 5], xlab = "Ident",
           zlab = "Length", ylab = "Score")
 @
 
-\subsection{Guardar plots}
+\section{Guardar plots}
 Se pueden guardar las gráficas como PDF, png, etc. Desde RStudio hay una ventana de gráficos. Sin embargo, es mejor especificar y determinar unas características como tamaño, extensión, etc. Se pueden utilizar las funciones \code{pdf()} y \code{png()}: \code{pdf(file="plot.pdf")}. El paquete ggplot tiene la función \code{ggsave()}.
 
 En el siguiente ejemplo se abre un PDF, se generan dos gráficos y hasta que no se ejecuta \code{dev.off()} no se guarda el contenido en el PDF. Además, cada gráfico se guarda en una página distinta del PDF. 
@@ -923,7 +923,7 @@ hist(rnorm(25))
 dev.off()
 @
 
-\subsection{Tipos de gráficos}
+\section{Tipos de gráficos}
 Hemos visto que \code{plot} genera un gráfico simple de puntos, pero hay más tipos. Por ejemplo, \code{hist} genera un histograma. En el paquete de \code{ggplot2} hay más opciones de tipos de gráficos con una mayor posibilidad de personalización.
 
 El paquete \code{car} también cuenta con varios tipos de gráficos, como scatter3d mencionado anteriormente. También tiene una función llamada \code{scatterplot}:
@@ -953,7 +953,7 @@ scatterplot(Metabolic.rate..W. ~ Body.mass..g.|Class, log="xy",
             data = anage)
 @
 
-\section{Tablas}
+\chapter{Tablas}
 Tabular datos es una operación muy común. Hay fundamentalmente dos formas de realizarlo con \code{table} (la más sencilla) y \code{xtabs} (con uso más genérico):
 <<>>=
 table(AB2$Sex, AB2$status)
@@ -963,7 +963,7 @@ xtabs( ~ Sex + status, data = AB2)
 
 Tabular un dataframe completo saca varias tablas 2x2 en función de las combinaciones de los valores de las otras variables. 
 
-\subsection{Más de dos dimensiones y \code{ftable}}
+\section{Más de dos dimensiones y \code{ftable}}
 Cuando hay más de dos dimensiones, utilizar las funciones anteriores saca el mismo resultado. 
 <<ftable0>>=
 (x <-  data.frame(a = c(1,2,2,1,2,2,1),
@@ -980,7 +980,7 @@ ftable(xtabs(~ a + b + c, data = x))
 ## same as ftable(table(x))
 @
 
-\subsection{Recuperar una tabla de un dataframe}
+\section{Recuperar una tabla de un dataframe}
 Si una tabla se nos ha convertido en un dataframe, se puede volver a convertir en tabla:
 
 <<>>=
@@ -996,10 +996,10 @@ xtabs(Freq ~ a + b + c, data = dfx)
 @
 
 %25/10 - Ramón
-\section{La familia \code{apply}}
+\chapter{La familia \code{apply}}
 Una de las grandes ventajas de R es poder operar sobre vectores, arrays, listas, etc enteros. Algunas funciones son \code{apply, lapply, sapply, tapply, mapply}. 
 
-\subsection{apply}
+\section{apply}
 apply es una forma de utilizar una función sobre una cierta cantidad de elementos. Es una forma más elegante que realizando un bucle. 
 
 <<apply1>>=
@@ -1009,7 +1009,7 @@ apply(Z, 2, median)
 apply(Z, 2, min)
 @
 
-\subsection{lapply}
+\section{lapply}
 Con listas se utiliza \code{lapply}, y aplica una función definida a esa lista. 
 
 <<tidy=FALSE>>=
@@ -1021,7 +1021,7 @@ Con listas se utiliza \code{lapply}, y aplica una función definida a esa lista.
 lapply(listA, function(x) x[[1]])
 @
 
-\subsection{tapply y by}
+\section{tapply y by}
 Se utiliza \code{tapply} cuando tenemos unos datos (una columna o varias) que se pueden utilizar para estratificar o seleccionar otros datos. Los dos vectores u objetos deben tener la misma longitud. 
 
 <<tidy=FALSE>>=
@@ -1061,7 +1061,7 @@ by(one.dataframe,
                  Median_Y = median(x$Y)))
 @
 
-\subsection{aggregate}
+\section{aggregate}
 La función \code{aggregate} suele devolver la salida en un formato más conveniente. En este caso, el segundo argumento debe ser siempre una lista:
 <<tidy=FALSE>>=
 aggregate(one.dataframe$age, list(one.dataframe$sex), mean)
@@ -1118,7 +1118,7 @@ do.call(data.frame,
         )
 @
 
-\subsection{split}
+\section{split}
 La función \code{split} sirve para dividir un dataframe en varios en función de una variable 
 <<>>=
 split(one.dataframe, one.dataframe$sex)
@@ -1135,7 +1135,7 @@ lapply(split(one.dataframe,
 
 El procedimiento anterior está relacionado con los enfoques split-apply-combine y map-reduce. Y \texttt{by}, \texttt{aggregate}, y amigos pueden ser considerados como formas especialmente prácticas de hacer la combinación anterior de \texttt{split} con \texttt{*apply} y alguna(s) función(es) de resumen particular(es).
 
-\subsection{apply y dejar caer dimensiones en matrices}
+\section{apply y dejar caer dimensiones en matrices}
 A menos que utilicemos \code{drop = FALSE}, si seleccionamos sólo una fila o una columna, el resultado no es una matriz, sino un vector. Pero a veces necesitamos que permanezcan como matrices. Ese es a menudo el caso en muchas operaciones matriciales, y también cuando se utiliza \code{apply} y afines.
 <<>>=
 (E <- matrix(1:9, nrow = 3))
@@ -1147,12 +1147,12 @@ E[1, , drop = FALSE]
 
 Esto suele ser importante cuando se escribe código genérico y una variable solo tenga una dimensión.
 
-\subsection{Algunas apreciaciones}
+\section{Algunas apreciaciones}
 Hay otros tipos de \code{apply} que veremos más adelante, tales como \code{vapply, sapply, mapply}. Además, las operaciones con \code{apply} son fácilmente paralelizables (librería \code{parallel}).
 
 %30/10 - Ramón
-\section{Programación en R}
-\subsection{Flow control}
+\chapter{Programación en R}
+\section{Flow control}
 R tiene las típicas construcciones condicionales y estructuras de control: \code{if, ifelse, for, while, repeat, switch, break}. Un \code{for} loop rara vez es la opción adecuada, normalmente es mejor utilizar \code{apply}.
 
 <<>>=
@@ -1207,7 +1207,7 @@ if (aa < 95) {
 
 @
 
-\subsection{Definir funciones}
+\section{Definir funciones}
 Se pueden crear funciones en R mediante \code{function}:
 
 <<>>=
@@ -1246,7 +1246,7 @@ plotAndLm(x, y)
 plotAndLm(x, y, title = "A user specified title")
 @
 
-\subsection{Orden de los argumentos, argumentos con y sin nombre}
+\section{Orden de los argumentos, argumentos con y sin nombre}
 R es bastante flexible a la hora de llamar a una función y el orden en el que se pasan los argumentos, pero hay formas mejores y peores de hacerlo. En general, se utiliza la posición de llamada solo para los primeros dos argumentos, y se recomienda evitar pasar argumentos sin nombre después de haber nombrado a algunos:
 
 <<>>=
@@ -1264,7 +1264,7 @@ f1(two = 2, three = 3, 1)
 f1(two = 2, 3, 1)
 @
 
-\subsection{Scoping, frames y entornos}
+\section{Scoping, frames y entornos}
 R puede tener variables globales y locales. 
 
 <<eval=TRUE>>=
@@ -1311,7 +1311,7 @@ search()
 @
 Esto se utiliza implícitamente o explícitamente en gran parte del código. Lo que hace es listar los distintos entornos que hay y su orden. Así, cuando se cargan librerías o se utilizan variables, se utiliza \code{search} para localizar lo que se está pidiendo. 
 
-\subsection{Los \ldots}
+\section{Los \ldots}
 Los $\ldots$ permiten pasar argumentos adicionales en funciones que deben manejarlas.
 
 <<>>=
@@ -1336,7 +1336,7 @@ fc(1:5, "blue", pch = 8)
 @
 La función fa recoge pch dentro de los tres puntos. Además, el color se sobrescribe (el plot resultante tiene los puntos en azul). Tanto fb como fc no hacen lo que se espera, ya que les falta \ldots en la función y en el plot respectivamente. Esa ausencia hace que las funciones no hagan nada con ese argumento.
 
-\subsection{local}
+\section{local}
 La función \code{local} permite crear un entorno local en el que trabajar y luego, al salir, que no tenga guardado el valor de las variables.
 
 <<>>=
@@ -1351,7 +1351,7 @@ try(vv)
 
 @
 
-\subsection{Evaluación vaga}
+\section{Evaluación vaga}
 La siguiente función toma 2 argumentos, pero solo utiliza 1. Por ello, cuando solo se le pasa un argumento, no se produce ningún error.
 <<lazyex1>>=
 flazy <- function(x, y) {return(2 * x)}
@@ -1360,10 +1360,10 @@ flazy(4)
 
 Esto no es algo a hacer de forma habitual, pero es importante entender por qué el código no se rompe. En otras palabras, la evaluación vaga es la evaluación de los valores cuando se van a utilizar, no cuando se definen.
 
-\section{Debugging y capturar excepciones}
+\chapter{Debugging y capturar excepciones}
 Debugging consiste en recorrer el código para comprobar que funciona como se espera y no se estropee. 
 
-\subsection{\code{traceback}}
+\section{\code{traceback}}
 \code{traceback} muestra la última llamada y ayuda a identificar dónde se rompió el código para ver qué función tiene un problema. 
 
 <<error=TRUE>>=
@@ -1389,7 +1389,7 @@ f3(5, "a")
 traceback()
 @
 
-\subsection{\code{debug} and \code{browser}}
+\section{\code{debug} and \code{browser}}
 El comando \code{debug} permite ir paso a paso ejecutando cada línea del código. Cuando se quiera parar, hay que poner simplemente \code{undebug}.
 
 <<eval=FALSE>>=
@@ -1432,7 +1432,7 @@ Desde \code{browser}, hay una serie de expresiones:
 
 \code{debug} es como poner \code{browser} al inicio del código.
 
-\subsection{\code{trace} para ver funciones arbitrarias en sitios arbitrarios}
+\section{\code{trace} para ver funciones arbitrarias en sitios arbitrarios}
 Se puede utilizar \code{debug} con funciones que no hayamos escrito nosotros (por ejemplo, \code{debug(lm)}). Sin embargo, la función lm es muy larga y quizás no queremos empezar por arriba, si no que sospechamos que nuestros problemas están por el medio. Para eso, podemos utilizar \code{trace}.
 
 <<eval=FALSE>>=
@@ -1449,7 +1449,7 @@ lm(y ~ x)
 untrace(lm)
 @
 
-\subsection{Warnings}
+\section{Warnings}
 En R puede haber algunas funciones que no den error, pero muestren warnings. En algunos casos, los warnings pueden indicar que algo no esté funcionando, por lo que se pueden convertir los warnings en errores para que la función no se ejecute. 
 
 <<eval=FALSE>>=
@@ -1462,7 +1462,7 @@ Este código hace que los warnings se comporten como errores. Una vez terminado,
 options(opt)
 @
 
-\subsection{\code{where} para cuando uno está perdido en dónde está}
+\section{\code{where} para cuando uno está perdido en dónde está}
 A veces, cuando se hace debugging, especialmente cuando se está dentro de varias funciones que se llaman unas a otras, uno puede perderse y no saber dónde está. En estos casos, se utiliza \code{where}, que devuelve la función en la que nos encontramos.
 
 <<eval=FALSE>>=
@@ -1478,7 +1478,7 @@ undebug(f1)
 @
 
 %04/11 - Ramón
-\subsection{Protección frente a posibles fallos}
+\section{Protección frente a posibles fallos}
 Hay un manejo excepcional en R mediante \code{try}. Esto permite evitar que el código no falle. Cuando se va a dar un error, la variable adquiere la clase try-error.
 
 <<>>=
@@ -1499,7 +1499,7 @@ ft("a")
 
 @
 
-\subsection{Funciones de debugging que no son exportadas}
+\section{Funciones de debugging que no son exportadas}
 Si cargamos un paquete, sirve con \code{library(paquete)}. No obstante, puede haber algunas funciones no exportadas (no se ve directamente al teclear el nombre).
 
 <<eval=FALSE, results = 'hide'>>=
@@ -1510,10 +1510,10 @@ Las \textbf{funciones exportadas} son aquellas que el paquete pone a disposició
 
 Las \textbf{funciones no exportadas} son aquellas que están presentes en el paquete pero no están pensadas para ser utilizadas por el usuario final. Estas funciones suelen ser de uso interno, y los desarrolladores del paquete las utilizan para realizar tareas auxiliares o para construir las funciones exportadas de manera modular. No aparecen en la lista de funciones del paquete y no son accesibles directamente.
 
-\section{Programación orientada a objetos: clases S3 y S4}
+\chapter{Programación orientada a objetos: clases S3 y S4}
 En R hay varios sistemas de programación orientada a objetos. Los sistemas originales en R son los sistemas S3 y S4, siendo los más extendidos. 
 
-\subsection{\code{methods}}
+\section{\code{methods}}
 <<eval=FALSE, results = 'hide'>>=
 methods('plot')
 getAnywhere(plot.TukeyHSD)
@@ -1543,7 +1543,7 @@ stats:::add1.lm
 getS3method('add1', 'lm')
 @
 
-\subsection{Creación de clases y métodos}
+\section{Creación de clases y métodos}
 Vamos a suponer que queremos trabajar con unos data frames especiales con información sobre colesterol, la expresión de un gen y el tipo de experimento que lo midió. Lo primero que se quiere es convertir data frames en objetos de mi clase (y más adelante convertir matrices o vectores a objetos), crear un summary de los objetos y ajustar funciones de plot. Finalmente, hay que testear el código mediante la librería \code{testthat}.
 
 Empezamos con una función genérica de conversión al objeto y luego un método que funcione para los data frames. El objeto será Cholest\_Gene object, por lo que un conversor genérico (y sus comentarios) sería:
@@ -1625,7 +1625,7 @@ to_CG.default <- function(x) {
 
 @
 
-\subsection{Testeo y test-driven development}
+\section{Testeo y test-driven development}
 El último paso es el testeo, y es algo fundamental. En los tests se van poniendo casos en los que se encuentran bugs y se arreglan. Como mínimo, se debe comprobar que se puede crear un objeto legítimo de un data frame, que falla (como esperamos) cuando al data frame le faltan columnas y que falla (como esperamos) cuando no se proporciona un data frame. El testeo se puede llevar a cabo con el paquete \code{testthat}, el cual tiene varios bloques de salidas que se pueden esperar (\code{expect\_s3\_class, expect\_error, expect\_equal, ...})
 
 <<eval=FALSE>>=
@@ -1697,7 +1697,7 @@ test_that("minimal conversions and failures", {
 })
 @
 
-\subsection{Creación de función de plot}
+\section{Creación de función de plot}
 <<eval=FALSE>>=
 ## Cholest_Gene object -> ggplot object
 ## Produce a ggplot of a Cholest_Gene object.
@@ -1718,7 +1718,7 @@ plot.Cholest_Gene <- function(x, ...) {
 
 En R, cuando se pasa un argumento, tan pronto como se utiliza en el interior de la función, se hace una copia. Así, cuando se modifica la clase dentro de una función, no se altera el argumento original, solo la copia interna. 
 
-\subsection{Clases S4}
+\section{Clases S4}
 Las clases S4 se utilizan en algunos paquetes de BioConductor. Funcionan de forma similar a las clases S3, pero son más formales y rigurosas. 
 
 <<eval=TRUE>>=
@@ -1751,8 +1751,122 @@ m1@x
 m2@Dim
 @
 
-\subsection{Resumen sobre la programación orientada a objetos en R}
+\section{Resumen sobre la programación orientada a objetos en R}
 Es recomendable familiarizarse con las clases S3 en R. En BioConductor, es posible encontrarse con las clases S4, pero en general se puede ejecutar todo con clases S3. Hay otras clases, como las R6, pero tienen un uso muy concreto en situaciones muy específicas.
 
+%11/11 - Ramón Díaz
+\part{Estadística con R}
+\chapter{Comparación entre dos grupos}
+\section{Introducción a la comparación entre dos grupos}
+Alguien del laboratorio ha medido la expresión de varios genes de un conjunto de pacientes con y sin cáncer. Nosotros somos el encargado de los datos y responder a la pregunta "¿Difiere la expresión de los genes entre los pacientes con y sin cáncer?"
+
+<<results='hide'>>=
+dp53 <- data.frame(p53 = round(rnorm(23, c(rep(2, 13), rep(2.8, 10))), 3),
+                   pten = round(c(rlnorm(13, 1), rlnorm(10, 1.35)), 3),
+                   brca1 = round(rnorm(23, c(rep(2, 13), rep(5.8, 10))), 3),
+                   brca2 = round(c(rep(c(1, 2, 3), length.out = 13),
+                       rep(c(2, 3, 4), length.out = 10))),
+                   cond = rep(c("Cancer", "NC"), c(13, 10)),
+                   id = replicate(23, paste(sample(letters, 10), collapse = "")))
+@
+
+
+\section{Tipos de datos}
+Tenemos que aclarar este punto, ya que nos referiremos a él con frecuencia. Los datos pueden medirse en diferentes escalas. De "menos información a más información" podemos organizar las escalas de esta manera:
+\begin{description}
+\item[Escala nominal o categórica] Utilizamos una escala que simplemente diferencia las distintas clases. Por ejemplo, podemos clasificar algunos objetos por aquí, ``ordenador'', ``pizarra'', ``lápiz'', y podemos asignarles números (1 al ordenador, 2 a la pizarra, etc.), pero los números no tienen significado per se.
+
+\textbf{Binario} los datos están en una escala nominal con sólo dos clases: muerto o vivo (y podemos dar un 0 o un 1 a cualquiera de ellas), hombre o mujer, etc.
+
+Muchos datos biológicos están en una escala nominal. Por ejemplo, supongamos que nos fijamos en los tipos de elementos repetitivos del genoma y damos un 1 a las SINEs, un 2 a las LINEs, etc. O numera los aminoácidos del 1 (alanina) al 20 (valina). Por supuesto, se puede contar cuántos son del tipo 1 (cuántos son alaninas), etc., pero no tendría sentido hacer promedios y decir «su composición media de AA es de 13,5».
+
+\item[Escala ordinal] Los datos pueden ordenarse en el sentido de que se puede decir que algo es mayor o menor que otra cosa. Por ejemplo, puedes ordenar tu preferencia por la comida como: ``chocolate > jamón serrano > grillos tostados > hígado''. Podrías asignar el valor 1 al chocolate (tu alimento preferido) y un 4 al hígado (el menos preferido), pero las diferencias o proporciones entre esos números no tienen ningún significado.
+
+\item[Escala de intervalos o de proporciones] Se pueden tomar diferencias y proporciones, y sí que tienen significado. Si un sujeto tiene un valor de 6 para la expresión del gen PTEN, otro un valor de 3, y otro un valor de 1, entonces el primero tiene seis veces más ARN de PTEN que el último, y dos veces más que el segundo.
+\end{description}
+
+\section{Mirar los datos: plots}
+El primer paso siempre es mirar los datos. De hecho, aquí podemos ver todos los datos originales. Así que echa un vistazo a los datos.
+
+\subsection{Plots a hacer}
+Para todos los conjuntos de datos, excepto los más pequeños, debemos utilizar gráficos. Asegúrate de hacer los siguientes gráficos:
+\begin{itemize}
+\item Histograma de cada gen
+\item Boxplot
+\item Plots de medias
+\item Stripchart con jitter
+\item Density plots
+\end{itemize}
+
+\subsection{Relación entre variables}
+Nos centraremos en comparar dos grupos. Pero tenemos varias variables (genes). Una cosa obvia a hacer es mirar cómo se relacionan Y mostrar los diferentes (dos, en este caso) grupos.
+<<results='hide'>>=
+library(RcmdrMisc)
+@
+<<fig.width=8, fig.height=8>>=
+scatterplotMatrix( ~ brca1 + brca2 + p53 + pten | cond,
+                  data = dp53)
+@
+
+No vamos a seguir con esto. Pero se puede y probablemente desee mirar a este tipo de gráficos de forma rutinaria.
+
+\section{Comparar dos grupos con t-test}
+La forma más sencilla de realizar un test de la t es mediante:
+<<>>=
+t.test(p53 ~ cond, data = dp53)
+@
+
+La prueba t estándar asume que las varianzas de los dos grupos son iguales, mientras que la prueba de Welch no requiere que las varianzas de ambos grupos sean iguales. En la prueba de Welch, los grados de libertad pueden ser un número no entero (como sucede en este caso). Con este estadístico, el programa ha utilizado la distribución t correspondiente y ha calculado el área en ambas colas de la distribución.
+
+\subsection{Grados de libertad}
+Supongamos que tenemos los números 0, 1 y 2, y sabemos que su media es 1. Dado que tenemos tres números, ¿a cuántos de ellos podemos asignar libremente un valor? A dos de ellos, ya que el tercer número debe ajustarse para que el promedio sea 1. Así, el número de grados de libertad es el número de observaciones menos el número de parámetros que debemos estimar. En el caso de tener dos grupos, los grados de libertad se calcularían como:
+$$ N = N_1 + N_2 = N - 2$$
+o de manera equivalente:
+$$(N_1 - 1) + (N_2 - 1) = N - 2 $$
+
+\subsection{Test de Welch vs test de la t}
+Si las varianzas no son iguales y se realiza una prueba t estándar asumiendo que son iguales, se incurre en un error. En cambio, si las varianzas son realmente iguales pero se usa la prueba de Welch, el error cometido es menor. Por ello, es preferible utilizar la prueba de Welch cuando existe incertidumbre sobre la igualdad de varianzas. Esta es la razón por la cual, por defecto, se suele optar por la prueba de Welch.
+
+
+El test de la t sirve para \textbf{comparar medias}. La fórmula es:
+\[
+t = \frac{(x_1 - x_2)-(\mu_1 - \mu_2)}{S_{x_1-x_2}}
+\]
+
+\subsection{Desviación estándar vs error estándar}
+La desviación estándar es una medida de la dispersión de los datos alrededor de la media, mostrando cuán alejados están los valores individuales del promedio. Es útil para entender la variabilidad dentro de una sola muestra o población. En cambio, el error estándar mide la precisión de la media muestral como estimador de la media poblacional. A diferencia de la desviación estándar, que refleja la variabilidad en una muestra específica, el error estándar indica cuánto podrían variar las medias de diferentes muestras si se extrajeran repetidamente de la misma población. Cuanto mayor es el tamaño de la muestra, menor será el error estándar, ya que la media muestral se aproxima más a la media poblacional.
+
+\subsection{Ideas clave sobre el test de la t}
+Es importante comprender algunas ideas clave sobre el uso de los p-valores en la prueba de hipótesis. Primero, cuando el resultado de un análisis no es estadísticamente significativo, no estamos confirmando la hipótesis nula; simplemente estamos fallando en rechazarla, lo que significa que no hemos encontrado suficiente evidencia en su contra. Además, el p-valor no representa la probabilidad de que la hipótesis nula sea cierta, ni de que la hipótesis alternativa lo sea. En cambio, el p-valor sirve como una métrica que indica la fuerza de la evidencia \textbf{en contra} de la hipótesis nula. Si el p-valor es bajo, la interpretación es que, o bien la hipótesis nula es falsa, o bien hemos observado un evento tan improbable como el p-valor calculado, dado que la hipótesis nula es cierta.
+
+Estas tres preguntas son distintas: 1) ¿Qué dice la evidencia? Esto lo responde el p-valor. 2) ¿Qué debo creer? Quizás hay evidencia adicional. 3) ¿Qué debo hacer? Esto refleja otra relación de coste-beneficio.
+
+Es fundamental recordar que los p-valores se calculan bajo ciertos supuestos de modelo, y cualquier violación de estos supuestos puede afectar la validez del resultado. Por eso, utilizar los p-valores de manera cuidadosa es más adecuado que interpretar resultados en términos absolutos de “significativo” o “no significativo”. Además, comparar valores extremadamente pequeños de p (como $p = 10^{-13}$ frente a $p = 10^{-16}$) no tiene un significado práctico adicional, ya que ambos ya representan un nivel de evidencia considerablemente fuerte en contra de la hipótesis nula. También es esencial reconocer que el p-valor no es la única herramienta de inferencia estadística; los intervalos de confianza proporcionan información valiosa sobre el rango de valores plausibles para el parámetro de interés, complementando el análisis de los p-valores y ayudando a interpretar mejor los resultados.
+
+Para comprender la inferencia estadística, es esencial distinguir entre una muestra y la población. La población es el conjunto completo de elementos sobre el cual queremos obtener conclusiones, mientras que una muestra es un subconjunto de esa población que se selecciona para su análisis. La mayoría de las veces, se trabaja con muestras porque estudiar a toda la población no es práctico; a partir de los datos de la muestra, hacemos inferencias sobre las características de la población.
+
+Un concepto fundamental en estadística es el de un estadístico, que es cualquier valor numérico que se puede calcular a partir de una muestra. Un tipo específico de estadístico es un estimador, que se usa para aproximar un parámetro de la población. Por ejemplo, la media muestral, calculada como $\sum x/N$, es un estimador que proporciona una aproximación de la media poblacional verdadera utilizando datos de una muestra.
+
+Un tipo particular de estadístico es el estadístico t, utilizado en la prueba t para contrastar hipótesis sobre las medias de dos grupos. Tanto los estadísticos en general como los estimadores específicos tienen distribuciones propias, que describen cómo se distribuyen sus valores posibles si el muestreo se repitiera muchas veces. Esta variabilidad introducida por el muestreo afecta las conclusiones y debe tenerse en cuenta.
+
+Otro aspecto clave es entender la diferencia entre desviación estándar y error estándar. La desviación estándar mide la variabilidad de los datos dentro de la muestra, mientras que el error estándar refleja la variabilidad de la media muestral con respecto a la media poblacional.
+
+En cuanto al p-valor, es una medida de la evidencia en contra de la hipótesis nula (H0), que plantea que no hay efecto o diferencia. Al calcular el p-valor, se supone que los estadísticos siguen una distribución específica bajo la hipótesis nula, lo cual permite evaluar la probabilidad de obtener un resultado tan extremo como el observado.
+
+La lógica de un test estadístico radica en decidir entre la hipótesis nula y la alternativa basándose en los datos. A diferencia de un procedimiento de estimación, que busca obtener un valor aproximado de un parámetro, una prueba de hipótesis se centra en determinar si la evidencia es suficientemente fuerte para rechazar la hipótesis nula. Esta diferencia entre estimación y prueba de hipótesis es fundamental para realizar inferencias estadísticas bien informadas.
+
+\subsection{Intervalos de confianza}
+Un intervalo de confianza del 95\% alrededor de una estimación, como una media, no debe interpretarse como que existe una probabilidad del 95\% de que la media poblacional esté entre los límites del intervalo, por ejemplo, entre 1 y 2. Esta interpretación es incorrecta. La interpretación correcta de un intervalo de confianza del 95\% es que, si repitiéramos el muestreo y el cálculo del intervalo de confianza muchas veces, aproximadamente el 95\% de esos intervalos generados contendrían la media poblacional verdadera. El intervalo refleja la precisión de la estimación dada la variabilidad del muestreo, no una probabilidad sobre la ubicación de la media en un intervalo específico para una muestra concreta.
+
+En el contexto de un test de hipótesis, si el test es justamente significativo (es decir, si el p-valor es 0,05), uno de los límites del intervalo de confianza tocará el valor de 0, indicando que no se puede rechazar la hipótesis nula con un nivel de confianza superior al 95\%. Cuando el valor t calculado aumenta (es decir, la evidencia contra la hipótesis nula se vuelve más fuerte), el intervalo de confianza se amplía, reflejando una mayor certeza en la estimación. Por ejemplo, un valor t de 18 corresponde a un área bajo la curva mucho mayor que un valor t de 4, lo que implica una estimación mucho más precisa y una evidencia más fuerte en favor de rechazar la hipótesis nula.
+
+\subsection{Supuestos del test de la t}
+Un supuesto clave en la prueba t es la \textbf{independencia de los datos}. Este requisito no solo es esencial para la prueba t, sino también para muchas otras pruebas estadísticas. La falta de independencia entre observaciones es un problema grave y común en los estudios estadísticos. Una forma de dependencia, conocida como pseudorreplicación, ocurre cuando las observaciones no son realmente independientes, lo que puede sesgar los resultados y llevar a interpretaciones incorrectas.
+
+Cuando se comparan dos medias, otro supuesto importante es la \textbf{igualdad de varianzas}. Sin embargo, detectar diferencias en las varianzas no siempre es sencillo. Dos soluciones prácticas ante la posible desigualdad de varianzas son el uso de la prueba de Welch (predeterminada en software estadístico como R) y la aplicación de transformaciones de datos. No obstante, antes de continuar con la comparación, conviene preguntarse si realmente tiene sentido comparar medias cuando las varianzas de los grupos difieren considerablemente, ya que diferencias amplias en la variabilidad pueden afectar la interpretación de las medias.
+
+En cuanto a la \textbf{normalidad} de los datos, este supuesto es menos restrictivo, especialmente a medida que aumenta el tamaño de la muestra. Es importante notar que, al hablar de normalidad, simetría y otros aspectos de la distribución, se hace referencia a la \textbf{distribución de cada grupo por separado}. Las desviaciones de la normalidad debido a la \textit{asimetría} pueden tener un efecto significativo en los resultados, mientras que las desviaciones relacionadas con una mayor o menor \textit{curtosis} (colas más pesadas o ligeras que la normal) suelen tener un impacto menor. Por eso, comúnmente se acepta que los datos estén "suficientemente cerca de la normalidad," prestando especial atención a la asimetría de la distribución. Con tamaños de muestra grandes, la normalidad de los datos suele ser menos preocupante gracias al teorema del límite central, que establece que, a medida que aumenta el tamaño de la muestra, la distribución de la media muestral se aproxima a una distribución normal. ¿Cuándo una muestra es lo suficientemente grande? La respuesta depende de cuánto difieran los datos de la normalidad. En muchas situaciones, un tamaño de muestra de 10 puede ser suficiente; 50 generalmente es adecuado y, en algunos casos, incluso muestras de 100 observaciones podrían no ser suficientes si la distribución es extremadamente no normal.
+
+Por último, los \textbf{valores atípicos o outliers} pueden ser una preocupación seria en el análisis de datos. De hecho, los valores atípicos, o los valores potencialmente atípicos según alguna definición, son identificados por la función \code{Boxplots} en R. En general, los puntos que están muy alejados del resto de los datos pueden tener efectos graves sobre la media calculada, pero no sobre la mediana (esto es uno de los motivos por los cuales los procedimientos no paramétricos suelen ser más robustos frente a valores atípicos). Sin embargo, decidir qué hacer con los valores atípicos no es una tarea sencilla. Un valor atípico podría ser el resultado de un error en el registro de los datos, pero también podría ser un dato perfectamente válido y, de hecho, podría ser lo “interesante” del análisis. En algunos casos, se realizan análisis con y sin el valor atípico para comparar los resultados (y, por supuesto, se debe informar explícitamente de esto). A veces, se llegan a las mismas conclusiones cualitativas, pero otras veces no. Por tanto, antes de decidir cómo tratar los valores atípicos, es fundamental reflexionar cuidadosamente sobre lo que se considera un valor atípico en el contexto del análisis y el objetivo del estudio. No se debe caer en la tentación de eliminar automáticamente los valores atípicos sin una justificación sólida. Y, en cualquier caso, cualquier decisión sobre cómo tratar los valores atípicos debe ser documentada y comunicada de manera transparente.
 
 \end{document}
