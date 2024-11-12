@@ -79,3 +79,95 @@ Hay varios tipos de grafos:
 Todas las representaciones de los grafos se encuentran en un fichero de extensión .net. Los elementos del grafo se escriben con un asterisco y se especifica la cantidad de elementos que tienen. Los vértices cuentan con un número y la etiqueta, que si se trata de una cadena de texto debe ir entre comillas. También pueden tener más etiquetas como la forma del nodo. Los edges muestran los identificadores de los dos nodos que se relacionan. También se pueden especificar distintos tipos de arcos con distintos colores. En la visualización, en caso de que alguna característica no se refleje, en Options se puede modificar. Además, se pueden generar subgrafos para cada tipo de arco desde la pestaña de Network en la pestaña principal y "Multiple Relations Network". 
 
 Los nodos pueden tener atributos, como nombre, sexo, lugar de trabajo y antigüedad. Esto se puede representar con la forma del nodo, el tamaño, etc. Esto se escribe en ficheros de extensión .vec que se deben cargar en Pajek en el apartado de vectores y seleccionar la casilla de la derecha. Se distinguen los edges (no dirigidos) de los arcs (dirigidos).  
+
+%12/11 - Estrella 
+\subsection{Ejercicio en Pajek}
+Una matriz de adyacencia es una matriz cuadrada con tantas filas y columnas como nodos haya en el grafo. En este caso, el grafo tiene 6 nodos.
+
+\begin{table}[htbp]
+\begin{tabular}{lllllll}
+& A & B & C & D & E & F\\
+A & 0 & 1 & 0 & 1 & 1 & 0 \\
+B & 1 & 0 & 1 & 0 & 1 & 0 \\
+C & 0 & 1 & 0 & 0 & 0 & 1 \\
+D & 0 & 1 & 0 & 0 & 1 & 1 \\
+E & 1 & 1 & 0 & 1 & 0 & 0 \\
+F & 0 & 0 & 0 & 1 & 1 & 0
+\end{tabular}
+\end{table}
+
+Vemos que hay un arco A-B y B-A (se toman las filas como primer nodo), ya que en esas celdas hay un 1. Sin embargo, A-D no tiene arco, pero D-A sí, por lo que el grafo es dirigido. Cuando el grafo es no dirigido, la matriz es simétrica.
+
+En cuanto al segundo ejercicio, nos proporcionan el grafo y las particiones. El gráfico resultante es el siguiente. Cada círculo pequeño representa un curso. La mayoría de arcos (es decir, de relaciones de amistad) se produce dentro de cada curso. No obstante, hay algunos arcos que unen los distintos cursos.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/pajek-ex2.png}
+\end{figure}
+
+\section{Neo4j}
+Neo4j es la base de datos orientada a grafos que más se utiliza. Puede utilizar grafos dirigos y no dirigidos, grafos ponderados (con una unidad en el arco), grafos con etiquetas (los nodos y los arcos pueden tener propiedades). Todos estos se pueden manejar en Neo4j, recibiendo el nombre de grafos de propiedad. Las ventajas de esta base de datos es su alto rendimiento, su gran agilidad (facilidad para añadir propiedades, nodos, relaciones, etc.) y su gran flexibilidad y escalabilidad. 
+
+Dos casos de uso de esta base de datos es la detección de fraude de tarjetas para pagos online y recomendaciones en tiempo real y redes sociales. Comparando una base de datos relacional con una base de datos basada en grafos, los términos se traducirían de la siguiente forma:
+\begin{table}[htbp]
+\centering
+\begin{tabular}{l l}
+Base de datos relacional & Base de datos de grafos \\ \hline
+Tablas & Grafos \\
+Filas & Nodos \\
+Columnas y datos & Propiedades y sus valores \\
+Limitaciones & Relaciones \\
+Joins & Traversal o recorridos.
+\end{tabular}
+\end{table}
+
+Neo4j utiliza el lenguaje de consulta CQL (Cypher Query Language). Utiliza grafos de propiedades con índices que permiten acelerar las operaciones. Se pueden utilizar restricciones con UNIQUE, y sigue el modelo ACID de las bases de datos tradicionales. Hay una interfaz para ejecutar comandos CQL. Los grafos se almacenan de forma nativa, es decir, los nodos cercanos en el grafo se almacenan de forma contigua en el disco. Los comandos de consulta se pueden ejecutar desde Java, Spring, Scala, etc. 
+
+\subsection{Modelo de datos}
+El modelo de datos es un grafo con nodos, propiedades y etiquetas. Un nodo muestra cada registro, pudiendo tener propiedades en formato de pares nombre-valor que pueden contener cadenas, números o booleanos. Las etiquetas son una forma de agrupar nodos similares (equivalente a las clases en la programación orientada a objetos). Las relaciones siempre tienen dirección (todos los grafos son dirigos) y tienen un tipo. Además, pueden tener propiedades. 
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/neo4j-graph.png}
+\end{figure}
+
+\subsection{Lenguaje de consulta Cypher (CQL)}
+CQL utiliza patrones para describir los datos, por lo que se conoce como lenguaje de pattern-matching. La sintaxis es sencilla y legible, teniendo cláusulas parecidas a SQL: comandos para insertar y borrar, cláusulas como WHERE y ORDER BY, funciones para cadenas, funciones agregadas, etc.
+\begin{itemize}
+\item CREATE: para crear nodos, relaciones y propiedades
+\item MATCH: para conseguir datos sobre nodos, relaciones y propiedades
+\item RETURN: para obtener los resultados de las consultas.
+\item WHERE: dar condiciones para filtrar los datos obtenidos
+\item DELETE: borrar nodos y relaciones
+\item REMOVE: borrar propiedades de nodos y relaciones
+\item ORDER BY: ordenar los datos obtenidos
+\item SET: añadir o actualizar etiquetas
+\end{itemize}
+
+El comando CREATE \marginpar[\footnotesize CREATE]  \ sirve para crear nodos con y sin propieades, relaciones con y sin propieaddes, y etiquetas para nodos y relaciones. La sintaxis es CREATE(<node-name>:<label-name>), por ejemplo, \texttt{CREATE (:Person)} o \texttt{CREATE(p:Person)}. Las propiedades se especifican entre llaves: \texttt{CREATE (ee:Person {name:'Emil', from:'Sweden'})}. Un nodo puede tener varias etiquetas, por ejemplo \texttt{CREATE (e1:Estudiante:Person)}.
+
+El comando MATCH \marginpar[\footnotesize MATCH \\ RETURN]  \ sirve para localizar datos sobre nodos, relaciones y propiedades. Por ejemplo, para buscar todos los nodos de tipo Person, habría que poner \texttt{MATCH(:Person)} seguido de un RETURN. El RETURN sirve para devolver propiedades sobre nodos, relaciones y propiedades, por lo que debe ir siempre con MATCH o CREATE. El comando completo especificando propiedades sería \texttt{MATCH (ee:Person) WHERE ee.name = 'Emil' RETURN ee;} y sin propiedades \texttt{MATCH (p:Person) RETURN p}. Para mostrar todo el contenido de la base de datos (nodos, relaciones y propiedades), se debe poner \texttt{MATCH(n) RETURN n}. RETURN permite crear alias con AS y obtener resultados únicos con DISTINCT. 
+
+Se puede crear una nueva relación entre dos nodos que no existen de la siguiente forma: \texttt{CREATE p = (juan:Person {name:'Juan'})-[:TRABAJA\_EN]->(eps:Empresa{name:'EPS'}) <- [:TRABAJA\_EN]-(laura:Person{name:'Laura'}) RETURN p}.
+
+La cláusula WHERE \marginpar[\footnotesize WHERE]  \ funciona de forma muy similar a SQL: \\
+\texttt{MATCH (p1:Person) \\ WHERE p1.name = 'Allison' \\ RETURN p1} \\
+\texttt{MATCH (p:Person) \\ WHERE p.name = 'Ian' OR p.name = 'Rik' \\ RETURN p}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = \textwidth]{figs/where-cql.png}
+\end{figure}
+
+Para borrar \marginpar[\footnotesize DETACH DELETE \\ REMOVE]  \ toda la base de datos, se debe ejecutar \texttt{MATCH(n) DETACH DELETE n}. Para borrar una propiedad o una etiqueta de un nodo o relación, se debe utilizar REMOVE. 
+
+SET permite \marginpar[\footnotesize SET \\ ORDER BY]  \ asignar valores a propiedades. ORDER BY funciona como en SQL, ordenando de forma ascendente de forma predeterminada.
+
+La cláusula UNION \marginpar[\footnotesize UNION]  \ permite combinar varias consultas. UNION ALL mantiene las filas duplicadas. 
+
+A la hora de seleccionar datos \marginpar[\footnotesize LIMIT \\ SKIP]  \ , se pueden mostrar un cierto número de filas (LIMIT x) o saltar x filas (SKIP x). 
+
+CREATE no comprueba \marginpar[\footnotesize MERGE \\ IS (NOT) NULL]  \ si el nodo ya existe. Para que esto no ocurra, se puede utilizar MERGE. En caso de no especificar propiedades, se rellenan con null. Posteriormente, se puede acceder a ellas mediante IS NULL o eliminarlas con IS NOT NULL.
+
+Hay varias funciones para strings: toUpper convierte todo en mayúscula, toLower en minúscula. substring permite obtener un fragmento de una cadena. El índice empieza en 0.
+
+Neo4j permite cargar un fichero csv \marginpar[\footnotesize LOAD CSV]  \ con los datos mediante el comando \texttt{LOAD CSV WITH HEADERS FROM "file:/estudiantes.csv" AS csvLine \\ CREATE (e:Estudiante {id:toInteger(csvLine.id), nombre:csvLine.nombre})}.
