@@ -1781,11 +1781,11 @@ Una lista más compleja sería la siguiente:
 ## [1] "Hola"
 ## 
 ## $one.matrix
-##            [,1]       [,2]        [,3]       [,4]        [,5]
-## [1,] -1.7724812 -0.6971305 -0.08211741 -0.9181396  0.06823289
-## [2,]  2.0530447  1.0600810 -1.92526424  1.5607119 -1.44149215
-## [3,] -0.6645762 -0.1331341  0.89529899  0.1112093  0.33116266
-## [4,] -1.1650014  0.4824219 -1.05906583  0.3809316  1.36514340
+##            [,1]       [,2]       [,3]       [,4]          [,5]
+## [1,] -0.5302701 -0.4660475  1.3983435 -2.2171668 -0.2222661320
+## [2,] -0.1076839 -1.7181432  0.4276466  1.2347667  0.9744675215
+## [3,]  2.1773931 -0.8954388  0.6666081  3.5902072  1.2332070724
+## [4,] -0.5883355 -0.1278110 -0.7383674 -0.1258448 -0.0003593905
 ## 
 ## $another.list
 ## $another.list$a
@@ -1799,36 +1799,36 @@ Una lista más compleja sería la siguiente:
 \hldef{listB[[}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{11}\hldef{)]]}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.895299
+## [1] 0.6666081
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[[}\hlnum{3}\hldef{]][}\hlnum{11}\hldef{]}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.895299
+## [1] 0.6666081
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[[}\hlnum{3}\hldef{]][}\hlnum{3}\hldef{,} \hlnum{3}\hldef{]}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.895299
+## [1] 0.6666081
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[[}\hlnum{3}\hldef{]][}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{3}\hldef{)]}
 \end{alltt}
 \begin{verbatim}
-## [1] -0.6645762 -0.6645762
+## [1] 2.177393 2.177393
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{4}\hldef{)]}
 \end{alltt}
 \begin{verbatim}
 ## $one.matrix
-##            [,1]       [,2]        [,3]       [,4]        [,5]
-## [1,] -1.7724812 -0.6971305 -0.08211741 -0.9181396  0.06823289
-## [2,]  2.0530447  1.0600810 -1.92526424  1.5607119 -1.44149215
-## [3,] -0.6645762 -0.1331341  0.89529899  0.1112093  0.33116266
-## [4,] -1.1650014  0.4824219 -1.05906583  0.3809316  1.36514340
+##            [,1]       [,2]       [,3]       [,4]          [,5]
+## [1,] -0.5302701 -0.4660475  1.3983435 -2.2171668 -0.2222661320
+## [2,] -0.1076839 -1.7181432  0.4276466  1.2347667  0.9744675215
+## [3,]  2.1773931 -0.8954388  0.6666081  3.5902072  1.2332070724
+## [4,] -0.5883355 -0.1278110 -0.7383674 -0.1258448 -0.0003593905
 ## 
 ## $another.list
 ## $another.list$a
@@ -3839,7 +3839,7 @@ Si las varianzas no son iguales y se realiza una prueba t estándar asumiendo qu
 
 El test de la t sirve para \textbf{comparar medias}. La fórmula es:
 \[
-t = \frac{(x_1 - x_2)-(\mu_1 - \mu_2)}{S_{x_1-x_2}}
+t = \frac{(\bar{x_1} - \bar{x_2})-(\mu_1 - \mu_2)}{S_{\bar{x_1}-\bar{x_2}}}
 \]
 
 \subsection{Desviación estándar vs error estándar}
@@ -3874,8 +3874,331 @@ Un supuesto clave en la prueba t es la \textbf{independencia de los datos}. Este
 
 Cuando se comparan dos medias, otro supuesto importante es la \textbf{igualdad de varianzas}. Sin embargo, detectar diferencias en las varianzas no siempre es sencillo. Dos soluciones prácticas ante la posible desigualdad de varianzas son el uso de la prueba de Welch (predeterminada en software estadístico como R) y la aplicación de transformaciones de datos. No obstante, antes de continuar con la comparación, conviene preguntarse si realmente tiene sentido comparar medias cuando las varianzas de los grupos difieren considerablemente, ya que diferencias amplias en la variabilidad pueden afectar la interpretación de las medias.
 
-En cuanto a la \textbf{normalidad} de los datos, este supuesto es menos restrictivo, especialmente a medida que aumenta el tamaño de la muestra. Es importante notar que, al hablar de normalidad, simetría y otros aspectos de la distribución, se hace referencia a la \textbf{distribución de cada grupo por separado}. Las desviaciones de la normalidad debido a la \textit{asimetría} pueden tener un efecto significativo en los resultados, mientras que las desviaciones relacionadas con una mayor o menor \textit{curtosis} (colas más pesadas o ligeras que la normal) suelen tener un impacto menor. Por eso, comúnmente se acepta que los datos estén "suficientemente cerca de la normalidad," prestando especial atención a la asimetría de la distribución. Con tamaños de muestra grandes, la normalidad de los datos suele ser menos preocupante gracias al teorema del límite central, que establece que, a medida que aumenta el tamaño de la muestra, la distribución de la media muestral se aproxima a una distribución normal. ¿Cuándo una muestra es lo suficientemente grande? La respuesta depende de cuánto difieran los datos de la normalidad. En muchas situaciones, un tamaño de muestra de 10 puede ser suficiente; 50 generalmente es adecuado y, en algunos casos, incluso muestras de 100 observaciones podrían no ser suficientes si la distribución es extremadamente no normal.
+En cuanto a la \textbf{normalidad} de los datos, este supuesto es menos restrictivo, especialmente a medida que aumenta el tamaño de la muestra. Es importante notar que, al hablar de normalidad, simetría y otros aspectos de la distribución, se hace referencia a la \textbf{distribución de cada grupo por separado}. Las desviaciones de la normalidad debido a la \textit{asimetría} pueden tener un efecto significativo en los resultados, mientras que las desviaciones relacionadas con una mayor o menor \textit{curtosis} (colas más pesadas o ligeras que la normal) suelen tener un impacto menor. Por eso, comúnmente se acepta que los datos estén "suficientemente cerca de la normalidad," prestando especial atención a la asimetría de la distribución. Con tamaños de muestra grandes, la normalidad de los datos suele ser menos preocupante gracias al \textit{teorema del límite central}, que establece que, a medida que aumenta el tamaño de la muestra, la distribución de la media muestral se aproxima a una distribución normal. ¿Cuándo una muestra es lo suficientemente grande? La respuesta depende de cuánto difieran los datos de la normalidad. En muchas situaciones, un tamaño de muestra de 10 puede ser suficiente; 50 generalmente es adecuado y, en algunos casos, incluso muestras de 100 observaciones podrían no ser suficientes si la distribución es extremadamente no normal.
 
 Por último, los \textbf{valores atípicos o outliers} pueden ser una preocupación seria en el análisis de datos. De hecho, los valores atípicos, o los valores potencialmente atípicos según alguna definición, son identificados por la función \code{Boxplots} en R. En general, los puntos que están muy alejados del resto de los datos pueden tener efectos graves sobre la media calculada, pero no sobre la mediana (esto es uno de los motivos por los cuales los procedimientos no paramétricos suelen ser más robustos frente a valores atípicos). Sin embargo, decidir qué hacer con los valores atípicos no es una tarea sencilla. Un valor atípico podría ser el resultado de un error en el registro de los datos, pero también podría ser un dato perfectamente válido y, de hecho, podría ser lo “interesante” del análisis. En algunos casos, se realizan análisis con y sin el valor atípico para comparar los resultados (y, por supuesto, se debe informar explícitamente de esto). A veces, se llegan a las mismas conclusiones cualitativas, pero otras veces no. Por tanto, antes de decidir cómo tratar los valores atípicos, es fundamental reflexionar cuidadosamente sobre lo que se considera un valor atípico en el contexto del análisis y el objetivo del estudio. No se debe caer en la tentación de eliminar automáticamente los valores atípicos sin una justificación sólida. Y, en cualquier caso, cualquier decisión sobre cómo tratar los valores atípicos debe ser documentada y comunicada de manera transparente.
+
+%13/11 - Ramón
+\section{Tests de una y dos colas}
+Hasta ahora, hemos trabajado con tests de dos colas. Sin embargo, en algunas situaciones es posible limitar el análisis a una sola cola. En un test de dos colas, la hipótesis nula plantea que las medias son iguales, y cualquier desviación en ambas direcciones puede llevar al rechazo de la hipótesis nula. En contraste, un test de una cola permite especificar una dirección para la hipótesis. Por ejemplo, podemos plantear como hipótesis nula que $\mu_1 \geq \mu_2$, y como hipótesis alternativa que $\mu_1 < \mu_2$, concentrándonos solo en una dirección de la desviación.
+
+Para un mismo estadístico t, un test de una cola tendrá un p-valor igual a la mitad del p-valor de un test de dos colas, ya que se considera únicamente una de las colas de la distribución. Sin embargo, por convención y para evitar sesgos, lo normal es realizar un test de dos colas, especialmente si no existe una razón científica sólida para anticipar la dirección del efecto.
+
+Algunos tests, como el ANOVA, utilizan la distribución F, la cual tiene una sola cola de manera natural, ya que evalúa si existe variabilidad significativa entre varios grupos en cualquier dirección sin considerar una dirección específica. En el caso del test de la t, se debe decidir entre un test de una o dos colas en función de la hipótesis científica planteada y siempre antes de observar los datos, para evitar que los resultados influyan en la elección del tipo de test.
+
+\section{Potencia de un test}
+Si existe una verdadera diferencia de medias, nos gustaría detectarla. La potencia se refiere a nuestra capacidad para rechazar el nulo cuando es falso. Esta figura puede ayudar; las filas se refieren al estado real del Universo y las columnas a la decisión que se toma.
+
+\begin{table}[h!]
+\begin{tabular}{p{6.5cm}|>{\centering}p{2.5cm}|>{\centering}p{2.5cm}|}
+  \multicolumn{1}{c}{} & \multicolumn{1}{>{\centering}p{2.5cm}}{Hipótesis nula no se rechaza} &
+  \multicolumn{1}{>{\centering}p{2.5cm}}{Hipótesis nula se rechaza}\tabularnewline
+  \cline{2-3}
+  Medias no difieren ($H_0$ \textit{es cierta}) & Correcto & Type I error\tabularnewline
+  \cline{2-3}
+  Medias difieren ($H_0$ \textit{es falsa}) & Type II error & Correcto\tabularnewline
+  \cline{2-3}
+\end{tabular}
+\end{table}
+
+No es posible realizar un test con un error de tipo I extremadamente pequeño sin aumentar el error de tipo II, ya que reducir al mínimo la probabilidad de un error de tipo I generalmente incrementa la probabilidad de un error de tipo II. Por ello, es necesario encontrar un equilibrio adecuado entre ambos tipos de error. Al diseñar un test, se debe establecer un nivel de significancia o error de tipo I nominal, generalmente expresado como $\alpha$, que refleje la probabilidad aceptable de rechazar la hipótesis nula cuando en realidad es cierta. Este valor nominal permite controlar de forma explícita la tasa de error de tipo I, manteniendo el test en un nivel de confianza apropiado para los objetivos del estudio.
+
+La potencia es $1 - Type\ II\ error$. La potencia es la probabilidad de rechazar la hipótesis nula cuando la hipótesis nula es falsa.
+
+La probabilidad de que se detecte una diferencia que realmente existe (potencia) depende de:
+\begin{itemize}
+\item El umbral que se utilice para decir que "las medias difieren" ($\alpha$ o error de tipo I).\footnote{El valor p es una función de los datos, es algo que se calcula con un procedimiento determinado para un conjunto de datos determinado; el nivel $\alpha$ o la tasa de error de tipo I es una propiedad del procedimiento.}
+\item El tamaño de la muestra
+\item El tamaño del efecto (distancia de medias)
+\item La desviación estándar de la población
+\end{itemize}
+
+La potencia se puede calcular de antemano para saber si es probable encontrar una diferencia en caso de que la haya (dado el tamaño de la muestra y los tamaños de efecto y las desviaciones estándar estimados) y averiguar si el tamaño de la muestra es adecuado para la potencia deseada (y los tamaños del efecto y las desviaciones estándar estimados). Es importante recalcar que no tiene mucho sentido calcular la potencia del test después de haberlo calculado, ya que no aporta nada de valor.
+
+\subsection{Maldición del ganador}
+%Cuando se hacen estudios con poca potencia estadística, los efectos que se detectan, es decir, aquellas comparaciones que superan el punto de corte (p valor inferior a 0,05) suelen ser comparaciones asociadas con una sobreestimación del verdadero efecto. 
+En estudios con baja potencia, las estimaciones de los efectos de las pruebas que resultan "significativas" tienden a estar sesgadas al alza, es decir, a ser mayores de lo que realmente deberían ser. Esto significa que, para un mismo fenómeno, cuando solo se consideran estudios de baja potencia con valores p significativos, las estimaciones del efecto suelen ser excesivamente grandes (en términos absolutos). Así, el sesgo de publicación, junto con la baja potencia, puede llevar a una sobreestimación sistemática de los tamaños del efecto reportados en la literatura.
+
+Además, el tamaño de la muestra afecta el valor de p asociado a un estadístico t dado. Para un mismo valor de t, un tamaño de muestra grande se traduce en un p-valor más pequeño que el que obtendríamos con un tamaño de muestra pequeño, lo que significa que la significancia estadística es más fácil de alcanzar con muestras grandes, incluso si el efecto real es pequeño. Este fenómeno subraya la importancia de interpretar los valores p en contexto, considerando tanto el tamaño de muestra como la potencia del estudio para obtener una estimación realista del efecto.
+
+\section{(Bio)equivalencia}
+Hemos configurado las cosas de modo que \textbf{necesitamos pruebas suficientemente sólidas para rechazar el nulo} y \textbf{utilizamos p-valores de medidas de fuerza de las pruebas CONTRA el nulo}. Esto es a menudo lo que queremos en la ciencia, pero no siempre. Y en muchos casos, en particular en cuestiones relacionadas con la salud pública, es posible que queramos seguir un principio de precaución.
+
+Por ejemplo, tal vez queramos decir: «Sólo permitiremos verter cloro en el río si hay pruebas suficientemente sólidas de que tal acción no causará daños, por ejemplo, no aumentará la mortalidad de los peces». Esto no es algo que se pueda resolver con valores p tal y como los hemos utilizado. 
+
+¿Qué podemos hacer? Queremos darle la vuelta al proceso. Querríamos un procedimiento para responder a la siguiente pregunta: «¿Existen pruebas suficientemente sólidas de que, si el cloro tiene un efecto, éste no es mayor que un aumento de la mortalidad de los peces del 1\%?». Esto es como invertir la carga de la prueba: es como si ahora quisiéramos pruebas a favor de una hipótesis que dice que las cosas no difieren en más de un valor dado, pequeño (es decir, parece que ahora queremos pruebas a favor de lo que a menudo es el nulo). En otras palabras, queremos pruebas sólidas de que el valor verdadero está dentro de los límites de equivalencia, los límites que dicen que «las cosas son similares o equivalentes» (hemos simplificado las cosas aquí, preocupándonos sólo por los aumentos en la mortalidad de los peces, pero a menudo nos preocupamos por las desviaciones tanto hacia arriba como hacia abajo).
+
+Podemos enfocar este problema como la búsqueda de pruebas contra la hipótesis (nueva nula) de que las cosas difieren en más de la tolerancia especificada, en nuestro caso ese 1\% de aumento en la mortalidad de los peces; en otras palabras, que el valor verdadero cae fuera de los límites de equivalencia. Si podemos rechazar nuestra nueva hipótesis nula de que los grupos difieren en más de un umbral determinado (que la diferencia real queda fuera de los límites de equivalencia), habremos establecido que son equivalentes. En algunos casos es relativamente sencillo hacerlo (como con el procedimiento TOST; realizando dos tests de una cola), pero en muchos otros no lo es.
+
+\section{Inferencia bayesiana}
+El teorema de Bayes es una fórmula fundamental en probabilidad condicional que permite calcular la probabilidad de un evento dado que otro evento ha ocurrido. Su expresión general es:
+$$P(A|B) = \frac{P(B|A) \cdot P(A)}{P(B)}$$
+
+En estadística, el teorema de Bayes se aplica de la siguiente manera:
+$$P(H_0|\bar{x_A}-\bar{x_B} = 3) = \frac{P(\bar{x_A}-\bar{x_B} = 3 | H_0) \cdot P(H_0)}{P(\bar{x_A}-\bar{x_B} = 3)}$$
+
+Sin embargo, una dificultad importante en la aplicación de la inferencia bayesiana en este contexto es la estimación de la probabilidad previa de la hipótesis nula, $P(H_0)$, antes de realizar el test. Asignar un valor adecuado a esta probabilidad previa es crucial, pero puede ser complicado y, en algunos casos, controvertido.
+
+El teorema de Bayes es ampliamente utilizado en estadística sin controversias en áreas como el diagnóstico médico. Por ejemplo, calcular la probabilidad de padecer una enfermedad dado un resultado positivo en un test diagnóstico es una aplicación común. 
+Sin embargo, la interpretación de un mismo resultado depende del contexto que se tenga.
+En el caso de un test de sangre en heces para detectar cáncer de colon, un resultado positivo no necesariamente implica que la persona tenga la enfermedad, debido a la posibilidad de falsos positivos. En estos casos, el teorema de Bayes nos ayuda a comprender la probabilidad real de la enfermedad, considerando tanto la precisión del test como la prevalencia de la enfermedad en la población.
+
+\section{Intervalos de confianza e interpretación de p-valores}
+Al interpretar intervalos de confianza, es crucial considerar tanto la posición de la media como el rango en el que se concentra la mayor parte de los valores posibles.
+
+Supongamos los siguientes intervalos de confianza en los que la hipótesis nula es $H_0 = \mu_1 - \mu_2 = 0$.
+
+En el caso del primer intervalo de confianza, aunque incluye el valor 0 y, por tanto, no se rechaza la hipótesis nula, la media estimada está bastante alejada de 0, lo que sugiere que muchos de los valores dentro del intervalo no son consistentes con la hipótesis nula. Esto podría ser indicativo de un tamaño de muestra pequeño, y no rechazar la hipótesis nula sin más podría no ser adecuado. En el segundo caso, la hipótesis nula se rechaza, y el intervalo de confianza, que es pequeño y distante de 0, respalda una diferencia clara. Sin embargo, si el intervalo estuviera cerca de 0, rechazar la hipótesis nula podría tener menos relevancia práctica, ya que los valores observados indicarían una diferencia mínima.
+
+Es importante recordar que los intervalos de confianza del 99\% son más amplios que los del 95\%, y estos, a su vez, son más amplios que los del 90\%. Cuanto mayor es el nivel de confianza, más amplio será el intervalo, lo que refleja una mayor incertidumbre en la estimación.
+
+Hay que evitar conclusiones erróneas al interpretar significación estadística. No siempre es contradictorio que un estudio resulte "significativo" mientras otro no lo sea, incluso si el efecto observado es el mismo en ambos. Por ejemplo, un estudio con un p-valor bajo (significativo) y otro con un p-valor alto (no significativo) pueden tener medias similares si el tamaño de muestra o la variabilidad difieren entre los estudios.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width = 0.9\textwidth]{figs/amrhein.pdf}
+\end{figure}
+
+Los intervalos de confianza, en general, ofrecen más información que los p-valores, ya que muestran los valores que son consistentes con lo observado y permiten evaluar el rango de posibles efectos. En el gráfico, ambos intervalos muestran valores compatibles con la hipótesis alternativa, sugiriendo una diferencia entre grupos.
+
+Finalmente, la interpretación de un p-valor adecuado depende del contexto. Aunque históricamente se ha utilizado un umbral de 0,05, en ciertos contextos este nivel puede ser demasiado alto, y puede ser necesario establecer un criterio más estricto o considerar otras métricas adicionales según la naturaleza del estudio.
+
+\section{Tests apareados}
+Los tests apareados son un tipo de análisis estadístico diseñado para comparar dos medidas tomadas sobre el mismo grupo de individuos o unidades experimentales bajo condiciones distintas. Su uso es especialmente común en estudios donde se desea evaluar el efecto de un tratamiento o intervención midiendo a los mismos sujetos en dos momentos diferentes (pre y post intervención) o bajo dos condiciones diferentes. Al comparar cada sujeto consigo mismo, estos tests ayudan a controlar la variabilidad intrasujeto y, por tanto, pueden aumentar la precisión y potencia estadística en comparación con un test de muestras independientes.
+
+En los tests apareados, el análisis se enfoca en las diferencias intrasujeto (o intraunidad), lo que permite aislar el efecto de la condición o el tiempo sobre cada individuo. El test de la t apareado, una de las pruebas más usadas para este tipo de análisis, evalúa si la media de las diferencias entre dos medidas es significativamente distinta de cero, lo cual indicaría una diferencia sistemática entre las condiciones evaluadas.
+
+Para que los resultados de un test apareado sean válidos, es crucial que las medidas sean independientes entre sujetos y que cada par de medidas esté correctamente ordenado para cada sujeto. Esto asegura que cada par se refiera al mismo individuo en ambas condiciones, de manera que el test pueda evaluar directamente las diferencias intrasujeto.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{set.seed}\hldef{(}\hlnum{15}\hldef{)}
+\hldef{s} \hlkwb{<-} \hlkwd{rnorm}\hldef{(}\hlnum{12}\hldef{,} \hlnum{4}\hldef{,} \hlnum{25}\hldef{)}
+
+\hldef{s} \hlkwb{<-} \hlkwd{c}\hldef{(s, s)}
+\hldef{cond} \hlkwb{<-} \hlkwd{rep}\hldef{(}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,} \hlnum{.5}\hldef{),} \hlkwd{c}\hldef{(}\hlnum{12}\hldef{,} \hlnum{12}\hldef{))}
+\hldef{y} \hlkwb{<-} \hlkwd{rnorm}\hldef{(}\hlnum{24}\hldef{)} \hlopt{+} \hldef{s} \hlopt{+} \hldef{cond}
+\hldef{y} \hlkwb{<-} \hldef{y} \hlopt{-} \hlkwd{min}\hldef{(y)} \hlopt{+} \hlnum{0.3}
+\hldef{id} \hlkwb{<-} \hlkwd{replicate}\hldef{(}\hlnum{12}\hldef{,} \hlkwd{paste}\hldef{(}\hlkwd{sample}\hldef{(letters,} \hlnum{10}\hldef{),} \hlkwc{collapse} \hldef{=} \hlsng{""}\hldef{))}
+\hldef{id} \hlkwb{<-} \hlkwd{c}\hldef{(id, id)}
+\hldef{dmyc} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{myc} \hldef{=} \hlkwd{round}\hldef{(y,} \hlnum{3}\hldef{),}
+                   \hlkwc{cond} \hldef{=} \hlkwd{rep}\hldef{(}\hlkwd{c}\hldef{(}\hlsng{"Cancer"}\hldef{,} \hlsng{"NC"}\hldef{),} \hlkwd{c}\hldef{(}\hlnum{12}\hldef{,} \hlnum{12}\hldef{)),}
+                   \hlkwc{id} \hldef{= id)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\subsection{Test de la t apareados}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{myc.cancer} \hlkwb{<-} \hldef{dmyc}\hlopt{$}\hldef{myc[dmyc}\hlopt{$}\hldef{cond} \hlopt{==} \hlsng{"Cancer"}\hldef{]}
+\hldef{myc.nc} \hlkwb{<-} \hldef{dmyc}\hlopt{$}\hldef{myc[dmyc}\hlopt{$}\hldef{cond} \hlopt{==} \hlsng{"NC"}\hldef{]}
+\hlkwd{t.test}\hldef{(myc.nc, myc.cancer,} \hlkwc{paired} \hldef{=} \hlnum{TRUE}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## 
+## 	Paired t-test
+## 
+## data:  myc.nc and myc.cancer
+## t = 4.079, df = 11, p-value = 0.001823
+## alternative hypothesis: true mean difference is not equal to 0
+## 95 percent confidence interval:
+##  0.432056 1.444777
+## sample estimates:
+## mean difference 
+##       0.9384167
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+En este análisis, se mide a 12 sujetos en dos condiciones diferentes, generando un total de 24 observaciones. Sin embargo, al tratarse de un test apareado, el análisis se enfoca en las 12 diferencias intrasujeto entre ambas condiciones, lo que implica que hay 11 grados de libertad.
+
+El resultado del test de R muestra que se ha realizado un test apareado y proporciona el valor de t, los grados de libertad (df) y el p-valor asociado. Además, señala que la hipótesis alternativa es que la diferencia entre las medias de las dos condiciones no es igual a 0, refiriéndose a la diferencia intrasujeto.
+
+El output incluye un intervalo de confianza del 95\% para la media de las diferencias, que en este caso está desplazado respecto al 0 (lo cual puede sugerir una diferencia significativa entre las condiciones). La media de las diferencias (\textit{mean differences}) indica el promedio de la variación intrasujeto entre ambas condiciones.
+
+Es crucial que los datos estén correctamente ordenados para cada sujeto en ambas condiciones. Esto significa que los dos vectores pasados al test deben tener las observaciones de cada sujeto en el mismo orden, ya que el test apareado compara las diferencias exactas entre las condiciones para cada sujeto.
+
+\subsection{Remodelación de los datos para un test emparejado}
+Cuando se va a realizar un test de la t emparejado, se pueden organizar los datos en estructuras como las siguientes:
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{ccc}
+  SubjectID&Tumor&Non-Tumor\\
+  \hline
+  pepe&23&45\\
+  maria&29&56\\
+  \ldots&\ldots&\ldots\\
+\end{tabular}
+\caption{Paired data in a ``unstacked or wide'' shape/format.}\label{unstacked}
+\end{table}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{ccc}
+  SubjectID&Myc&Condition\\
+  \hline
+  pepe&23&tumor\\
+  pepe&45&nontumor\\
+  maria&29&tumor\\
+  maria&56&nontumor\\
+  \ldots&\ldots&\ldots\\
+\end{tabular}
+\caption{Paired data in a ``stacked or long'' shape/format.}\label{stacked}
+\end{table}
+
+En general, es más útil tener los datos organizada de forma "apilada".
+\newpage
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{(merged3} \hlkwb{<-} \hlkwd{reshape}\hldef{(dmyc,} \hlkwc{direction} \hldef{=} \hlsng{"wide"}\hldef{,} \hlkwc{idvar} \hldef{=} \hlsng{"id"}\hldef{,}
+                    \hlkwc{timevar} \hldef{=} \hlsng{"cond"}\hldef{,} \hlkwc{v.names} \hldef{=} \hlsng{"myc"}\hldef{))}
+\end{alltt}
+\begin{verbatim}
+##            id myc.Cancer myc.NC
+## 1  bqysitlvpm     38.289 39.634
+## 2  zuhxmiyfos     76.188 78.361
+## 3  bpkmxwhtsg     24.621 24.396
+## 4  qsmyexkcnw     54.079 53.902
+## 5  uhbkifsnvw     43.832 44.679
+## 6  efzpcboidt      0.300  1.675
+## 7  trsyacmejh     31.055 32.260
+## 8  hyqjownkue     58.402 59.427
+## 9  ejmkobsqrh     29.723 30.300
+## 10 mculjayvhw      6.190  6.030
+## 11 ytwgsplaef     52.626 54.494
+## 12 dchlnopykg     22.089 23.497
+\end{verbatim}
+\begin{alltt}
+\hldef{dmycWide} \hlkwb{<-} \hlkwd{reshapeL2W}\hldef{(dmyc,} \hlkwc{within}\hldef{=}\hlsng{"cond"}\hldef{,} \hlkwc{id}\hldef{=}\hlsng{"id"}\hldef{,} \hlkwc{varying}\hldef{=}\hlsng{"myc"}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\subsection{El test de la t emparejado - plots}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{## Paired}
+\hlkwd{t.test}\hldef{(merged3}\hlopt{$}\hldef{myc.NC, merged3}\hlopt{$}\hldef{myc.Cancer,} \hlkwc{alternative}\hldef{=}\hlsng{'two.sided'}\hldef{,}
+       \hlkwc{conf.level}\hldef{=}\hlnum{.95}\hldef{,}  \hlkwc{paired}\hldef{=}\hlnum{TRUE}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## 
+## 	Paired t-test
+## 
+## data:  merged3$myc.NC and merged3$myc.Cancer
+## t = 4.079, df = 11, p-value = 0.001823
+## alternative hypothesis: true mean difference is not equal to 0
+## 95 percent confidence interval:
+##  0.432056 1.444777
+## sample estimates:
+## mean difference 
+##       0.9384167
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{t.test}\hldef{(myc} \hlopt{~} \hldef{cond,} \hlkwc{alternative} \hldef{=} \hlsng{'two.sided'}\hldef{,} \hlkwc{conf.level}\hldef{=}\hlnum{.95}\hldef{,}
+       \hlkwc{var.equal}\hldef{=}\hlnum{FALSE}\hldef{,}  \hlkwc{data}\hldef{=dmyc)}
+\end{alltt}
+\begin{verbatim}
+## 
+## 	Welch Two Sample t-test
+## 
+## data:  myc by cond
+## t = -0.10365, df = 21.996, p-value = 0.9184
+## alternative hypothesis: true difference in means between group Cancer and group NC is not equal to 0
+## 95 percent confidence interval:
+##  -19.71435  17.83752
+## sample estimates:
+## mean in group Cancer     mean in group NC 
+##             36.44950             37.38792
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plotMeans}\hldef{(dmyc}\hlopt{$}\hldef{myc, dmyc}\hlopt{$}\hldef{cond,} \hlkwc{error.bars} \hldef{=} \hlsng{"se"}\hldef{,} \hlkwc{ylab} \hldef{=} \hlsng{"MYC"}\hldef{,}
+          \hlkwc{xlab} \hldef{=} \hlsng{"Condition"}\hldef{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-138-1} 
+\end{knitrout}
+
+Los intervalos de confianza solapan a lo largo de sus recorridos. En general, es un mal plot para datos emparejados al no reflejarse que cada sujeto se ha medido en dos condiciones.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{diff.nc.c} \hlkwb{<-} \hldef{(myc.nc} \hlopt{-} \hldef{myc.cancer)}
+\hlkwd{t.test}\hldef{(diff.nc.c)}
+\end{alltt}
+\begin{verbatim}
+## 
+## 	One Sample t-test
+## 
+## data:  diff.nc.c
+## t = 4.079, df = 11, p-value = 0.001823
+## alternative hypothesis: true mean is not equal to 0
+## 95 percent confidence interval:
+##  0.432056 1.444777
+## sample estimates:
+## mean of x 
+## 0.9384167
+\end{verbatim}
+\begin{alltt}
+\hlkwd{Boxplot}\hldef{(} \hlopt{~} \hldef{diff.nc.c,} \hlkwc{data} \hldef{= merged3,} \hlkwc{xlab} \hldef{=} \hlsng{""}\hldef{,}
+         \hlkwc{ylab} \hldef{=} \hlsng{"Intra-subject difference (NC - Cancer)"}\hldef{,} \hlkwc{main} \hldef{=} \hlsng{"MYC"}\hldef{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-139-1} 
+\end{knitrout}
+Aquí se calcula la diferencia intrasujeto y se muestra en el plot. Es una mejor representación, ya que el grueso de los pares son desviaciones positivas. 
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hldef{(ggplot2)}
+
+\hldef{dftmp} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{y} \hldef{= dmycWide}\hlopt{$}\hldef{diff.nc.c)}
+\hldef{theplot} \hlkwb{<-} \hlkwd{ggplot}\hldef{(}\hlkwc{data} \hldef{= dftmp,} \hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{=} \hlkwd{factor}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{y} \hldef{= y))} \hlopt{+}
+  \hlkwd{geom_violin}\hldef{()} \hlopt{+} \hlkwd{geom_boxplot}\hldef{(}\hlkwc{width} \hldef{=} \hlnum{0.2}\hldef{)} \hlopt{+}
+  \hlkwd{geom_jitter}\hldef{(}\hlkwc{colour} \hldef{=} \hlsng{"black"}\hldef{,} \hlkwc{width} \hldef{=} \hlnum{0.1}\hldef{,} \hlkwc{height} \hldef{=} \hlnum{0}\hldef{)} \hlopt{+}
+  \hlkwd{scale_x_discrete}\hldef{(}\hlkwc{breaks} \hldef{=} \hlkwa{NULL}\hldef{)} \hlopt{+}
+  \hlkwd{xlab}\hldef{(}\hlsng{""}\hldef{)} \hlopt{+}
+  \hlkwd{ylab}\hldef{(}\hlsng{"Intra-subject difference (NC - Cancer)"}\hldef{)} \hlopt{+}
+  \hlkwd{theme_bw}\hldef{(}\hlkwc{base_size} \hldef{=} \hlnum{14}\hldef{,} \hlkwc{base_family} \hldef{=} \hlsng{"sans"}\hldef{)} \hlopt{+}
+  \hlkwd{theme}\hldef{(}\hlkwc{axis.title.x} \hldef{=} \hlkwd{element_blank}\hldef{(),} \hlkwc{axis.text.x} \hldef{=} \hlkwd{element_blank}\hldef{())}
+\hlkwd{print}\hldef{(theplot)}
+\hlkwd{rm}\hldef{(dftmp, theplot)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/diff-violin-1} 
+\end{knitrout}
+Aquí, el número de observaciones es pequeño, por lo que el plot violín no está justificado; pero sería la mejor representación. Los puntos son las diferencias intrasujeto.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{stripchart}\hldef{(myc} \hlopt{~} \hldef{cond,} \hlkwc{vertical} \hldef{=} \hlnum{TRUE}\hldef{,} \hlkwc{data} \hldef{= dmyc)}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlkwd{unique}\hldef{(dmyc}\hlopt{$}\hldef{id))}
+  \hlkwd{segments}\hldef{(}\hlkwc{x0} \hldef{=} \hlnum{1}\hldef{,} \hlkwc{x1} \hldef{=} \hlnum{2}\hldef{,}
+           \hlkwc{y0} \hldef{= dmyc}\hlopt{$}\hldef{myc[dmyc}\hlopt{$}\hldef{cond} \hlopt{==} \hlsng{"Cancer"} \hlopt{&} \hldef{dmyc}\hlopt{$}\hldef{id} \hlopt{==} \hldef{i],}
+           \hlkwc{y1} \hldef{= dmyc}\hlopt{$}\hldef{myc[dmyc}\hlopt{$}\hldef{cond} \hlopt{==} \hlsng{"NC"} \hlopt{&} \hldef{dmyc}\hlopt{$}\hldef{id} \hlopt{==} \hldef{i],}
+           \hlkwc{col} \hldef{=} \hlsng{"red"}\hldef{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-140-1} 
+\end{knitrout}
+Este plot es bastante feo. El objetivo está en mostrar por qué el test de la t muestra grandes diferencias, pero el plot no. En casi todos los casos, a diferencia intrasujeto es positiva (NC-cancer da un resultado positivo). Además, la variabilidad intersujeto es muy grande en relación con la magnitud del efecto. Los dos valores de un sujeto están altamente correlacionados, pero los grados de libertad son menores. 
 
 \end{document}

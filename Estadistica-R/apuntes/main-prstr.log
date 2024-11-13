@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.10.30)  11 NOV 2024 18:58
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.10.30)  13 NOV 2024 17:03
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2146,6 +2146,51 @@ Overfull \hbox (0.82951pt too wide) detected at line 86
 \T1/cmss/m/n/12 XIV.4 
  []
 
+
+Overfull \hbox (0.82951pt too wide) detected at line 93
+\T1/cmss/m/n/12 XIV.5 
+ []
+
+
+Overfull \hbox (0.82951pt too wide) detected at line 94
+\T1/cmss/m/n/12 XIV.6 
+ []
+
+
+Overfull \hbox (0.82951pt too wide) detected at line 96
+\T1/cmss/m/n/12 XIV.7 
+ []
+
+
+Overfull \hbox (0.82951pt too wide) detected at line 97
+\T1/cmss/m/n/12 XIV.8 
+ []
+
+
+Overfull \hbox (0.82951pt too wide) detected at line 98
+\T1/cmss/m/n/12 XIV.9 
+ []
+
+
+Overfull \hbox (6.70308pt too wide) detected at line 99
+\T1/cmss/m/n/12 XIV.10 
+ []
+
+
+Overfull \hbox (5.26491pt too wide) detected at line 100
+\T1/cmss/m/n/12 XIV.10.1 
+ []
+
+
+Overfull \hbox (5.26491pt too wide) detected at line 101
+\T1/cmss/m/n/12 XIV.10.2 
+ []
+
+
+Overfull \hbox (5.26491pt too wide) detected at line 102
+\T1/cmss/m/n/12 XIV.10.3 
+ []
+
 )
 \tf@toc=\write6
 \openout6 = `main-prstr.toc'.
@@ -2173,7 +2218,7 @@ Cap\'{\imath }tulo II.
 ]
 
 [8]
-<figure/unnamed-chunk-7-1.pdf, id=525, 505.89pt x 505.89pt>
+<figure/unnamed-chunk-7-1.pdf, id=575, 505.89pt x 505.89pt>
 File: figure/unnamed-chunk-7-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-7-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-7-1.pdf  used on input line 185.
@@ -2359,7 +2404,7 @@ Cap\'{\imath }tulo VII.
 
 ]
 Cap\'{\imath }tulo VIII.
-<figure/unnamed-chunk-72-1.pdf, id=717, 505.89pt x 505.89pt>
+<figure/unnamed-chunk-72-1.pdf, id=767, 505.89pt x 505.89pt>
 File: figure/unnamed-chunk-72-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-72-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-72-1.pdf  used on input line 1936
@@ -2377,17 +2422,17 @@ Overfull \hbox (17.62482pt too wide) in paragraph at lines 1936--1938
 ]
 
 [45 <./figure/unnamed-chunk-72-1.pdf>]
-<figure/pchcol-1.pdf, id=733, 361.35pt x 216.81pt>
+<figure/pchcol-1.pdf, id=783, 361.35pt x 216.81pt>
 File: figure/pchcol-1.pdf Graphic file (type pdf)
 <use figure/pchcol-1.pdf>
 Package pdftex.def Info: figure/pchcol-1.pdf  used on input line 1956.
 (pdftex.def)             Requested size: 361.34912pt x 216.80946pt.
-<figure/ltytype-1.pdf, id=734, 289.08pt x 289.08pt>
+<figure/ltytype-1.pdf, id=784, 289.08pt x 289.08pt>
 File: figure/ltytype-1.pdf Graphic file (type pdf)
 <use figure/ltytype-1.pdf>
 Package pdftex.def Info: figure/ltytype-1.pdf  used on input line 1971.
 (pdftex.def)             Requested size: 289.07928pt x 289.09251pt.
-<figure/unnamed-chunk-73-1.pdf, id=735, 505.89pt x 505.89pt>
+<figure/unnamed-chunk-73-1.pdf, id=785, 505.89pt x 505.89pt>
 File: figure/unnamed-chunk-73-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-73-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-73-1.pdf  used on input line 1988
@@ -2406,7 +2451,7 @@ Overfull \vbox (45.06923pt too high) has occurred while \output is active []
 
 
 [47 <./figure/ltytype-1.pdf> <./figure/unnamed-chunk-73-1.pdf>]
-<figure/unnamed-chunk-73-2.pdf, id=765, 505.89pt x 505.89pt>
+<figure/unnamed-chunk-73-2.pdf, id=815, 505.89pt x 505.89pt>
 File: figure/unnamed-chunk-73-2.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-73-2.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-73-2.pdf  used on input line 1993
@@ -2417,7 +2462,7 @@ Overfull \hbox (17.62482pt too wide) in paragraph at lines 1993--1994
 [][] 
  []
 
-<figure/fig-blast-1.pdf, id=766, 433.62pt x 289.08pt>
+<figure/fig-blast-1.pdf, id=816, 433.62pt x 289.08pt>
 File: figure/fig-blast-1.pdf Graphic file (type pdf)
 <use figure/fig-blast-1.pdf>
 Package pdftex.def Info: figure/fig-blast-1.pdf  used on input line 2010.
@@ -2427,7 +2472,7 @@ Package pdftex.def Info: figure/fig-blast-1.pdf  used on input line 2010.
 [48 <./figure/unnamed-chunk-73-2.pdf>]
 
 [49 <./figure/fig-blast-1.pdf>]
-<figure/mrateplotx1-1.pdf, id=790, 433.62pt x 433.62pt>
+<figure/mrateplotx1-1.pdf, id=840, 433.62pt x 433.62pt>
 File: figure/mrateplotx1-1.pdf Graphic file (type pdf)
 <use figure/mrateplotx1-1.pdf>
 Package pdftex.def Info: figure/mrateplotx1-1.pdf  used on input line 2060.
@@ -2444,13 +2489,13 @@ Overfull \vbox (0.83946pt too high) detected at line 2076
 
 
 [50 <./figure/mrateplotx1-1.pdf>]
-<figure/unnamed-chunk-76-1.pdf, id=802, 289.08pt x 289.08pt>
+<figure/unnamed-chunk-76-1.pdf, id=852, 289.08pt x 289.08pt>
 File: figure/unnamed-chunk-76-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-76-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-76-1.pdf  used on input line 2077
 .
 (pdftex.def)             Requested size: 289.07928pt x 289.09251pt.
-<figure/unnamed-chunk-77-1.pdf, id=803, 289.08pt x 289.08pt>
+<figure/unnamed-chunk-77-1.pdf, id=853, 289.08pt x 289.08pt>
 File: figure/unnamed-chunk-77-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-77-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-77-1.pdf  used on input line 2088
@@ -2531,7 +2576,7 @@ Cap\'{\imath }tulo XI.
 [69]
 
 [70]
-<figure/unnamed-chunk-101-1.pdf, id=919, 505.89pt x 505.89pt>
+<figure/unnamed-chunk-101-1.pdf, id=969, 505.89pt x 505.89pt>
 File: figure/unnamed-chunk-101-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-101-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-101-1.pdf  used on input line 302
@@ -2698,7 +2743,7 @@ Overfull \hbox (81.79744pt too wide) in paragraph at lines 3749--3749
 ]
 
 [88]
-<figure/unnamed-chunk-132-1.pdf, id=1019, 578.16pt x 578.16pt>
+<figure/unnamed-chunk-132-1.pdf, id=1069, 578.16pt x 578.16pt>
 File: figure/unnamed-chunk-132-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-132-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-132-1.pdf  used on input line 380
@@ -2725,7 +2770,107 @@ roup Cancer and group NC is not equal to 0[]
 
 [92]
 
-[93] 
+[93]
+
+[94]
+Underfull \hbox (badness 2384) in paragraph at lines 3929--3930
+[]\T1/cmss/m/n/12 ¾Qué podemos hacer? Queremos darle la vuelta al proceso. Quer
+ríamos
+ []
+
+
+Underfull \hbox (badness 1783) in paragraph at lines 3929--3930
+\T1/cmss/m/n/12 un procedimiento para responder a la siguiente pregunta: ^^S¾Ex
+isten pruebas
+ []
+
+
+
+[95]
+
+[96]
+<figs/amrhein.pdf, id=1126, 1748.5325pt x 955.57pt>
+File: figs/amrhein.pdf Graphic file (type pdf)
+<use figs/amrhein.pdf>
+Package pdftex.def Info: figs/amrhein.pdf  used on input line 3959.
+(pdftex.def)             Requested size: 376.42734pt x 205.706pt.
+
+
+[97 <./figs/amrhein.pdf>]
+
+[98]
+Underfull \hbox (badness 5607) in paragraph at lines 4023--4023
+[]\T1/cmss/bx/n/14.4 Remodelación de los datos para un test
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+
+[99]
+
+[100]
+Overfull \hbox (217.61427pt too wide) in paragraph at lines 4123--4123
+[]\T1/cmtt/m/n/12 ## alternative hypothesis: true difference in means between g
+roup Cancer and group NC is not equal to 0[] 
+ []
+
+<figure/unnamed-chunk-138-1.pdf, id=1156, 397.485pt x 397.485pt>
+File: figure/unnamed-chunk-138-1.pdf Graphic file (type pdf)
+<use figure/unnamed-chunk-138-1.pdf>
+Package pdftex.def Info: figure/unnamed-chunk-138-1.pdf  used on input line 413
+4.
+(pdftex.def)             Requested size: 397.48402pt x 397.49614pt.
+
+
+[101]
+Overfull \hbox (20.06252pt too wide) in paragraph at lines 4160--4160
+[]         []\T1/cmtt/m/n/12 ylab[] []=[] []"Intra-subject difference (NC - Can
+cer)"[][],[] []main[] []=[] []"MYC"[][])[][] 
+ []
+
+<figure/unnamed-chunk-139-1.pdf, id=1162, 397.485pt x 397.485pt>
+File: figure/unnamed-chunk-139-1.pdf Graphic file (type pdf)
+<use figure/unnamed-chunk-139-1.pdf>
+Package pdftex.def Info: figure/unnamed-chunk-139-1.pdf  used on input line 416
+3.
+(pdftex.def)             Requested size: 397.48402pt x 397.49614pt.
+
+
+[102 <./figure/unnamed-chunk-138-1.pdf>]
+Overfull \hbox (13.88902pt too wide) in paragraph at lines 4180--4180
+[]  []\T1/cmtt/m/n/12 theme[][]([][]axis.title.x[] []=[] []element_blank[][](),
+[] []axis.text.x[] []=[] []element_blank[][]())[][] 
+ []
+
+<figure/diff-violin-1.pdf, id=1175, 325.215pt x 325.215pt>
+File: figure/diff-violin-1.pdf Graphic file (type pdf)
+<use figure/diff-violin-1.pdf>
+Package pdftex.def Info: figure/diff-violin-1.pdf  used on input line 4185.
+(pdftex.def)             Requested size: 325.2142pt x 325.23901pt.
+
+
+[103 <./figure/unnamed-chunk-139-1.pdf>]
+<figure/unnamed-chunk-140-1.pdf, id=1187, 361.35pt x 361.35pt>
+File: figure/unnamed-chunk-140-1.pdf Graphic file (type pdf)
+<use figure/unnamed-chunk-140-1.pdf>
+Package pdftex.def Info: figure/unnamed-chunk-140-1.pdf  used on input line 420
+0.
+(pdftex.def)             Requested size: 361.34912pt x 361.34912pt.
+
+Underfull \hbox (badness 1917) in paragraph at lines 4200--4203
+[][] [] \T1/cmss/m/n/12 Este
+ []
+
+
+
+[104 <./figure/diff-violin-1.pdf>]
+
+[105 <./figure/unnamed-chunk-140-1.pdf>] 
 enddocument/afterlastpage: lastpage setting LastPage.
 (main-prstr.aux
 LaTeX Info: Redefining \. on input line 8.
@@ -2736,49 +2881,53 @@ LaTeX2e <2024-06-01> patch level 2
 L3 programming layer <2024-10-09>
  ***********
 Package rerunfilecheck Info: File `main-prstr.out' has not changed.
-(rerunfilecheck)             Checksum: F7ED4F003D634A80949E3902E08389CD;7594.
+(rerunfilecheck)             Checksum: CCF634EE05D53841C2C709E4C4C644A7;8514.
  ) 
 Here is how much of TeX's memory you used:
- 34894 strings out of 473897
- 628803 string characters out of 5725989
- 1123931 words of memory out of 5000000
- 56838 multiletter control sequences out of 15000+600000
- 587928 words of font info for 105 fonts, out of 8000000 for 9000
+ 34996 strings out of 473897
+ 631102 string characters out of 5725989
+ 1124124 words of memory out of 5000000
+ 56907 multiletter control sequences out of 15000+600000
+ 591239 words of font info for 113 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  143i,13n,173p,2298b,2370s stack positions out of 10000i,1000n,20000p,200000b,200000s
- <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tci
-t1200.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi
-600\ectt2488.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen
-/ec/dpi600\ectt1728.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/j
-knappen/ec/dpi600\ecsi1200.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/l
-jfour/jknappen/ec/dpi600\ectt1440.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fon
-ts/pk/ljfour/jknappen/ec/dpi600\tcss1200.pk> <C:\Users\Sandra\AppData\Local\MiK
-TeX\fonts/pk/ljfour/jknappen/ec/dpi600\tctt1200.pk> <C:\Users\Sandra\AppData\Lo
-cal\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecsx1728.pk> <C:\Users\Sandra\App
-Data\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecit1200.pk> <C:\Users\San
-dra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1200.pk> <C:\Us
-ers\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecss1200.pk>
- <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecsx1
-440.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi60
-0\ecsx2488.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/e
-c/dpi600\ecsi1095.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jkn
-appen/ec/dpi600\ecss1095.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljf
-our/jknappen/ec/dpi600\ecsx1200.pk><C:/Users/Sandra/AppData/Local/Programs/MiKT
-eX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/Sandra/AppData/Local/Pro
-grams/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/Sandra/AppData
-/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/Sandr
-a/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Us
-ers/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.p
-fb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/c
-m/cmr6.pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/public/am
-sfonts/cm/cmr8.pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/p
-ublic/amsfonts/cm/cmsy10.pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/fon
-ts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/Sandra/AppData/Local/Programs/M
-iKTeX/fonts/type1/public/lm/lmssbx10.pfb><C:/Users/Sandra/AppData/Local/Program
-s/MiKTeX/fonts/type1/urw/palatino/uplr8a.pfb>
-Output written on main-prstr.pdf (94 pages, 799058 bytes).
+ <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecs
+s1000.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi
+525\ecss0800.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen
+/ec/dpi600\ecss0800.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/j
+knappen/ec/dpi600\tcit1200.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/l
+jfour/jknappen/ec/dpi600\ectt2488.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fon
+ts/pk/ljfour/jknappen/ec/dpi600\ectt1728.pk> <C:\Users\Sandra\AppData\Local\MiK
+TeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecsi1200.pk> <C:\Users\Sandra\AppData\Lo
+cal\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1440.pk> <C:\Users\Sandra\App
+Data\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcss1200.pk> <C:\Users\San
+dra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tctt1200.pk> <C:\Us
+ers\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecsx1728.pk>
+ <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecit1
+200.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi60
+0\ectt1200.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/e
+c/dpi600\ecss1200.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljfour/jkn
+appen/ec/dpi600\ecsx1440.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts/pk/ljf
+our/jknappen/ec/dpi600\ecsx2488.pk> <C:\Users\Sandra\AppData\Local\MiKTeX\fonts
+/pk/ljfour/jknappen/ec/dpi600\ecsi1095.pk> <C:\Users\Sandra\AppData\Local\MiKTe
+X\fonts/pk/ljfour/jknappen/ec/dpi600\ecss1095.pk> <C:\Users\Sandra\AppData\Loca
+l\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecsx1200.pk><C:/Users/Sandra/AppDat
+a/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/San
+dra/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:
+/Users/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi
+12.pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfon
+ts/cm/cmmi6.pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/publ
+ic/amsfonts/cm/cmmi8.pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/fonts/t
+ype1/public/amsfonts/cm/cmr12.pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTe
+X/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/Sandra/AppData/Local/Progra
+ms/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/Sandra/AppData/Loca
+l/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Sandra/Ap
+pData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/
+Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmssbx10.pfb><C:/Use
+rs/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/urw/palatino/uplr8a.pfb>
+Output written on main-prstr.pdf (106 pages, 3269723 bytes).
 PDF statistics:
- 1784 PDF objects out of 2073 (max. 8388607)
- 188 named destinations out of 1000 (max. 500000)
- 801 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 2000 PDF objects out of 2073 (max. 8388607)
+ 215 named destinations out of 1000 (max. 500000)
+ 906 words of extra memory for PDF output out of 10000 (max. 10000000)
 
