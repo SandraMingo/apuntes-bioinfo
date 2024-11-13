@@ -1,7 +1,7 @@
 %28/10 - Fátima Sánchez Cabo
-\chapter{Caracterización del genoma mediante NGS}
-\section{Introducción a la genómica traslacional}
-\subsection{Definición e importancia de la genómica}
+\part{Caracterización del genoma mediante NGS}
+\chapter{Introducción a la genómica traslacional}
+\section{Definición e importancia de la genómica}
 La genómica, el estudio integral del ADN y de la estructura, función y dinámica de los genomas, representa un pilar fundamental en la biología moderna. Marcó un cambio de paradigma, pasando de un enfoque reduccionista en biología - donde se estudiaban componentes individuales y de manera aislada - a una perspectiva integradora que analiza las interacciones y relaciones entre los distintos elementos biológicos. Esta transición permitió evolucionar de la genética clásica, basada en hipótesis concretas, hacia la genómica, que integra análisis de datos masivos sin necesidad de preguntas iniciales específicas, aunque sí en constante búsqueda de respuestas biológicas complejas.
 
 En el marco del dogma central de la biología, las “ómicas” representan tres niveles de estudio: la genómica (centrada en el ADN), la transcriptómica (ARN) y la proteómica (proteínas). Este curso se enfoca en la genómica, ya que la información genética determina las funciones bioquímicas y, por ende, los fenotipos de los organismos. Gracias a avances recientes, ahora es posible inferir la función bioquímica de las proteínas directamente a partir de la secuencia de ADN, sin necesidad de técnicas complejas como la cristalización. Además, herramientas de inteligencia artificial pueden predecir la estructura de las proteínas con precisión, acelerando la interpretación de funciones biológicas.
@@ -10,7 +10,7 @@ Las proteínas, incluyendo enzimas esenciales, son los elementos funcionales cla
 
 La mejora en tecnologías de secuenciación impulsó el \textbf{Proyecto Genoma Humano}, que logró identificar entre 20,000 y 25,000 genes y determinar la secuencia de los aproximadamente 3 mil millones de pares de bases del genoma humano. Este proyecto también fomentó la creación de bases de datos y herramientas para el análisis de datos genómicos, además de abrir el debate sobre los aspectos éticos, legales y sociales (conocidos como ELSI, por sus siglas en inglés), que siguen siendo temas vigentes y complejos en la actualidad.
 
-\paragraph{Evolución de la bioinformática en la genómica}
+\subsection{Evolución de la bioinformática en la genómica}
 La bioinformática ha crecido a la par de la genómica en múltiples niveles. Inicialmente, era una \textbf{disciplina} incipiente y se desarrollaba como apoyo experimental; sin embargo, ha evolucionado hasta convertirse en un campo esencial que impulsa la investigación. En cuanto a su \textbf{material, los datos,} la bioinformática ha tenido que adaptarse al fenómeno del big data, pasando de manejar cantidades limitadas de datos a enfrentar volúmenes masivos, propios de la genómica actual. Paralelamente, el \textbf{rol de los bioinformáticos} se transformó, pasando de ser técnicos a científicos de datos y académicos altamente reconocidos en la industria y en la investigación.
 
 \begin{figure}[htbp]
@@ -19,7 +19,7 @@ La bioinformática ha crecido a la par de la genómica en múltiples niveles. In
 \caption{Breve historia de la bioinformática en tres niveles: como disciolina, como material que utiliza y como las personas que trabajan en ella. Evolución desde 1980 hasta 2020.}
 \end{figure}
 
-\subsection{Avances tecnológicos en secuenciación}
+\section{Avances tecnológicos en secuenciación}
 Existen distintos tipos de tecnologías de secuenciación, comúnmente clasificadas en tres generaciones: la primera generación (first generation), la segunda o Next Generation Sequencing (NGS) y la tercera generación. Las dos primeras generaciones se enfocan en la secuenciación de fragmentos cortos de ADN, mientras que la tercera generación permite la lectura de fragmentos largos, facilitando el ensamblaje completo de genomas. Actualmente, uno de los mayores desafíos tecnológicos es detectar variantes de baja frecuencia y realizar secuenciaciones de ADN en células individuales (single-cell sequencing), lo cual tradicionalmente se hacía de forma masiva (“bulk”).
 
 \begin{figure}[htbp]
@@ -30,7 +30,7 @@ Existen distintos tipos de tecnologías de secuenciación, comúnmente clasifica
 
 A medida que el costo de la secuenciación ha disminuido y la capacidad de almacenamiento ha mejorado desde 1990, los datos generados también han crecido exponencialmente. En un experimento de secuenciación, los costos abarcan tanto la secuenciación en sí como el procesamiento bioinformático, el reporte y el almacenamiento de los datos. La comunidad científica y muchos journals requieren que los datos de proyectos financiados públicamente estén disponibles en bases de datos accesibles, lo que asegura la transparencia y el acceso a esta información valiosa. Para obtener una cobertura de calidad, el ADN suele secuenciarse al menos 30 veces, lo que genera archivos de gran tamaño, como los archivos FastQ, que almacenan información de secuencia y calidad para cada base.
 
-\subsection{Procesos de llamada y priorización de variantes}
+\section{Procesos de llamada y priorización de variantes}
 Los datos de secuenciación se procesan en pipelines bioinformáticas que comienzan con archivos FastQ normalmente comprimidos y pasan por varias etapas: control de calidad, alineamiento y llamada de variantes (variant calling). Las variantes identificadas pueden incluir cambios de nucleótidos, variaciones en el número de copias de segmentos genómicos (copy number variation) o reordenamientos estructurales.
 
 \begin{figure}[htbp]
@@ -47,7 +47,7 @@ La priorización de variantes se basa en factores como el impacto funcional, la 
 \caption{Ejemplo de la priorización de variantes.}
 \end{figure}
 
-\subsection{Genómica en medicina de precisión}
+\section{Genómica en medicina de precisión}
 La genómica ha transformado el enfoque de la medicina de precisión, permitiendo identificar enfermedades con bases genéticas, ambientales o una combinación de ambas. Algunas variantes genéticas confieren una predisposición a enfermedades sin ser causantes directas, lo cual es crucial para inferir relaciones causales y acelerar ensayos clínicos mediante la integración de grandes volúmenes de datos. Estas variantes pueden clasificarse en germinales (heredadas) o somáticas (adquiridas).
 
 \begin{figure}[htbp]
@@ -66,17 +66,17 @@ En medicina de precisión, la genómica es solo una capa de datos entre muchas. 
 
 Varias bases de datos públicas permiten estudiar la transición entre salud y enfermedad. El estudio de Farmingham, por ejemplo, lleva más de 70 años recolectando datos de factores de riesgo cardiovascular en más de 15,000 participantes. En Reino Unido, el Biobank y, en Estados Unidos, la iniciativa All of Us, también representan recursos de gran envergadura. En España, el CNIC (Centro Nacional de Investigaciones Cardiovasculares) realiza el estudio PESA (Progression of Early Subclinical Atherosclerosis), que ha contribuido a identificar factores predictivos de aterosclerosis subclínica mediante el estudio multiómico, generando nuevos indicadores con un mayor poder predictivo de la formación de placas de colesterol.
 
-\paragraph{Epigenética y la medición de la edad biológica}
+\subsection{Epigenética y la medición de la edad biológica}
 El perfil de metilación del ADN es un factor epigenético que puede modificar la expresión genética y se ha utilizado para calcular la “edad biológica” o epigenética de una persona, lo que puede servir como predictor de esperanza de vida y salud. Al comparar estos perfiles con la edad cronológica, sexo y otros factores, se obtiene información sobre el envejecimiento y el riesgo de enfermedades, facilitando el desarrollo de estrategias de salud personalizadas.
 
-\subsection{Resumen}
+\section{Resumen}
 La genómica ha liderado una revolución científica en el siglo XX, evolucionando desde el estudio de componentes individuales hasta una perspectiva integral de sistemas biológicos y de investigación basada en datos masivos. La bioinformática se ha convertido en una disciplina central en el análisis genómico y predicción de estructuras proteicas, impulsada por el Proyecto Genoma Humano y el desarrollo de tecnologías de secuenciación. Los avances actuales buscan no solo la secuenciación del ADN, sino también la integración de estos datos con datos epidemiológicos y moleculares para obtener una comprensión más profunda de la salud y la enfermedad. Así, el Proyecto Genoma Humano fue decisivo para sentar las bases de tecnologías de secuenciación, el desarrollo de la bioinformática en sí y el uso social e industrial de los datos ómicos.
 
 La identificación de características genómicas relevantes causales de rasgos/enfermedades se basa en la anotación de variantes en bases de datos y en estudios poblacionales: hay margen de mejora y un gran éxito de la ciencia colaborativa. Hoy en día, los principales proyectos tratan no sólo de secuenciar el ADN, sino de integrar esta información con datos epidemiológicos y otros datos moleculares para comprender mejor la salud y la enfermedad.
 Las enfermedades, en función de su base genética, pueden clasificarse en monogénicas (mendelianas), oligogénicas (ej., cardiopatías familiares) y complejas (evaluadas mediante puntuaciones de riesgo poligénicas). Esta clasificación permite avanzar en la medicina de precisión, abordando enfermedades desde su origen genético para ofrecer intervenciones de salud más efectivas y personalizadas.
 
 %30/10 - Álvaro Serrano
-\section{Métodos de secuenciación}
+\chapter{Métodos de secuenciación}
 La secuenciación permite pasar de la información contenida en el ADN a un dominio digital mediante una representación abstracta. 
 
 El primer método de secuenciación fue el \textbf{método Maxam-Gilbert}, que utilizaba un marcador en el extremo 5' del ADN. En este proceso, el ADN se trataba con diferentes compuestos químicos para provocar rupturas específicas en función de cada base nitrogenada. Los fragmentos resultantes se separaban en un gel de acrilamida mediante electroforesis, y se revelaban mediante autoradiografía de rayos X. La secuencia se deducía observando el patrón de bandas resultante.
@@ -97,7 +97,7 @@ Otro método clave es el de \textbf{terminación de cadena, o método de Sanger}
 
 El primer secuenciador automático fue el ABI370, capaz de secuenciar hasta 5000 bases al día. Sin embargo, se necesitarían aproximadamente 16,000 años para secuenciar todo el genoma humano usando esta tecnología. Este secuenciador innovador reemplazaba los geles por electroforesis capilar y un detector de fluorescencia. Durante el Proyecto Genoma Humano en los años 90 y 2000, desarrollado en colaboración entre el sector público y privado, se introdujeron mejoras significativas a los secuenciadores, como el modelo ABI377, que empleaba varios capilares para incrementar la eficiencia. Sin embargo, la secuenciación de regiones altamente repetitivas del genoma, como los telómeros y centrómeros, fue compleja, y la primera descripción completa del genoma humano fue publicada hace apenas un año.
 
-\subsection{Métodos de secuenciación empleados en el Proyecto Genoma Humano}
+\section{Métodos de secuenciación empleados en el Proyecto Genoma Humano}
 Los métodos que se utilizaron en el proyecto fueron los siguientes:
 \begin{itemize}
 \item \textbf{Hierarchical Shotgun:} En este método, el ADN se clona en fragmentos más pequeños usando enzimas de restricción. Estos fragmentos se solapan y forman contigs, los cuales se ensamblan progresivamente para reconstruir la secuencia original.
@@ -112,10 +112,10 @@ Los métodos que se utilizaron en el proyecto fueron los siguientes:
 
 La electroforesis capilar, usada en ambos métodos, permite separar fragmentos de ADN de diferentes tamaños a través de un capilar con un detector de fluorescencia, logrando una lectura precisa de aproximadamente 500 pares de bases por fragmento. Con el tiempo, los costos de secuenciación disminuyeron gracias a avances en técnicas posteriores al método de Sanger.
 
-\subsection{NGS: la siguiente generación de tecnología de secuenciación del ADN}
+\section{NGS: la siguiente generación de tecnología de secuenciación del ADN}
 La secuenciación de segunda generación o Next-Generation Sequencing (NGS) permite una secuenciación paralela y masiva, también conocida como \textbf{high-throughput sequencing}. Los principales métodos NGS incluyen 454 Roche, Solexa Illumina, ABI/SOLiD, Complete Genomics, Pacific Biosciences, Ion Torrent y Oxford Nanopore.
 
-\subsubsection{Preparación de librerías de NGS}
+\subsection{Preparación de librerías de NGS}
 Las librerías de secuenciación se preparan fragmentando el ADN y generando secuencias que luego se amplifican y procesan en el secuenciador, obteniendo las lecturas o reads. Estas librerías se amplifican clonalmente mediante tres métodos:
 \begin{itemize}
 \item \textbf{Beads:} pequeñas bolitas recubiertas de primers, donde el ADN se adhiere y se amplifica.
@@ -125,7 +125,7 @@ Las librerías de secuenciación se preparan fragmentando el ADN y generando sec
 
 La secuenciación NGS utiliza un gran número de moléculas idénticas, permitiendo una secuenciación paralela de alta eficiencia y alto rendimiento o high-throughput. La característica de la segunda generación es que utiliza la molécula de ADN original y, sobre ella, la amplifica, es decir, la utiliza como molde para generar muchas moléculas iguales. 
 
-\subsubsection{Clasificación de NGS: secuenciación por síntesis y por ligación}
+\subsection{Clasificación de NGS: secuenciación por síntesis y por ligación}
 Los métodos de secuenciación de segunda generación se pueden clasificar en secuenciación por síntesis (con la enzima polimerasa) o secuenciación por ligación (con la enzima ligasa).
 
 \begin{itemize}
@@ -188,7 +188,7 @@ Se trata de una estrategia que se basa en la detección de las modificaciones en
 \end{itemize}
 \end{itemize}
 
-\subsubsection{Limitaciones y desafíos en NGS}
+\subsection{Limitaciones y desafíos en NGS}
 La NGS de segunda generación presenta una tasa de error de Q25-Q35 y ciertas limitaciones:
 \begin{itemize}
 \item \textbf{Lecturas cortas} generan dificultades en el ensamblaje de genomas completos y en la identificación de variantes estructurales.
@@ -200,11 +200,11 @@ La NGS de segunda generación presenta una tasa de error de Q25-Q35 y ciertas li
 \item \textbf{Cambios epigenéticos}
 \end{itemize}
 
-\subsection{Resumen}
+\section{Resumen}
 La secuenciación ha cambiado la forma de hacer y entender la biología. La secuenciación de segunda generación o NGS permite secuenciar millones de moldes de ADN al mismo tiempo. Generalmente, el molde de ADN es amplificado clonalmente, y las llamadas se hacen mediante el consenso de los moldes clonales. Hay dos tipos de secuenciación NGS: por síntesis con la polimerasa o por ligación (SOLiD y Nanoballs). Hay dos tipos de secuenciación por síntesis. La adición simple de nucleótidos (pirosecuenciación 454 y Ion Torrent) añade un dNTP distinto en cada ciclo, pero tiene problemas con moldes homopoliméricos. La terminación cíclica reversible (Illumina) añade todos los dNTP en cada ciclo y secuencia la misma posición en el molde, pero puede sufrir de desfase.
 %Importante a quedar claro: diferencia entre secuenciación por síntesis y por ligación, y dentro de ellos la diferencia entre el método CRT y SNA. Los métodos de ligación hay que saber que existen, pero no es habitual trabajar con ellos. 
 
-\subsection{Quizz}
+\section{Quizz}
 \begin{enumerate}
 \item Which of the following NGS platforms offers the highest accuracy?
 \begin{itemize}
@@ -458,11 +458,11 @@ Answer: Sanger
 \end{enumerate}
 
 %04/11 - Álvaro Serrano
-\section{Alineadores y NGS}
-\subsection{Preparación de librería}
+\chapter{Alineadores y NGS}
+\section{Preparación de librería}
 Una librería es una colección de fragmentos de ADN de tamaño aleatorio obtenidos a partir de una muestra que se desea secuenciar. El proceso comienza con la extracción del material genético (ADN o ARN), seguido de su fragmentación en piezas pequeñas que posteriormente serán leídas. A continuación, se añaden adaptadores a los extremos de los fragmentos, lo que permite su hibridación con una fase sólida para realizar la amplificación. Finalmente, se purifican los fragmentos para obtener solo las moléculas del tamaño deseado, dependiendo del método de secuenciación que se vaya a utilizar.
 
-\subsubsection{Fragmentación del material genético}
+\subsection{Fragmentación del material genético}
 Existen distintas técnicas para fragmentar el ADN, cada una con sus ventajas y desventajas:
 \begin{itemize}
 \item \textbf{Aproximación por ligación:} 
@@ -517,7 +517,7 @@ En este método, se utiliza la enzima tagmentasa, una transposasa que corta la s
 \end{figure}
 \end{itemize} 
 
-\subsubsection{Reparación de extremos y ligación de adaptadores}
+\subsection{Reparación de extremos y ligación de adaptadores}
 Después de la fragmentación del ADN, es necesario reparar los extremos de los fragmentos. Como la fragmentación no suele producir cortes limpios, los fragmentos generados suelen presentar extremos sobresalientes (overhangs). Para corregir esto, se realiza un tratamiento enzimático con polimerasas, que además añade una adenina (A) en los extremos 3’. Estos extremos, con la adenina añadida, facilitan la ligación de los adaptadores, los cuales suelen tener un overhang de timina (T) para permitir una unión complementaria con los fragmentos de ADN.
 
 \begin{figure}[htbp]
@@ -548,7 +548,7 @@ En el método conocido como \textbf{Duplex Sequencing}, se emplean UMIs distinto
 
 Aunque los métodos basados en UMIs son altamente eficaces para detectar variantes de muy baja frecuencia, su uso es limitado debido a su alto costo, ya que requieren múltiples lecturas de la misma secuencia para asegurar precisión.
 
-\subsubsection{Adaptadores para secuenciación de célula única (single cell)}
+\subsection{Adaptadores para secuenciación de célula única (single cell)}
 En la secuenciación de célula única (Single Cell), se emplean adaptadores y primers que contienen UMIs específicos tanto para cada célula como para cada molécula de ADN. Esto permite diferenciar si las lecturas corresponden a una célula particular y, dentro de esa célula, a una molécula específica. En Single Cell, se utiliza un enfoque de consenso: las lecturas múltiples de la misma molécula permiten generar una secuencia de consenso para mejorar la precisión de los datos.
 
 \begin{figure}[htbp]
@@ -580,7 +580,7 @@ La construcción de librerías en Single Cell se realiza mediante chips que perm
     \end{mdframed}
 \end{table}
 
-\subsection{Formatos de datos}
+\section{Formatos de datos}
 El formato de archivo usado por los alineadores es generalmente \textbf{FastQ} para las secuencias, aunque \textbf{Fast5} o \textbf{HDF5} también se emplean en algunos casos, especialmente en secuenciación de célula única (single cell), donde se necesita un mayor nivel de detalle en el almacenamiento de datos.
 
 Cuando se trabaja con alineadores, el proceso suele generar un perfil con picos que representan las bases detectadas, a cada uno de los cuales se le asigna un nombre de base. El alineador produce un archivo final que contiene tanto la secuencia de bases asignadas como la calidad de lectura de cada base en un formato codificado llamado \textbf{Phred33}, que usa caracteres ASCII para representar los valores de calidad.
@@ -615,14 +615,14 @@ FastQC proporciona varias métricas clave para evaluar la calidad:
 \item \textbf{Contenido GC:} al inicio de la secuenciación, puede haber una variación en el contenido GC debido a la secuencia de los adaptadores, pero si se estabiliza después de las primeras bases, indica una secuenciación correcta y se pueden cortar los primeros nucleótidos. 
 \end{itemize}
 
-\subsection{Preprocesamiento y genomas de referencia} 
+\section{Preprocesamiento y genomas de referencia} 
 El preprocesamiento de las lecturas aumenta la calidad de las secuencias, mejora el mapeo, elimina posibles contaminantes y sesgos, y descarta segmentos no informativos.
 
 Las secuencias generadas se comparan con \textbf{genomas de referencia}, que generalmente están en formato \textbf{FASTA}. En estos archivos, los nucleótidos están representados según el código IUPAC para permitir una representación estándar de variaciones. Históricamente, los genomas de referencia se creaban con la información genética de un solo individuo. Sin embargo, hoy en día, se basan en el consenso de los genomas de múltiples individuos, lo que permite identificar variantes y posiciones con alta confianza que difieren entre individuos.
 
 Los genomas de referencia y sus anotaciones se pueden encontrar en sitios como \href{https://hgdownload.soe.ucsc.edu/downloads.html}{UCSC Genome Browser}. Es importante tener en cuenta las diferencias en las anotaciones genómicas entre repositorios europeos y americanos, ya que pueden variar en la numeración y anotación de los cromosomas.
 
-\subsection{Alineamientos y mapeo}
+\section{Alineamientos y mapeo}
 El alineamiento es el proceso de comparar secuencias de ADN, ARN o proteínas para identificar regiones de similitud, lo cual puede revelar relaciones funcionales, estructurales o evolutivas entre especies. Los objetivos principales del alineamiento son:
 \begin{itemize}
 \item Determinar el grado de homología para inferir relaciones filogenéticas
@@ -632,7 +632,7 @@ El alineamiento es el proceso de comparar secuencias de ADN, ARN o proteínas pa
 \item Identificar diferencias entre secuencias similares
 \end{itemize}
 
-\subsubsection{Alineamiento vs Mapeo}
+\subsection{Alineamiento vs Mapeo}
 Aunque a menudo se usan indistintamente, el alineamiento y el mapeo tienen diferencias importantes:
 \begin{itemize}
 \item \textbf{Alineamiento:} Cada posición de la secuencia de consulta se compara exhaustivamente con una secuencia de referencia para evaluar su precisión en cada sitio.
@@ -645,7 +645,7 @@ Existen programas diseñados específicamente para el mapeo, llamados alineadore
 \item \textbf{Para ARN:} RSEM, Salmon, Sleuth
 \end{itemize}
 
-\subsubsection{Algoritmos de mapeo por hashing}
+\subsection{Algoritmos de mapeo por hashing}
 El mapeo inicia con una etapa de \textbf{indexación del genoma}, un proceso intensivo en tiempo y memoria que se realiza solo una vez por genoma de referencia y por programa. En esta fase, los algoritmos de alineamiento utilizan técnicas como \textbf{hashing} o \textbf{índices} basados en \textbf{k-mers} (subsecuencias de longitud fija). Con una ventana móvil, se anotan las posiciones de cada k-mer en la secuencia de referencia.
 
 Posteriormente, las lecturas se comparan con el diccionario de k-mers para localizar sus posiciones sin usar una ventana móvil adicional. A continuación, se construye un "árbol de posibilidades" que evalúa la compatibilidad de cada lectura con la referencia. Si una mutación en la lectura no coincide con la referencia, el k-mer no estará en el índice, y se buscarán los k-mers más cercanos, evaluando el mapping quality según el número de errores (mismatches) y la distancia de edición. El objetivo es minimizar los gaps (espacios sin coincidencias) para mejorar la precisión del alineamiento.
@@ -656,10 +656,10 @@ Posteriormente, las lecturas se comparan con el diccionario de k-mers para local
 \caption{Mapeado basados en hash o índices. El primer paso es obtener el hash o índice del genoma de referencia completo. A continuación, se utilizan esos índices para mapear (es decir, encontrar sitios de alineamiento) las lecturas.}
 \end{figure}
 
-\subsubsection{Transformación de Burrows-Wheeler (BWT)}
+\subsection{Transformación de Burrows-Wheeler (BWT)}
 La \textbf{transformación de Burrows-Wheeler} es un método de compresión que permite realizar búsquedas rápidas de alineamiento en el genoma de referencia, optimizando el rendimiento de los alineadores.
 
-\subsubsection{Estados de lecturas post-mapeo y mapping quality}
+\subsection{Estados de lecturas post-mapeo y mapping quality}
 Una vez mapeadas las lecturas al genoma de referencia, estas pueden clasificarse en distintos estados:
 \begin{itemize}
 \item \textbf{Lecturas no mapeadas:} No encuentran ninguna coincidencia en la referencia.
@@ -697,7 +697,7 @@ Los datos de alineación incluyen:
 \end{itemize}
 
 %06/11 - Álvaro Serrano
-\subsubsection{Otros formatos de ficheros en bioinformática}
+\subsection{Otros formatos de ficheros en bioinformática}
 \paragraph{Bed para intervalos}
 Este formato da información de coordenadas. Tiene 3 columnas obligatorias: cromosoma, posición de inicio (0 based) y posición de fin (1 based). Estas posiciones se pueden restar para obtener el tamaño del fragmento. Bed es un formato abierto que puede incluir otras columnas: nombre, score, strand, etc. Estos ficheros son de texto plano, aunque tienen la extensión .bed. 
 
@@ -710,7 +710,7 @@ Estos archivos contienen anotaciones de elementos (secuencia codificante, non-co
 \paragraph{CSV y TSV para cuentas}
 No hay especificaciones de formato, ni límites en cuanto a la dimensión de la matriz. Son ficheros tabulares estándares. Es importante tener buenas prácticas, es decir, utilizar nombres intuitivos para columnas y filas, y no utilizar espacios, si no puntos o barras bajas. En las filas se guardan las observaciones, y las columnas las características. 
 
-\section{Secuenciación de tercera generación}
+\chapter{Secuenciación de tercera generación}
 La secuenciación de segunda generación, como los métodos basados en Illumina, permite obtener lecturas pequeñas (de alrededor de 100-300 pb) y de alta precisión, pero presenta limitaciones al enfrentar regiones genómicas complejas, como las altamente repetitivas, debido a la longitud de las lecturas. La secuenciación de tercera generación surge para superar estas limitaciones, proporcionando lecturas más largas (de varias kilobases) que permiten el análisis detallado de variantes estructurales, lo cual es esencial para estudios de genómica estructural y ensamblaje de genomas complejos.
 
 Se distinguen dos enfoques principales en la secuenciación de tercera generación:
@@ -719,7 +719,7 @@ Se distinguen dos enfoques principales en la secuenciación de tercera generaci�
 \item \textbf{Aproximaciones sintéticas (basadas en Illumina):} permiten reconstruir secuencias largas a partir de lecturas cortas mediante ensamblaje. Estas no se consideran tercera generación en sentido estricto, pero comparten ciertos objetivos en cuanto a mejorar la resolución de lecturas largas (se habla de pseudotercera generación).
 \end{itemize}
 
-\subsection{Secuenciación de molécula única a tiempo real - PacBio}
+\section{Secuenciación de molécula única a tiempo real - PacBio}
 La tecnología de PacBio (Pacific Biosciences) emplea una única molécula de ADN de longitud variable, generalmente en el rango de varias kilobases. Se preparan fragmentos circulares de ADN al añadir estructuras químicas en forma de horquilla en los extremos, lo que permite la circularización de la molécula y una lectura continua de la secuencia.
 
 El secuenciador PacBio utiliza un flowcell con pocillos que contienen cámaras donde se detectan señales de fluorescencia para identificar los nucleótidos incorporados en tiempo real. Este proceso funciona gracias a una polimerasa anclada en cada pocillo que, al añadir nucleótidos marcados con fluorescencia, permite que la cámara capture el cambio y lea la secuencia. La velocidad de secuenciación es de aproximadamente 3 bases por segundo.
@@ -741,7 +741,7 @@ PacBio permite dos enfoques distintos:
 Este método es especialmente útil en el ensamblaje de genomas debido a la longitud de las lecturas. La calidad en el modo CCS puede alcanzar valores elevados (Q50), aunque en regiones de homopolímeros extensos puede haber dificultades en la discriminación precisa de nucleótidos individuales, generando posibles discrepancias con la secuencia real si solo se realiza una pasada.
 %PacBio Sequencing - How it works YouTube
 
-\subsection{Secuenciación por Nanoporos - Oxford Nanopore Technology (ONT)}
+\section{Secuenciación por Nanoporos - Oxford Nanopore Technology (ONT)}
 La tecnología de secuenciación por nanoporos, desarrollada por Oxford Nanopore, utiliza proteínas alfa-hemolisinas que forman poros a través de los cuales pasa una cadena de ADN, generando una señal eléctrica que permite identificar los nucleótidos en tiempo real. Esta señal, medida como una interferencia de corriente (diferencia de potencial), permite la identificación directa de bases sin la necesidad de etiquetas de fluorescencia, lo cual distingue a ONT de otros métodos de secuenciación.
 
 En el caso de ADN de doble cadena, el sistema emplea una proteína motora que desnaturaliza el ADN, permitiendo que solo una cadena pase a través del poro. A medida que cada nucleótido atraviesa el poro, la interferencia generada, conocida como \textbf{"squiggle" o garabato}, se mide y se asocia con una secuencia de bases. Para traducir esta señal en una secuencia, se comparan patrones de squiggles generados experimentalmente con secuencias sintéticas (o "similares"), lo que permite identificar los nucleótidos en cada posición.
@@ -760,15 +760,15 @@ A pesar de estas limitaciones, la tecnología ONT es portátil, escalable y ráp
 
 Las principales desventajas de la secuenciación por nanoporos son la elevada tasa de error y las dificultades en regiones con homopolímeros extensos, así como su dependencia de "training sets" (conjuntos de datos de entrenamiento) actualizados para mejorar la precisión en el análisis de secuencias complejas.
 
-\subsection{Consideraciones generales sobre la secuenciación de tercera generación}
+\section{Consideraciones generales sobre la secuenciación de tercera generación}
 Las técnicas de secuenciación de tercera generación han revolucionado el campo de la genómica estructural, permitiendo lecturas largas que facilitan el ensamblaje de genomas completos y el análisis de variaciones estructurales. Sin embargo, en comparación con la secuenciación de segunda generación, presentan una menor precisión en general. A medida que se integran algoritmos de inteligencia artificial y técnicas avanzadas de procesamiento de señales, la precisión de estas tecnologías sigue mejorando.
 
 Un desafío específico en estas tecnologías es la susceptibilidad de las moléculas únicas a la adición de múltiples nucleótidos, lo que puede generar errores en homopolímeros y regiones complejas del ADN.
 
-\subsection{Resumen}
+\section{Resumen}
 La secuenciación de tercera generación permite secuenciar templates más largos, siendo así mejor para variantes estructurales. Además, no es necesaria la amplificación clonal. En \textbf{PacBio}, se utilizan templates circularizados. La polimerasa incorpora dNTPs con fluoróforos que se capturan por una cámara directamente cuando se unen. Es muy rápido (3 bases por segundo), pero sufre en regiones con homopolímeros. Se secuencian los templates largos una vez con una tasa de error alta o templates cortos varias veces para obtener el consenso. En \textbf{Nanopore}, se comprueba directamente la composición de un ssDNA mediante la interpretación de la interrupción de la corriente (el garabato o squiggle). Dentro del poro, la zona estrecha dtermina el k-mero. Éste sufre más con homopolímeros cuando el k-mero es más corto. Tiene una tasa de error alta, pero se está optimizando con machine learning. También puede haber problemas con bases modificadas. Los equipos son muy portables, lo que supone una gran ventaja.
 
-\subsection{Quizz}
+\section{Quizz}
 \begin{enumerate}
 \item What is an advantage of hash table-based mapping?
 \begin{itemize}
@@ -1071,8 +1071,8 @@ Answer: Long reads without template amplification
 
 %aserrano@cnic.es
 %08/11 - Tomás di Domenico
-\section{Whole Genome Sequencing (WGS)}
-\subsection{Introducción a Whole Genome Sequencing}
+\chapter{Whole Genome Sequencing (WGS)}
+\section{Introducción a Whole Genome Sequencing}
 WGS implica secuenciar todo el genoma de telómero a telómero. Esto se debe a que antes no se solía secuenciar todo el genoma, si no algún panel o el exoma. Ahora, el genoma completo sí se está secuenciando por la disminución de los costes. 
 \begin{itemize}
 \item \textbf{Targeted panel sequencing}: como se selecciona un fragmento a secuenciar, se consigue una mayor cobertura por el mismo precio.
@@ -1097,7 +1097,7 @@ WGS tiene tres aplicaciones fundamentales:
 
 La principal limitación de NGS es que generan lecturas muy cortas, además de tener limitaciones intrínsecas por los métodos químicos que se utilizan a la hora de secuenciar. De estos métodos, el más popular es el de la secuenciación por síntesis, que es el que implementa Illumina en su secuenciación. Después de varias rondas de extensión y escaneado, las copias de la secuencia en un cluster empieza a descoordinarse, por lo que hay una limitación del tamaño de las lecturas. Esto es particularmente exigente cuando se trata de regiones que pueden estar repetidas a lo largo del genoma, ya que los ensamblajes pueden mostrar sesgos, dando lugar a huecos en los ensamblajes de referencia. Los genomas suelen ser muy repetitivos, pero hay distintos grados de repetitividad (simple y complejo). Así, no toda la parte repetitiva impide el ensamblaje, pero causa estragos.
 
-\subsection{Práctica - lecturas cortas}
+\section{Práctica - lecturas cortas}
 Ahora vamos a adquirir experiencia práctica con un ensamblaje de lecturas cortas y su análisis.
 Como no tenemos tiempo ni recursos para trabajar con un genoma entero, trabajaremos con un fragmento amplificado por BAC del cromosoma 3 humano.
 Utilizaremos ABySS para ensamblar un cromosoma artificial bacteriano (BAC) de 200 kbp utilizando un carril de lecturas paired-end de la plataforma Illumina. BWA-MEM se utiliza para alinear los contigs ensamblados con el genoma humano de referencia. IGV se utiliza para visualizar estas alineaciones y variantes.
@@ -1187,7 +1187,7 @@ Ahora nos vamos a \href{http://genome.ucsc.edu}{UCSC Genome Browser} y subimos e
 
 RepeatMasker es un programa que detecta las partes repetitivas del genoma y permite enmascararlas para que no afecten al análisis. Pulsando sobre el nombre, se expande en los distintos tipos de regiones repetitivas. En nuestro caso, los dos contigs están separados por una región repetitiva simple de TA. Hay otras regiones repetitivas en los contigs de tipo LINE o LTR, pero eso no supone ningún problema en el ensamblaje al ser regiones repetitivas del genoma, pero únicas en el fragmento. 
 
-\subsection{Long read sequencing and WGS}
+\section{Long read sequencing and WGS}
 Como ya hemos mencionado, el uso de lecturas pequeñas es especialmente complicado cuando se trata de regiones que pueden repetirse a lo largo del genoma. Esta situación podría mejorarse considerablemente si se dispusiera de lecturas más largas que pudieran extenderse más allá de las regiones repetitivas. Las primeras máquinas que realizaron secuenciación de lectura larga fueron las de Pacific Biosciences (PacBio). Producen lecturas con una longitud media de unos 20k.
 
 MinION, la primera máquina de Oxford Nanopore Technologies, es capaz de producir lecturas de longitud teóricamente ilimitada; el récord actual está en 2 megabases. La tecnología aprovecha una proteína de poro para secuenciar moléculas largas (no se limita al ADN). La porina se inserta en la membrana y, mediante otras proteínas, la molécula a secuenciar pasa a través de ella para su detección. A través del poro pasa una corriente estable. Cuando «objetos» atraviesan el poro, alteran esta corriente. La variación puede detectarse y su firma asociarse a un determinado «objeto» que atraviesa el poro.
@@ -1208,7 +1208,7 @@ Aparte de las largas lecturas obtenidas y de los flujos de trabajo run-until y r
 Sin embargo, como es habitual, no todo es perfecto: las lecturas individuales de PacBio y las máquinas de nanoporos tienen una tasa de error mucho mayor que, por ejemplo, las lecturas de Illumina: 5\% frente a 0,01\%. Se necesitaría un consenso de 30 lecturas para alcanzar una precisión del 99,99\%.
 Las mejoras son constantes y las actualizaciones tecnológicas periódicas siguen aumentando la precisión. Recientemente se han añadido dos puntos de chequeo para disminuir el problema de los homopolímeros.
 
-\subsection{Práctica - lecturas largas}
+\section{Práctica - lecturas largas}
 Ahora vamos a adquirir experiencia práctica en el ensamblaje de lecturas largas.
 En este caso, realizaremos un trabajo exploratorio: sin información previa sobre el experimento, descargaremos algunas lecturas generadas por una máquina de secuenciación de lecturas largas, las ensamblaremos y las mapearemos en el genoma humano. A continuación, intentaremos ver qué podemos averiguar sobre los datos.
 
@@ -1266,3 +1266,133 @@ A continuación, ve al navegador UCSC y haz clic en Mis datos > Pistas personali
 En la página siguiente, haz clic en el botón ir a la primera anotación. Cuando aparezca el navegador, haz clic en el botón de zoom 10x.
 Si estás haciendo esta sección inmediatamente después de la lección de lecturas cortas, ya está todo listo para comparar ambos ensamblajes e intentar sacar algunas conclusiones.
 Si no tienes los contigs de lecturas cortas ya cargados en el navegador, cárgalos de nuevo pegando el contenido de $\sim$ /intro-wgs/out/assembly/k48/selected\_contigs.faen UCSC BLAT, o enviando el archivo usando los botones de la sección «File Upload» de la herramienta BLAT.
+
+%13/11 - Tomás di Domenico
+\chapter{Variación estructural}
+La variación estructural (también variación estructural genómica) es la variación en la estructura del cromosoma de un organismo. Consiste en muchos tipos de variación en el genoma de una especie, y suele incluir tipos microscópicos y submicroscópicos, como deleciones, duplicaciones, variantes del número de copias, inserciones, inversiones y translocaciones. Se denomina como variación estructural todo aquel cambio de secuencia que tenga más de 50 bases respecto a una referencia. Si tiene un tamaño menor, entra en los INDELs.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/types-sv.png}
+\caption{Distintos tipos de variación estructural.}
+\end{figure}
+
+Varios mecanismos mutacionales pueden conducir a la generación de SV. Estos pueden ocurrir tanto meiótica como mitóticamente.
+\begin{itemize}
+\item Error en la recombinación
+\item Errores en la reparación de ADN 
+\item Errores en la replicación
+\end{itemize}
+Cada uno de estos métodos generaría una firma molecular particular en y alrededor de los puntos de rotura del SV.
+
+\section{Detección de variantes estructurales}
+Los tipos de variantes estructurales más estudiados son los que implican cambios en el número de copias de determinados fragmentos de material genético, ya que son más fáciles de detectar con las tecnologías actuales. Estos eventos se denominan colectivamente «variación del número de copias» (CNV). La detección de otros variantes desde NGS depende de la complejidad de los algoritmos: profundidad de lectura (o profundidad de cobertura), lectura pair-end, split read, ensamblaje de novo. 
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/sv-detection-methods.png}
+\caption{Representación visual de los distintos métodos de detección de variantes estructurales.}
+\end{figure}
+
+El uso de lecturas pequeñas es especialmente difícil cuando se secuencian áreas que pueden repetirse a lo largo del genoma. Lecturas largas pueden resolver regiones complejas al anclarse en regiones normales. 
+
+\section{Detección de CNV}
+Como ya se ha mencionado, la variación estructural relacionada con los cambios en el número de copias de las regiones genómicas es la más fácil de caracterizar con las tecnologías actuales.
+Existen dos técnicas principales actualmente en uso: la hibridación genómica comparativa (CGH) y la detección de CNV basada en secuenciación (CNV-seq).
+
+\subsection{Hibridación genómica comparativa (CGH)}
+Se cogía una secuencia referencia y una muestra, marcándolas con fluorescentes distintos. Se hibridizaba, y dependiendo del color de la muestra resultante, se podía estimar la abundancia relativa. 
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/Comparative-genome-hybridization-CGH-microarray-Karampetsou-et-al-2014.png}
+\end{figure}
+
+\subsection{CNV-seq}
+El análisis de CNV basado en la secuenciación se basa en la detección de regiones del genoma con más (ganancia) o menos (pérdida) lecturas de lo esperado.
+Puede realizarse mediante secuenciación del exoma completo (WES) o del genoma completo (WGS).
+La llamada WES requiere una secuenciación muy profunda (100x), mientras que la WGS ha demostrado funcionar con una cobertura tan baja como 0,1x.
+Esto se debe a que disponer del genoma completo nos permite crear una base estadística de lo que es «normal». Esto no es posible con sólo el 1\% del genoma (WES).
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/cnv-calling-wgs.png}
+\end{figure}
+
+\subsection{CGH vs CNV-seq}
+La CGH se considera el estándar dorado. Esto se debe a que para CNV-seq hay que hacer algunas suposiciones que harán que los diferentes métodos de análisis produzcan resultados potencialmente diferentes. Un ejemplo de la concordancia entre diferentes herramientas CNV-seq:
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/cgh-vs-cnvseq.png}
+\end{figure}
+
+\subsection{Comprensión de la salida típica de CNV-seq}
+Un gráfico típico de CNV sería como el siguiente:
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/cnv-plot.png}
+\end{figure}
+Los fragmentos grises son regiones sin resolver durante el ensamblado. 
+
+El primer paso para realizar la llamada CNV es \textbf{dividir el genoma en intervalos no solapados} que cubren un determinado número de bases (por ejemplo, 50.000). Cada bin agrupa todas las lecturas que caen dentro de su área. Cuanto más pequeño sea el bin, mayor será la resolución y el detalle de los eventos CNV detectables.
+El tamaño del bin (es decir, la resolución) depende de la profundidad de secuenciación, la ploidía del genoma y, en muestras de cáncer, la pureza del tumor, entre otros factores.
+Cada bin se caracteriza por una relación log2, que representa la relación entre las lecturas observadas y las lecturas esperadas y el zscore para indicar su posición con respecto a la media.
+
+El segundo paso es la \textbf{segmentación}: agrupar bins que parece que pertenecen al mismo segmento. Igual que los bins, se almacena en una tabla el ratio y el zscore. 
+
+El paso final es la \textbf{llamada de aberraciones}, donde se asigna a los segmentos una probabilidad de ser un evento CNV verdadero mediante el zscore. La aberración es una etiqueta de eventos estadísticamente significativos. Son un subset de los segmentos que cuenta con una columna adicional que especifica si su tipo es una ganancia o una pérdida. Se utilizan colores para visualizarlo: el verde para ganancias y naranja para pérdidas. 
+
+\section{Práctica - variantes estructurales}
+En esta sección analizaremos algunas muestras utilizando WisecondorX para realizar llamadas CNV.
+Comenzaremos con los resultados de los alineamientos con el genoma humano en formato BAM.
+El resultado que obtengamos del llamador de CNV debería ayudarnos a arrojar algo de luz sobre la situación estructural de las muestras analizadas.
+
+Al igual  que en las prácticas anteriores, primero se crea un entorno de conda con el software que se va a utilizar. Con el script de configuración se descargaron 10 ficheros de muestras control que se espera que no contengan eventos de CNV y dos muestras que queremos comparar. 
+
+Ahora vamos a indexar nuestros archivos BAM, lo que es necesario para la mayoría de los análisis que hacen el acceso aleatorio de las alineaciones.
+\begin{lstlisting}[language=bash]
+parallel -j $(nproc) samtools index {} ::: data/*.bam
+\end{lstlisting}
+
+Ahora tenemos que convertir nuestros archivos BAM en archivos npz (archivos numpy arrays comprimidos), que es el formato que WisecondorX utilizará posteriormente.
+\begin{lstlisting}[language=bash]
+mkdir -p out/npz
+time parallel -j $(nproc) WisecondorX convert {} out/npz/{/.}.npz ::: data/*.bam
+#Alternativa: ls data/*.bam | parallel -j $(nproc) WisecondorX convert {} out/npz/{/.}.npz
+\end{lstlisting}
+
+A continuación creamos la referencia con la que comparar nuestras muestras control.
+\begin{lstlisting}[language=bash]
+mkdir -p out/ref
+WisecondorX newref out/npz/control*.npz out/ref/reference.npz \
+    --yfrac 1 --cpus $(nproc)
+\end{lstlisting}
+
+Finalmente, obtenemos las predicciones de nuestras muestras.
+\begin{lstlisting}[language=bash]
+mkdir -p out/predictions
+parallel WisecondorX predict {} out/ref/reference.npz out/predictions/{/.} --bed --plot ::: out/npz/sample*.npz
+\end{lstlisting}
+
+En este punto, se han generado algunos plots en PNG. Tras abrirlos, vemos que los gráficos de sample1 son planos. Las nubes de puntos están extremadamente dispersas y no se puede determinar nada. En el caso de sample2, las nubes de puntos, pese a seguir siendo muy dispersas, sí permite ver algunos eventos de ganancia y pérdida. 
+
+También podemos crear gráficos CNV basados en los resultados de WisecondorX. Para ello utilizaremos un script python personalizado.
+Este script generará gráficos para los cromosomas 8, 10 y 13 de nuestras muestras.
+\begin{lstlisting}[language=bash]
+mkdir -p scripts
+wget -P scripts https://gitlab.com/bioinfo-lessons/intro-sv/-/raw/master/scripts/plots.py
+python scripts/plots.py
+\end{lstlisting}
+
+Este script genera los mismos gráficos, pero marcando algunos oncogenes como MYC. En los gráficos de los cromosomas 8, 10 y 13, se ve cómo sample2 tiene una pérdida de los supresores tumorales BRCA2 y RB1.
+
+Ahora vamos a visualizar la salida de WisecondorX en IGV. Para ello, debemos eliminar la cabecera de los ficheros bed.
+\begin{lstlisting}[language=bash]
+for f in out/predictions/*.bed; do grep -v "start" $f > $(dirname $f)/$(basename $f .bed).igv.bed; done;
+\end{lstlisting}
+A continuación cargamos los segmentos y las aberraciones en IGV. Haciendo click derecho en cada una de las cuatro pistas, se puede seleccionar el modo de vista ampliada. 
+
+Como conclusión de la práctica, hemos observado algunas pérdidas en genes supresores de tumores (BRCA2, RB1) y ganancias en un oncogén (Myc).
+Esto indicaría que nuestra muestra afectada (sample2) procede de un paciente que padece algún tipo de cáncer, que es de hecho el origen de la muestra.
