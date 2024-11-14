@@ -1774,7 +1774,7 @@ dp53 <- data.frame(p53 = round(rnorm(23, c(rep(2, 13), rep(2.8, 10))), 3),
 \section{Tipos de datos}
 Tenemos que aclarar este punto, ya que nos referiremos a él con frecuencia. Los datos pueden medirse en diferentes escalas. De "menos información a más información" podemos organizar las escalas de esta manera:
 \begin{description}
-\item[Escala nominal o categórica] Utilizamos una escala que simplemente diferencia las distintas clases. Por ejemplo, podemos clasificar algunos objetos por aquí, ``ordenador'', ``pizarra'', ``lápiz'', y podemos asignarles números (1 al ordenador, 2 a la pizarra, etc.), pero los números no tienen significado per se.
+\item[Escala nominal o categórica] Utilizamos una escala que simplemente diferencia las distintas clases. Por ejemplo, podemos clasificar algunos objetos por aquí, ``ordenador'', ``pizarra'', ``lápiz'', y podemos asignarles números (1 al ordenador, 2 a la pizarra, etc.), pero los números no tienen significado \textit{per se}.
 
 \textbf{Binario} los datos están en una escala nominal con sólo dos clases: muerto o vivo (y podemos dar un 0 o un 1 a cualquiera de ellas), hombre o mujer, etc.
 
@@ -1799,7 +1799,7 @@ Para todos los conjuntos de datos, excepto los más pequeños, debemos utilizar 
 \end{itemize}
 
 \subsection{Relación entre variables}
-Nos centraremos en comparar dos grupos. Pero tenemos varias variables (genes). Una cosa obvia a hacer es mirar cómo se relacionan Y mostrar los diferentes (dos, en este caso) grupos.
+Nos centraremos en comparar dos grupos. Pero tenemos varias variables (genes). Una cosa obvia a hacer es: (i) mirar cómo se relacionan y (ii) mostrar los diferentes (dos, en este caso) grupos.
 <<results='hide'>>=
 library(RcmdrMisc)
 @
@@ -1822,10 +1822,10 @@ La prueba t estándar asume que las varianzas de los dos grupos son iguales, mie
 Supongamos que tenemos los números 0, 1 y 2, y sabemos que su media es 1. Dado que tenemos tres números, ¿a cuántos de ellos podemos asignar libremente un valor? A dos de ellos, ya que el tercer número debe ajustarse para que el promedio sea 1. Así, el número de grados de libertad es el número de observaciones menos el número de parámetros que debemos estimar. En el caso de tener dos grupos, los grados de libertad se calcularían como:
 $$ N = N_1 + N_2 = N - 2$$
 o de manera equivalente:
-$$(N_1 - 1) + (N_2 - 1) = N - 2 $$
+$$(N_1 - 1) + (N_2 - 1) = N - 2$$
 
 \subsection{Test de Welch vs test de la t}
-Si las varianzas no son iguales y se realiza una prueba t estándar asumiendo que son iguales, se incurre en un error. En cambio, si las varianzas son realmente iguales pero se usa la prueba de Welch, el error cometido es menor. Por ello, es preferible utilizar la prueba de Welch cuando existe incertidumbre sobre la igualdad de varianzas. Esta es la razón por la cual, por defecto, se suele optar por la prueba de Welch.
+Si las varianzas no son iguales y se realiza una prueba t estándar asumiendo que son iguales, se incurre en un error. En cambio, si las varianzas son realmente iguales, pero se usa la prueba de Welch, el error cometido es menor. Por ello, es preferible utilizar la prueba de Welch cuando existe incertidumbre sobre la igualdad de varianzas. Esta es la razón por la cual, por defecto, se suele optar por la prueba de Welch.
 
 
 El test de la t sirve para \textbf{comparar medias}. La fórmula es:
@@ -1834,16 +1834,21 @@ t = \frac{(\bar{x_1} - \bar{x_2})-(\mu_1 - \mu_2)}{S_{\bar{x_1}-\bar{x_2}}}
 \]
 
 \subsection{Desviación estándar vs error estándar}
-La desviación estándar es una medida de la dispersión de los datos alrededor de la media, mostrando cuán alejados están los valores individuales del promedio. Es útil para entender la variabilidad dentro de una sola muestra o población. En cambio, el error estándar mide la precisión de la media muestral como estimador de la media poblacional. A diferencia de la desviación estándar, que refleja la variabilidad en una muestra específica, el error estándar indica cuánto podrían variar las medias de diferentes muestras si se extrajeran repetidamente de la misma población. Cuanto mayor es el tamaño de la muestra, menor será el error estándar, ya que la media muestral se aproxima más a la media poblacional.
+La desviación estándar es una medida de la dispersión de los datos alrededor de la media, mostrando cuán alejados están los valores individuales del promedio. Es útil para entender la variabilidad dentro de una sola muestra o población. La desviación ($\sigma$: poblacional; s: muestral) disminuye cuadráticamente con el tamaño poblacional o muestral, respectivamente:
+\[
+\sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2      s^2 = \frac{1}{n - 1} \sum_{i=1}^{n} (x_i - \bar{x})^2
+\]
+En cambio, el error estándar mide la precisión de la media muestral como estimador de la media poblacional. A diferencia de la desviación estándar, que refleja la variabilidad en una muestra específica, el error estándar indica cuánto podrían variar las medias de diferentes muestras si se extrajeran repetidamente de la misma población. Cuanto mayor es el tamaño de la muestra, menor será el error estándar, ya que la media muestral se aproxima más a la media poblacional.
+$$ E[\bar{X}] = \mu ;      E[S^2] \neq \sigma^2$$
 
 \subsection{Ideas clave sobre el test de la t}
-Es importante comprender algunas ideas clave sobre el uso de los p-valores en la prueba de hipótesis. Primero, cuando el resultado de un análisis no es estadísticamente significativo, no estamos confirmando la hipótesis nula; simplemente estamos fallando en rechazarla, lo que significa que no hemos encontrado suficiente evidencia en su contra. Además, el p-valor no representa la probabilidad de que la hipótesis nula sea cierta, ni de que la hipótesis alternativa lo sea. En cambio, el p-valor sirve como una métrica que indica la fuerza de la evidencia \textbf{en contra} de la hipótesis nula. Si el p-valor es bajo, la interpretación es que, o bien la hipótesis nula es falsa, o bien hemos observado un evento tan improbable como el p-valor calculado, dado que la hipótesis nula es cierta.
+Es importante comprender algunas ideas clave sobre el uso de los p-valores en la prueba de hipótesis. Primero, cuando el resultado de un análisis no es estadísticamente significativo, no estamos confirmando la hipótesis nula; simplemente es posible que estemos fallando en rechazarla, lo que significa que no hemos encontrado suficiente evidencia en su contra. Además, el p-valor no representa la probabilidad de que la hipótesis nula sea cierta, ni de que la hipótesis alternativa lo sea. En cambio, el p-valor sirve como una métrica que indica la fuerza de la evidencia \textbf{en contra} de la hipótesis nula. Si el p-valor es bajo, la interpretación es que, \textit{"o bien la hipótesis nula es falsa, o bien hemos observado un evento tan \textbf{im}probable como el p-valor calculado, dado que la hipótesis nula es cierta"}.
 
-Estas tres preguntas son distintas: 1) ¿Qué dice la evidencia? Esto lo responde el p-valor. 2) ¿Qué debo creer? Quizás hay evidencia adicional. 3) ¿Qué debo hacer? Esto refleja otra relación de coste-beneficio.
+Estas tres preguntas son distintas: 1) ¿Qué dice la evidencia? Es una prueba estadística, y lo responde el p-valor. 2) ¿Qué debo creer? Quizás hay evidencia adicional; se calcula mediante la inferencia bayesiana. 3) ¿Qué debo hacer? Esto refleja otra relación de coste-beneficio, y resulta en la toma de la decisión que se realiza (aceptar o rechazar la hipótesis).
 
 Es fundamental recordar que los p-valores se calculan bajo ciertos supuestos de modelo, y cualquier violación de estos supuestos puede afectar la validez del resultado. Por eso, utilizar los p-valores de manera cuidadosa es más adecuado que interpretar resultados en términos absolutos de “significativo” o “no significativo”. Además, comparar valores extremadamente pequeños de p (como $p = 10^{-13}$ frente a $p = 10^{-16}$) no tiene un significado práctico adicional, ya que ambos ya representan un nivel de evidencia considerablemente fuerte en contra de la hipótesis nula. También es esencial reconocer que el p-valor no es la única herramienta de inferencia estadística; los intervalos de confianza proporcionan información valiosa sobre el rango de valores plausibles para el parámetro de interés, complementando el análisis de los p-valores y ayudando a interpretar mejor los resultados.
 
-Para comprender la inferencia estadística, es esencial distinguir entre una muestra y la población. La población es el conjunto completo de elementos sobre el cual queremos obtener conclusiones, mientras que una muestra es un subconjunto de esa población que se selecciona para su análisis. La mayoría de las veces, se trabaja con muestras porque estudiar a toda la población no es práctico; a partir de los datos de la muestra, hacemos inferencias sobre las características de la población.
+Para comprender la inferencia estadística, es esencial distinguir entre una muestra y la población. La población es el conjunto completo de elementos sobre el cual queremos obtener conclusiones, mientras que una muestra es un subconjunto de esa población que se selecciona para su análisis. Mayoritariamente, se trabaja con muestras porque estudiar toda una población suele ser impracticable; a partir de los datos de la muestra, hacemos inferencias sobre las características de la población.
 
 Un concepto fundamental en estadística es el de un estadístico, que es cualquier valor numérico que se puede calcular a partir de una muestra. Un tipo específico de estadístico es un estimador, que se usa para aproximar un parámetro de la población. Por ejemplo, la media muestral, calculada como $\sum x/N$, es un estimador que proporciona una aproximación de la media poblacional verdadera utilizando datos de una muestra.
 
@@ -1856,7 +1861,7 @@ En cuanto al p-valor, es una medida de la evidencia en contra de la hipótesis n
 La lógica de un test estadístico radica en decidir entre la hipótesis nula y la alternativa basándose en los datos. A diferencia de un procedimiento de estimación, que busca obtener un valor aproximado de un parámetro, una prueba de hipótesis se centra en determinar si la evidencia es suficientemente fuerte para rechazar la hipótesis nula. Esta diferencia entre estimación y prueba de hipótesis es fundamental para realizar inferencias estadísticas bien informadas.
 
 \subsection{Intervalos de confianza}
-Un intervalo de confianza del 95\% alrededor de una estimación, como una media, no debe interpretarse como que existe una probabilidad del 95\% de que la media poblacional esté entre los límites del intervalo, por ejemplo, entre 1 y 2. Esta interpretación es incorrecta. La interpretación correcta de un intervalo de confianza del 95\% es que, si repitiéramos el muestreo y el cálculo del intervalo de confianza muchas veces, aproximadamente el 95\% de esos intervalos generados contendrían la media poblacional verdadera. El intervalo refleja la precisión de la estimación dada la variabilidad del muestreo, no una probabilidad sobre la ubicación de la media en un intervalo específico para una muestra concreta.
+Un intervalo de confianza del 95\% alrededor de una estimación, como una media, no debe interpretarse como que existe una probabilidad del 95\% de que la media poblacional esté entre los límites del intervalo, por ejemplo, entre 1 y 2. Esta interpretación es incorrecta. La interpretación correcta de un intervalo de confianza del 95\% es que, si repitiéramos el muestreo y el cálculo del intervalo de confianza muchas veces, aproximadamente el 95\% de esos intervalos generados contendrían la media poblacional real. El intervalo refleja la precisión de la estimación dada la variabilidad del muestreo, no una probabilidad sobre la ubicación de la media en un intervalo específico para una muestra concreta.
 
 En el contexto de un test de hipótesis, si el test es justamente significativo (es decir, si el p-valor es 0,05), uno de los límites del intervalo de confianza tocará el valor de 0, indicando que no se puede rechazar la hipótesis nula con un nivel de confianza superior al 95\%. Cuando el valor t calculado aumenta (es decir, la evidencia contra la hipótesis nula se vuelve más fuerte), el intervalo de confianza se amplía, reflejando una mayor certeza en la estimación. Por ejemplo, un valor t de 18 corresponde a un área bajo la curva mucho mayor que un valor t de 4, lo que implica una estimación mucho más precisa y una evidencia más fuerte en favor de rechazar la hipótesis nula.
 

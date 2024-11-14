@@ -187,7 +187,7 @@ Para leer el código, se empieza por la función más interna, que en este caso 
 \hlkwd{sum}\hldef{(pvalues} \hlopt{<=} \hlnum{0.05}\hldef{)}
 \end{alltt}
 \begin{verbatim}
-## [1] 49
+## [1] 60
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1781,11 +1781,11 @@ Una lista más compleja sería la siguiente:
 ## [1] "Hola"
 ## 
 ## $one.matrix
-##            [,1]       [,2]       [,3]       [,4]          [,5]
-## [1,] -0.5302701 -0.4660475  1.3983435 -2.2171668 -0.2222661320
-## [2,] -0.1076839 -1.7181432  0.4276466  1.2347667  0.9744675215
-## [3,]  2.1773931 -0.8954388  0.6666081  3.5902072  1.2332070724
-## [4,] -0.5883355 -0.1278110 -0.7383674 -0.1258448 -0.0003593905
+##             [,1]       [,2]        [,3]       [,4]       [,5]
+## [1,] -0.32972073  2.0667901  0.15803109 -0.2234592 -1.4301603
+## [2,]  0.01978029  0.2046757 -1.61228249  0.1787020  1.0069985
+## [3,] -0.61434428 -0.5577337 -0.87144873  0.1369835 -0.4956426
+## [4,] -0.51845141  0.3537901 -0.05393759  0.3283266  2.7942324
 ## 
 ## $another.list
 ## $another.list$a
@@ -1799,36 +1799,36 @@ Una lista más compleja sería la siguiente:
 \hldef{listB[[}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{11}\hldef{)]]}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.6666081
+## [1] -0.8714487
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[[}\hlnum{3}\hldef{]][}\hlnum{11}\hldef{]}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.6666081
+## [1] -0.8714487
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[[}\hlnum{3}\hldef{]][}\hlnum{3}\hldef{,} \hlnum{3}\hldef{]}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.6666081
+## [1] -0.8714487
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[[}\hlnum{3}\hldef{]][}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{3}\hldef{)]}
 \end{alltt}
 \begin{verbatim}
-## [1] 2.177393 2.177393
+## [1] -0.6143443 -0.6143443
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{4}\hldef{)]}
 \end{alltt}
 \begin{verbatim}
 ## $one.matrix
-##            [,1]       [,2]       [,3]       [,4]          [,5]
-## [1,] -0.5302701 -0.4660475  1.3983435 -2.2171668 -0.2222661320
-## [2,] -0.1076839 -1.7181432  0.4276466  1.2347667  0.9744675215
-## [3,]  2.1773931 -0.8954388  0.6666081  3.5902072  1.2332070724
-## [4,] -0.5883355 -0.1278110 -0.7383674 -0.1258448 -0.0003593905
+##             [,1]       [,2]        [,3]       [,4]       [,5]
+## [1,] -0.32972073  2.0667901  0.15803109 -0.2234592 -1.4301603
+## [2,]  0.01978029  0.2046757 -1.61228249  0.1787020  1.0069985
+## [3,] -0.61434428 -0.5577337 -0.87144873  0.1369835 -0.4956426
+## [4,] -0.51845141  0.3537901 -0.05393759  0.3283266  2.7942324
 ## 
 ## $another.list
 ## $another.list$a
@@ -3780,7 +3780,7 @@ Para todos los conjuntos de datos, excepto los más pequeños, debemos utilizar 
 \end{itemize}
 
 \subsection{Relación entre variables}
-Nos centraremos en comparar dos grupos. Pero tenemos varias variables (genes). Una cosa obvia a hacer es: (i) mirar cómo se relacionan Y (ii) mostrar los diferentes (dos, en este caso) grupos.
+Nos centraremos en comparar dos grupos. Pero tenemos varias variables (genes). Una cosa obvia a hacer es: (i) mirar cómo se relacionan y (ii) mostrar los diferentes (dos, en este caso) grupos.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -3825,7 +3825,7 @@ La forma más sencilla de realizar un test de la t es mediante:
 \end{kframe}
 \end{knitrout}
 
-La prueba t estándar asume que las varianzas de los dos grupos son iguales, mientras que la prueba de Welch no requiere que las varianzas de ambos grupos sean iguales. En la prueba de Welch, los grados de libertad pueden ser un número no entero (como sucede en este caso: \textit{df = 17.402}). Con este estadístico, el programa ha utilizado la distribución t correspondiente y ha calculado el área en ambas colas de la distribución.
+La prueba t estándar asume que las varianzas de los dos grupos son iguales, mientras que la prueba de Welch no requiere que las varianzas de ambos grupos sean iguales. En la prueba de Welch, los grados de libertad pueden ser un número no entero (como sucede en este caso). Con este estadístico, el programa ha utilizado la distribución t correspondiente y ha calculado el área en ambas colas de la distribución.
 
 \subsection{Grados de libertad}
 Supongamos que tenemos los números 0, 1 y 2, y sabemos que su media es 1. Dado que tenemos tres números, ¿a cuántos de ellos podemos asignar libremente un valor? A dos de ellos, ya que el tercer número debe ajustarse para que el promedio sea 1. Así, el número de grados de libertad es el número de observaciones menos el número de parámetros que debemos estimar. En el caso de tener dos grupos, los grados de libertad se calcularían como:
@@ -3843,7 +3843,7 @@ t = \frac{(\bar{x_1} - \bar{x_2})-(\mu_1 - \mu_2)}{S_{\bar{x_1}-\bar{x_2}}}
 \]
 
 \subsection{Desviación estándar vs error estándar}
-La desviación estándar es una medida de la dispersión de los datos alrededor de la media, mostrando cuán alejados están los valores individuales del promedio. Es útil para entender la variabilidad dentro de una sola muestra o población. La desviación (\sigma: poblacional; s: muestral) disminuye cuadráticamente con el tamaño poblacional o muestral, respectivamente:
+La desviación estándar es una medida de la dispersión de los datos alrededor de la media, mostrando cuán alejados están los valores individuales del promedio. Es útil para entender la variabilidad dentro de una sola muestra o población. La desviación ($\sigma$: poblacional; s: muestral) disminuye cuadráticamente con el tamaño poblacional o muestral, respectivamente:
 \[
 \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2      s^2 = \frac{1}{n - 1} \sum_{i=1}^{n} (x_i - \bar{x})^2
 \]
@@ -3851,12 +3851,9 @@ En cambio, el error estándar mide la precisión de la media muestral como estim
 $$ E[\bar{X}] = \mu ;      E[S^2] \neq \sigma^2$$
 
 \subsection{Ideas clave sobre el test de la t}
-Es importante comprender algunas ideas clave sobre el uso de los p-valores en la prueba de hipótesis. Primero, cuando el resultado de un análisis no es estadísticamente significativo, no estamos confirmando la hipótesis nula; simplemente es posible que estemos fallando en rechazarla, lo que significa que no hemos encontrado suficiente evidencia en su contra. Además, el p-valor no representa la probabilidad de que la hipótesis nula sea cierta, ni de que la hipótesis alternativa lo sea. En cambio, el p-valor sirve como una métrica que indica la fuerza de la evidencia \textbf{en contra} de la hipótesis nula. Si el p-valor es bajo, la interpretación es que, \textit{"o bien la hipótesis nula es falsa, o bien hemos observado un evento tan (\textbf{im})probable como el p-valor calculado, dado que la hipótesis nula es cierta"}.
+Es importante comprender algunas ideas clave sobre el uso de los p-valores en la prueba de hipótesis. Primero, cuando el resultado de un análisis no es estadísticamente significativo, no estamos confirmando la hipótesis nula; simplemente es posible que estemos fallando en rechazarla, lo que significa que no hemos encontrado suficiente evidencia en su contra. Además, el p-valor no representa la probabilidad de que la hipótesis nula sea cierta, ni de que la hipótesis alternativa lo sea. En cambio, el p-valor sirve como una métrica que indica la fuerza de la evidencia \textbf{en contra} de la hipótesis nula. Si el p-valor es bajo, la interpretación es que, \textit{"o bien la hipótesis nula es falsa, o bien hemos observado un evento tan \textbf{im}probable como el p-valor calculado, dado que la hipótesis nula es cierta"}.
 
-Estas tres preguntas son distintas: 
-1) ¿Qué dice la evidencia? Esto lo responde el p-valor. <-- prueba estadística
-2) ¿Qué debo creer? Quizás hay evidencia adicional. <-- inferencia bayesiana
-3) ¿Qué debo hacer? Esto refleja otra relación de coste-beneficio. <-- T.^{a} de la decisión
+Estas tres preguntas son distintas: 1) ¿Qué dice la evidencia? Es una prueba estadística, y lo responde el p-valor. 2) ¿Qué debo creer? Quizás hay evidencia adicional; se calcula mediante la inferencia bayesiana. 3) ¿Qué debo hacer? Esto refleja otra relación de coste-beneficio, y resulta en la toma de la decisión que se realiza (aceptar o rechazar la hipótesis).
 
 Es fundamental recordar que los p-valores se calculan bajo ciertos supuestos de modelo, y cualquier violación de estos supuestos puede afectar la validez del resultado. Por eso, utilizar los p-valores de manera cuidadosa es más adecuado que interpretar resultados en términos absolutos de “significativo” o “no significativo”. Además, comparar valores extremadamente pequeños de p (como $p = 10^{-13}$ frente a $p = 10^{-16}$) no tiene un significado práctico adicional, ya que ambos ya representan un nivel de evidencia considerablemente fuerte en contra de la hipótesis nula. También es esencial reconocer que el p-valor no es la única herramienta de inferencia estadística; los intervalos de confianza proporcionan información valiosa sobre el rango de valores plausibles para el parámetro de interés, complementando el análisis de los p-valores y ayudando a interpretar mejor los resultados.
 
