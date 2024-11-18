@@ -1836,10 +1836,10 @@ t = \frac{(\bar{x_1} - \bar{x_2})-(\mu_1 - \mu_2)}{S_{\bar{x_1}-\bar{x_2}}}
 \subsection{Desviación estándar vs error estándar}
 La desviación estándar es una medida de la dispersión de los datos alrededor de la media, mostrando cuán alejados están los valores individuales del promedio. Es útil para entender la variabilidad dentro de una sola muestra o población. La desviación ($\sigma$: poblacional; s: muestral) disminuye cuadráticamente con el tamaño poblacional o muestral, respectivamente:
 \[
-\sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2      s^2 = \frac{1}{n - 1} \sum_{i=1}^{n} (x_i - \bar{x})^2
+\sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \quad \quad  s^2 = \frac{1}{n - 1} \sum_{i=1}^{n} (x_i - \bar{x})^2
 \]
 En cambio, el error estándar mide la precisión de la media muestral como estimador de la media poblacional. A diferencia de la desviación estándar, que refleja la variabilidad en una muestra específica, el error estándar indica cuánto podrían variar las medias de diferentes muestras si se extrajeran repetidamente de la misma población. Cuanto mayor es el tamaño de la muestra, menor será el error estándar, ya que la media muestral se aproxima más a la media poblacional.
-$$ E[\bar{X}] = \mu ;      E[S^2] \neq \sigma^2$$
+$$ E[\bar{X}] = \mu ; \quad \quad E[S^2] \neq \sigma^2$$
 
 \subsection{Ideas clave sobre el test de la t}
 Es importante comprender algunas ideas clave sobre el uso de los p-valores en la prueba de hipótesis. Primero, cuando el resultado de un análisis no es estadísticamente significativo, no estamos confirmando la hipótesis nula; simplemente es posible que estemos fallando en rechazarla, lo que significa que no hemos encontrado suficiente evidencia en su contra. Además, el p-valor no representa la probabilidad de que la hipótesis nula sea cierta, ni de que la hipótesis alternativa lo sea. En cambio, el p-valor sirve como una métrica que indica la fuerza de la evidencia \textbf{en contra} de la hipótesis nula. Si el p-valor es bajo, la interpretación es que, \textit{"o bien la hipótesis nula es falsa, o bien hemos observado un evento tan \textbf{im}probable como el p-valor calculado, dado que la hipótesis nula es cierta"}.
