@@ -69,3 +69,11 @@ Annotations/dbsnp_138.hg19_chr17.vcf.gz -an QD -an ReadPosRankSum -an FS -an SOR
 
 gatk ApplyVQSR -R REFERENCE/hg19_chr17.fa -V out/normal_refined_out.vcf -O out/output_normal_refined.recalibrated --truth-sensitivity-filter-level 99.0 --tranches-file out/output_normal_refined.tranches --recal-file out/output_normal_refined.recal -mode BOTH
 \end{lstlisting}
+
+El último paso es el filtrado de las variantes. 
+\begin{lstlisting}[language=bash]
+awk -F '\t' '{if ($0 ~ /#/ || $7 == "PASS") print}' out/output_normal_refined.recalibrated > out/output_normal_refined.onlypass
+
+#Contar el número de líneas resultantes
+grep "^chr17" out/output_normal_refined.onlypass | wc -l
+\end{lstlisting}
