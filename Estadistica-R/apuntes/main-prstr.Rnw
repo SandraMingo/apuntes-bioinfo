@@ -2089,4 +2089,176 @@ for(i in unique(dmyc$id))
 @
 Este plot es bastante feo. El objetivo está en mostrar por qué el test de la t muestra grandes diferencias, pero el plot no. En casi todos los casos, a diferencia intrasujeto es positiva (NC-cancer da un resultado positivo). Además, la variabilidad intersujeto es muy grande en relación con la magnitud del efecto. Los dos valores de un sujeto están altamente correlacionados, pero los grados de libertad son menores. 
 
+%18/11 - Ramón
+\section{Procedimientos no paramétricos}
+Los procedimientos no paramétricos son métodos estadísticos que no dependen de supuestos específicos sobre la distribución de los datos, como la normalidad. En lugar de trabajar directamente con los valores originales, a menudo convierten los datos en rangos, lo que les permite ser menos sensibles a valores atípicos o desviaciones significativas de los supuestos paramétricos. Aunque ofrecen robustez frente a ciertas violaciones de los supuestos, estos métodos pueden estar evaluando hipótesis nulas ligeramente diferentes en comparación con los procedimientos paramétricos, lo que debe considerarse al elegir la metodología.
+
+El uso de procedimientos no paramétricos puede ser una decisión compleja, y su aplicación depende de diversos factores:
+\begin{itemize} 
+\item ¿La naturaleza de los datos justifica un enfoque no paramétrico?
+Si los datos presentan distribuciones altamente sesgadas, valores atípicos extremos o una estructura que claramente viola los supuestos paramétricos, un procedimiento no paramétrico puede ser más adecuado.
+\item Eficiencia relativa del procedimiento no paramétrico:
+La eficiencia relativa mide el tamaño de la muestra necesario para que dos procedimientos con una tasa de error de tipo I similar alcancen la misma potencia estadística. Cuando se cumplen los supuestos de los métodos paramétricos, estos suelen tener mayor potencia estadística. Sin embargo, cuando los supuestos no se cumplen, los métodos no paramétricos pueden ser más robustos y ofrecer una potencia comparable o incluso superior.
+Cabe señalar que los métodos no paramétricos tienen limitaciones en la detección de valores p extremadamente pequeños, lo que puede ser un desafío en contextos como experimentos ómicos donde se aplican correcciones para pruebas múltiples.
+\item Flexibilidad del método:
+Algunos métodos no paramétricos tienen limitaciones para incorporar factores experimentales adicionales o interacciones complejas. Por ello, es importante evaluar si un procedimiento no paramétrico puede adaptarse al diseño del experimento.
+\end{itemize}
+
+Aquí nos centraremos en la prueba de Wilcoxon.\marginpar[\footnotesize !!!!] \ Esta suele ser la forma de proceder cuando tenemos medidas de escala ordinal y queremos comparar dos grupos independientes. Sin embargo, la prueba de Wilcoxon \textbf{requiere datos de escala de intervalo} para el Wilcoxon de una sola muestra y el Wilcoxon pareado (esto es algo que muchos sitios web y algunos libros de texto hacen mal). La razón detrás de esta restricción es que la prueba de Wilcoxon para datos pareados comienza calculando las diferencias intra-sujeto. Este cálculo implica restar valores entre pares de observaciones, lo que requiere que los datos tengan una distancia significativa y consistente entre los valores. Por lo tanto, no es adecuado aplicar esta prueba a datos de escala ordinal, ya que en tales casos no existe una medida de "distancia real" entre los niveles ordinales.
+
+Además, aunque la prueba de Wilcoxon es más robusta frente a ciertos supuestos que los métodos paramétricos, la hipótesis de independencia de las observaciones sigue siendo fundamental. Es decir, las observaciones dentro y entre los grupos deben ser independientes. Este supuesto es tan crucial para el Wilcoxon como lo es para la prueba t.
+
+Es importante recordar que las pruebas no paramétricas no son completamente «libres de supuestos». Ningún método estadístico lo es, ni en teoría ni en la práctica. Si bien estas pruebas pueden ser más flexibles frente a ciertas violaciones de los supuestos paramétricos, aún requieren que se cumplan otros supuestos esenciales para garantizar la validez de los resultados. Por ello, la elección de la prueba debe basarse no solo en las características de los datos, sino también en el cumplimiento de estos supuestos.
+
+\subsection{Wilcoxon rank-sum test or Mann-Whitney U test: 2 muestras independentes}
+La prueba Wilcoxon rank-sum, también conocida como Mann-Whitney U, se utiliza para comparar dos muestras independientes. Es adecuada para datos de escala ordinal o de intervalo, y su objetivo principal es evaluar si existe una diferencia significativa entre las distribuciones de los dos grupos.
+
+La lógica básica del test consiste en combinar las observaciones de ambos grupos en una sola lista, clasificar las observaciones asignando rangos, calcular las sumas de los rangos correspondientes a cada grupo por separado y evaluar si la suma de los rangos de un grupo es significativamente mayor (o menor) que la del otro. 
+
+La hipótesis nula indica que las dos muestras provienen de la misma población (o poblaciones con la misma distribución). La hipótesis alternativa es que las dos muestras provienen de poblaciones con distribuciones diferentes (la forma específica depende de si la prueba es de una cola o dos colas).
+
+Es una prueba no paramétrica, por lo que no requiere asumir normalidad en los datos.
+Es robusta frente a valores atípicos y puede utilizarse con datos de escala ordinal.
+Aunque no requiere normalidad, la independencia entre las observaciones de los dos grupos es fundamental.
+En algunos casos, esta prueba no detecta diferencias en las medias sino en la posición o distribución de los valores, lo que puede interpretarse como diferencias en la mediana si las distribuciones son similares.
+En presencia de muchos empates (valores idénticos en los datos), se deben hacer ajustes para calcular correctamente el estadístico de la prueba.
+
+<<>>=
+wilcox.test(p53 ~ cond, alternative="two.sided", data=dp53)
+@
+
+Mucha gente dice «usaré una prueba de Wilcoxon para comparar las medias». Pues bien, la prueba de Wilcoxon no es una prueba de comparación de medias. A menudo ni siquiera es una prueba de medianas, a menos que se supongan varias cosas sobre los datos. La prueba de Wilcoxon puede rechazar la nulidad incluso si las medianas son iguales, y la prueba de Wilcoxon puede no rechazar la nulidad incluso si las medianas difieren.
+
+<<>>=
+## Will accept, means differ
+x <- c(rep(10, 1000), 1e9, rep(1000, 1000))
+y <- c(rep(10, 1000), -1e9, rep(1000, 1000))
+summary(x)
+summary(y)
+wilcox.test(x, y)
+@
+
+<<>>=
+## Will reject, medians the same
+x <- c(rep(10, 1000), 11, rep(12, 1000))
+y <- c(rep(10, 1000), 11, rep(13, 1000))
+summary(x)
+summary(y)
+wilcox.test(x, y)
+@
+
+¿Qué prueba el test de Wilcoxon? Como dice la entrada de Wikipedia, «la hipótesis nula de que, para valores X e Y seleccionados aleatoriamente de dos poblaciones, la probabilidad de que X sea mayor que Y es igual a la probabilidad de que Y sea mayor que X».
+
+Resumen: no utilices un Wilcoxon esperando que pruebe diferencias de medias. Y a continuación haremos hincapié en otro mensaje relacionado: no utilices un Wilcoxon por algún temor mal motivado a utilizar la prueba t.
+
+\subsection{Wilcoxon signed-rank test: matched-pairs or single sample test}
+El Wilcoxon signed-rank test es una prueba no paramétrica que se utiliza para datos emparejados o para comparar una sola muestra con un valor hipotético. Este test evalúa si las diferencias dentro de cada par están distribuidas de manera simétrica en torno a un valor central, generalmente cero.
+
+Este test requiere datos en una escala de intervalo, ya que el cálculo de diferencias dentro de los pares supone que las distancias entre valores son significativas y constantes.  La hipótesis subyacente supone que las diferencias dentro de los pares están distribuidas simétricamente. Además, las observaciones deben ser independientes entre pares.
+
+La hipótesis nula es que las diferencias dentro de los pares se distribuyen simétricamente en torno a un valor especificado (generalmente cero). La hipótesis alternativa es que las diferencias no se distribuyen simétricamente en torno al valor especificado, o lo hacen en torno a un valor distinto. Dicho de otro modo, si rechazamos la nulidad, podríamos estar rechazándola por diferentes razones (asimetría, simetría en torno a un valor distinto del especificado por la nulidad), o combinaciones de esas razones. 
+
+En este test, primero se calculan las diferencias, restando los valores dentro de cada par. Después, se asignan rangos absolutos, ignorando el signo de las diferencias y ordenando los valores absolutos. A continuación se reasigna a cada rango el signo de la diferencia original. Se calculan dos sumas, una para los rangos positivos y otra para los negativos. El estadístico de prueba se basa en la suma de los rangos, evaluando si es suficientemente extremo para rechazar la hipótesis nula.
+
+Un ejemplo de aplicación es un diseño antes-después. En un diseño donde se mide a los participantes antes y después de una intervención, las diferencias entre las medidas suelen ser el foco del análisis. Aunque estas diferencias suelen ser simétricas incluso si el promedio cambia, siempre es útil inspeccionar la simetría con gráficos.
+
+<<>>=
+wilcox.test(myc.nc, myc.cancer, alternative = 'two.sided', paired = TRUE)
+@
+
+\subsection{Una mala forma de elegir entre un procedimiento paramétrico y no paramétrico}
+Una práctica inapropiada pero común es realizar un test de normalidad en los datos y, en función de los resultados, decidir si usar un procedimiento paramétrico (como el test de la t) o uno no paramétrico (como el test de Wilcoxon). Por ejemplo: (I) si el test de normalidad no rechaza la hipótesis nula (los datos son consistentes con la normalidad), entonces se procede con el test paramétrico; (II) si el test de normalidad rechaza la hipótesis nula (los datos no son normales), entonces se elige un test no paramétrico.
+
+Hay varios problemas con esta aproximación. El primero es que el test de normalidad tiene una potencia insuficiente. Los tests de normalidad tienen una potencia limitada, especialmente con tamaños de muestra pequeños. Esto significa que pueden no detectar desviaciones significativas de la normalidad en esos casos, lo que podría llevar al uso indebido de un test paramétrico cuando no es adecuado.
+Además, puede dar lugar a errores en la interpretación. Si el test de normalidad no detecta una desviación de la normalidad, esto no garantiza que los datos sean normales; simplemente indica que no hay suficiente evidencia para rechazar la normalidad. Y si se rechaza la normalidad, esto no significa automáticamente que el test no paramétrico sea la mejor opción, ya que otros supuestos (como independencia) también podrían estar en juego.
+Finalmente, da lugar a inconsistencias en la toma de decisiones: cambiar el procedimiento analítico basado en los resultados de un test de normalidad introduce un sesgo en el análisis. Este enfoque puede aumentar el error de tipo I (rechazar una hipótesis nula verdadera) o tipo II (no rechazar una hipótesis nula falsa).
+
+Hay otras alternativas más adecuadas:
+\begin{itemize}
+\item \textbf{Evaluar los supuestos con gráficos:} Inspecciona visualmente la distribución de los datos usando histogramas, gráficos de caja y diagramas Q-Q. Estas herramientas permiten identificar problemas evidentes, como asimetría o colas pesadas, que podrían invalidar los métodos paramétricos.
+\item \textbf{Confiar en la robustez de los tests paramétricos:} Los tests paramétricos, como el test de la t, son sorprendentemente robustos a desviaciones moderadas de la normalidad, especialmente cuando el tamaño de la muestra es mayor a 30, gracias al Teorema del Límite Central.
+\item \textbf{Considerar directamente métodos no paramétricos:} Si tienes razones para sospechar que los datos no cumplen con los supuestos paramétricos (como observaciones extremas o una distribución claramente no normal), usar directamente un procedimiento no paramétrico puede ser más apropiado.
+\end{itemize}
+
+En conclusión, usar un test de normalidad como criterio decisivo para elegir entre un análisis paramétrico o no paramétrico no es un enfoque recomendado debido a sus limitaciones inherentes. En su lugar, utiliza un enfoque más holístico, considerando tanto la robustez de los métodos como las características específicas de tus datos.
+
+\subsection{Wilcoxon's paired test and interval data}
+La distinción clave entre la prueba de Wilcoxon para dos muestras independientes y su versión emparejada radica en el tratamiento de los datos y el tipo de escala de medida requerida.
+
+Para la prueba de dos muestras, basta con tener datos ordinales porque el método implica clasificar todas las observaciones juntas y comparar los rangos entre los grupos. Estos rangos siguen siendo consistentes bajo cualquier transformación monotónica de los datos (por ejemplo, logarítmica, exponencial). Por lo tanto, la prueba es resistente a los cambios en la escala de medición, siempre que se mantenga el orden de los valores.
+
+En cambio, la prueba por pares de Wilcoxon opera sobre las \textbf{diferencias dentro de los pares}. Esto requiere datos de intervalo porque el método asume que las diferencias entre observaciones emparejadas son significativas y pueden clasificarse adecuadamente. Si aplicáramos una transformación monotónica no lineal a los datos originales, las diferencias entre pares podrían cambiar de forma que afectaran a su clasificación. Por ejemplo, una transformación logarítmica podría alterar de forma desproporcionada las diferencias pequeñas en comparación con las grandes, distorsionando así los resultados de la prueba pareada.
+
+Así pues, la prueba por parejas depende fundamentalmente de la escala de los datos para garantizar que las diferencias dentro de las parejas conserven su significado y puedan analizarse correctamente. Este requisito no se aplica a la prueba de dos muestras, ya que tiene en cuenta la clasificación general de las observaciones individuales en lugar de las diferencias entre pares.
+
+Esta distinción pone de relieve la importancia de comprender los supuestos subyacentes y los requisitos de los métodos estadísticos para aplicarlos adecuadamente.
+
+<<>>=
+## Without logs
+wilcox.test(dmyc$myc[1:12], dmyc$myc[13:24], paired = TRUE)
+## After taking logs
+wilcox.test(log(dmyc$myc[1:12]), log(dmyc$myc[13:24]), paired = TRUE)
+@
+
+\section{Symmetry and the paired t-test}
+En la prueba t pareada, la simetría de las diferencias entre sujetos ($W = U - V$) es crítica porque la prueba asume que estas diferencias se muestrean a partir de una población con una distribución aproximadamente normal. Se trata de un supuesto clave para la validez de la prueba t, ya que afecta directamente al cálculo del estadístico de la prueba y a su comparación con la distribución t.
+
+La prueba t apareada se centra en las diferencias ($W$) en lugar de las distribuciones originales de ($U$) ("después") y ($V$) ("antes"). Por lo tanto, la relevancia de las distribuciones de $U$ y $V$ radica en cómo se combinan para formar $W$: Si $U$ y $V$ tienen distributiones similares (por ejemplo, formas, medias o varianzas parecidas), $W$ tiene más probabilidaes de ser simétrico alrededor de su media. Si $U$ y $V$ difieren sustancialmente en forma, escala o dispersión, $W$ podría ser asimétrico, lo que viola el supuesto de simetría de la prueba t apareada.
+
+Aunque $U$ y $V$ no sean normalmente distribuidos, las diferencias $W$ podrían aproximarse a la normalidad debido al \textbf{teorema del límite central}, especialmente si el tamaño de muestra es razonablemente grande. Sin embargo, si $U$ y $V$ tienen distribuciones muy no normales o colas pesadas, $W$ podría no ser suficientemente normal para que la prueba t sea válida.
+
+Las diferencias $W$ reflejan los cambios intraindividuales entre condiciones (por ejemplo, "después" frente a "antes"). La prueba t apareada evalúa si estos cambios, en promedio, son significativamente diferentes de cero. Si $W$ es notablemente asimétrico o multimodal, podría indicar heterogeneidad en el efecto que se está midiendo.
+
+\section{Datos no independientes}
+Los datos emparejados no son independientes: se asocian a través del sujeto, o id. Existen otras formas de dependencia, siendo la más común la toma de múltiples medidas por sujeto.
+
+<<create_brca, echo=FALSE, results='hide'>>=
+set.seed(27)
+n1 <- 8
+n2 <- 5
+nn <- 3
+s <- rnorm(n1 + n2, 0, 2)
+s <- rep(s, rep(nn, n1 + n2))
+effect <- 1
+cond.effect <- rep(c(0, effect), c(n1 * nn, n2 * nn))
+cond <- rep(c("Cancer", "NC"), c(n1 * nn, n2 * nn))
+y <- rnorm(length(cond.effect)) + s + cond.effect
+y <- y - min(y) + 0.1
+id <- replicate(n1 + n2, paste(sample(letters, 10), collapse = ""))
+id <- rep(id, rep(nn, n1 + n2))
+dbrca <- data.frame(brca2 = round(y, 3),
+                    cond = cond,
+                    id = id)
+@
+
+En este caso, la unidad de observación son sujetos, no las medidas. Por ello, realizar un test de la t es erróneo (mira los grados de libertad):
+
+<<>>=
+t.test(brca2 ~ cond, data = dbrca)
+@
+
+\section{Modelos lineares}
+En un test apareado, el modelo puede representarse de la siguiente manera:
+\[Expression.of.MYC = function(subject\ and\ condition) + \epsilon\]
+Este modelo describe cómo se distribuyen los valores observados (en este caso, la expresión de MYC) en función de los factores que afectan la medición, como el sujeto y la condición experimental, junto con un término de error estadístico ($\epsilon$) que captura la variabilidad no explicada por estos factores. 
+Para simplificarlo, se puede expresar como:
+\[Expression.of.MYC = \mathit{effect.of.subject} + \mathit{effect.of.condition} + \epsilon\]
+
+Los componentes del modelo son:
+\begin{itemize}
+\item \textbf{Efecto del sujeto:} Este término representa las diferencias inherentes entre los sujetos en la población. Por ejemplo, algunos sujetos podrían tener una mayor o menor expresión basal de MYC debido a factores biológicos individuales.
+\item \textbf{Efecto de la condición:} Este término captura las diferencias causadas por las condiciones experimentales, como un tratamiento o un cambio en las circunstancias (por ejemplo, "antes" frente a "después", o "cáncer" frente a "control no canceroso").
+\item \textbf{Error estadístico:}  Representa la variabilidad no explicada por los efectos del sujeto o la condición. Esto incluye mediciones imprecisas, factores no modelados o ruido inherente en los datos.
+\end{itemize}
+
+El modelo es apropiado para un diseño apareado porque considera explícitamente el efecto del sujeto. Al realizar el análisis sobre las diferencias intra-sujeto, se elimina el efecto individual del sujeto, dejando únicamente el efecto de la condición y el error. Este enfoque aumenta la potencia estadística del análisis al reducir la variabilidad atribuible a las diferencias entre sujetos.
+
+Por tanto, el análisis apareado se centra en las diferencias entre las condiciones dentro de cada sujeto, aislando el efecto que queremos evaluar (en este caso, el efecto de la condición experimental sobre la expresión de MYC).
+
+<<>>=
+LinearModel.1 <- lm(myc ~ id + cond, data = dmyc)
+summary(LinearModel.1)
+t.test(myc.nc, myc.cancer, paired = TRUE)
+@
+
 \end{document}

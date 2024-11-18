@@ -1,0 +1,7 @@
+/auto/
+/figure/
+/.Rhistory
+/main-prstr-concordance.tex
+/R-basic-stats.R
+/main-prstr.log
+/main-prstr.tex
