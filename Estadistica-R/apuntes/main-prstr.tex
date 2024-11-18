@@ -187,7 +187,7 @@ Para leer el código, se empieza por la función más interna, que en este caso 
 \hlkwd{sum}\hldef{(pvalues} \hlopt{<=} \hlnum{0.05}\hldef{)}
 \end{alltt}
 \begin{verbatim}
-## [1] 40
+## [1] 53
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1781,11 +1781,11 @@ Una lista más compleja sería la siguiente:
 ## [1] "Hola"
 ## 
 ## $one.matrix
-##              [,1]       [,2]        [,3]       [,4]        [,5]
-## [1,] -1.362295172 -1.4804848  0.41401602  1.0153095 -1.48003629
-## [2,] -0.119235450  0.1604158 -0.04479775 -0.2679637  1.29931790
-## [3,] -0.567091860 -1.4307836 -0.15768673 -0.2036100  1.39765360
-## [4,]  0.001708939  0.3960946  0.01706166  1.4075448  0.06456716
+##           [,1]       [,2]       [,3]       [,4]       [,5]
+## [1,] -2.027382 0.37439187 -1.0927920 -1.2726140  1.0915629
+## [2,] -1.187642 1.05991981  0.7866355 -1.5204581  0.2574107
+## [3,]  1.315536 0.09242749  0.3567954  0.4329066  0.6331780
+## [4,]  1.938808 1.05549724 -1.7434346 -1.0596947 -1.1786580
 ## 
 ## $another.list
 ## $another.list$a
@@ -1799,36 +1799,36 @@ Una lista más compleja sería la siguiente:
 \hldef{listB[[}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{11}\hldef{)]]}
 \end{alltt}
 \begin{verbatim}
-## [1] -0.1576867
+## [1] 0.3567954
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[[}\hlnum{3}\hldef{]][}\hlnum{11}\hldef{]}
 \end{alltt}
 \begin{verbatim}
-## [1] -0.1576867
+## [1] 0.3567954
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[[}\hlnum{3}\hldef{]][}\hlnum{3}\hldef{,} \hlnum{3}\hldef{]}
 \end{alltt}
 \begin{verbatim}
-## [1] -0.1576867
+## [1] 0.3567954
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[[}\hlnum{3}\hldef{]][}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{3}\hldef{)]}
 \end{alltt}
 \begin{verbatim}
-## [1] -0.5670919 -0.5670919
+## [1] 1.315536 1.315536
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{4}\hldef{)]}
 \end{alltt}
 \begin{verbatim}
 ## $one.matrix
-##              [,1]       [,2]        [,3]       [,4]        [,5]
-## [1,] -1.362295172 -1.4804848  0.41401602  1.0153095 -1.48003629
-## [2,] -0.119235450  0.1604158 -0.04479775 -0.2679637  1.29931790
-## [3,] -0.567091860 -1.4307836 -0.15768673 -0.2036100  1.39765360
-## [4,]  0.001708939  0.3960946  0.01706166  1.4075448  0.06456716
+##           [,1]       [,2]       [,3]       [,4]       [,5]
+## [1,] -2.027382 0.37439187 -1.0927920 -1.2726140  1.0915629
+## [2,] -1.187642 1.05991981  0.7866355 -1.5204581  0.2574107
+## [3,]  1.315536 0.09242749  0.3567954  0.4329066  0.6331780
+## [4,]  1.938808 1.05549724 -1.7434346 -1.0596947 -1.1786580
 ## 
 ## $another.list
 ## $another.list$a
@@ -4537,6 +4537,26 @@ Queremos ver si la hora del ejercicio marca alguna diferencia. La realización d
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
+\hldef{AnovaMIT} \hlkwb{<-} \hlkwd{aov}\hldef{(activ} \hlopt{~} \hldef{ftraining,} \hlkwc{data} \hldef{= mit)}
+\hlkwd{summary}\hldef{(AnovaMIT)}
+\end{alltt}
+\begin{verbatim}
+##             Df Sum Sq Mean Sq F value  Pr(>F)    
+## ftraining    2  31.15   15.57   22.89 1.7e-07 ***
+## Residuals   43  29.26    0.68                    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+De las dos filas, la que nos interesa es la del efecto (ftraining). La columna Df indica los grados de libertad. Las dos columnas Sum Sq (Suma de cuadrados) y Mean Sq (Cuadrados medios). La suma de cuadrados es una cantidad relacionada con la varianza. La media cuadrática se obtiene a partir de la relación entre la suma cuadrática y Df. A continuación, utilizamos la Sq Media para comparar cuánta varianza hay entre los grupos en relación con la varianza dentro de los grupos: el valor F es el cociente de la Sq Media de la formación sobre la Sq Media de los residuos. Cuanto mayor sea el valor F, mayor será la evidencia de que los grupos son diferentes.
+
+Aquí hemos utilizado \texttt{aov}, pero también se podría utilizar \texttt{lm} y mostrar el resumen con \texttt{anova}.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
 \hldef{LinearModel.1} \hlkwb{<-} \hlkwd{lm}\hldef{(activ} \hlopt{~} \hldef{ftraining,} \hlkwc{data} \hldef{= mit)}
 \hlkwd{Anova}\hldef{(LinearModel.1,} \hlkwc{type}\hldef{=}\hlsng{"II"}\hldef{)}
 \end{alltt}
@@ -4553,4 +4573,147 @@ Queremos ver si la hora del ejercicio marca alguna diferencia. La realización d
 \end{kframe}
 \end{knitrout}
 
+\subsection{Intervalos de confianza para los parámetros del modelo}
+Se puede realizar mediante:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{confint}\hldef{(AnovaMIT)}
+\end{alltt}
+\begin{verbatim}
+##                         2.5 %    97.5 %
+## (Intercept)         1.6014112 2.6045888
+## ftrainingLunch     -0.5985849 0.7902515
+## ftrainingAfternoon  1.0844974 2.3041983
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+A veces \texttt{confint} nos dará mucha información. Pero a menudo no será fácil relacionarla con nuestra pregunta científica original. Una de las razones es que los parámetros reales del modelo ajustado dependen, bueno, de la parametrización. Así que, a menudo, vamos a querer preguntar explícitamente «¿Qué medias son diferentes», y eso es lo que hacemos a continuación.
+
+\subsection{Medias diferentes - comparación múltiple}
+El p-valor bajo nos llevó a rechazar la hipótesis nula $\mu_{Mañana} = \mu_{Almuerzo} = \mu_{Tarde}$. Así, hay fuerte evidencia de que las tres medias no son iguales. ¿Pero cuál es diferente de las demás?
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{numSummary}\hldef{(mit}\hlopt{$}\hldef{activ ,} \hlkwc{groups} \hldef{= mit}\hlopt{$}\hldef{ftraining,} \hlkwc{statistics} \hldef{=} \hlkwd{c}\hldef{(}\hlsng{"mean"}\hldef{,} \hlsng{"sd"}\hldef{))}
+\end{alltt}
+\begin{verbatim}
+##               mean        sd data:n
+## Morning   2.103000 0.8113702     11
+## Lunch     2.198833 0.6608995     12
+## Afternoon 3.797348 0.9013205     23
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+Esto se puede obtener también con aggregate:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{with}\hldef{(mit,} \hlkwd{aggregate}\hldef{(activ,} \hlkwd{list}\hldef{(}\hlkwc{Training} \hldef{= ftraining),}
+                     \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{c}\hldef{(}\hlkwc{mean} \hldef{=} \hlkwd{mean}\hldef{(x),}
+                                   \hlkwc{sd} \hldef{=} \hlkwd{sd}\hldef{(x),}
+                                   \hlkwc{n} \hldef{=} \hlkwd{sum}\hldef{(}\hlopt{!}\hlkwd{is.na}\hldef{(x)))}
+                     \hldef{))}
+\end{alltt}
+\begin{verbatim}
+##    Training     x.mean       x.sd        x.n
+## 1   Morning  2.1030000  0.8113702 11.0000000
+## 2     Lunch  2.1988333  0.6608995 12.0000000
+## 3 Afternoon  3.7973478  0.9013205 23.0000000
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+La comparación de todos los pares de medias se realiza mediante el modelo de ANOVA, por lo que los resultados no son idénticos al compararlos a los tests de la t. Además, es necesario realizar corrección del testeo múltiple al realizar tres tests distintos.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hldef{(multcomp)} \hlcom{## for glht}
+\end{alltt}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Cargando paquete requerido: mvtnorm}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Cargando paquete requerido: survival}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Cargando paquete requerido: TH.data}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Cargando paquete requerido: MASS}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# \\\#\# Adjuntando el paquete: 'TH.data'}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# The following object is masked from 'package:MASS':\\\#\# \\\#\# \ \ \ \ geyser}}\begin{alltt}
+\hlcom{## The next two lines carry out the multiple comparisons and the}
+\hlcom{## ones below plot them}
+\hldef{Pairs} \hlkwb{<-} \hlkwd{glht}\hldef{(AnovaMIT,} \hlkwc{linfct} \hldef{=} \hlkwd{mcp}\hldef{(}\hlkwc{ftraining} \hldef{=} \hlsng{"Tukey"}\hldef{))}
+\hlkwd{summary}\hldef{(Pairs)} \hlcom{# pairwise tests}
+\end{alltt}
+\begin{verbatim}
+## 
+## 	 Simultaneous Tests for General Linear Hypotheses
+## 
+## Multiple Comparisons of Means: Tukey Contrasts
+## 
+## 
+## Fit: aov(formula = activ ~ ftraining, data = mit)
+## 
+## Linear Hypotheses:
+##                          Estimate Std. Error t value Pr(>|t|)
+## Lunch - Morning == 0      0.09583    0.34434   0.278    0.958
+## Afternoon - Morning == 0  1.69435    0.30240   5.603   <1e-04
+## Afternoon - Lunch == 0    1.59851    0.29375   5.442   <1e-04
+##                             
+## Lunch - Morning == 0        
+## Afternoon - Morning == 0 ***
+## Afternoon - Lunch == 0   ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## (Adjusted p values reported -- single-step method)
+\end{verbatim}
+\begin{alltt}
+\hlkwd{confint}\hldef{(Pairs)} \hlcom{# confidence intervals}
+\end{alltt}
+\begin{verbatim}
+## 
+## 	 Simultaneous Confidence Intervals
+## 
+## Multiple Comparisons of Means: Tukey Contrasts
+## 
+## 
+## Fit: aov(formula = activ ~ ftraining, data = mit)
+## 
+## Quantile = 2.4238
+## 95% family-wise confidence level
+##  
+## 
+## Linear Hypotheses:
+##                          Estimate lwr      upr     
+## Lunch - Morning == 0      0.09583 -0.73877  0.93044
+## Afternoon - Morning == 0  1.69435  0.96138  2.42731
+## Afternoon - Lunch == 0    1.59851  0.88651  2.31052
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{cld}\hldef{(Pairs)} \hlcom{# compact letter display}
+\hldef{old.oma} \hlkwb{<-} \hlkwd{par}\hldef{(}\hlkwc{oma} \hldef{=} \hlkwd{c}\hldef{(}\hlnum{0}\hldef{,}\hlnum{5}\hldef{,}\hlnum{0}\hldef{,}\hlnum{0}\hldef{))}
+\hlkwd{plot}\hldef{(}\hlkwd{confint}\hldef{(Pairs))}
+\hlkwd{par}\hldef{(old.oma)} \hlcom{## restore graphics windows settings}
+\end{alltt}
+\end{kframe}\begin{figure}
+\includegraphics[width=\maxwidth]{figure/tukey1-1} \caption[Plot of pairwise differences with Tukey contrasts]{Plot of pairwise differences with Tukey contrasts}\label{fig:tukey1}
+\end{figure}
+
+\end{knitrout}
+
+Fíjate bien en el gráfico de la figura: para cada diferencia (para cada contraste), muestra la estimación y un intervalo de confianza del 95\% a su alrededor. El título del gráfico dice "95\% intervalo de confianza familiar", y que indica que la corrección de pruebas múltiples se ha utilizado. (Se puede hacer aún más explícito mediante el uso de un título como "95\% intervalo de confianza por familias utilizando contrastes de Tukey").
+
+Según la gráfica, se puede rechazar la hipótesis de que Tarde-Mañana y de que Tarde-Almuerzo sean iguales. 
 \end{document}

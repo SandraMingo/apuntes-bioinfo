@@ -2285,8 +2285,62 @@ mit$ftraining <- factor(mit$training,
 Queremos ver si la hora del ejercicio marca alguna diferencia. La realización de tres pruebas t no es el mejor camino a seguir aquí: nuestra hipótesis nula global es $\mu_{Mañana} = \mu_{Almuerzo} = \mu_{Tarde}$ y eso es lo que ANOVA nos permitirá probar directamente.
 
 <<>>=
+AnovaMIT <- aov(activ ~ ftraining, data = mit)
+summary(AnovaMIT)
+@
+
+De las dos filas, la que nos interesa es la del efecto (ftraining). La columna Df indica los grados de libertad. Las dos columnas Sum Sq (Suma de cuadrados) y Mean Sq (Cuadrados medios). La suma de cuadrados es una cantidad relacionada con la varianza. La media cuadrática se obtiene a partir de la relación entre la suma cuadrática y Df. A continuación, utilizamos la Sq Media para comparar cuánta varianza hay entre los grupos en relación con la varianza dentro de los grupos: el valor F es el cociente de la Sq Media de la formación sobre la Sq Media de los residuos. Cuanto mayor sea el valor F, mayor será la evidencia de que los grupos son diferentes.
+
+Aquí hemos utilizado \texttt{aov}, pero también se podría utilizar \texttt{lm} y mostrar el resumen con \texttt{anova}.
+
+<<>>=
 LinearModel.1 <- lm(activ ~ ftraining, data = mit)
 Anova(LinearModel.1, type="II")
 @
 
+\subsection{Intervalos de confianza para los parámetros del modelo}
+Se puede realizar mediante:
+<<>>=
+confint(AnovaMIT)
+@
+
+A veces \texttt{confint} nos dará mucha información. Pero a menudo no será fácil relacionarla con nuestra pregunta científica original. Una de las razones es que los parámetros reales del modelo ajustado dependen, bueno, de la parametrización. Así que, a menudo, vamos a querer preguntar explícitamente «¿Qué medias son diferentes», y eso es lo que hacemos a continuación.
+
+\subsection{Medias diferentes - comparación múltiple}
+El p-valor bajo nos llevó a rechazar la hipótesis nula $\mu_{Mañana} = \mu_{Almuerzo} = \mu_{Tarde}$. Así, hay fuerte evidencia de que las tres medias no son iguales. ¿Pero cuál es diferente de las demás?
+
+<<>>=
+numSummary(mit$activ , groups = mit$ftraining, statistics = c("mean", "sd"))
+@
+
+Esto se puede obtener también con aggregate:
+<<>>=
+with(mit, aggregate(activ, list(Training = ftraining),
+                     function(x) c(mean = mean(x),
+                                   sd = sd(x),
+                                   n = sum(!is.na(x)))
+                     ))
+@
+
+La comparación de todos los pares de medias se realiza mediante el modelo de ANOVA, por lo que los resultados no son idénticos al compararlos a los tests de la t. Además, es necesario realizar corrección del testeo múltiple al realizar tres tests distintos.
+
+<<>>=
+library(multcomp) ## for glht
+## The next two lines carry out the multiple comparisons and the
+## ones below plot them
+Pairs <- glht(AnovaMIT, linfct = mcp(ftraining = "Tukey"))
+summary(Pairs) # pairwise tests
+confint(Pairs) # confidence intervals
+@
+
+<<tukey1,fig.cap='Plot of pairwise differences with Tukey contrasts', fig.lp='fig:', fig.width=5,fig.height=5, fig.show='hold', results='hide'>>=
+cld(Pairs) # compact letter display
+old.oma <- par(oma = c(0,5,0,0))
+plot(confint(Pairs))
+par(old.oma) ## restore graphics windows settings
+@
+
+Fíjate bien en el gráfico de la figura: para cada diferencia (para cada contraste), muestra la estimación y un intervalo de confianza del 95\% a su alrededor. El título del gráfico dice "95\% intervalo de confianza familiar", y que indica que la corrección de pruebas múltiples se ha utilizado. (Se puede hacer aún más explícito mediante el uso de un título como "95\% intervalo de confianza por familias utilizando contrastes de Tukey").
+
+Según la gráfica, se puede rechazar la hipótesis de que Tarde-Mañana y de que Tarde-Almuerzo sean iguales. 
 \end{document}
