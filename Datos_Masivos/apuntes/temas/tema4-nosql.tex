@@ -171,3 +171,22 @@ CREATE no comprueba \marginpar[\footnotesize MERGE \\ IS (NOT) NULL]  \ si el no
 Hay varias funciones para strings: toUpper convierte todo en mayúscula, toLower en minúscula. substring permite obtener un fragmento de una cadena. El índice empieza en 0.
 
 Neo4j permite cargar un fichero csv \marginpar[\footnotesize LOAD CSV]  \ con los datos mediante el comando \texttt{LOAD CSV WITH HEADERS FROM "file:/estudiantes.csv" AS csvLine \\ CREATE (e:Estudiante {id:toInteger(csvLine.id), nombre:csvLine.nombre})}.
+
+%14/11 - Estrella Pulido
+Las funciones agregadas permiten realizar cálculos con determinadas columnas de una tabla. Las funciones disponibles son:
+\begin{itemize}
+\item COUNT: devuelve el número de filas devueltas por MATCH. Se puede combinar con DISTINCT para contar los valores únicos y no todos. 
+\item MAX: devuelve el valor más alto de una serie de filas 
+\item MIN: devuelve el valor más bajo de un conjunto de filas
+\item SUM: devuelve la suma de todas las filas 
+\item AVG: devuelve la media de todas las filas
+\end{itemize}
+
+Las funciones para relaciones tienen la siguiente estructura: \texttt{CREATE (startnode) - [relationship] -> (endnote)}. Como las relaciones siempre están dirigidas, startnode es el nodo del que parte la relación y endnode donde termina. Además, a la hora de realizar las consultas, se puede omitir la dirección para obtener los resultados en ambas direcciones.
+
+\subsubsection{Patrones y reconocimiento de patrones}
+El reconocimiento de patrones (o pattern matching) pone un patrón en la consulta, describiendo la forma de lo que se busca para los caminos que se quieren encontrar. El patrón sirve para encontrar, pero lo que se devuelve se especifica en el return. 
+
+Se pueden escribir patrones para nodos, añadiendo propiedades o para caminos. También se pueden escribir patrones para relaciones, añadiendo propiedades, pudiendo omitir el nombre de la relación o utilizando variables. Además, se puede especificar la longitud (\texttt{(a) - [*2]-> (b)}) o mantenerla variable: entre dos longitudes (\texttt{(a) - [*2::4]-> (b)}), de una longitud o más (\texttt{(a) - [*2..]-> (b)}), de una longitud o menos (\texttt{(a) - [*..4]-> (b)}) o de cualquier longitud (\texttt{(a) - [*]-> (b)}).
+
+En los grafos, hay un algoritmo que permite encontrar el camino más corto entre dos nodos. En Neo4j, la función es \texttt{shortestPath}. Esto saca la primera opción que encuentre, pero si hubiese varios caminos de la misma longitud, se pueden mostrar con \texttt{allShortestPaths}. Es recomendable especificar una longitud máxima del camino para que el algoritmo no se eternice, sobre todo cuando el grafo es grande. 
