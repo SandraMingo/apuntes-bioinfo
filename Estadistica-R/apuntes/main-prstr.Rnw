@@ -2237,6 +2237,7 @@ En este caso, la unidad de observación son sujetos, no las medidas. Por ello, r
 t.test(brca2 ~ cond, data = dbrca)
 @
 
+\chapter{Modelos lineares: ANOVA, regresión, ANCOVA}
 \section{Modelos lineares}
 En un test apareado, el modelo puede representarse de la siguiente manera:
 \[Expression.of.MYC = function(subject\ and\ condition) + \epsilon\]
@@ -2259,6 +2260,33 @@ Por tanto, el análisis apareado se centra en las diferencias entre las condicio
 LinearModel.1 <- lm(myc ~ id + cond, data = dmyc)
 summary(LinearModel.1)
 t.test(myc.nc, myc.cancer, paired = TRUE)
+@
+
+\section{Introduction to ANOVAs, regression, and linear models}
+Los modelos lineales y sus extensiones (que incluyen la regresión logística, pero también el análisis de supervivencia, muchos problemas de clasificación, modelos no lineales, análisis de experimentos, tratamiento de muchos tipos de datos dependientes, etc., etc.) son un tema fundamental de la estadística. Aquí sólo arañaremos la superficie. Pero debería salir de esta lección comprendiendo que estos métodos son extremadamente potentes y flexibles y que pueden utilizarse para abordar una enorme variedad de cuestiones de investigación diferentes. Emplearía su tiempo sabiamente si al menos echara un vistazo a algunas de las referencias que proporcionamos al final. Insisto una vez más: ANOVAs, regresión, ANCOVAs, son sólo tipos especiales de modelos lineales.
+
+\subsection{An ANOVA; some basic theory and output}
+
+<<create_mit, echo=FALSE, results='hide'>>=
+set.seed(789)
+n1 <- 11
+n2 <- 12
+n3 <- 23
+m <- c(0, 0, 1.3)
+activ <- rnorm(n1 + n2 + n3) + rep(m, c(n1, n2, n3))
+activ <- activ - min(activ) + 0.2
+mit <- data.frame(activ = round(activ, 3),
+                  training = rep(c(1, 2, 3), c(n1, n2, n3)),
+                  id = 1:(n1 + n2 +n3))
+mit$ftraining <- factor(mit$training,
+                         labels = c('Morning','Lunch','Afternoon'))
+@
+
+Queremos ver si la hora del ejercicio marca alguna diferencia. La realización de tres pruebas t no es el mejor camino a seguir aquí: nuestra hipótesis nula global es $\mu_{Mañana} = \mu_{Almuerzo} = \mu_{Tarde}$ y eso es lo que ANOVA nos permitirá probar directamente.
+
+<<>>=
+LinearModel.1 <- lm(activ ~ ftraining, data = mit)
+Anova(LinearModel.1, type="II")
 @
 
 \end{document}

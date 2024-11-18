@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.10.30)  18 NOV 2024 16:19
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.10.30)  18 NOV 2024 16:39
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2227,8 +2227,8 @@ Overfull \hbox (6.70308pt too wide) detected at line 109
  []
 
 
-Overfull \hbox (6.70308pt too wide) detected at line 110
-\T1/cmss/m/n/12 XIV.14 
+Overfull \hbox (0.20416pt too wide) detected at line 110
+\T1/cmss/bx/n/12 XV 
  []
 
 )
@@ -2258,7 +2258,7 @@ Cap\'{\imath }tulo II.
 ]
 
 [8]
-<figure/unnamed-chunk-7-1.pdf, id=617, 505.89pt x 505.89pt>
+<figure/unnamed-chunk-7-1.pdf, id=632, 505.89pt x 505.89pt>
 File: figure/unnamed-chunk-7-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-7-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-7-1.pdf  used on input line 185.
@@ -2444,7 +2444,7 @@ Cap\'{\imath }tulo VII.
 
 ]
 Cap\'{\imath }tulo VIII.
-<figure/unnamed-chunk-72-1.pdf, id=809, 505.89pt x 505.89pt>
+<figure/unnamed-chunk-72-1.pdf, id=824, 505.89pt x 505.89pt>
 File: figure/unnamed-chunk-72-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-72-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-72-1.pdf  used on input line 1936
@@ -2462,17 +2462,17 @@ Overfull \hbox (17.62482pt too wide) in paragraph at lines 1936--1938
 ]
 
 [45 <./figure/unnamed-chunk-72-1.pdf>]
-<figure/pchcol-1.pdf, id=825, 361.35pt x 216.81pt>
+<figure/pchcol-1.pdf, id=840, 361.35pt x 216.81pt>
 File: figure/pchcol-1.pdf Graphic file (type pdf)
 <use figure/pchcol-1.pdf>
 Package pdftex.def Info: figure/pchcol-1.pdf  used on input line 1956.
 (pdftex.def)             Requested size: 361.34912pt x 216.80946pt.
-<figure/ltytype-1.pdf, id=826, 289.08pt x 289.08pt>
+<figure/ltytype-1.pdf, id=841, 289.08pt x 289.08pt>
 File: figure/ltytype-1.pdf Graphic file (type pdf)
 <use figure/ltytype-1.pdf>
 Package pdftex.def Info: figure/ltytype-1.pdf  used on input line 1971.
 (pdftex.def)             Requested size: 289.07928pt x 289.09251pt.
-<figure/unnamed-chunk-73-1.pdf, id=827, 505.89pt x 505.89pt>
+<figure/unnamed-chunk-73-1.pdf, id=842, 505.89pt x 505.89pt>
 File: figure/unnamed-chunk-73-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-73-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-73-1.pdf  used on input line 1988
@@ -2491,7 +2491,7 @@ Overfull \vbox (45.06923pt too high) has occurred while \output is active []
 
 
 [47 <./figure/ltytype-1.pdf> <./figure/unnamed-chunk-73-1.pdf>]
-<figure/unnamed-chunk-73-2.pdf, id=857, 505.89pt x 505.89pt>
+<figure/unnamed-chunk-73-2.pdf, id=872, 505.89pt x 505.89pt>
 File: figure/unnamed-chunk-73-2.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-73-2.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-73-2.pdf  used on input line 1993
@@ -2502,7 +2502,7 @@ Overfull \hbox (17.62482pt too wide) in paragraph at lines 1993--1994
 [][] 
  []
 
-<figure/fig-blast-1.pdf, id=858, 433.62pt x 289.08pt>
+<figure/fig-blast-1.pdf, id=873, 433.62pt x 289.08pt>
 File: figure/fig-blast-1.pdf Graphic file (type pdf)
 <use figure/fig-blast-1.pdf>
 Package pdftex.def Info: figure/fig-blast-1.pdf  used on input line 2010.
@@ -2512,7 +2512,7 @@ Package pdftex.def Info: figure/fig-blast-1.pdf  used on input line 2010.
 [48 <./figure/unnamed-chunk-73-2.pdf>]
 
 [49 <./figure/fig-blast-1.pdf>]
-<figure/mrateplotx1-1.pdf, id=882, 433.62pt x 433.62pt>
+<figure/mrateplotx1-1.pdf, id=897, 433.62pt x 433.62pt>
 File: figure/mrateplotx1-1.pdf Graphic file (type pdf)
 <use figure/mrateplotx1-1.pdf>
 Package pdftex.def Info: figure/mrateplotx1-1.pdf  used on input line 2060.
@@ -2529,13 +2529,13 @@ Overfull \vbox (0.83946pt too high) detected at line 2076
 
 
 [50 <./figure/mrateplotx1-1.pdf>]
-<figure/unnamed-chunk-76-1.pdf, id=894, 289.08pt x 289.08pt>
+<figure/unnamed-chunk-76-1.pdf, id=909, 289.08pt x 289.08pt>
 File: figure/unnamed-chunk-76-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-76-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-76-1.pdf  used on input line 2077
 .
 (pdftex.def)             Requested size: 289.07928pt x 289.09251pt.
-<figure/unnamed-chunk-77-1.pdf, id=895, 289.08pt x 289.08pt>
+<figure/unnamed-chunk-77-1.pdf, id=910, 289.08pt x 289.08pt>
 File: figure/unnamed-chunk-77-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-77-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-77-1.pdf  used on input line 2088
@@ -2616,7 +2616,7 @@ Cap\'{\imath }tulo XI.
 [69]
 
 [70]
-<figure/unnamed-chunk-101-1.pdf, id=1011, 505.89pt x 505.89pt>
+<figure/unnamed-chunk-101-1.pdf, id=1026, 505.89pt x 505.89pt>
 File: figure/unnamed-chunk-101-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-101-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-101-1.pdf  used on input line 302
@@ -2783,7 +2783,7 @@ Overfull \hbox (81.79744pt too wide) in paragraph at lines 3749--3749
 ]
 
 [88]
-<figure/unnamed-chunk-132-1.pdf, id=1111, 578.16pt x 578.16pt>
+<figure/unnamed-chunk-132-1.pdf, id=1126, 578.16pt x 578.16pt>
 File: figure/unnamed-chunk-132-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-132-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-132-1.pdf  used on input line 380
@@ -2829,7 +2829,7 @@ isten pruebas
 
 
 [96]
-<figs/amrhein.pdf, id=1169, 1748.5325pt x 955.57pt>
+<figs/amrhein.pdf, id=1184, 1748.5325pt x 955.57pt>
 File: figs/amrhein.pdf Graphic file (type pdf)
 <use figs/amrhein.pdf>
 Package pdftex.def Info: figs/amrhein.pdf  used on input line 3964.
@@ -2859,7 +2859,7 @@ roup Cancer and group NC is not equal to 0[]
 
 
 [101]
-<figure/unnamed-chunk-138-1.pdf, id=1204, 397.485pt x 397.485pt>
+<figure/unnamed-chunk-138-1.pdf, id=1219, 397.485pt x 397.485pt>
 File: figure/unnamed-chunk-138-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-138-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-138-1.pdf  used on input line 413
@@ -2874,7 +2874,7 @@ cer)"[][],[] []main[] []=[] []"MYC"[][])[][]
 
 
 [102 <./figure/unnamed-chunk-138-1.pdf>]
-<figure/unnamed-chunk-139-1.pdf, id=1217, 397.485pt x 397.485pt>
+<figure/unnamed-chunk-139-1.pdf, id=1232, 397.485pt x 397.485pt>
 File: figure/unnamed-chunk-139-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-139-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-139-1.pdf  used on input line 416
@@ -2889,12 +2889,12 @@ Overfull \hbox (13.88902pt too wide) in paragraph at lines 4185--4185
 
 
 [103 <./figure/unnamed-chunk-139-1.pdf>]
-<figure/diff-violin-1.pdf, id=1229, 325.215pt x 325.215pt>
+<figure/diff-violin-1.pdf, id=1244, 325.215pt x 325.215pt>
 File: figure/diff-violin-1.pdf Graphic file (type pdf)
 <use figure/diff-violin-1.pdf>
 Package pdftex.def Info: figure/diff-violin-1.pdf  used on input line 4190.
 (pdftex.def)             Requested size: 325.2142pt x 325.23901pt.
-<figure/unnamed-chunk-140-1.pdf, id=1230, 361.35pt x 361.35pt>
+<figure/unnamed-chunk-140-1.pdf, id=1245, 361.35pt x 361.35pt>
 File: figure/unnamed-chunk-140-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-140-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-140-1.pdf  used on input line 420
@@ -2949,10 +2949,21 @@ roup Cancer and group NC is not equal to 0[]
 
 
 [112]
+Cap\'{\imath }tulo XV.
 
-[113]
 
-[114] 
+[113
+
+]
+
+[114]
+
+LaTeX Warning: Command \~ invalid in math mode on input line 4535.
+
+Missing character: There is no ñ in font cmr8!
+
+
+[115] 
 enddocument/afterlastpage: lastpage setting LastPage.
 (main-prstr.aux
 LaTeX Info: Redefining \. on input line 8.
@@ -2963,13 +2974,13 @@ LaTeX2e <2024-06-01> patch level 2
 L3 programming layer <2024-10-09>
  ***********
 Package rerunfilecheck Info: File `main-prstr.out' has not changed.
-(rerunfilecheck)             Checksum: 5A9B4A14D79A80692F41D54A50F6B2EB;9434.
+(rerunfilecheck)             Checksum: BCDFDE75549076B1AE4E71E5B5E1E360;9768.
  ) 
 Here is how much of TeX's memory you used:
- 35029 strings out of 473897
- 631521 string characters out of 5725989
- 1124102 words of memory out of 5000000
- 56919 multiletter control sequences out of 15000+600000
+ 35036 strings out of 473897
+ 631611 string characters out of 5725989
+ 1124134 words of memory out of 5000000
+ 56922 multiletter control sequences out of 15000+600000
  593113 words of font info for 117 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  143i,13n,173p,2298b,2370s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -3010,9 +3021,9 @@ ndra/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:
 12.pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lms
 sbx10.pfb><C:/Users/Sandra/AppData/Local/Programs/MiKTeX/fonts/type1/urw/palati
 no/uplr8a.pfb>
-Output written on main-prstr.pdf (115 pages, 3328920 bytes).
+Output written on main-prstr.pdf (116 pages, 3340418 bytes).
 PDF statistics:
- 2120 PDF objects out of 2487 (max. 8388607)
- 232 named destinations out of 1000 (max. 500000)
- 970 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 2150 PDF objects out of 2487 (max. 8388607)
+ 236 named destinations out of 1000 (max. 500000)
+ 994 words of extra memory for PDF output out of 10000 (max. 10000000)
 

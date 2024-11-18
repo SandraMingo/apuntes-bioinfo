@@ -187,7 +187,7 @@ Para leer el código, se empieza por la función más interna, que en este caso 
 \hlkwd{sum}\hldef{(pvalues} \hlopt{<=} \hlnum{0.05}\hldef{)}
 \end{alltt}
 \begin{verbatim}
-## [1] 42
+## [1] 40
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1781,11 +1781,11 @@ Una lista más compleja sería la siguiente:
 ## [1] "Hola"
 ## 
 ## $one.matrix
-##            [,1]      [,2]       [,3]       [,4]      [,5]
-## [1,] -1.8945487 1.5140213 -1.5288131 -0.4687048 0.1581445
-## [2,] -0.9798884 0.1907790 -0.5143551 -2.0820703 0.3046457
-## [3,] -0.6565511 0.5649057 -0.3851695  1.5205135 0.6724141
-## [4,] -0.7940315 0.3369625 -1.2531308  1.1370191 0.3895951
+##              [,1]       [,2]        [,3]       [,4]        [,5]
+## [1,] -1.362295172 -1.4804848  0.41401602  1.0153095 -1.48003629
+## [2,] -0.119235450  0.1604158 -0.04479775 -0.2679637  1.29931790
+## [3,] -0.567091860 -1.4307836 -0.15768673 -0.2036100  1.39765360
+## [4,]  0.001708939  0.3960946  0.01706166  1.4075448  0.06456716
 ## 
 ## $another.list
 ## $another.list$a
@@ -1799,36 +1799,36 @@ Una lista más compleja sería la siguiente:
 \hldef{listB[[}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{11}\hldef{)]]}
 \end{alltt}
 \begin{verbatim}
-## [1] -0.3851695
+## [1] -0.1576867
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[[}\hlnum{3}\hldef{]][}\hlnum{11}\hldef{]}
 \end{alltt}
 \begin{verbatim}
-## [1] -0.3851695
+## [1] -0.1576867
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[[}\hlnum{3}\hldef{]][}\hlnum{3}\hldef{,} \hlnum{3}\hldef{]}
 \end{alltt}
 \begin{verbatim}
-## [1] -0.3851695
+## [1] -0.1576867
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[[}\hlnum{3}\hldef{]][}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{3}\hldef{)]}
 \end{alltt}
 \begin{verbatim}
-## [1] -0.6565511 -0.6565511
+## [1] -0.5670919 -0.5670919
 \end{verbatim}
 \begin{alltt}
 \hldef{listB[}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{4}\hldef{)]}
 \end{alltt}
 \begin{verbatim}
 ## $one.matrix
-##            [,1]      [,2]       [,3]       [,4]      [,5]
-## [1,] -1.8945487 1.5140213 -1.5288131 -0.4687048 0.1581445
-## [2,] -0.9798884 0.1907790 -0.5143551 -2.0820703 0.3046457
-## [3,] -0.6565511 0.5649057 -0.3851695  1.5205135 0.6724141
-## [4,] -0.7940315 0.3369625 -1.2531308  1.1370191 0.3895951
+##              [,1]       [,2]        [,3]       [,4]        [,5]
+## [1,] -1.362295172 -1.4804848  0.41401602  1.0153095 -1.48003629
+## [2,] -0.119235450  0.1604158 -0.04479775 -0.2679637  1.29931790
+## [3,] -0.567091860 -1.4307836 -0.15768673 -0.2036100  1.39765360
+## [4,]  0.001708939  0.3960946  0.01706166  1.4075448  0.06456716
 ## 
 ## $another.list
 ## $another.list$a
@@ -4221,7 +4221,7 @@ Cabe señalar que los métodos no paramétricos tienen limitaciones en la detecc
 Algunos métodos no paramétricos tienen limitaciones para incorporar factores experimentales adicionales o interacciones complejas. Por ello, es importante evaluar si un procedimiento no paramétrico puede adaptarse al diseño del experimento.
 \end{itemize}
 
-Aquí nos centraremos en la prueba de Wilcoxon.\marginpar[\footnotesize !!!!] \    Esta suele ser la forma de proceder cuando tenemos medidas de escala ordinal y queremos comparar dos grupos independientes. Sin embargo, la prueba de Wilcoxon \textbf{requiere datos de escala de intervalo} para el Wilcoxon de una sola muestra y el Wilcoxon pareado (esto es algo que muchos sitios web y algunos libros de texto hacen mal). La razón detrás de esta restricción es que la prueba de Wilcoxon para datos pareados comienza calculando las diferencias intra-sujeto. Este cálculo implica restar valores entre pares de observaciones, lo que requiere que los datos tengan una distancia significativa y consistente entre los valores. Por lo tanto, no es adecuado aplicar esta prueba a datos de escala ordinal, ya que en tales casos no existe una medida de "distancia real" entre los niveles ordinales.
+Aquí nos centraremos en la prueba de Wilcoxon.\marginpar[\footnotesize !!!!] \ Esta suele ser la forma de proceder cuando tenemos medidas de escala ordinal y queremos comparar dos grupos independientes. Sin embargo, la prueba de Wilcoxon \textbf{requiere datos de escala de intervalo} para el Wilcoxon de una sola muestra y el Wilcoxon pareado (esto es algo que muchos sitios web y algunos libros de texto hacen mal). La razón detrás de esta restricción es que la prueba de Wilcoxon para datos pareados comienza calculando las diferencias intra-sujeto. Este cálculo implica restar valores entre pares de observaciones, lo que requiere que los datos tengan una distancia significativa y consistente entre los valores. Por lo tanto, no es adecuado aplicar esta prueba a datos de escala ordinal, ya que en tales casos no existe una medida de "distancia real" entre los niveles ordinales.
 
 Además, aunque la prueba de Wilcoxon es más robusta frente a ciertos supuestos que los métodos paramétricos, la hipótesis de independencia de las observaciones sigue siendo fundamental. Es decir, las observaciones dentro y entre los grupos deben ser independientes. Este supuesto es tan crucial para el Wilcoxon como lo es para la prueba t.
 
@@ -4450,6 +4450,7 @@ En este caso, la unidad de observación son sujetos, no las medidas. Por ello, r
 \end{kframe}
 \end{knitrout}
 
+\chapter{Modelos lineares: ANOVA, regresión, ANCOVA}
 \section{Modelos lineares}
 En un test apareado, el modelo puede representarse de la siguiente manera:
 \[Expression.of.MYC = function(subject\ and\ condition) + \epsilon\]
@@ -4520,6 +4521,34 @@ Por tanto, el análisis apareado se centra en las diferencias entre las condicio
 ## sample estimates:
 ## mean difference 
 ##       0.9384167
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\section{Introduction to ANOVAs, regression, and linear models}
+Los modelos lineales y sus extensiones (que incluyen la regresión logística, pero también el análisis de supervivencia, muchos problemas de clasificación, modelos no lineales, análisis de experimentos, tratamiento de muchos tipos de datos dependientes, etc., etc.) son un tema fundamental de la estadística. Aquí sólo arañaremos la superficie. Pero debería salir de esta lección comprendiendo que estos métodos son extremadamente potentes y flexibles y que pueden utilizarse para abordar una enorme variedad de cuestiones de investigación diferentes. Emplearía su tiempo sabiamente si al menos echara un vistazo a algunas de las referencias que proporcionamos al final. Insisto una vez más: ANOVAs, regresión, ANCOVAs, son sólo tipos especiales de modelos lineales.
+
+\subsection{An ANOVA; some basic theory and output}
+
+
+
+Queremos ver si la hora del ejercicio marca alguna diferencia. La realización de tres pruebas t no es el mejor camino a seguir aquí: nuestra hipótesis nula global es $\mu_{Mañana} = \mu_{Almuerzo} = \mu_{Tarde}$ y eso es lo que ANOVA nos permitirá probar directamente.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{LinearModel.1} \hlkwb{<-} \hlkwd{lm}\hldef{(activ} \hlopt{~} \hldef{ftraining,} \hlkwc{data} \hldef{= mit)}
+\hlkwd{Anova}\hldef{(LinearModel.1,} \hlkwc{type}\hldef{=}\hlsng{"II"}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## Anova Table (Type II tests)
+## 
+## Response: activ
+##           Sum Sq Df F value    Pr(>F)    
+## ftraining 31.147  2  22.887 1.704e-07 ***
+## Residuals 29.260 43                      
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
