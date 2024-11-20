@@ -11,6 +11,7 @@
 \usepackage{color}
 \usepackage{tabularx}
 \usepackage{multirow}
+\usepackage{threeparttable}
 \usepackage{makecell}
 \usepackage{amsmath}
 \usepackage{array}
@@ -2349,5 +2350,246 @@ par(old.oma) ## restore graphics windows settings
 
 Fíjate bien en el gráfico de la figura: para cada diferencia (para cada contraste), muestra la estimación y un intervalo de confianza del 95\% a su alrededor. El título del gráfico dice "95\% intervalo de confianza familiar", y que indica que la corrección de pruebas múltiples se ha utilizado. (Se puede hacer aún más explícito mediante el uso de un título como "95\% intervalo de confianza por familias utilizando contrastes de Tukey").
 
+<<out.width='12cm'>>=
+.Pairs <- glht(AnovaMIT, linfct = mcp(ftraining = "Tukey"))
+tmp <- cld(.Pairs) ## silent assignment
+old.oma <- par(oma=c(0,5,0,0))
+plot(confint(.Pairs),
+     main = "95% family-wise confidence interval using Tukey contrasts")
+par(old.oma) ## restore graphics windows settings
+@
+
 Según la gráfica, se puede rechazar la hipótesis de que Tarde-Mañana y de que Tarde-Almuerzo sean iguales. 
+
+%20/11 - Ramón
+En resumen, el ANOVA en un sentido funciona de la siguiente forma: se obtienen los datos, se recodifica el factor (la variable independiente) en caso de ser necesario, se ejecuta el modelo y se obtienen los diagnósticos del modelo. Finalmente se realizan las comparaciones entre los pares de las medias con el ajuste apropiado para la comparación múltiple.
+
+\section{Comparación múltiple: FWER y FDR}
+\subsection{Family-wise error rate (FWER)}
+En el caso de comparaciones múltiples, como en el ejemplo anterior donde se realizaron tres comparaciones, el principal problema es el riesgo de rechazar una hipótesis nula cuando en realidad es verdadera (error tipo I). Cuando se evalúan múltiples contrastes, la probabilidad de cometer al menos un error tipo I aumenta significativamente por encima del nivel de significancia deseado, por ejemplo, el 5\%.
+
+El Family-Wise Error Rate (FWER) controla la probabilidad de cometer al menos un error tipo I en el conjunto completo de pruebas (la "familia" de comparaciones). Para lograrlo: (1) Los procedimientos ajustan los p-valores individuales o ensanchan los intervalos de confianza para mantener el control global del error tipo I en la familia de pruebas, y (2) A medida que aumenta el número de pruebas, los ajustes son más estrictos, haciendo más difícil rechazar una hipótesis nula.
+
+En procedimientos como Bonferroni, el nivel de significancia para cada prueba individual se ajusta dividiendo el nivel deseado ($\alpha$) por el número total de pruebas. 
+El método Tukey adapta los intervalos de confianza para realizar comparaciones por pares, asegurando que el error tipo I no exceda el límite especificado en el conjunto completo de comparaciones.
+
+\begin{table}[h!]
+\begin{tabular}{p{5.5cm}|>{\centering}p{2.5cm}|>{\centering}p{2.5cm}|}
+  \multicolumn{1}{c}{} & \multicolumn{1}{>{\centering}p{2.5cm}}{$H_0$ not rejected} &
+  \multicolumn{1}{>{\centering}p{2.5cm}}{$H_0$ rejected}\tabularnewline
+  \cline{2-3}
+  Means do not differ ($H_0$ \textit{true}) & U & V\tabularnewline
+  \cline{2-3}
+  Means differ ($H_0$ \textit{false}) & T & S\tabularnewline
+  \cline{2-3}
+\end{tabular}
+\end{table}
+
+En este contexto:
+\begin{itemize}
+\item $U$: casos donde $H_0$ es verdadera y no se rechaza
+\item $V$: casos donde $H_0$ es verdadera y se rechaza (error tipo I): por ejemplo, V = 2 cuando rechazo dos hipótesis nulas cuando no debo.
+\item $T$: casos donde $H_0$ es falsa y no se rechaza (error tipo II)
+\item $S$: casos donde $H_0$ es falsa y se rechaza correctamente.
+\end{itemize}
+
+Para tres pruebas, $U + V + T + S = 3$, ya que el número total de hipótesis es igual al número de pruebas realizadas. 
+
+El objetivo de procedimientos como Tukey, Bonferroni, entre otros, es garantizar que la probabilidad de cometer al menos un error tipo I ($V\geq 1$) sea menor o igual a un valor especificado, generalmente $\alpha = 0.05$. Esto significa que se controla estrictamente la probabilidad de cometer un error dentro de la familia de pruebas.
+
+La idea intuitiva del FWER es:
+"Quiero minimizar la probabilidad de rechazar falsamente cualquier hipótesis nula".
+En términos probabilísticos: controlar que 
+$Pr(V\geq 1)$ esté por debajo de un valor determinado, como 0.05.
+
+Aunque es un enfoque conservador, su rigidez puede limitar la capacidad de detectar efectos verdaderos, especialmente cuando se realizan muchas comparaciones, ya que aumenta la probabilidad de cometer errores tipo II. Por ello, en algunos casos, se prefieren métodos menos estrictos, como el control de la tasa de descubrimientos falsos (FDR).
+
+Ten en cuenta que, en nuestro uso de Tukey, no preespecificamos el $Pr(V \geq 1)$ real. El procedimiento se ejecuta, y nos da "valores p ajustados". \textbf{El valor $P$ ajustado para una hipótesis particular dentro de una colección de hipótesis, entonces, es el menor nivel de significación global (es decir, 'experimentalmente') al que se rechazaría la hipótesis particular.} Un valor $P$ ajustado puede compararse directamente con cualquier nivel de significación $\alpha$ elegido: Si el valor $P$ ajustado es menor o igual que $\alpha$, se rechaza la hipótesis.
+
+\subsection{False descovery rate (FDR)}
+Existe un enfoque diferente para el problema de las pruebas múltiples. En este enfoque nos centramos en controlar la fracción de falsos positivos. El número total de hipótesis nulas que rechazamos es $V+S$. La idea intuitiva detrás del control de la tasa de falsos descubrimientos (\textbf{FDR}) es acotar (establecer un límite superior) la proporción $\frac{V}{V+S}$\footnote{Hay varios enfoques diferentes. El más común es controlar $FDR =E(Q)$ donde $Q=V/(V+S)$ si $V + S > 0$ (y $Q = 0$ en caso contrario). Pero hay otros, como el $pFDR$, etc.}.
+
+Una diferencia clave es que el FDR puede mantenerse razonablemente bajo (digamos, 0,01) incluso cuando es casi seguro que $V\geq 1$. ¿Cuándo puede ocurrir esto? Por ejemplo, cuando realizamos decenas de miles de pruebas de hipótesis. De nuevo, la FDR controlará la fracción de falsos descubrimientos, mientras que el control de la tasa de error por familia (FWER) hace hincapié en que $V$ no se convierta en 1 o más.
+
+Al igual que hicimos con Tukey y los procedimientos FWER, en general no especificamos previamente el nivel de FDR que queremos alcanzar, sino que obtenemos "valores p ajustados". La diferencia en el significado de "ajustados" es que ahora estos valores p están ajustados para FDR (no ajustados para el control de la tasa de error por familia). Así, cuando tratamos con FDR, el p-valor ajustado de una hipótesis individual es el nivel más bajo de FDR para el que la hipótesis se incluye por primera vez en el conjunto de hipótesis rechazadas
+
+La FDR suele emplearse en procedimientos de cribado o screening, en los que estamos dispuestos a permitir algunos descubrimientos falsos, porque estamos cribando miles de hipótesis. El coste de exigir $V = 0$ sería pasar por alto muchos descubrimientos. ¿Un ejemplo? Supongamos que se ha medido la expresión de 20.000 genes en dos grupos de sujetos, algunos con cáncer de colon y otros no. Ahora puedes hacer el equivalente a 20.000 pruebas t. Así que obtendrás 20.000 valores p, y querrás ajustar esas 20.000 pruebas para pruebas múltiples.
+
+Un ejemplo sencillo y con cuatro p-valores. Supongamos que hemos realizado un procedimiento de cribado, probando cuatro genes. Se obtienen los p-valores que muestro a continuación. Para utilizar un método de corrección FDR se puede utilizar \code{p.adjust} con el argumento \texttt{method = "BH"} (BH es uno de los varios tipos posibles de corrección FDR). Para mostrar lo que sucede, se combinan los dos, uno al lado del otro, para que se pueda ver el valor p original y el ajustado FDR.
+
+<<>>=
+p.values <- c(0.001, 0.01, 0.03, 0.05)
+adjusted.p.values <- p.adjust(p.values, method = "BH")
+cbind(p.values, adjusted.p.values)
+@
+
+Por ejemplo, si mantenemos como "significativos" todos los genes con un p-valor (no p-valor ajustado, sino p-valor, así que los tres primeros últimos) $\leq 0,030$, el FDR (el número esperado de falsos descubrimientos) será 0,040 (el p-valor ajustado FDR para el gen con $p-$valor de 0,03).
+
+\subsection{Comparación múltiple: ejemplos}
+Cuando se realizan muchas pruebas, algunas de ellas pueden tener valores p bajos por casualidad, por lo que es necesario realizar ajustes. Si cualquier gen con un valor p bajo se declara significativo (independientemente del tamaño de la colección de pruebas) es probable que se empiece a afirmar que muchos resultados puramente casuales son "significativos".
+
+Recuerda que ocurren sucesos muy raros, y que es casi seguro que ocurran si el experimento se repite muchas veces (por cierto, por eso la mayoría de nosotros no tememos morir por un rayo, aunque cada año algunas personas mueran de hecho por un rayo).
+
+Cuando se examinan 20.000 genes, se está realizando 20.000 veces el experimento del valor p y la hipótesis nula. Y recuerda las reglas: para una hipótesis nula verdadera, la probabilidad de encontrar un valor p $\le 0,05$ es $0,05$. Ahora imagina que haces eso 20000 veces; es casi seguro que tendrás muchos p-valores $\le 0,05$. (Lo mismo con los rayos: aunque las probabilidades de morir por un rayo sean $\le \frac{1}{300000}$, con millones de personas en la tierra, es casi seguro que algunas morirán por un rayo).
+
+\section{Two-way ANOVA (ANOVA de dos factores)}
+En un análisis de varianza de dos factores (Two-Way ANOVA), se evalúan simultáneamente dos variables predictoras (o factores) para determinar si tienen un efecto significativo en la variable de respuesta. Además, este análisis permite examinar si existe una interacción entre los dos factores.
+
+Un aspecto clave de este modelo es la interacción entre los factores (no aditividad). La interacción ocurre cuando el efecto de un factor en la variable de respuesta depende del nivel del otro factor. En otras palabras, el impacto combinado de ambos factores no es simplemente la suma de sus efectos individuales.
+
+Cuando no hay interacción entre los factores, los efectos de cada factor son independientes. Esto significa que el efecto de moverse entre filas (niveles de un factor) es constante, independientemente de la columna en la que te encuentres (niveles del otro factor). De manera similar, el efecto de moverse entre columnas es independiente del nivel de las filas. En este caso, los efectos pueden describirse de manera simplificada a través de los promedios marginales de las filas y columnas.
+
+Cuando hay interacción entre los factores, el efecto de un factor cambia según el nivel del otro factor. El resultado no puede resumirse simplemente con los promedios marginales, ya que la relación entre las filas y columnas depende de la celda específica donde te encuentres. Para describir completamente el modelo, es necesario especificar los valores en cada celda de la tabla de combinaciones de factores.
+
+Ejemplos de interacción en la vida real:
+\begin{itemize}
+\item Genética (epistasis): En genética, la interacción entre dos genes (o loci) puede influir en un fenotipo. El efecto de un gen en el rasgo observado puede depender de la presencia o ausencia de un segundo gen.
+\item Medicina: Un tratamiento puede tener diferentes efectos en hombres y mujeres. Por ejemplo, la eficacia de un medicamento (factor 1) puede depender del género del paciente (factor 2).
+\item Marketing: El efecto de una promoción (factor 1) puede variar según la región geográfica (factor 2). Por ejemplo, un descuento puede ser más efectivo en áreas urbanas que rurales.
+\end{itemize}
+
+<<>>=
+set.seed(3)
+df1 <- data.frame(y = runif(8),
+                  A = rep(c("a1", "a2"), 4),
+                  B = rep(c("b1", "b1", "b2", "b2"), 2))
+
+
+df1
+@
+
+\subsection{Modelo sin interacción (aditivo)}
+Un modelo aditivo supone que los efectos de los factores son independientes entre sí y no interactúan. Esto significa que el efecto de un factor no depende del nivel del otro. En R, este modelo se ajusta como:
+<<>>=
+m1 <- lm(y ~ A + B, data = df1)
+anova(m1)
+@
+
+Los términos que representan los efectos de los factores se suman directamente: $y = \mu + A + B + \epsilon$. Los grados de libertad de cada factor se basan en sus niveles. Para A, con $k_A$ niveles, $df_A = k_A - 1$, y para B, con $k_B$ niveles, $df_B = k_B - 1$
+
+En cuanto a la parametrización del modelo, solo se estiman los parámetros del intercepto ($\mu$) y los efectos individuales de los niveles de A y B. La interpretación de los términos es independiente, ya que no hay interacción. Por ejemplo, con dos niveles en A y B, el modelo tiene 3 parámetros ($\mu, Aa2, Bb2$).
+
+%Lo primero que hay que comprobar es que los grados de libertad de los términos que nos interesen (no los residuos) estén bien. Como A y B tenían ambos dos niveles, ambos deben tener un grado de libertad. 
+Es importante mencionar que los números hubiesen sido diferentes si en el código hubiésemos antepuesto B a A (\code{lm(y ~ B + A)}).
+
+Si los p-valores de A o B son pequeños, se concluye que esos factores tienen un efecto significativo en y.
+
+<<>>=
+summary(m1)
+@
+
+\subsection{Modelo con interacción (no aditivo)}
+Un modelo con interacción incluye un término adicional para considerar los efectos combinados de los factores. En R, se ajusta así:
+
+<<>>=
+m2 <- lm(y ~ A * B, data = df1)
+anova(m2)
+@
+
+Este modelo tiene la forma $y = \mu + A + B + A:B + \epsilon$. La interacción A:B representa las desviaciones de la aditividad. Si es significativa, el efecto de un factor depende del nivel del otro. Los grados de libertad de la interacción son el producto de los grados de libertad de los factores involucrados: $df_{A:B} = df_A * df_B$
+
+Se estiman parámetros para $\mu$, los efectos individuales (A y B) y las interacciones (A:B). El modelo tiene tantos parámetros como celdas en la tabla factorial.
+
+Un p-valor pequeño para A:B indica una interacción significativa. En este caso, no se interpretan los efectos de A y B por separado. Un modelo con interacción siempre se ajusta mejor, pero es importante evaluar si la mejora es estadísticamente significativa.
+
+<<>>=
+summary(m2)
+@
+
+\subsection{Ejemplo con múltiples niveles}
+Supongamos que tenemos un ANOVA de dos vías. El primer factor (T) tiene cuatro niveles ($df_T = 3$), el segundo factor (W) tiene siete niveles ($df_W = 6$). Podemos crear una matriz de 28 celdas (4 filas por cada nivel de T y 7 filas por cada nivel de W).
+
+El modelo aditivo sería $y = \mu + T + W + \epsilon$, con un total de $1 + 3 + 6 = 10$ parámetros, incluyendo el intercepto.
+
+El modelo con interacción incluiría un término para la interacción: $y = \mu + T + W + T:W + \epsilon$. Los grados de libertad de la interacción serían $df_{T:W} = df_T * df_W = 3 * 6 = 18$. El total de parámetros es $1 + 3 + 6 + 18 = 28$. Esto significa que el modelo ajusta un parámetro para cada celda de la tabla 4x7.
+
+\subsection{ANOVA de tres vías}
+Tenemos tres factores: A con 3 niveles, B con 5 niveles y C con 6 niveles. Los grados de libertad son 2, 4 y 5 respectivamente. Los parámetros son A 2, B 4, C 5, A:B 8, A:C 10, B:C 20, A:B:C 40. Esto último es la interacción entre los tres factores, y se puede leer de varias maneras equivalentes: la interacción A:B cambia con niveles de C, la interacción B:C cambia con niveles de A, la interacción A:C cambia con niveles de B. Al encontrar una interacción significativa ahí, se puede decir que hay interacción entre los tres factores, dejando de lado las demás interacciones. 
+
+\subsection{Data set colesterol}
+<<create_tooth, echo=FALSE, results='hide'>>=
+
+set.seed(45)
+n <- c(4, 7, 9, 5, 7, 8)
+m <- c(2.1, 1, 2, -.2, 4, 5)
+y <- round(unlist(mapply(function(x, y) rnorm(x, y), n, m)), 3)
+Drug <- c(rep("A", sum(n[1:3])),
+          rep("B", sum(n[4:6])))
+Diet <- rep(rep(c("HF", "M1", "M2"), 2), n)
+chol <- data.frame(y = y,
+                   Drug = Drug,
+                   Diet = Diet)
+dcholest <- chol
+@
+
+<<>>=
+## This fits the model. Pay attention to the "*"
+cholestanova <- (lm(y ~ Diet*Drug, data=dcholest))
+## This shows the ANOVA table. Notice the "Type II"
+## And notice we are using function Anova with capital A
+## which is a function from the car package.
+Anova(cholestanova)
+
+## Now we are shown the 3 by 2 table of means, standard deviations, and number
+## of observations
+tapply(dcholest$y, list(Diet=dcholest$Diet, Drug=dcholest$Drug),
+       mean, na.rm=TRUE) # means
+tapply(dcholest$y, list(Diet=dcholest$Diet, Drug=dcholest$Drug),
+       sd, na.rm=TRUE) # std. deviations
+tapply(dcholest$y, list(Diet=dcholest$Diet, Drug=dcholest$Drug),
+       function(x) sum(!is.na(x))) # counts
+@
+
+\subsubsection{\texttt{Anova}, \texttt{anova}, \texttt{aov}, \texttt{lm}, \texttt{summary}}
+En R a menudo podemos utilizar diferentes formas de obtener resultados de un modelo lineal, incluyendo regresión y ANOVA. 
+\begin{itemize}
+\item La función \texttt{lm} ajusta modelos lineales, incluyendo regresión y ANOVA (la mayoría de ellos, no todos).
+\item La función \texttt{aov} también puede utilizarse para ajustar modelos ANOVA. No la utilizamos para ajustar modelos de regresión. Y la mayoría de los modelos que se pueden ajustar con \texttt{aov} se pueden ajustar con \texttt{lm}. En lo que respecta a este curso, su sintaxis es la misma.
+\item \texttt{Anova} y \texttt{anova} le dan tablas ANOVA de modelos ajustados con \texttt{lm}. La principal diferencia entre los dos es que \texttt{Anova} da, por defecto, lo que se llama sumas de cuadrados y pruebas de Tipo II, que utilizaremos la mayoría de las veces para tratar cuestiones sobre el orden de los factores. Todo esto se explicará en detalle.
+\item Función \texttt{anova} también se puede utilizar para comparar modelos. Veremos ejemplos.
+\item La función \texttt{summary} sobre un objeto ajustado con \texttt{aov} también le dará una tabla ANOVA. Rara vez usaremos esto (aunque podría ser el código que algunos menús en R commander realmente generan, y usted podría verlo en el código de otras personas).
+\item Función \texttt{summary} sobre un objeto equipado con \texttt{lm} dará, entre otros, una tabla de coeficientes, no una tabla ANOVA.
+\end{itemize}
+
+<<out.width='12cm', out.height='12cm'>>=
+plot(allEffects(cholestanova), ask = FALSE)
+@
+
+Básicamente, una interacción significa que el efecto de una variable depende del efecto de la otra. En este caso, aunque el fármaco B provoque en general un cambio mayor (disminución) del colesterol, sus efectos dependen de la dieta. Esto tiene consecuencias prácticas: ¿es el fármaco B mejor? Depende de la dieta del paciente: para la dieta HF (alta en grasas), el Fármaco B es claramente peor que el Fármaco A.
+
+<<out.width = '8cm', out.height = '8cm'>>=
+with(dcholest, interaction.plot(Drug, Diet, y, type = "b"))
+@
+
+Un gráfico de caja también puede ayudar a mostrar la interacción. Se muestran dos diferentes, que difieren por el orden en que se especifican los factores (uno u otro puede ser más fácil de decodificar visualmente):
+<<fig.width=5, fig.height=10, fig.show='hold'>>=
+par(mfrow = c(2, 1))
+boxplot(y ~ Drug * Diet, data = dcholest, col = c("salmon", "gold"))
+boxplot(y ~ Diet * Drug, data = dcholest,
+        col = c("salmon", "gold", "lightblue"))
+@
+
+Dados estos resultados (la fuerte interacción, que puede incluso revertir los efectos de un factor), no tiene mucho sentido informar de ningún efecto principal global y rara vez nos interesaría interpretar la significación (o no) del término Dieta o Fármaco. En general, \textbf{en presencia de interacciones, a menudo nos abstenemos de interpretar los efectos principales; esta es una consecuencia de lo que a menudo se conoce como el "principio de marginalidad"} \footnote{ Formulado correctamente, que también implica generalmente el uso de otros tipos de contrastes ---como contr.sum, en lenguaje R--- pruebas marginales en presencia de interacciones, lo que se llama Tipo III, puede tener sentido, pero no siempre son de interés.}
+
+\subsection{ANOVA sin interacciones}
+Se puede ajustar un modelo sin interacciones:
+<<>>=
+amodelnoint <- (lm(y ~ Diet + Drug, data=dcholest))
+Anova(amodelnoint)
+@
+
+Sin embargo, hay buenas razones para empezar ajustando primero un modelo \textbf{con} interacciones y, \textbf{solo} si no hay interacciones, ajustar un modelo aditivo más simple.
+
+\subsection{El orden de los factores}
+\begin{enumerate}
+\item Supongamos que realizamos un ANOVA de dos vías en el que la variable dependiente (Y) es «despierto en clase» y sus variables predictoras son el sexo (mujer u hombre) y el café por la mañana (sí o no).
+\item Supongamos que en la muestra hay 10 mujeres que beben café y 10 hombres que no beben café. ¿Se puede decir algo sobre el efecto del sexo que no esté diciendo algo (o incluso todo) sobre el efecto del café?
+\item Ahora supongamos que el diseño está perfectamente equilibrado: 5 mujeres que beben café, 5 mujeres que no beben café, 5 hombres que beben café, 5 hombres que no beben café. Si se dijera "he medido a una mujer", ¿se podría saber si también es bebedora de café o no?
+\item Ahora, piensa en escenarios intermedios.
+\item Se puede sustituir la Y por "enfermedad cardiovascular" y las variables predictoras por "tabaco" (sí y no) y "ejercicio" (sí y no). ¿Se puede decir algo sobre los efectos del ejercicio si todas las personas de la muestra que hacen ejercicio son también no fumadores? (Se puede repetir esto con otros pares de variables, como dieta y ejercicio, expresión génica y edad, expresión génica y sexo, etc).
+\end{enumerate}
+
+%3666
+
+
 \end{document}
