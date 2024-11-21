@@ -77,3 +77,100 @@ awk -F '\t' '{if ($0 ~ /#/ || $7 == "PASS") print}' out/output_normal_refined.re
 #Contar el número de líneas resultantes
 grep "^chr17" out/output_normal_refined.onlypass | wc -l
 \end{lstlisting}
+
+%21/11 - Dido
+\chapter{Introducción a las variantes somáticas}
+\section{Control de calidad y refinamiento de alineamientos}
+\subsection{Control de calidad}
+Los controles de calidad se suelen hacer en varios puntos de todo el proceso. Hay varios puntos clave, y después de cada uno de ellos se realiza el control de calidad. El primero y más importante parte de los archivos FastQ de secuenciación, ya que si éstos están mal, el resto del análisis carece de sentido.
+
+Se utiliza el programa FastQC que da un informe en HTML con varias estadísticas de los archivos. Hay otros programas que se pueden utilizar, como samtools, que indica si hay secuencias duplicadas y otras estadísticas. MultiQC combina varias herramientas para sacar un informe completo.
+
+En los controles de calidad, se mira si hay un número de lecturas dentro del rango esperado, si las bases tienen una buena calidad mediante el Phred score, y si hay contaminación en las muestras. Una secuencia que aparezca repetidamente puede ser muy repetitiva en el genoma que se secuencie o una contaminación.
+
+FastQC permite visualizar la calidad por base por secuencia, el contenido GC y secuencias sobrerrepresentadas entre otras métricas, pero esas son las que habitualmente están mal. En cuanto a la evaluación de la calidad por base, se ve la distribución de los scores en las lecturas. En secuenciación de Illumina, es habitual que al final de las lecturas la calidad decaiga un poco, pero debería seguir en un rango elevado. Si la calidad decae mucho, se trata de un error en la secuenciación. En los scores por secuencia, se espera que la mayoría de las secuencias tengan una puntuación muy alta. Si hay varias secuencias con una calidad baja, eso indica que algo está mal, pero es difícil indicar la causa (problema del secuenciador, purificación de las muestras, contaminación, librería, etc). La distribución esperada del contenido en GC debería seguir una distribución normal, aunque hay veces que se puede desviar un poco.
+
+\begin{lstlisting}[language=bash]
+conda install bioconda::fastqc
+fastqc -o out/ Raw_data/*.fastq
+\end{lstlisting}
+
+El resultado es un fichero html y zip por cada FastQ. En cuanto a Normal R1, el contenido GC muestra un mensaje de error. Hay un pico muy grande alrededor del 60\%, cuando en humanos debería rondar el 50\%. Además, hay varias lecturas con un contenido GC bajo, sobre el 35\%. Como estos resultados son malos, se puede valorar descartarlos y repetir la secuenciación, pero en laboratorios pequeños puede ser un problema. Además, tenemos una secuencia sobrerrepresentada de N, que no nos preocupa porque se va a descargar. Todas las demás métricas han salido bien. En Normal R2, las secuencias sobrerrepresentadas dan error, pero sigue siendo una secuencia de todo N, por lo que se le puede dar poca importancia. El contenido GC también da error. En cuanto a las muestras de tumor, son muy similares: tienen un contenido GC más bajo y tiene una secuencia de N sobrerrepresentada. 
+Hay que tener en cuenta que estamos trabajando solo con el cromosoma 17, pero que la distribución esperada está calculada sobre todo el genoma. Por tanto, si ese cromosoma tiene muchas secuencias repetitivas en AT, ya de por sí habrá un sesgo en la comparación con la distribución esperada. 
+
+\subsection{Alineamiento}
+En cuanto al alineamiento, se utiliza BWA. Se puede utilizar la siguiente chuleta para la indexación en base al fichero que se tenga:
+\begin{lstlisting}[language=bash]
+#Fasta
+bwa index reference.fasta
+samtools dict reference.fasta -o reference.dict
+samtools faidx reference.fasta
+
+#BAM
+samtools index bam.file
+
+#VCF
+tabix -p vcf vcf.file
+\end{lstlisting}
+
+El siguiente paso es la alineación.
+\begin{lstlisting}[language=bash]
+bwa mem -R '@RG\tID:OVCA\tSM:Normal' REFRENCE/hg19_chr17.fa Raw_data/WEx_Normal_R1.fastq Raw_data/WEx_Normal_R2.fastq > alignment/normal.sam
+bwa mem -R '@RG\tID:OVCA\tSM:Tumour' REFRENCE/hg19_chr17.fa Raw_data/WEx_Tumour_R1.fastq Raw_data/WEx_Tumour_R2.fastq > alignment/tumour.sam
+\end{lstlisting}
+
+Se puede utilizar \texttt{samtools flagstat normal.sam} para ver unas estadísticas como alineamientos mapeados, primarios, secundarios, duplicados, etc. 
+
+\subsection{Refinamiento del alineamiento}
+En este paso, queremos convertir los SAM en BAM para que los ficheros estén comprimidos y binarizados. Además, BWA a veces omite alguna información en los ficheros SAM que queremos rellenar.
+\begin{lstlisting}[language=bash]
+samtools fixmate -O bam alignment/normal.sam alignment/normal_fixmate.bam
+samtools fixmate -O bam alignment/tumour.sam alignment/tumour_fixmate.bam
+\end{lstlisting}
+
+Los duplicados vienen de la amplificación por PCR durante la preparación de la librería. Un error al principio de la PCR se propaga. Los duplicados en secuenciación híbrida no aportan nada al análisis posterior, pudiendo dar lugar a falsos positivos y redundancia. Por ello, lo mejor es descartar estas duplicaciones. Además, para la llamada de variantes es necesario que el alineamiento esté ordenado por posición genómica, y aprovechamos para indexar el BAM.
+\begin{lstlisting}[language=bash]
+samtools sort -O bam -o alignment/normal_sorted.bam alignment/normal_fixmate.bam
+samtools sort -O bam -o alignment/tumour_sorted.bam alignment/tumour_fixmate.bam
+
+samtools rmdup -S alignment/normal_sorted.bam alignment/normal_refined.bam
+samtools rmdup -S alignment/tumour_sorted.bam alignment/tumour_refined.bam
+
+samtools index alignment/normal_refined.bam
+samtools index alignment/tumour_refined.bam
+\end{lstlisting}
+
+Con esto hemos creado los bams que utilizamos en la parte anterior de las variantes germinales. Se pueden eliminar los ficheros intermedios de ficheros sam, fixmate y sorted, dejando los bam refinados.
+
+\section{Recalibración de la calidad de base}
+Cada posición de la secuencia tiene su calidad de base. Las diferentes tecnologías NGS tienen sus sesgos dependiendo del contexto, por lo que es importante hacer la recalibración para corregir empíricamente esos sesgos. La recalibración de bases no es lo mismo que la recalibración de variantes (eso viene después con los VCF).
+
+La recalibración de bases consta de dos pasos. Primero, BaseRecalibrator parsea las lecturas y crea una tabla en la que se asigna a cada lectura el ciclo durante el que se leyó la base, su puntuación y la puntuación de las bases que van antes y después. EL modelo computa cuántas veces hay un cambio en la referencia según dbSNP, excluyendo los loci de alta variabilidad. Después, la herramienta ApplyBQSR parsea las lecturas y, utilizando la matriz de antes, recalibra las puntuaciones. Así, las calidades son más similares a las puntuaciones empíricas, pudiendo utilizarse para el variant calling.
+
+\section{Llamada de variantes somáticas}
+Las variantes son cambios permanentes en el ADN de un organismo que pueden deberse a errores durante la replicación, durante la recombinación durante la formación de gametos y por factores externos como radiación, viruses, transposones, rayos ultravioleta, etc. El genoma entre humanos es idéntico en un 99,9\%. El 0,1\% restante es la fuente de variabilidad, permitiendo los mecanismos de evolución, las diferencias fenotípicas entre individuos y en la respuesta a enfermedades y fármacos. 
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = \textwidth]{figs/variants-size.png}
+\end{figure}
+
+En función de la posición de la secuencia, puede haber variantes intergénicas (entre genes) en secuencias reguladoras o upstream o downstream de algún gen en concreto. Dentro de genes, puede haber variantes en las regiones UTR, en los exones, en los intrones o en regiones de splicing. 
+
+Para realizar la llamada de variantes, se utiliza MuTect2. Es similar a GATK, pero permitiendo mayor variabilidad de frecuencia alélica (no solo 0, 0,5 y 1 como GATK), además de evitar las variantes germinales. Hay distintos modos: tumor con tejido normal (este es el óptimo), solo tumor y mitocondrial. Se crea un panel de normales para poder inferir qué mutaciones son exclusivamente somáticas. 
+\begin{lstlisting}[language=bash]
+#Modo Tumor-only 
+gatk Mutect2 -R REFERENCE/hg19_chr17.fa -I alignment/tumour_refined.bam -O tumour_only_somatic.vcf
+
+#Modo tumor with matched normal
+gatk Mutect2 -R REFERENCE/hg19_chr17.fa -I alignmetn/tumour_refined.bam -I alignment/normal_refined.bam -normal Normal -O out/tumour_matched_somatic.vcf
+\end{lstlisting}
+ 
+Después del filtrado, obtenemos las siguientes variantes somáticas:
+\begin{lstlisting}[language=bash]
+grep "^chr17" out/tumour_matched_somatic.vcf | wc -l #193
+grep "^chr17" out/tumour_only_somatic.vcf | wc -l #461
+\end{lstlisting}
+Cuando solo se mide el tumor, el número es casi el doble. Al dar el normal, el algoritmo sabe qué variantes son germinales por estar ya presentes en el tejido y los descarta. Al medir solo el tumor, algunas variantes germinales se excluyen, pero otras se cuelan, por lo que el número de variantes es mayor. 
+
+Las frecuencias alélicas vienen en la columna FORMAT bajo AF. Estas frecuencias van del 0 al 1 en todo el rango. En las variantes germinales, esta información aparece en INFO y es de 0, 0,5 o 1.
