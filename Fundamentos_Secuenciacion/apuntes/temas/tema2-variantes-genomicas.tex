@@ -173,4 +173,6 @@ grep "^chr17" out/tumour_only_somatic.vcf | wc -l #461
 \end{lstlisting}
 Cuando solo se mide el tumor, el número es casi el doble. Al dar el normal, el algoritmo sabe qué variantes son germinales por estar ya presentes en el tejido y los descarta. Al medir solo el tumor, algunas variantes germinales se excluyen, pero otras se cuelan, por lo que el número de variantes es mayor. 
 
-Las frecuencias alélicas vienen en la columna FORMAT bajo AF. Estas frecuencias van del 0 al 1 en todo el rango. En las variantes germinales, esta información aparece en INFO y es de 0, 0,5 o 1.
+Las frecuencias alélicas vienen en la columna FORMAT bajo AF. Estas frecuencias van del 0 al 1 en todo el rango. En las variantes germinales, esta información aparece en INFO y es de 0, 0,5 o 1. 
+
+El fichero de solo tumor, tiene más variantes porque no puede excluir todas las variantes germinales. No obstante, el número de mutaciones sigue siendo mayor que la suma de tumor matched y las mutaciones germinales calculadas en la parte anterior. Esto se debe a que, al calcular las variantes germinales, el algoritmo solo se queda con aquellas que tengan una frecuencia alélica de 0,5 o de 1, no con todo el rango como el que detecta tumor only. Por ejemplo, por contaminación, tumor only puede detectar una variante germinal que no esté al 0,5 o 1 y que, por tanto, esté excluida del análisis de variantes germinales. El fichero de tumor only siempre va a  tener más variantes.
