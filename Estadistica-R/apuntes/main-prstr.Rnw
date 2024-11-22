@@ -2414,7 +2414,7 @@ Existe un enfoque diferente para el problema de las pruebas múltiples. En este 
 
 Una diferencia clave es que el FDR puede mantenerse razonablemente bajo (digamos, 0,01) incluso cuando es casi seguro que $V\geq 1$. ¿Cuándo puede ocurrir esto? Por ejemplo, cuando realizamos decenas de miles de pruebas de hipótesis. De nuevo, la FDR controlará la fracción de falsos descubrimientos, mientras que el control de la tasa de error por familia (FWER) hace hincapié en que $V$ no se convierta en 1 o más.
 
-Al igual que hicimos con Tukey y los procedimientos FWER, en general no especificamos previamente el nivel de FDR que queremos alcanzar, sino que obtenemos "valores p ajustados". La diferencia en el significado de "ajustados" es que ahora estos valores p están ajustados para FDR (no ajustados para el control de la tasa de error por familia). Así, cuando tratamos con FDR, el p-valor ajustado de una hipótesis individual es el nivel más bajo de FDR para el que la hipótesis se incluye por primera vez en el conjunto de hipótesis rechazadas
+Al igual que hicimos con Tukey y los procedimientos FWER, en general no especificamos previamente el nivel de FDR que queremos alcanzar, sino que obtenemos "valores p ajustados". La diferencia en el significado de "ajustados" es que ahora estos valores p están ajustados para FDR (no ajustados para el control de la tasa de error por familia). Así, cuando tratamos con FDR, el p-valor ajustado de una hipótesis individual es el nivel más bajo de FDR para el que la hipótesis se incluye por primera vez en el conjunto de hipótesis rechazadas.
 
 La FDR suele emplearse en procedimientos de cribado o screening, en los que estamos dispuestos a permitir algunos descubrimientos falsos, porque estamos cribando miles de hipótesis. El coste de exigir $V = 0$ sería pasar por alto muchos descubrimientos. ¿Un ejemplo? Supongamos que se ha medido la expresión de 20.000 genes en dos grupos de sujetos, algunos con cáncer de colon y otros no. Ahora puedes hacer el equivalente a 20.000 pruebas t. Así que obtendrás 20.000 valores p, y querrás ajustar esas 20.000 pruebas para pruebas múltiples.
 
@@ -2473,7 +2473,7 @@ Los términos que representan los efectos de los factores se suman directamente:
 En cuanto a la parametrización del modelo, solo se estiman los parámetros del intercepto ($\mu$) y los efectos individuales de los niveles de A y B. La interpretación de los términos es independiente, ya que no hay interacción. Por ejemplo, con dos niveles en A y B, el modelo tiene 3 parámetros ($\mu, Aa2, Bb2$).
 
 %Lo primero que hay que comprobar es que los grados de libertad de los términos que nos interesen (no los residuos) estén bien. Como A y B tenían ambos dos niveles, ambos deben tener un grado de libertad. 
-Es importante mencionar que los números hubiesen sido diferentes si en el código hubiésemos antepuesto B a A (\code{lm(y ~ B + A)}).
+Es importante mencionar que los números hubiesen sido diferentes si en el código hubiésemos antepuesto B a A (\code{lm(y $\sim$ B + A)}).
 
 Si los p-valores de A o B son pequeños, se concluye que esos factores tienen un efecto significativo en y.
 
