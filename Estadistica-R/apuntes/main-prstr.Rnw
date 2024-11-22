@@ -2547,14 +2547,14 @@ tapply(dcholest$y, list(Diet=dcholest$Diet, Drug=dcholest$Drug),
 En R a menudo podemos utilizar diferentes formas de obtener resultados de un modelo lineal, incluyendo regresión y ANOVA. 
 \begin{itemize}
 \item La función \texttt{lm} ajusta modelos lineales, incluyendo regresión y ANOVA (la mayoría de ellos, no todos).
-\item La función \texttt{aov} también puede utilizarse para ajustar modelos ANOVA. No la utilizamos para ajustar modelos de regresión. Y la mayoría de los modelos que se pueden ajustar con \texttt{aov} se pueden ajustar con \texttt{lm}. En lo que respecta a este curso, su sintaxis es la misma.
-\item \texttt{Anova} y \texttt{anova} le dan tablas ANOVA de modelos ajustados con \texttt{lm}. La principal diferencia entre los dos es que \texttt{Anova} da, por defecto, lo que se llama sumas de cuadrados y pruebas de Tipo II, que utilizaremos la mayoría de las veces para tratar cuestiones sobre el orden de los factores. Todo esto se explicará en detalle.
-\item Función \texttt{anova} también se puede utilizar para comparar modelos. Veremos ejemplos.
-\item La función \texttt{summary} sobre un objeto ajustado con \texttt{aov} también le dará una tabla ANOVA. Rara vez usaremos esto (aunque podría ser el código que algunos menús en R commander realmente generan, y usted podría verlo en el código de otras personas).
+\item La función \texttt{aov} también puede utilizarse para ajustar modelos ANOVA. No la utilizamos para ajustar modelos de regresión. La mayoría de los modelos que se pueden ajustar con \texttt{aov} se pueden ajustar con \texttt{lm}. En lo que respecta a este curso, su sintaxis es la misma.
+\item \texttt{Anova} y \texttt{anova} dan tablas ANOVA de modelos ajustados con \texttt{lm}. La principal diferencia entre los dos es que \texttt{Anova} da, por defecto, lo que se llama sumas de cuadrados y pruebas de Tipo II, que utilizaremos la mayoría de las veces para tratar cuestiones sobre el orden de los factores. Además, \texttt{anova} también se puede utilizar para comparar modelos. 
+\item La función \texttt{summary} sobre un objeto ajustado con \texttt{aov} también dará una tabla ANOVA. Rara vez usaremos esto (aunque podría ser el código que algunos menús en R commander realmente generan, y se podría ver en el código de otras personas).
 \item Función \texttt{summary} sobre un objeto equipado con \texttt{lm} dará, entre otros, una tabla de coeficientes, no una tabla ANOVA.
 \end{itemize}
 
 <<out.width='12cm', out.height='12cm'>>=
+library(effects)
 plot(allEffects(cholestanova), ask = FALSE)
 @
 
@@ -2563,6 +2563,7 @@ Básicamente, una interacción significa que el efecto de una variable depende d
 <<out.width = '8cm', out.height = '8cm'>>=
 with(dcholest, interaction.plot(Drug, Diet, y, type = "b"))
 @
+En este gráfico se ve lo que hemos mencionado antes: el fármaco A es mejor para personas que siguen una dieta alta en grasas, pero el fármaco B es mejor en los otros dos casos. Este gráfico muestra el cruce.
 
 Un gráfico de caja también puede ayudar a mostrar la interacción. Se muestran dos diferentes, que difieren por el orden en que se especifican los factores (uno u otro puede ser más fácil de decodificar visualmente):
 <<fig.width=5, fig.height=10, fig.show='hold'>>=
