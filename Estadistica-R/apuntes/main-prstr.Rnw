@@ -1757,7 +1757,7 @@ Es recomendable familiarizarse con las clases S3 en R. En BioConductor, es posib
 
 %11/11 - Ramón Díaz
 \part{Estadística con R}
-\chapter{Comparación entre dos grupos}
+\chapter{Fundamentos y preparativos}
 \section{Introducción a la comparación entre dos grupos}
 Alguien del laboratorio ha medido la expresión de varios genes de un conjunto de pacientes con y sin cáncer. Nosotros somos el encargado de los datos y responder a la pregunta "¿Difiere la expresión de los genes entre los pacientes con y sin cáncer?"
 
@@ -1786,7 +1786,7 @@ Muchos datos biológicos están en una escala nominal. Por ejemplo, supongamos q
 \item[Escala de intervalos o de proporciones] Se pueden tomar diferencias y proporciones, y sí que tienen significado. Si un sujeto tiene un valor de 6 para la expresión del gen PTEN, otro un valor de 3, y otro un valor de 1, entonces el primero tiene seis veces más ARN de PTEN que el último, y dos veces más que el segundo.
 \end{description}
 
-\section{Mirar los datos: plots}
+\section{Visualizació inicial de datos}
 El primer paso siempre es mirar los datos. De hecho, aquí podemos ver todos los datos originales. Así que echa un vistazo a los datos.
 
 \subsection{Plots a hacer}
@@ -1811,7 +1811,8 @@ scatterplotMatrix( ~ brca1 + brca2 + p53 + pten | cond,
 
 No vamos a seguir con esto. Pero se puede y probablemente desee mirar a este tipo de gráficos de forma rutinaria.
 
-\section{Comparar dos grupos con t-test}
+\chapter{Comparación entre dos grupos}
+\section{T-test para dos grupos}
 La forma más sencilla de realizar un test de la t es mediante:
 <<>>=
 t.test(p53 ~ cond, data = dp53)
@@ -1883,7 +1884,7 @@ Para un mismo estadístico t, un test de una cola tendrá un p-valor igual a la 
 
 Algunos tests, como el ANOVA, utilizan la distribución F, la cual tiene una sola cola de manera natural, ya que evalúa si existe variabilidad significativa entre varios grupos en cualquier dirección sin considerar una dirección específica. En el caso del test de la t, se debe decidir entre un test de una o dos colas en función de la hipótesis científica planteada y siempre antes de observar los datos, para evitar que los resultados influyan en la elección del tipo de test.
 
-\section{Potencia de un test}
+\section{Consideraciones sobre potencia estadística de un test}
 Si existe una verdadera diferencia de medias, nos gustaría detectarla. La potencia se refiere a nuestra capacidad para rechazar el nulo cuando es falso. Esta figura puede ayudar; las filas se refieren al estado real del Universo y las columnas a la decisión que se toma.
 
 \begin{table}[h!]
@@ -1918,6 +1919,7 @@ En estudios con baja potencia, las estimaciones de los efectos de las pruebas qu
 
 Además, el tamaño de la muestra afecta el valor de p asociado a un estadístico t dado. Para un mismo valor de t, un tamaño de muestra grande se traduce en un p-valor más pequeño que el que obtendríamos con un tamaño de muestra pequeño, lo que significa que la significancia estadística es más fácil de alcanzar con muestras grandes, incluso si el efecto real es pequeño. Este fenómeno subraya la importancia de interpretar los valores p en contexto, considerando tanto el tamaño de muestra como la potencia del estudio para obtener una estimación realista del efecto.
 
+\chapter{Inferencia estadística}
 \section{(Bio)equivalencia}
 Hemos configurado las cosas de modo que \textbf{necesitamos pruebas suficientemente sólidas para rechazar el nulo} y \textbf{utilizamos p-valores de medidas de fuerza de las pruebas CONTRA el nulo}. Esto es a menudo lo que queremos en la ciencia, pero no siempre. Y en muchos casos, en particular en cuestiones relacionadas con la salud pública, es posible que queramos seguir un principio de precaución.
 
@@ -1960,7 +1962,8 @@ Los intervalos de confianza, en general, ofrecen más información que los p-val
 
 Finalmente, la interpretación de un p-valor adecuado depende del contexto. Aunque históricamente se ha utilizado un umbral de 0,05, en ciertos contextos este nivel puede ser demasiado alto, y puede ser necesario establecer un criterio más estricto o considerar otras métricas adicionales según la naturaleza del estudio.
 
-\section{Tests apareados}
+\chapter{Comparación de datos emparejados}
+\section{Pruebas estadísticas para datos emparejados}
 Los tests apareados son un tipo de análisis estadístico diseñado para comparar dos medidas tomadas sobre el mismo grupo de individuos o unidades experimentales bajo condiciones distintas. Su uso es especialmente común en estudios donde se desea evaluar el efecto de un tratamiento o intervención midiendo a los mismos sujetos en dos momentos diferentes (pre y post intervención) o bajo dos condiciones diferentes. Al comparar cada sujeto consigo mismo, estos tests ayudan a controlar la variabilidad intrasujeto y, por tanto, pueden aumentar la precisión y potencia estadística en comparación con un test de muestras independientes.
 
 En los tests apareados, el análisis se enfoca en las diferencias intrasujeto (o intraunidad), lo que permite aislar el efecto de la condición o el tiempo sobre cada individuo. El test de la t apareado, una de las pruebas más usadas para este tipo de análisis, evalúa si la media de las diferencias entre dos medidas es significativamente distinta de cero, lo cual indicaría una diferencia sistemática entre las condiciones evaluadas.
@@ -2026,7 +2029,7 @@ Cuando se va a realizar un test de la t emparejado, se pueden organizar los dato
 \end{table}
 
 En general, es más útil tener los datos organizada de forma "apilada".
-\newpage
+
 <<>>=
 (merged3 <- reshape(dmyc, direction = "wide", idvar = "id",
                     timevar = "cond", v.names = "myc"))
@@ -2201,7 +2204,7 @@ wilcox.test(dmyc$myc[1:12], dmyc$myc[13:24], paired = TRUE)
 wilcox.test(log(dmyc$myc[1:12]), log(dmyc$myc[13:24]), paired = TRUE)
 @
 
-\section{Symmetry and the paired t-test}
+\section{Simetría y el test de la t emparejado}
 En la prueba t pareada, la simetría de las diferencias entre sujetos ($W = U - V$) es crítica porque la prueba asume que estas diferencias se muestrean a partir de una población con una distribución aproximadamente normal. Se trata de un supuesto clave para la validez de la prueba t, ya que afecta directamente al cálculo del estadístico de la prueba y a su comparación con la distribución t.
 
 La prueba t apareada se centra en las diferencias ($W$) en lugar de las distribuciones originales de ($U$) ("después") y ($V$) ("antes"). Por lo tanto, la relevancia de las distribuciones de $U$ y $V$ radica en cómo se combinan para formar $W$: Si $U$ y $V$ tienen distributiones similares (por ejemplo, formas, medias o varianzas parecidas), $W$ tiene más probabilidaes de ser simétrico alrededor de su media. Si $U$ y $V$ difieren sustancialmente en forma, escala o dispersión, $W$ podría ser asimétrico, lo que viola el supuesto de simetría de la prueba t apareada.
@@ -2239,7 +2242,7 @@ t.test(brca2 ~ cond, data = dbrca)
 @
 
 \chapter{Modelos lineares: ANOVA, regresión, ANCOVA}
-\section{Modelos lineares}
+\section{Introducción a los modelos lineares}
 En un test apareado, el modelo puede representarse de la siguiente manera:
 \[Expression.of.MYC = function(subject\ and\ condition) + \epsilon\]
 Este modelo describe cómo se distribuyen los valores observados (en este caso, la expresión de MYC) en función de los factores que afectan la medición, como el sujeto y la condición experimental, junto con un término de error estadístico ($\epsilon$) que captura la variabilidad no explicada por estos factores. 
@@ -2263,10 +2266,10 @@ summary(LinearModel.1)
 t.test(myc.nc, myc.cancer, paired = TRUE)
 @
 
-\section{Introduction to ANOVAs, regression, and linear models}
+\section{ANOVAs}
 Los modelos lineales y sus extensiones (que incluyen la regresión logística, pero también el análisis de supervivencia, muchos problemas de clasificación, modelos no lineales, análisis de experimentos, tratamiento de muchos tipos de datos dependientes, etc.) son un tema fundamental de la estadística. Aquí sólo arañaremos la superficie, pero estos métodos son extremadamente potentes y flexibles y pueden utilizarse para abordar una enorme variedad de cuestiones de investigación diferentes. ANOVAs, regresión, ANCOVAs, son sólo tipos especiales de modelos lineales.
 
-\subsection{An ANOVA; some basic theory and output}
+\subsection{ANOVA: teoría y ejemplos prácticos}
 Se diferencia mean square (MS) between de MS within. $MS_B$ mide la variabilidad entre los grupos, y se calcula como la suma de cuadrados entre grupos (mide qué tan lejos están las medias de cada grupo de la media global) dividido por los grados de libertad entre grupos.
 $$MS_B = \frac{SSB}{dfb} = \frac{\sum^k_{j=1}(\bar{X_j} - \bar{X})^2}{n-k}$$
 
