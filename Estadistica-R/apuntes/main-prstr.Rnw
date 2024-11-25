@@ -2911,6 +2911,8 @@ Esta es, por cierto, la razón por la que se puede estar muy seguro de una tende
 Por el contrario, si $\sigma$ es muy, muy, muy pequeño, entonces las bandas de predicción serán muy, muy cerca de las bandas de intervalo de confianza.
 \end{itemize}
 
+En resumen, los intervalos de confianza delimitan la incertidumbre en la estimación de la línea de regresión (valores esperados de Y). Cuando mayor sea la muestra, más estrecho será el intervalo. Los intervalos de predicción capturan la variabilidad de las observaciones individuales en torno a la línea de regresión. Incluyen la incertidumbre de la estimación más la varianza de las observaciones.
+
 \subsection{Intervalos de confianza para los parámetros}
 <<>>=
 confint(metablog)
@@ -2931,8 +2933,10 @@ abline(h = confint(metablog)[2, ], lty = 2)
 
 \section{Regresión múltiple}
 \subsection{Introducción a la regresión múltiple}
-Se pueden tener muchos predictores o variables independientes:
+En la regresión múltiple, el modelo se extiende a múltiples predictores:
 \[Y = \alpha + \beta_1 X_1 + \beta_2 X_2 + \ldots + \epsilon\]
+
+Cada coeficiente describe el efecto de su predictor sobre Y, manteniendo constantes los demás predictores. Correlaciones altas entre predictores pueden inflar errores estándar, dificultando la identificación de efectos individuales. $R^2$ mide la proporción de varianza explicada por el modelo, mientras que el valor ajustado penaliza la inclusión de predictores irrelevantes.
 
 <<echo=FALSE,results='hide'>>=
 data(cystfibr, package = "ISwR")
