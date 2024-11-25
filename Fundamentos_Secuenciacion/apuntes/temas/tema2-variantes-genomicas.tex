@@ -176,3 +176,139 @@ Cuando solo se mide el tumor, el número es casi el doble. Al dar el normal, el 
 Las frecuencias alélicas vienen en la columna FORMAT bajo AF. Estas frecuencias van del 0 al 1 en todo el rango. En las variantes germinales, esta información aparece en INFO y es de 0, 0,5 o 1. 
 
 El fichero de solo tumor, tiene más variantes porque no puede excluir todas las variantes germinales. No obstante, el número de mutaciones sigue siendo mayor que la suma de tumor matched y las mutaciones germinales calculadas en la parte anterior. Esto se debe a que, al calcular las variantes germinales, el algoritmo solo se queda con aquellas que tengan una frecuencia alélica de 0,5 o de 1, no con todo el rango como el que detecta tumor only. Por ejemplo, por contaminación, tumor only puede detectar una variante germinal que no esté al 0,5 o 1 y que, por tanto, esté excluida del análisis de variantes germinales. El fichero de tumor only siempre va a  tener más variantes.
+
+%25/11 - Dido
+\chapter{Anotación de variantes}
+La anotación de variantes consiste en enriquecer los archivos VCF con información adicional útil para su priorización. Esta información proviene tanto de bases de datos como de cálculos basados en la posición genómica de las variantes.
+
+Dado el gran número de variantes en un archivo VCF, es impráctico evaluarlas manualmente. Como no todas tienen impacto relevante en el fenotipo de estudio, se aplican filtros para reducir el conjunto a las variantes potencialmente relevantes. Esto incluye descartar variantes comunes, benignas o de significancia incierta (VUS, variants of unknown significance).
+
+En una anotación estándar, se incluye información sobre:
+\begin{itemize}
+\item Tipo de variante (SNV, indel, etc.)
+\item Localización genómica
+\item Consecuencias en la secuencia
+\item Predicción del impacto funcional
+\item Frecuencia poblacional
+\item Asociación con patologías conocidas
+\end{itemize}
+
+\section{Nomenclatura de variantes}
+Las variantes se identifican por el cromosoma, la coordenada genómica, el alelo de referencia y el alelo alternativo. Existen dos genomas de referencia principales: hg19 y hg38. El más reciente, hg38, es el recomendado para investigaciones actuales. Para convertir coordenadas entre estas referencias, se puede utilizar la herramienta Liftover disponible en UCSC.
+
+El impacto en el ADN codificante y en la proteína se describe según la nomenclatura HGVS:
+\begin{itemize}
+\item g. genomic reference sequence
+\item c. coding DNA reference sequence
+\item m. mitochondrial DNA reference sequence
+\item n. non-coding DNA reference sequence
+\item r. RNA reference sequence (transcript)
+\item p. protein reference sequence
+\end{itemize}
+
+Para asegurar la uniformidad, se recomienda seguir las \href{https://hgvs-nomenclature.org/stable/recommendations/general/}{guías estandarizadas para la nomenclatura HGVS}.
+
+Las mutaciones pueden tener efectos diferentes en los transcritos de un mismo gen debido al splicing alternativo. Algunas enfermedades surgen por mutaciones que afectan transcritos minoritarios mientras que el principal permanece intacto. Para gestionar esta complejidad, se usan identificadores únicos, como los de Ensembl:
+\begin{itemize}
+\item Gene Identifiers: ENSG 
+\item Transcript Identifiers: ENST
+\end{itemize}
+
+Además, las bases de datos como \href{https://www.genecards.org/}{GeneCards} o \href{https://www.genenames.org/}{GeneNames} ayudan a identificar el nombre oficial del gen, ya que un mismo gen puede tener varios nombres comunes.
+
+Ensembl proporciona información detallada sobre cada gen, sus transcritos y biotipos, junto con equivalencias entre diferentes bases de datos. Por ejemplo:
+\begin{itemize}
+\item RefSeq incluye principalmente el transcrito principal
+\item MANE es una anotación colaborativa que indica el transcrito principal
+\end{itemize}
+
+Para proteínas, la base de datos por referencia es \href{https://www.uniprot.org/}{Uniprot},  que incluye información sobre función, localización subcelular, relación con enfermedades y efectos de mutaciones.
+Además, APPRIS (proyecto de Gencode) identifica transcritos principales y sus isoformas, categorizados como MANE, canonical o APPRIS principal.
+
+\section{Consecuencias en la secuencia}
+El impacto de una variante depende de su ubicación dentro del gen o región reguladora. Las consecuencias están codificadas y documentadas en \href{https://www.ensembl.org/info/genome/variation/prediction/predicted_data.html}{Ensembl}. 
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = \textwidth]{figs/consequences.png}
+\end{figure}
+
+\begin{itemize}
+\item Mutaciones puntuales:
+\begin{itemize}
+\item Missense: cambian un aminoácido. Pueden ser conservativas o no conservativas en función de si mantienen la polaridad.
+\item Nonsense: introducen un codón de parada
+\item Silentes: no afectan al aminoácido
+\end{itemize}
+\item Mutaciones inframe: no alteran el marco de lectura
+\item Mutaciones frameshift: cambian el marco de lectura, afectando significativamente la proteína.
+\end{itemize}
+
+Las consecuencias se clasifican según su impacto:
+\begin{itemize}
+\item Alto: frameshift, nonsense
+\item Moderado: missense
+\item Bajo: silentes
+\item Modificador: sin efecto directo conocido
+\end{itemize}
+
+Esta clasificación facilita priorizar variantes según su potencial efecto dañino.
+
+\section{Predicción del impacto funcional}
+Existen numerosos algoritmos para predecir el impacto de variantes en la función y estructura de proteínas. Estos se agrupan en:
+\begin{itemize}
+\item Predictores para variantes missense
+\item Predictores para variantes que afectan el splicing
+\item Predictores basados en la conservación evolutiva
+\end{itemize}
+
+\subsection{Predictores para variantes missense}
+El hecho de que haya tantos predictores hace que haya varias escalas para predecir el impacto de un cambio. Cada software tiene su escala y sus criterios para ver si una variante es benigna o no. Por ello, se realiza la anotación con varios y se busca el consenso entre ellos. Algunos predictores son:
+\begin{itemize}
+\item \textbf{Sift:} evalúa el efecto funcional basándose en homología y propiedades de aminoácidos. Score: 0-1 (más bajo = mayor impacto); < 0,05 deleterious
+\item \textbf{PolyPhen:} basado en estructura y función proteica. Score: 0-1 (más alto = mayor impacto); benigno < $\sim$ 0,435 < dañino
+\item \textbf{Revel:}  integra 13 herramientas, incluidas SIFT y PolyPhen, para una predicción más robusta.
+\item \textbf{ClinPred:} utiliza machine learning para identificar variantes relevantes en enfermedades, incorporando frecuencias alélicas de gnomAD.
+\item \textbf{AlphaMissense:} se trata de una adaptación de AlphaFold ajustada a bases de datos de frecuencias de poblaciones de variantes humanas y primates para predecir la patogenicidad de variantes sin sentido combinando el contexto estructural y la conservación evolutiva. Genera predicciones para todas las posibles sustituciones de aminoácidos en humanos y clasificación del 89\% de las variantes sin sentido como probablemente benignas o patógenas.
+\end{itemize}
+
+Como no hay consenso, a la hora de realizar la prioridad hay que tener en cuenta su score. Estos predictores tienen una precisión y especificidad moderada, por lo que se deben utilizar en conjunto y ver el consenso.
+
+\subsection{Predictores para variantes de splicing}
+En cuanto a los predictores de splicing, uno muy notable es \textbf{SpliceAI}. Se trata de una herramienta basada en deep-learning que identifica las variantes de splicing y predice el efecto. La puntuación delta de una variante oscila entre 0 y 1 y puede interpretarse como la probabilidad de que la variante altere el splicing. En el artículo se ofrece una caracterización detallada de los valores de corte de 0,2 (alta recuperación), 0,5 (recomendado) y 0,8 (alta precisión).
+
+\section{Frecuencias poblacionales}
+Las frecuencias poblacionales ayudan a filtrar variantes comunes. Si una variante aparece en más del 1\% de la población, se considera un polimorfismo y generalmente no se asocia a enfermedades graves. Estas variantes pueden causar diferencias desde el color de pelo a la respuesta frente a fármacos. Las bases de datos clave son:
+\begin{itemize}
+\item gnomAD: es la más completa, con datos de 807,162 individuos divididos entre exomas y genomas completos, y estratificados por población y sexo. También incluye una versión con individuos sanos. Las variantes se pueden buscar mediante las coordenadas de hg38.
+\item Proyecto 1000 Genomas
+\item dbSNP
+\item CIBERER: servidor de variantes en la población española con 2.100 exomas. Permite obtener información mucho más concreta de la población
+\end{itemize}
+
+\section{Asociación con enfermedades}
+Muchas bases de datos incluyen información aportada por mutaciones in silico o in vivo que guardan relación con el desarrollo de una enfermedad. Algunas de ellas son de pago (como HGMD), pero hay otras buenas de libre acceso.
+\begin{itemize}
+\item \textbf{ClinVar}: recoge una serie de mutaciones (principalmente pequeñas SNV e indels, aunque hay algunas CNV), dando información sobre la clasificación clínica de la variante (benigna, probablemente benigna, patogénica, probablemente patogénica, respuesta a fármacos, factor protector para una condición, factor de riesgo, etc.), la enfermedad que causa y estatus de revisión. La mayor parte de las variantes son de significado incierto.
+\item \textbf{OMIM}: es una base de datos de genes humanos y trastornos y rasgos genéticos con un enfoque particular en la relación gen-fenotipo. La búsqueda se realiza por enfermedad para ver todas las variantes asociadas a la misma.
+\item \textbf{COSMIC}: es una base de datos en línea que recoge las mutaciones somáticas descubiertas en el cáncer humano. Recopila datos de publicaciones científicas y de estudios experimentales a gran escala.
+\end{itemize}
+
+\section{Herramientas de anotación}
+Las herramientas de anotación más comunes son:
+\begin{itemize}
+\item \textbf{Variant Effect Predictor (VEP):} se trata de una herramienta de Ensembl, siendo la más utilizada y completa. Proporciona anotaciones para los distintos tipos de alteraciones en las diferentes localizaciones genómicas. Tiene una versión en línea de comandos, pero también una \href{https://www.ensembl.org/info/docs/tools/vep/index.html}{versión web}. Permite incluir los identificadores de gen, versión del transcrito, UniProt y HGVS, además de muchos otros predictores e información. 
+\item \textbf{ANNOVAR}
+\item \textbf{Variant Effect}
+\item \textbf{Predictor}
+\item \textbf{VarAFT}
+\item \textbf{SnpEff}
+\end{itemize}
+
+Utilizando VEP con los datos generados en la llamada de variantes somáticas con tejido normal pareado, los resultados son los siguientes (muchas columnas de la tabla están ocultas, como la puntuación de los distintos predictores):
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = \textwidth]{figs/vep-result.png}
+\end{figure}
+
+Para priorizar, se tendría en cuenta el score de AlphaMissense, SpliceAI, ClinPred, Revel, Sift y PolyPhen, buscando un consenso entre todos. Además, se puede buscar el identificador en ClinVar por si se hubiese recogido una asociación.
