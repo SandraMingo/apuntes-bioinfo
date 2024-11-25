@@ -2587,13 +2587,412 @@ Sin embargo, hay buenas razones para empezar ajustando primero un modelo \textbf
 \subsection{El orden de los factores}
 \begin{enumerate}
 \item Supongamos que realizamos un ANOVA de dos vías en el que la variable dependiente (Y) es «despierto en clase» y sus variables predictoras son el sexo (mujer u hombre) y el café por la mañana (sí o no).
-\item Supongamos que en la muestra hay 10 mujeres que beben café y 10 hombres que no beben café. ¿Se puede decir algo sobre el efecto del sexo que no esté diciendo algo (o incluso todo) sobre el efecto del café?
-\item Ahora supongamos que el diseño está perfectamente equilibrado: 5 mujeres que beben café, 5 mujeres que no beben café, 5 hombres que beben café, 5 hombres que no beben café. Si se dijera "he medido a una mujer", ¿se podría saber si también es bebedora de café o no?
-\item Ahora, piensa en escenarios intermedios.
+\item Supongamos que en la muestra hay 10 mujeres que beben café y 10 hombres que no beben café. ¿Se puede decir algo sobre el efecto del sexo que no esté diciendo algo (o incluso todo) sobre el efecto del café? No, porque no se pueden estimar los factores de forma independiente.
+\item Ahora supongamos que el diseño está perfectamente equilibrado: 5 mujeres que beben café, 5 mujeres que no beben café, 5 hombres que beben café, 5 hombres que no beben café. Si se dijera "he medido a una mujer", ¿se podría saber si también es bebedora de café o no? En este caso sí podemos estimar independientemente el efecto de los factores.
 \item Se puede sustituir la Y por "enfermedad cardiovascular" y las variables predictoras por "tabaco" (sí y no) y "ejercicio" (sí y no). ¿Se puede decir algo sobre los efectos del ejercicio si todas las personas de la muestra que hacen ejercicio son también no fumadores? (Se puede repetir esto con otros pares de variables, como dieta y ejercicio, expresión génica y edad, expresión génica y sexo, etc).
 \end{enumerate}
 
-%3666
+%25/11 - Ramón
+Para realizar el ANOVA sin interacción, creamos los datos excluyendo la dieta HF y calculamos ANOVA de interacción.
+<<>>=
+dcholest2 <- subset(dcholest, subset = Diet != "HF")
+cholest2anova <- (lm(y ~ Diet * Drug, data = dcholest2))
+Anova(cholest2anova)
+@
 
+El resultado indica que no hay interacción (p-valor > 0,05), por lo que podemos utilizar el modelo sin interacción.
+<<>>=
+lm1 <- lm(y ~ Diet + Drug, data = dcholest2)
+anova(lm1)
+
+lm2 <- lm(y ~ Drug + Diet, data = dcholest2)
+anova(lm2)
+@
+
+Los valores en ambas tablas son diferentes. Esta tabla de ANOVA se conoce como secuencial. En \code{lm2}, la primera fila testa la hipótesis nula de si hay alguna diferencia en la media de y relacionada con la variación del término Drug. La segunda fila mira si hay una diferencia en la media de y después de haber ajustado de lo que viene antes. Así, al mirar el efecto de Dieta, antes se ha ajustado el efecto de Drug, es decir, intenta explicar lo que no ha quedado explicado por el término anterior. En \code{lm1} ocurre lo mismo, pero en orden invertido. Por ello, los valores no son iguales (el diseño no es balanceado u ortogonal \footnote{Ortogonal hace referencia a un diseño experimental con un producto escalar que sea 0. Si los tamaños de muestra son iguales, se considera suficiente para poder decir que se trata de un diseño ortogonal, pudiendo así estimar cada efecto principal e interacción de forma independiente.}). Se podría expresar también mediante:
+\begin{verbatim}
+m_a <- lm(y ~ Drug)
+m_b <- lm(y ~ Drug + Diet)
+
+m_a vs m_b
+\end{verbatim}
+
+A continuación comparamos la salida de \code{Anova}.
+<<>>=
+Anova(lm1)
+Anova(lm2)
+@
+
+En este caso, las entradas son idénticas, y el orden no afecta. Las sumas de cuadrados de tipo II no son secuenciales. Se mira cada término como si hubiera sido introducido el último, habiendo ajustado por todo lo demás que no incluya a ese término. 
+
+El valor F (y el valor p) de la tabla ANOVA de Sumas de Cuadrados de Tipo II son los mismos que los del término que entra en último lugar en el Tipo I (los producidos mediante \code{anova}, sin la "A" mayúscula).
+
+Se trata de un \textbf{fenómeno extremadamente común} cuando el diseño no está perfectamente equilibrado (con variables independientes categóricas) o existen correlaciones (con covariables continuas, como en la regresión). En resumen:
+\begin{itemize}
+\item Las sumas de cuadrados de tipo II (similares a los estadísticos t de un modelo lineal) muestran lo que aporta ese término, \textbf{dado que todos los demás} ya están en el modelo ("dado todos los demás": todos los demás que no incluyen este término, por lo que no hay interacciones con este término). En otras palabras, dado todos los demás términos (que no incluyen este término) ya se han tenido en cuenta. En realidad, éste es el resultado que obtendríamos al comparar dos modelos, uno con todos los términos y otro con todos los términos excepto el término en cuestión. (Siempre suponiendo que las interacciones con el término en cuestión son cero). Esto es lo que se obtiene con \code{Anova}.
+\item Las sumas de cuadrados de tipo I (o secuenciales) son secuenciales, en el orden mostrado en la salida. R, por defecto, da esto a través de \code{anova}.
+\end{itemize}
+
+\subsubsection{Tipo I vs Tipo II}
+Dejemos que R represente la suma residual de cuadrados para un modelo, así por ejemplo R(A, B, AB) es la suma residual de cuadrados que ajusta todo el modelo, R(A) es la suma residual de cuadrados que ajusta sólo el efecto principal de A, y R(1) es la suma residual de cuadrados que ajusta sólo la media.
+
+Un residuo es la desviación entre lo observado y lo predicho por el modelo. 
+
+\textbf{Type I}\\
+Las sumas de cuadrados de tipo I son dependientes del orden en que se introducen los factores en el modelo. R las genera por defecto con \code{anova}. En este enfoque, cada término se ajusta secuencialmente:
+\begin{enumerate}
+\item El primer término se ajusta comparando un modelo con solo la media ($R(1)$) contra uno que incluye ese término ($R(A)$).
+\item El segundo término se ajusta después de incluir el primero, comparando $R(A)$ contra $R(A,B)$.
+\item La interacción se ajusta al final, comparando $R(A,B)$ contra $R(A,B,AB)$.
+\end{enumerate}
+
+\begin{verbatim}
+A:  SS(A) = R(1) - R(A)
+B:  SS(B|A) = R(A) - R(A, B)
+AB: SS(AB|A, B) = R(A, B) - R(A, B, AB)
+\end{verbatim}
+
+\vspace*{15pt}
+
+\textbf{Type II}\\
+Las sumas de cuadrados tipo II son independientes del orden de los términos y miden el efecto de un factor asumiendo que no hay interacción significativa. Se considera cada término principal después de ajustar por los demás. Asume que no hay interacción, por lo que es más apropiado cuando las interacciones no son significativas.
+
+\begin{verbatim}
+A:  SS(A|B) = R(B) - R(A, B)
+B:  SS(B|A) = R(A) - R(A, B)
+AB: SS(AB|A, B) = R(A, B) - R(A, B, AB)
+\end{verbatim}
+
+%\vspace*{15pt}
+%
+%\textbf{Type III}\\
+%Las sumas de cuadrados tipo III son apropiadas para modelos donde se incluyen interacciones y son útiles para analizar datos no balanceados. Evalúa el efecto de un término principal considerando todos los demás términos, incluidas las interacciones. Más compleja de interpretar, ya que los efectos principales se analizan en el contexto de las interacciones.
+%
+%\begin{verbatim}
+%A:  SS(A|B, AB) = R(B, AB) - R(A, B, AB)
+%B:  SS(B|A, AB) = R(A, AB) - R(A, B, AB)
+%AB: SS(AB|A, B) = R(A,B) - R(A, B, AB)
+%\end{verbatim}
+%
+%Considerando el ejemplo anterior:
+%
+%m_diet <- lm(y ~ Diet, data = dcholest)
+%m_drug <- lm(y ~ Drug, data = dcholest)
+%m_diet_drug <- lm(y ~ Diet + Drug, data = dcholest)
+%m_int <- lm(y ~ Diet * Drug, data = dcholest)
+%
+%summary(m_diet)
+%anova(m_diet)
+%anova(m_drug)
+%anova(m_diet_drug)
+%anova(m_diet, m_diet_drug)
+%## 124.1: RSS from model m_diet
+%## 91.8 : RSS from model m_diet_drub
+%## 32.3 = 124.1 - 91.8:
+%## SS(drug|diet) = R(m_diet) - R(m_diet_drug)
+%anova(m_drug, m_diet_drug)
+%## SS(diet|drug) = R(m_drug) - R(m_diet_drug)
+%## 75.5 = 167.3 - 91.8
+%Anova(m_diet_drug)
+%
+%## But also the sum SS here for drug and diet
+%Anova(m_int)
+%
+
+\subsubsection{Importancia del orden}
+Cuando el diseño está equilibrado, el orden no importa. Sin embargo, salvo que sepamos que los datos cumplen con unas propiedades concretas, deberíamos esperar que el orden sí importe. 
+
+<<>>=
+set.seed(1)
+sex <- factor(rep(c("Male", "Female"), c(20, 20)))
+drug <- factor(rep(rep(c("A", "B"), c(10, 10)), 2))
+y <- rep(c(10, 13, 12, 16), rep(10, 4))
+y <- y + rnorm(length(y), sd = 1.5)
+y.data <- data.frame(y, sex, drug)
+
+#Notice the perfect balance:
+with(y.data, tapply(y, list(sex, drug), function(x) sum(!is.na(x))))
+with(y.data, tapply(y, list(sex, drug), mean))
+@
+
+Sólo a ojo, parece que la diferencia entre sexos es de unos 2, y la diferencia entre fármacos de unos 4. Y no, no hay interacción:
+
+<<>>=
+summary(lm(y ~ sex * drug, data = y.data))
+@
+
+Ajustamos dos modelos, asumiendo que no hay interacción y cambiando el orden de los factores.
+<<>>=
+m1 <- lm(y ~ sex + drug, data = y.data)
+m2 <- lm(y ~ drug + sex, data = y.data)
+
+#La salida de coeficientes es la misma
+summary(m1)
+summary(m2)
+@
+
+También ajustamos dos modelos más pequeños, uno solo con sexo y otro solo con fármaco.
+<<>>=
+msex <- lm(y ~ sex, data = y.data)
+mdrug <- lm(y ~ drug, data = y.data)
+
+summary(msex)
+summary(mdrug)
+@
+
+En ambos casos, la estimación es la misma a partir del modelo con los dos factores o con un solo factor. Por ejemplo, las diferencias entre sexos son de aproximadamente 2,2 (el coeficiente que dice «sexMale») y las diferencias entre drogas de aproximadamente 3,8 (el coeficiente que dice «drugB»).  Sin embargo, el error típico y, por tanto, el valor t y el valor p cambian.
+
+La clave está en comprender que, aunque el coeficiente no cambie si se incluye o no el otro factor en el modelo (y no cambia porque aquí hay un equilibrio completo), el estadístico t y el valor p sí cambian porque el otro factor explica una gran parte de la varianza y, por tanto, hace que el error típico residual sea mucho menor si lo incluimos en el modelo.
+
+<<>>=
+anova(m1)
+anova(m2)
+@
+
+En cuanto a las tablas ANOVA, el orden no cambia nada. Esto se debe a que las contribuciones de cada factor no dependen en absoluto del otro (es decir, los cuadrados medios de cada factor no dependen del otro). Y como la F es el cociente de los cuadrados medios del factor sobre los cuadrados medios de los residuos (y esto es lo que queda después de haber ajustado todo), el orden no afecta al estadístico F ni al valor p.
+
+<<>>=
+anova(msex)
+anova(mdrug)
+@
+
+Observa que el cuadrado medio de cada factor es el mismo que en las tablas anteriores. Así que los cuadrados medios de Sexo no dependen de si el fármaco está o no en el modelo. Pero el estadístico F (y el valor p) sí cambian mucho, porque lo que cambia mucho son los cuadrados medios de los residuos. Esto se debe a que el otro factor, el que no hemos incluido, sí explica mucha variabilidad, pero en estas dos últimas tablas, como el otro factor no está en el modelo, esa variabilidad está incluida ahora en el término de error.
+
+Así que, resumiendo: cuando hay equilibrio, el orden no cambia nada si incluimos ambos factores en el modelo. Sin embargo, tener o no el otro factor en el modelo puede suponer una diferencia para los errores estándar, los errores estándar residuales y, por tanto, los p-valores.
+
+\subsection{Una observación por celda}
+No se deben ajustar modelos con una única observación por celda.
+
+\subsection{Breve ejemplo de dos vías}
+<<>>=
+library(ISwR)
+ck1 <- lm(time ~ width * temp, data = coking)
+Anova(ck1)
+anova(ck1)
+@
+Tan pronto como vemos una interacción entre los dos factores, no vamos a tener en cuenta el efecto de cada factor por individual.
+
+\subsection{Análisis y consideraciones en modelos de ANOVA con tres factores y comparaciones múltiples}
+Cuando se trabaja con un modelo de ANOVA de tres factores ($U, V, W$), las interacciones pueden complicar la interpretación de los efectos principales. La tabla ANOVA típica incluiría las siguientes filas:
+\begin{itemize}
+\item Efectos principales: $U, V, W$
+\item Interacciones de dos vías: $U:V, U:W, V:W$
+\item Interacción de tres vías: $U:V:W$
+\end{itemize}
+
+Supongamos las siguientes observaciones:
+\begin{itemize}
+\item No hay evidencia de una interacción a tres vías. 
+\item No hay evidencia de una interacción U:V.
+\item No hay evidencia de una interacción U:W.
+\item Solo la interacción V:W es significativa.
+\end{itemize}
+
+Así, solo podemos examinar el efecto de U. Los efectos de V y W no deben interpretarse de forma independiente debido a la interacción significativa V:W. 
+
+\subsection{Comparaciones múltiples de medias en ANOVA de dos vías}
+Cuando trabajamos con modelos de ANOVA de dos vías ($A$ y $B$):
+\begin{itemize}
+\item Sin interacciones: las comparaciones múltiples son relativamente sencillas, ya que los efectos principales de A y B pueden interpretarse independientemente.
+\item Con interacciones: La interpretación de los efectos principales cambia, ya que el efecto de un factor depende del nivel del otro. Las comparaciones deben hacerse considerando los niveles específicos de los factores involucrados.
+\end{itemize}
+
+Supongamos que tenemos el modelo 
+\verb@Y ~ A * B@ 
+En el que A y B tienen dos niveles (A: a1, a2; B: b1, b2).
+
+\begin{tabular}[h]{c|c|c}
+  \hline
+  Level of A & Level of B & Mean \\
+  \hline
+  a1 & b1 & 3 \\
+a1 & b2 &  5 \\
+a2 & b1 &  8 \\
+a2 & b2 &  2\\
+
+  \hline
+\end{tabular}
+
+Podemos dibujar dos gráficos de interacción: uno con a1 y a2 en el eje X y otro con b1 y b2 en el eje X. En el primer gráfico, las líneas de b1 y b2 se cruzarían, mientras que en el segundo gráfico no.
+
+Así, la diferencia entre a1 y a2 depende del nivel de B: \\
+Diferencia para b1: $8 - 3 = 5$ \\
+Diferencia para b2: $2 - 5 = -3$
+
+Para calcular intervalos de confianza (IC), es necesario especificar el nivel de B al que se desea evaluar la diferencia entre a1 y a2, y viceversa.
+
+Es posible calcular IC a diferentes niveles de los factores involucrados. Por ejemplo, nivel promedio (media marginal) o nivel específico (por ejemplo, B = b1).
+Calcular diferencias promediadas (media marginal) es una opción, pero su utilidad depende de la pregunta de investigación.
+Si las interacciones son fuertes (como líneas que se cruzan), los promedios marginales pueden ser poco informativos.
+
+Es fundamental describir claramente cómo se calcularon las comparaciones y en qué niveles de los factores se basaron.
+Realizar comparaciones extensivas y reportar selectivamente es una mala práctica científica.
+
+En conclusión, en ANOVA con interacciones significativas, la interpretación de los efectos principales se complica. Es necesario considerar los niveles específicos de los factores al analizar las diferencias. El contexto de la pregunta de investigación debe guiar si los efectos promediados son útiles o si se deben reportar efectos a niveles específicos.
+
+\section{Regresión lineal}
+La regresión lineal es una técnica de modelado estadístico que busca describir la relación entre una variable dependiente Y y una o más variables independientes X. En su forma más simple, el modelo lineal se expresa como: 
+
+\[Y = \alpha + \beta X + \epsilon\]
+
+donde $Y$ es la variable dependiente, $X$ la independiente, $\beta$ la pendiente (cambio en Y por unidad de cambio en X) y $\alpha$ el intercepto (valor esperado de Y cuando X=0). El ajuste del modelo implica estimar los parámetros $\alpha$ y $\beta$ para minimizar la suma de los errores cuadrados.
+
+\subsection{Transformación logarítmica}
+En casos donde la relación entre las variables no es lineal (como en el ejemplo de la tasa metabólica y la masa corporal), aplicar una transformación logarítmica puede simplificar la relación:
+$$log(Y) = \alpha + \beta log(X) + \epsilon$$
+
+Esto permite modelar relaciones de tipo potencia ($Y = kX^b$) como una línea recta en escala log-log.
+
+<<create_anage, echo=FALSE, results='hide'>>=
+anage_a_r <-  read.table("data/AnAge_birds_reptiles.txt",
+                         header = TRUE,
+                         stringsAsFactors = TRUE)
+
+@
+
+Queremos tomar el logaritmo de todas las variables continuas relevantes \footnote{Crear estas nuevas variables no es realmente necesario en general para ajustar modelos. Pero algunas funciones del paquete \code{HH} dan problemas si no lo hacemos. problemas si no lo hacemos.}
+
+<<>>=
+anage_a_r$logMetabolicRate <- log(anage_a_r$Metabolic.rate..W.)
+anage_a_r$logBodyMass <- log(anage_a_r$Body.mass..g.)
+anage_a_r$logLongevity <- log(anage_a_r$Maximum.longevity..yrs.)
+@
+
+Por ahora, solo nos vamos a centrar en las Aves.
+<<create_anage_a, echo=FALSE, results='hide'>>=
+anage_a <- anage_a_r[anage_a_r$Class == "Aves",]
+@
+
+Queremos modelar la tasa metabólica como una función de la masa corporal (ten en cuenta que este conjunto de datos es bastante agradable, porque los nombres de las columnas están bien etiquetados e incluyen información sobre las unidades). \textbf{Cuidado:} lo que vamos a hacer no es correcto, ya que los datos no son independientes (las especies comparten antepasados comunes, y están relacionados en diversos grados, como cualquier árbol filogenético mostraría, y como se puede inferir al mirar los nombres de algunas especies). Así que estamos violando el supuesto de independencia. Lo que estamos haciendo aquí es sólo por el bien del ejemplo, y porque este es un buen conjunto de datos\footnote{Esto se puede hacer correctamente, la incorporación de información filogenética en la regresión modelo de regresión, pero esto está fuera del alcance de esta clase. Es realmente fascinante. A menudo se habla de utilizar el método comparativo en biología evolutiva.}
+
+<<>>=
+metab <- lm(Metabolic.rate..W. ~ Body.mass..g., data = anage_a)
+summary(metab)
+@
+
+La fila de la salida que dice "(Intercepto)"  da la estimación del intercepto. El estadístico t (bajo "valor t") está probando que el intercepto es cero. Y no lo es. Pero las pruebas sobre el intercepto rara vez son interesantes (excepto para los casos con un 0 natural y significativo). La segunda línea es más interesante: es la pendiente, cuánto aumenta la tasa metabólica por unidad de aumento de la masa corporal (por supuesto, para interpretar esto necesitamos conocer las unidades). Y el estadístico t comprueba si la pendiente es 0. Desde luego, hay pruebas sólidas de que la tasa metabólica aumenta con la masa corporal.
+
+Tendríamos que haber mostrado los datos al comienzo. Realizamos un scatterplot para mostrar la dispersión de los datos.
+<<out.width = '10cm', out.height = '10cm', results='hide'>>=
+scatterplot(Metabolic.rate..W. ~ Body.mass..g.,
+            smooth = FALSE,
+            data = anage_a)
+@
+
+Los datos no se ajustan a una recta, por lo que es necesario reajustar el modelo, transformando las variables dependientes e independientes mediante logaritmo.
+
+<<>>=
+metablog <- lm(logMetabolicRate ~ logBodyMass, data = anage_a)
+summary(metablog)
+@
+
+<<fig.width=7, fig.height=7,results='hide'>>=
+
+scatterplot(Metabolic.rate..W. ~ Body.mass..g., log = "xy",
+            smooth = TRUE, boxplots = 'xy',
+            data = anage_a)
+@
+
+\subsection{Intervalos de confianza e intervalos de predicción}
+<<fig.width=7, fig.height=7,out.width = '12cm', out.height = '12cm'>>=
+library(HH)
+ci.plot(metablog)
+@
+Las líneas rojas delimitan por dónde se debe esperar que caigan la mayor parte de los puntos. Las líneas rojas dependen de la variabilidad de las y, mientras que el IC permite ajustar los parámetros del modelo. Si el tamaño de muestra es muy grande, se puede estimar la línea con mucha precisión. AUnque se sepa realmente el valor esperado de y dado x, en torno a la media los valores pueden tener mucha variabilidad.  
+
+\begin{itemize}
+\item Las bandas de intervalo de confianza son para la propia línea de regresión, que es lo mismo que decir que son para el valor esperado de la variable de respuesta. (Estamos modelando $E[y] = \alpha + \beta x$). Cuanta más incertidumbre tengamos sobre la tendencia general, sobre la línea, más amplias serán las bandas del intervalo de confianza.
+
+\item Las bandas del intervalo de predicción son para las observaciones; así, además de la incertidumbre en torno a la recta de regresión, tenemos el $\sigma$, la varianza de las observaciones en torno a su valor medio, en torno a $E[y]$.
+\item Para aclarar lo anterior, piensa en lo siguiente: supongamos que tomamos una muestra enorme, digamos de 10 millones de personas y hace una regresión de la masa corporal sobre la altura corporal. Estimarás la recta de regresión con muy poca incertidumbre. En otras palabras, estarás muy, muy seguro de dónde está $E[masa_corporal]$ dado $altura_corporal$. Pero, independientemente del tamaño de la muestra, hay bastante variación en la masa corporal para una altura corporal dada. Así que las bandas de predicción serán relativamente anchas, para acomodar este hecho.
+
+Esta es, por cierto, la razón por la que se puede estar muy seguro de una tendencia general (el valor esperado) y, sin embargo, ser incapaz de predecir realmente el valor real de un individuo específico. Es fundamental comprender la diferencia entre predecir la media y predecir el valor de un individuo concreto.
+
+Por el contrario, si $\sigma$ es muy, muy, muy pequeño, entonces las bandas de predicción serán muy, muy cerca de las bandas de intervalo de confianza.
+\end{itemize}
+
+\subsection{Intervalos de confianza para los parámetros}
+<<>>=
+confint(metablog)
+@
+
+Se trata de intervalos de confianza para los propios parámetros. Sin embargo, las estimaciones de los parámetros están correlacionadas. Esto significa que la comprobación de cada parámetro por separado puede dar lugar a respuestas diferentes de las que se obtienen comprobando ambos a la vez. Mostramos una elipse de confianza conjunta.
+<<ci_ellipse,fig.width=7, fig.height=7,out.width = '6cm', out.height = '6cm'>>=
+## Correlation of estimated coefficients
+round(cov2cor(vcov(metablog)), 3)
+
+## Plot of joint and each-at-time CIs
+library(ellipse)
+plot(ellipse(metablog), type = "l")
+points(coef(metablog)[1], coef(metablog)[2], pch = 1, cex = 2)
+abline(v = confint(metablog)[1, ], lty = 2)
+abline(h = confint(metablog)[2, ], lty = 2)
+@
+
+\section{Regresión múltiple}
+\subsection{Introducción a la regresión múltiple}
+Se pueden tener muchos predictores o variables independientes:
+\[Y = \alpha + \beta_1 X_1 + \beta_2 X_2 + \ldots + \epsilon\]
+
+<<echo=FALSE,results='hide'>>=
+data(cystfibr, package = "ISwR")
+cystfibr2 <- cystfibr[, c("pemax", "age", "height", "weight", "sex")]
+@
+
+El significado de las variables es:
+\begin{verbatim}
+     'age' a numeric vector, age in years.
+     'sex' a numeric vector code, 0: male, 1:female.
+     'height' a numeric vector, height (cm).
+     'weight' a numeric vector, weight (kg).
+     'pemax' a numeric vector, maximum expiratory pressure.
+\end{verbatim}
+
+Para la regresión múltiple ajustamos
+\[pemax = \alpha + \beta_1 age + \beta_2 height + \beta_3 weight + \epsilon\]
+<<>>=
+mcyst <- lm(pemax ~ age + height + weight, data=cystfibr2)
+summary(mcyst)
+@
+
+La tabla tiene 4 líneas: un intercepto y tres pendientes. Ya no hay una línea, si no tres planos. La línea del intercepto la vamos a ignorar por ahora. La línea con "age" muestra el coeficiente una vez visto todo lo demás (incluyendo interacciones si las hubiera, que aquí no las hay; como en la suma de cuadrados de tipo II). En la línea de edad se muestra cómo cambia pemax en base a edad una vez ajustado por altura y peso. El p-valor es grande, dando la impresión de que pemax no cambia con edad una vez que se ha ajustado por estatura y peso. La misma interpretación se da para estatura y peso; ninguna de las tres filas tiene un p-valor que se acerque a lo significativo. El estadístico de la F dicef que con 3 (edad, altura y peso) y 21 grados de libertad, el estadístico de la F es de 4,9, y el p-valor es de 0,009. Esta F mide un modelo de una media frente a uno en el que pemax cambia por edad, altura y peso. Esa comparación dice que nuestro modelo es mejor que solo una media; en otras palabras, hay evidencias significativas frente a la hipótesis nula de que el modelo con solo el intercepto es suficiente. Hay evidencia significativa frente a la hipótesis nula de que no hay interacción entre pemax, estatura, edad y peso. 
+
+Para los R cuadrados, aparecen uno múltiple y otro ajustado. Ambos hacen referencia a la misma idea: cuánta variabilidad en la variable dependiente (pemax) se puede explicar o capturar con el modelo. Esto hay dos formas de medirlo. El R cuadrado múltiple coge las observaciones de pemax, coge las predicciones de pemax de acuerdo al modelo, calcula la correlación entre lo observado y predicho y lo eleva al cuadrado. El problema del número es que solo puede subir a medida que se introducen términos. El R cuadrado ajustado utiliza el error residual, comparando cómo cambia teniendo en cuenta el número de términos que se van introduciendo. Esta línea indica que en torno al 40\% de la variabilidad de la variable dependiente se puede explicar por el modelo. 
+
+Como se ha ajustado el modelo con lm, se pueden mirar las tablas de ANOVA:
+<<>>=
+anova(mcyst)
+Anova(mcyst)
+@
+
+Al mirar edad tras calcular \code{anova} sin ajustar por estatura o peso (de forma secuencial), resulta ser muy significativa. Como es significativo, una vez que se introduce edad, estatura no dice nada, ni peso. Al mirar el \code{Anova}, en este modelo se muestra lo mismo que la tabla anterior en la que nada es significativo.
+
+<<results='hide', fig.width=6.5, fig.height=6.5>>=
+scatterplotMatrix( ~ age+height+pemax+weight,
+                  data = cystfibr2)
+@
+
+Si cambiamos el orden de los factores, el primer factor es significativo, mientras que los demás dejan de serlo.
+<<>>=
+anova(lm(pemax ~ height + weight + age, data = cystfibr2))
+anova(lm(pemax ~ weight + height + age, data = cystfibr2))
+@
+
+En este caso, estamos ajustando pemax a un modelo en función de tres variables que están muy correlacionadas entre ellas. 
+
+Así que, para resumir, cuando las variables predictoras están correlacionadas:
+\begin{itemize}
+\item Incluso si cada uno de los predictores (o subconjuntos de ellos) parece estar fuertemente asociado al resultado, sus valores p podrían ser elevados y el signo del coeficiente podría invertirse al ajustar todos los predictores correlacionados.
+\item El modelo global (dado por el estadístico F global o el $R^2$) podría indicar que el modelo está haciendo un trabajo decente (ciertamente mucho mejor que ajustarse a una sola media) y, sin embargo, los valores p individuales podrían sugerir que ningún predictor individual es relevante.
+\end{itemize}
+
+\subsection{$R^2$ y $R^2$ ajustado}
+\begin{itemize}
+\item $R^2$ (R-cuadrado) es la proporción de variabilidad de la variable dependiente explicada por el modelo. También es el cuadrado de la correlación entre los valores observados y predichos (predichos según el modelo) de la variable dependiente.
+
+\item Pero añadir variables predictoras que en realidad no explican nada nunca disminuirá $R^2$. El $R^2$ ajustado tiene esto en cuenta (añadir un predictor sólo aumentará el $R^2$ ajustado si el predictor contribuye de algún modo a mejorar el valor predictivo). Tenga en cuenta que el $R^2$ (sin ajustar) es el cambio relativo en las sumas de cuadrados residuales, mientras que el $R^2$ ajustado es el cambio relativo en la varianza residual. En general, el $R^2$ ajustado es un mejor número para mirar (y tenga en cuenta que puede, en los modelos que no explican nada, llegar a ser negativo)\footnote{Hay cuestiones adicionales que pueden necesitar ser considerado. Por ejemplo, la $R^2$ por defecto que R proporciona, tanto ajustada como sin ajustar, no debe utilizarse en modelos sin intercepción (es decir, regresión a través del origen). Y el $R^2$ no ajustado tiene la virtud de que se puede calcular para muchos otros modelos, ya que es sólo el cuadrado de la correlación entre lo predicho y lo observado.}
+\end{itemize}
+
+\subsection{Interacciones entre variables continuas}
 
 \end{document}
