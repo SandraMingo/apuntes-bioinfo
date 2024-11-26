@@ -2636,7 +2636,7 @@ Se trata de un \textbf{fenómeno extremadamente común} cuando el diseño no est
 \subsubsection{Tipo I vs Tipo II}
 Dejemos que R represente la suma residual de cuadrados para un modelo, así por ejemplo R(A, B, AB) es la suma residual de cuadrados que ajusta todo el modelo, R(A) es la suma residual de cuadrados que ajusta sólo el efecto principal de A, y R(1) es la suma residual de cuadrados que ajusta sólo la media.
 
-Un residuo es la desviación entre lo observado y lo predicho por el modelo. 
+Cada residuo es la diferencia entre un valor ingresado y la media de todos los valores para ese grupo (la desviación entre lo observado y lo predicho por el modelo). Un residuo es positivo cuando el valor correspondiente es mayor que la media de la muestra y es negativo cuando el valor es menor que la media de la muestra.
 
 \textbf{Type I}\\
 Las sumas de cuadrados de tipo I son dependientes del orden en que se introducen los factores en el modelo. R las genera por defecto con \code{anova}. En este enfoque, cada término se ajusta secuencialmente:
@@ -2998,6 +2998,298 @@ Así que, para resumir, cuando las variables predictoras están correlacionadas:
 \item Pero añadir variables predictoras que en realidad no explican nada nunca disminuirá $R^2$. El $R^2$ ajustado tiene esto en cuenta (añadir un predictor sólo aumentará el $R^2$ ajustado si el predictor contribuye de algún modo a mejorar el valor predictivo). Tenga en cuenta que el $R^2$ (sin ajustar) es el cambio relativo en las sumas de cuadrados residuales, mientras que el $R^2$ ajustado es el cambio relativo en la varianza residual. En general, el $R^2$ ajustado es un mejor número para mirar (y tenga en cuenta que puede, en los modelos que no explican nada, llegar a ser negativo)\footnote{Hay cuestiones adicionales que pueden necesitar ser considerado. Por ejemplo, la $R^2$ por defecto que R proporciona, tanto ajustada como sin ajustar, no debe utilizarse en modelos sin intercepción (es decir, regresión a través del origen). Y el $R^2$ no ajustado tiene la virtud de que se puede calcular para muchos otros modelos, ya que es sólo el cuadrado de la correlación entre lo predicho y lo observado.}
 \end{itemize}
 
+%26/11- Ramón
 \subsection{Interacciones entre variables continuas}
+Se pueden añadir interacciones entre variables continuas, pero son más difíciles de visualizar, ya que representan superficies curvas. Esto se debe a que la pendiente de una de las variables cambia a medida que lo hace la otra, mientras que un modelo aditivo es solo un plano. 
+
+Suponeindo que tenemos $y = \alpha + \beta_1 x_1 + \beta_2 x_2 + \beta_{1,2}\ x_1\ x_2 + \epsilon$, una tabla de coeficientes muestra cada variable cuando todo lo demás también está en el modelo, incluyendo la interacción. En la fórmula,  $\beta_{12}\ x_1\ x_2$ es literalmente el producto de $\beta_{1,2}$ por el producto de $x_1$ y $x_2$. Se puede calcular la derivada parcial: $\frac{\partial y}{\partial x_1} = \beta_1 + \beta_{1,2}\ x_2$. El ritmo de cambio de la variable dependiente con la variable independiente varía con la segunda variable independiente. 
+
+<<>>=
+mah <- lm(pemax ~ age + height, data = cystfibr2)
+mahi <- lm(pemax ~ age * height, data = cystfibr2)
+
+## Note how the coefficients are VERY different
+summary(mah)
+summary(mahi)
+
+## Note that the SS of age and height are the same in both
+## though the RSS in mahi is smaller.
+Anova(mah)
+Anova(mahi, type = "II")
+
+## SS of height same as for type II of mah and mahi
+anova(lm(pemax ~ age + height, data = cystfibr2))
+## SS of age same as for type II of mah and mahi
+anova(lm(pemax ~ height + age, data = cystfibr2))
+
+## But the coefficients in mahi are from a model that includes the
+## interaction.
+## Thus, the tests of coefficients of age and height in mahi are
+## not the same as the tests of age and height in the ANOVA tables (Type
+## II) for models mah and mahi.
+
+@
+
+\subsection{Intervalos de confianza y bandas de confianza}
+En una regresión múltiple, se puede hacer lo mismo que en la regresión simple, pero la visualización es más complicada. Como hay varias variables independientes, se pueden pedir las predicciones para cada uno de los valores predichos y obtener intervalos de confianza y de predicción. No obstante, no se representa frente a ninguna variable en concreto; habría que decidir qué dimensiones colapsar para la visualización.
+
+<<>>=
+predict(mcyst, interval = "confidence", level = 0.95)[1:5, ]
+predict(mcyst, interval = "prediction", level = 0.95)[1:5, ]
+@
+
+Al pedir el intervalo de predicción, no se debe utilizar para predecir el futuro en una observación nueva, ya que la predicción se basa en los datos analizados.
+
+Se pueden obtener intervalos de confianza de los parámetros. R también puede devolver la varianza y covarianza entre los distintos parámetros, pero visualizar las elipses puede ser complicado.
+<<>>=
+confint(mcyst)
+round(cov2cor(vcov(mcyst)), 3)
+@
+
+Si realmente uno tiene necesidad de obtener intervalos de confianza y predicción para observaciones, no se haría directamente como hasta ahora, si no mediante \textbf{bootstrap}. 
+
+\section{ANCOVA y variables independientes continuas y discretas}
+\subsection{Introducción a ANCOVA}
+ANCOVA se refiere a esta mezcla de ANOVA y regresión y significa «Análisis de covarianza». Pero esto no significa que estemos comparando covarianzas, como en la comparación de correlaciones, entre grupos; estamos comparando grupos después de ajustar por posibles covariables, si eso está justificado por la ausencia de interacciones entre los predictores continuos y discretos. En cualquier caso, todos los ANOVA, regresión y ANCOVA son tipos especiales de modelos lineales.
+
+Supongamos que tenemos una variable de respuesta, Y, y dos variables predictoras: la variable A, que es discreta y tiene, digamos, dos niveles (a1, a2), y la variable X, que es continua.
+\begin{itemize}
+\item La relación entre Y y X aumenta más rápido en a1 que en a2. Por ello, las líneas de regresión para a1 y a2 no son paralelas y se cruzan (eventualmente).
+\item Las relaciones entre Y y X cambian al mismo ritmo para a1 y a2. Por lo tanto, son líneas paralelas. Pero los individuos del grupo a1 con valor X = x tienen un valor mayor de Y que los individuos del grupo a2 para ese valor de X. Así que, como hemos dicho, las rectas son paralelas, pero están separadas. Tienen interceptos diferentes.
+\item Como en el caso anterior, pero ahora la intercepción es la misma. Así que sólo se ve una línea.
+\item No hay relación entre Y y X en ninguno de los grupos. (O, si insistieras en poner una línea, sería de pendiente 0).
+\end{itemize}
+%Supongamos que tenemos un factor con dos niveles y una variable continua X. Podemos pensar en que tenemos un primer escenario con una interacción en el que las rectas de regresión se cortan. En otro escenario, las rectas son paralelas, habiendo interceptos distintos. En otra situación, los dos grupos tienen el mismo intercepto, solapando las dos líneas. La última situación posible es que no hay interacción y la recta se mantiene plana.
+
+\subsection{Ejemplo de ANCOVA con fibrosis quística}
+Vamos a ajustar un ANCOVA con el conjunto de datos de la fibrosis quística.  Las variables independientes son el sexo (discreto) y la edad. Sin embargo, el sexo se codifica con 0/1 y queremos que sea un factor, explícitamente. 
+
+<<>>=
+cystfibr2$sex <- factor(cystfibr2$sex, labels = c('Male','Female'))
+mcyst2 <- lm(pemax ~ age * sex, data = cystfibr2)
+summary(mcyst2)
+confint(mcyst2)
+Anova(mcyst2)
+@
+
+Cada grupo tendría pendientes diferentes:
+<<results='hide',fig.width=5, fig.height=5>>=
+scatterplot(pemax~age | sex,
+            boxplots='xy',
+            smooth = FALSE,
+            by.groups=TRUE,
+            data=cystfibr2)
+
+@
+
+Los diferentes interceptos son capturados por el término "sex[T.Female]" (que tampoco es significativo en este ejemplo). De todos modos, a menudo podemos tener modelos en los que no tenemos evidencia de diferentes pendientes (sin interacción), pero sí de diferentes interceptos: esto significa líneas paralelas.
+
+En este caso, el grupo de referencia es sexMale, ya que es el que está codificado con 0 y el que no aparece explícitamente en la tabla. El intercepto de la tabla tiene 54,2 aproximadamente, representando el intercepto de los machos. Para las hembras, el estimado es 5,68, siendo esto la desviación del intercepto frente al intercepto de los machos. Como este número es positivo, el intercepto de las hembras es más alto que el de los machos. "age" representa la pendiente de los machos. "age:sexFemale" indica la pendiente de las hembras. El número es negativo, indicando que la pendiente de la recta de las hembras es más pequeña que la de los machos (la referencia); no significa que la pendiente de la recta en sí sea negativa. De hecho, la pendiente para las hembras es $4,16 - 1,31 = 2,85$. (La hipótesis nula de esta línea es que las dos pendientes sean iguales, es decir, que el -1,3 sea 0, indicando que la diferencia entre las dos pendientes sea 0. No se puede rechazar que la diferencia entre las pendientes sea significativa con este tamaño muestral, pero quizás con otro tamaño sí. \footnote{En todas las tablas que veremos, la primera columna muestra el valor estimado, y la hipótesis nula es que la diferencia es 0, es decir, se testea que el valor estimado sea 0.})
+
+En general, para buscar el valor por referencia, debemos tener en cuenta las variables que aparecen en la tabla y buscar el término que falte; ese será el referente.
+
+En la tabla de coeficientes, se tiene en cuenta todos los demás coeficientes. No obstante, en la tabla ANOVA de tipo II, se tiene en cuenta el resto de parámetros, pero no la interacción. Por eso, los p-valores no son exactamente iguales. 
+
+Este modelo se puede reajustar quitando la interacción. A la vista de los resultados, podemos atrevernos a decir que podemos ir directamente del modelo a uno en el que las pendientes sean iguales (saltando el modelo con las rectas paralelas). Esto se debe a que la tabla de tipo II muestra que no hay interacción entre edad y sexo (un modelo con interacción no está justificado). Además, mirando solo los efectos principales, edad es relevante al ajustar por sexo, pero sexo no es importante cuando se ajusta por edad. Por ello, se puede inferir que es necesario modelar la edad, pero podemos excluir sexo del modelo. 
+
+%El estadístico de la F mira si el cambio en la suma de cuadrados residual está justificado al meter tres parámetros que no pintan nada.
+
+<<>>=
+ancova(pemax ~ age * sex, data = cystfibr2)
+@
+
+\subsection{Modelo con pendientes paralelas}
+Ahora modelamos los datos de forma aditiva con una misma pendiente.
+<<>>=
+mcyst0 <- lm(pemax ~ age + sex, data = cystfibr2)
+summary(mcyst0)
+confint(mcyst0)
+Anova(mcyst0)
+@
+
+Al mirar la tabla de coeficientes, hay dos interceptos (dos rectas) y una pendiente. En este caso, el intercepto para las hembras es más bajo que en el modelo anterior, pero su p-valor es grande.
+
+Mirando los valores R, podemos ver que el modelo justifica el 40\% de la variable dependiente.
+
+Para remarcar: el ANOVA II y el de coeficientes tienen los mismos p-valores. Esto se debe a que no hay interacción. Esto no ocurría antes al tener en cuenta la interacción.
+
+La conclusión es que se debe dejar la pendiente, pero se puede ignorar la variable sexo ya que no hay evidencia de que ese coeficiente sea distinto de 0 y, por tanto, afecte al modelo.
+
+\subsection{Comparación formal de moelos}
+Terminamos el modelo ajustando pemax solo por edad.
+<<>>=
+mcyst3 <- lm(pemax ~ age, data = cystfibr2)
+anova(mcyst3, mcyst2)
+@
+
+Podemos comparar el modelo más sencillo (el que solo ajusta por edad) del más complejo con edad y sexo. A \code{anova} se le dan dos modelos, uno encajado dentro del otro. Difieren en 2 grados de libertad (parámetros que ajustan). El p-valor es alto, indicando que el modelo pequeño es igual de bueno que el modelo grande. Este último explica algo mejor los datos, pero no lo suficiente como para utilizarlo en lugar del modelo simple.
+
+Algunos comentarios adicionales:
+\begin{itemize}
+\item Estas pruebas sólo tienen sentido para los modelos anidados (en los que los términos de uno de los modelos es un subconjunto de términos del otro). Ten en cuenta que R no comprueba esto. Hay formas de comparar modelos no anidados utilizando otros procedimientos, por ejemplo, basados en el AIC. 
+\item Tanto si escribimos \verb@anova(mcyst2, mcyst3)@ como \verb@anova(mcyst3, mcyst2)@ no tiene consecuencias para el estadístico F y los p-valores.
+\item Este era un caso muy claro. A menudo, la gente procede por pasos: primero comprueba que no haya interacción y, más tarde, y si no hay interacción, comprueba si hay necesidad de diferentes intercepciones.
+
+De hecho, podríamos haber hecho esto paso a paso:
+
+<<>>=
+anova(mcyst0, mcyst2)
+@
+
+Comparamos el modelo sin interacción y con interacción y luego
+<<>>=
+anova(mcyst3, mcyst0)
+@
+\end{itemize}
+
+\subsection{ANCOVA con aves y reptiles}
+Veremos interacciones, pendientes paralelas y no paralelas, y más comparación de modelos. Una vez más, estos análisis no son del todo correctos, ya que ignoramos el parentesco filogenético. Pero sirven para ilustrar un par de puntos. Utilizaremos directamente transformaciones logarítmicas (de nuevo, la teoría y las pruebas empíricas anteriores indican que éste es el camino a seguir, y ya hemos examinado un par de modelos diferentes).
+
+Primero comparamos la tasa metabólica con la masa corporal permitiendo la interacción en clase (ave vs reptil).
+
+<<>>=
+metab_b_r <- lm(logMetabolicRate ~ logBodyMass * Class, data = anage_a_r)
+summary(metab_b_r)
+confint(metab_b_r)
+@
+
+La interacción es no significativa en la tabla de coeficientes. No obstante, todo lo demás sí lo es, por lo que necesitamos la pendiente e interceptos distintos. Esto se puede ver también en el gráfico. Nótese que $R^2$ es 96\%, lo que significa que el modelo explica en un 96\% los datos.
+
+<<results='hide'>>=
+scatterplot(Metabolic.rate..W.~Body.mass..g. | Class,
+            log="xy", smooth=FALSE,
+            by.groups=TRUE,
+            data=anage_a_r)
+@
+
+Se puede simplificar el modelo eliminando la interacción:
+<<>>=
+metab_b_r_2 <- lm(logMetabolicRate ~ logBodyMass + Class, data = anage_a_r)
+summary(metab_b_r_2)
+confint(metab_b_r_2)
+anova(metab_b_r_2, metab_b_r)
+@
+
+La tabla de coeficientes indica que todo es significativo, por lo que este es el modelo definitivo para los datos.
+
+<<fig.width=7, fig.height=7,echo=TRUE, results='hide'>>=
+ancova(logMetabolicRate ~ logBodyMass * Class,
+                data = anage_a_r)
+@
+
+A continuación analizamos la longevidad.
+
+<<>>=
+longev_b_r <- lm(logLongevity ~ logBodyMass * Class, data = anage_a_r)
+summary(longev_b_r)
+confint(longev_b_r)
+@
+
+Hay bastante evidencia a favor de la interacción. El intercepto para los reptiles queda más abajo que para las aves, y la tasa de cambio de longevidad con masa corporal es más rápida en reptiles (coeficiente logBodyMass:ClassReptilia). 
+
+<<results='hide'>>=
+scatterplot(Maximum.longevity..yrs.~Body.mass..g. | Class,
+            log="xy", smooth=FALSE,
+            by.groups=TRUE,
+            data=anage_a_r)
+
+@
+
+El tamaño de muestra de reptiles es pequeño, por lo que la relación podría ser mejorada. No obstante, con los datos dados, parece que la evidencia es suficiente, incluso a falta de otros factores como hábitat o dieta. 
+
+\subsection{Más variables}
+Podemos ampliar los modelos para incorporar más variables, añadir interacciones, etc. Las interacciones pueden implicar más de dos variables, pueden implicar variables continuas y discretas, etc, etc.
+
+\section{Interacciones, resumen}
+El patrón general es siempre el mismo: el efecto de una variable independiente (digamos, A) depende de la configuración de la otra variable independiente (digamos, B) con la que interactúa. En otras palabras, para saber cómo afecta un cambio de la variable A al resultado, es necesario conocer también el ajuste o valor de la variable B.
+
+Los tres tipos principales son:
+\begin{description}
+\item[Entre factores] Hay un nivel para cada combinación de los factores.
+\item[Entre un factor y una variable continua] Una pendiente diferente para cada grupo. Pendientes paralelas no son una interacción. 
+\item[Entre dos variables continuas] Las pendientes cambian conforme nos movemos por la otra variable, lo que nos da una superficie curva.
+\end{description}
+
+\section{Diagnósticos}
+\subsection{Diagnóstico del modelo}
+Se trata de modelos, por lo que podemos, y debemos, comprobar algunos de sus supuestos básicos. 
+
+En general, para los modelos lineales (ANOVAs, regresiones, etc) queremos comprobar:
+\begin{itemize}
+\item Varianza constante (en todos los grupos o en el intervalo de las variables independientes). A menudo se denomina «homocedasticidad» (donde «heteroscedasticidad» es lo contrario).
+\item Linealidad (para la regresión).
+\item Normalidad aproximada de los residuos.
+\item Posibles puntos muy influyentes (es decir, ¿dependen nuestros resultados de uno o dos puntos que impulsan el modelo en un sentido u otro?).
+\item Posibles valores atípicos. Si un valor está muy alejado del centro de masas del resto de la distribución en cuanto a la variable X, se denomina brazo de palanca. Las medidas de influencia de los puntos calculan lo lejos que está cada punto de los demás. Outlier se mide como la desviación entre lo observado y lo predicho (cómo de lejos está el valor con respecto a la variable dependiente). El brazo de palanca tiene que ver lo lejos que está un dato de los demás con respecto a la variable independiente, por lo que sí influye en el modelo.
+\end{itemize}
+
+\textbf{Independencia} también es un supuesto crucial. Pero a menudo, la comprobación de la independencia es muy difícil a partir de los propios datos (o al menos de los datos que hemos estado utilizando, de todos modos). Por ejemplo, la falta de independencia entre los datos es la razón por la que los análisis con el conjunto de datos AnAge no son realmente correctos.
+
+Antes de ver las parcelas, deben quedar claros dos conceptos:
+\begin{description}
+\item[Valor ajustado] El valor previsto o ajustado: si tenemos una ecuación como $Y = \alpha + \beta_1 X + \beta_2 Z$, entonces los valores ajustados son las $Y$ para las combinaciones observadas de $X$ y $Z$ (con los valores de $\alpha$ y $\beta$ devueltos por el modelo). Es lo que predice el modelo.
+\item[Residual] Básicamente, la diferencia entre el valor observado y el valor ajustado. Existen diferentes tipos de residuos (los residuos los más comunes son los estandarizados y los estudiados).
+\end{description}
+
+\subsection{Diagnósticos: ejemplo con factores}
+Primero utilizaremos los datos falsos de un diseño experimental perfectamente equilibrado. Los gráficos de diagnóstico de este tipo de experimentos diseñados pueden parecer ligeramente diferentes de los de regresión.
+
+<<>>=
+## Create the data
+set.seed(1)
+sex <- factor(rep(c("Male", "Female"), c(20, 20)))
+drug <- factor(rep(rep(c("A", "B"), c(10, 10)), 2))
+y <- rep(c(10, 13, 12, 16), rep(10, 4))
+y <- y + rnorm(length(y), sd = 1.5)
+y.data <- data.frame(y, sex, drug)
+y.data[1, 1] <- 25
+## Fit the model
+myAdditive <- lm(y ~ sex + drug, data = y.data)
+myInteract <- lm(y ~ sex * drug, data = y.data)
+## What are they saying?
+summary(myAdditive)
+summary(myInteract)
+@
+
+<<fig.show='hold', fig.width=6.5, fig.height=6.5, fig.cap='Model diagnostics for designed experiment, additive model '>>=
+oldpar <- par(oma=c(0,0,3,0), mfrow=c(2,2))
+plot(myAdditive)
+par(oldpar)
+@
+
+<<fig.show='hold', fig.cap='Model diagnostics for designed experiment, interaction model ', fig.width=6.5, fig.height=6.5>>=
+oldpar <- par(oma=c(0,0,3,0), mfrow=c(2,2))
+plot(myInteract)
+par(oldpar)
+@
+
+El gráfico de la parte superior izquierda se utiliza para juzgar si la forma funcional del modelo tiene sentido, especialmente para los modelos de regresión (no tanto para los experimentos diseñados con factores, pero sigue siendo útil). Hay cuatro columnas de datos porque proveníamos de un ANOVA de dos vías con cuatro grupos. Este gráfico también ayuda a detectar cambios sistemáticos en la varianza (es decir, violaciones de la homocedasticidad). Pero para esto, es mejor el gráfico inferior izquierdo que, en este caso, no sugiere nada grave, excepto el valor atípico.
+
+El gráfico superior derecho (un «gráfico q-q») se utiliza para evaluar la normalidad aproximada de los residuos: se desea que los puntos se sitúen más o menos a lo largo de la línea de puntos (con algún margen para las desviaciones en las colas). En este caso, el «gráfico q-q» no es perfecto (incluso si descartamos el valor atípico), aun cuando los datos procedían de una normal; esto es totalmente normal (recuerda que estamos realizando un muestreo).
+
+La parte inferior derecha difiere en modelos de regresión y experimentos con factores. Aquí se muestran los residuos frente a combinaciones de niveles de factores. Observa cómo este gráfico muestra cuatro líneas verticales en ambos modelos, el aditivo y el de interacción, pero los gráficos de la parte superior izquierda y de la parte inferior izquierda difieren en el número aparente de líneas verticales. Esto se debe a que en el modelo de interacción, dos de los grupos caen prácticamente en el mismo sitio, por lo que las predicciones se muestran apiladas.
+
+\subsection{Diagnósticos, ejemplo con modelos de regresión}
+
+<<fig.show='hold', fig.cap='Model diagnostics for metabolic rate model without log transformation ', fig.width=6.5, fig.height=6.5>>=
+oldpar <- par(oma=c(0,0,3,0), mfrow=c(2,2))
+plot(metab)
+par(oldpar)
+@
+
+Ahora puedes ver por qué con los modelos de regresión podemos utilizar el gráfico de la parte superior izquierda para juzgar si la forma funcional del modelo tiene sentido: si la relación es realmente lineal como se modeló, no se debería ver ningún patrón sistemático aquí, pero lo vemos (en este caso, sugiere que nuestro modelo está prediciendo una tasa metabólica demasiado pequeña en valores intermedios, y lo contrario en valores grandes, lo que sugiere una relación curvilínea). En una parte del rango, los residuos parecen positivos, y luego empiezan a bajar, lo que indica que se está intentando ajustar una recta a algo que es curvo. De nuevo, esta figura también ayuda a detectar cambios sistemáticos en la varianza (es decir, violaciones de la homoscedasticidad). Pero para esto, el gráfico inferior izquierdo es mejor y sugiere que las violaciones de homoscedasticidad están presentes (aunque, en este momento, con tan fuerte evidencia de no linealidad). La variabilidad de los residuos aumenta conforme se aumenta con el valor predicho.
+
+Sobre el "gráfico q-q", las cosas no pintan muy bien aquí. Esta distribución tiene varios residuos muy grandes, es de cola pesada y también está algo sesgada. El plot se aleja de la línea vertical de forma asimétrica.
+
+La parte inferior derecha puede ser difícil de interpretar: muestra dos cantidades (residuos y brazo de palanca) que, juntas, forman parte de la distancia de Cook. La distancia de Cook mide el efecto de los puntos individuales sobre los coeficientes ajustados, es decir, mide lo que cambiaría el modelo si cambiamos cada punto en el ajuste (los valores de la distancia de Cook superiores a 1 suelen indicar un punto posiblemente muy influyente, pero cualquier punto con una distancia de Cook muy destacada merece un análisis más detenido).  El gráfico denominado "Influence plots" es muy similar a éste. Sin embargo, a menudo me resulta más sencillo mirar los gráficos de distancia de Cook (función \code{cooks.distance}).
+
+Repetimos lo anterior pero utilizando una transformación logarítmica.
+<<fig.show='hold', fig.cap='Model diagnostics for metabolic rate model after log transformation ', fig.width=6.5, fig.height=6.5>>=
+oldpar <- par(oma=c(0,0,3,0), mfrow=c(2,2))
+plot(metablog)
+par(oldpar)
+@
+
+En este caso, los diagnósticos tienen mejor pinta, indicando que este modelo sí está bien.
 
 \end{document}
