@@ -292,6 +292,7 @@ Muchas bases de datos incluyen información aportada por mutaciones in silico o 
 \item \textbf{ClinVar}: recoge una serie de mutaciones (principalmente pequeñas SNV e indels, aunque hay algunas CNV), dando información sobre la clasificación clínica de la variante (benigna, probablemente benigna, patogénica, probablemente patogénica, respuesta a fármacos, factor protector para una condición, factor de riesgo, etc.), la enfermedad que causa y estatus de revisión. La mayor parte de las variantes son de significado incierto.
 \item \textbf{OMIM}: es una base de datos de genes humanos y trastornos y rasgos genéticos con un enfoque particular en la relación gen-fenotipo. La búsqueda se realiza por enfermedad para ver todas las variantes asociadas a la misma.
 \item \textbf{COSMIC}: es una base de datos en línea que recoge las mutaciones somáticas descubiertas en el cáncer humano. Recopila datos de publicaciones científicas y de estudios experimentales a gran escala.
+\item \textbf{DisGeNET}
 \end{itemize}
 
 \section{Herramientas de anotación}
@@ -312,3 +313,48 @@ Utilizando VEP con los datos generados en la llamada de variantes somáticas con
 \end{figure}
 
 Para priorizar, se tendría en cuenta el score de AlphaMissense, SpliceAI, ClinPred, Revel, Sift y PolyPhen, buscando un consenso entre todos. Además, se puede buscar el identificador en ClinVar por si se hubiese recogido una asociación.
+
+%26/11 - Dido
+La priorización es un paso posterior, y en ocasiones nos podemos quedar en la descripción de lo que hay en las muestras sin profundizar cuál puede ser la mutación clave. En un análisis genómico descriptivo, nos quedaríamos en el VCF filtrado. 
+
+Aunque nosotros hayamos utilizado el servidor web, de forma profesional se utiliza por línea de comando. En cualquier caso, podemos descargarnos el VCF ya anotado. Este fichero incluye la leyenda de lo que significa la información en el campo INFO. El encabezado muestra también información sobre las distintas herramientas utilizadas con los distintos límites de los scores y el comando para la línea de comando, incluso si se ha generado por el servidor web. EL VCF ya tenía información previa en el campo INFO, pero los detalles nuevos comienzan con CSQ y está separada por barras verticales. Como esto es algo difícil de leer bien, cada uno tiene su código para separar esa información en columnas más legibles; ningún bioinformático trabaja desde la web.
+
+En resumen: En el archivo de input que se carga, había 193 variantes. Los genes y transcritos afectados por las variantes son 230 y 1299 respectivamente. Hay 22 variantes que caen en regiones reguladoras. La consecuencia más abundante son variantes intrónicas. Dentro de secuencias codificantes, la más común es missense. Las variantes que caen en una región codificante de un gen son 0. Los identificadores HGVS indican la notación estándar de las variantes. Las herramientas de predicción no siempre tienen mucho consenso. En caso de no encontrarlo para una variante, se debe valorar. Podríamos tener en cuenta primero REVEL, AlphaMissense y ClinPred. Sift y PolyPhen por sí mismos no son suficientes. Para ver si hay polimorfismos en nuestros datos, se mira la columna Existing Variant, indicando si esa variante está ya descrita en alguna base de datos, o la frecuencia alélica en gnomADe AF (exomas; valores mayores a 0,01).
+
+Para datasets grandes y análisis de muchas muestras, no se utiliza el servidor web, si no el programa por línea de comandos. La instalación puede ser algo compleja al tener que descargar ficheros caché y una base de datos local para que la consulta de datos sea más rápida y no dependa de internet. También hay que descargar algunos plugins para facilitar y mejorar la anotación. Finalmente, se pueden realizar anotaciones customizadas de ficheros VCF, BED, GTF o BigWig.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = \textwidth]{figs/ensembl-vep-commandline.png}
+\caption{Ejemplo de un comando con pocas anotaciones en Ensembl. Está la ruta a la herramienta, el input y output en formato vcf comprimido o no. La caché son una serie de archivos que permite hacer las consultas en modo offline para que vaya más rápido. Los plugins están en el repositorio de GitHub y se pueden descargar para utilizarlos. Después hay una serie de opciones básicas: sobreescribir archivos en caso de existir previamente, paralelizar, número de variantes que se procesan a la vez, genoma de referencia, formato, coficiación MANE del tránscrito, que utilice Sift, PolyPhen, etc. Después se especifican los plugins y las bases de datos customizadas. En este caso, se accede a la base de datos gnomAD4g en formato VCF y se pide la anotación exacta, obteniendo la frecuencia alélica. Como se quiere utilizar la versión 4.1, se debe realizar una consulta customizada. En otros casos hay plugins existentes, como en caso de pLI, en el que no es necesario especificar qué datos debe buscar. De igual forma se especifica el plugin de AlphaMissense y se crea una consulta customizada para ClinVar.}
+\end{figure}
+
+\chapter{Priorización de variantes}
+Una vez anotados los VCF, nos podemos limitar a la descripción de las variantes de un paciente o una cohorte, o realizar un análisis más detallado filtrando variantes y priorizando. Este sería el último paso, y no en todos los casos se realiza. 
+
+\section{Visualización en IGV}
+Al ver una variante interesante, se recomienda visualizarla en IGV para verificar la variante. Se pueden encontrar falsos positivos (artefactos) debido a errores de secuenciación o análisis, al igual que falsos negativos por regiones de baja cobertura o variantes de baja frecuencia. 
+
+Cuando una variante está en los extremos de las lecturas, especialmente si está al final, puede deberse a errores en la secuenciación. Si las demás lecturas tienen esa base en el centro y no cuentan con la variante, podemos tratarlo como artefacto y falso positivo. También puede darse que una variante solo se dé en lecturas que vayan en el mismo sentido. En esos casos se trata de un sesgo y causa un falso positivo. Finalmente, si las lecturas se alinean en regiones que no están muy bien representadas en la referencia y hay muchas sustituciones, probablemente se deba a un alineamiento parálogo (las lecturas tendrían que haber alineado en otro sitio muy parecido). Estos errores no son muy frecuentes por los pasos de filtrado y refinamiento, pero pueden ocurrir. 
+
+\section{Priorización}
+La priorización se realiza utilizando un conjunto de evidencias de relevancia basadas en las anotaciones. Las anotaciones utilizadas en la priorización varían con la patología o condición en estudio. Los criterios pueden variar en función del objetivo (variantes raras, variantes comunes en la población, etc.).
+
+Algunas evidencias para variantes clínicamente relevantes son:
+\begin{itemize}
+\item \textbf{Significancia clínica conocida:} ClinVar muestra si la variante es patogénica, un factor de riesgo, respuesta a fármacos.
+\item \textbf{Impacto funcional:} puede ser algo o moderado en función de la consecuencia en la secuencia. Hay varios predictores del impacto funcional.
+\item \textbf{Relevancia en patología:} se buscan genes implicados en procesos que están involucrados en enfermedades, o variantes frecuentes/alteraciones recurrentes de un gen o de la enfermedad
+\end{itemize}
+
+Algunas evidencias para variantes no relevantes clínicamente son variantes en tránscritos no relevantes o muy poco soportados, polimorfismos y variantes con una frecuencia poblacional mayor al 1\% salvo que esté asociado con predisposición, prognosis, respuesta a fármacos, etc.
+
+Para el diagnóstico existen los \textbf{criterios ACMG}. Lo creó el American College of Medical Genetics and Genomics, y son normas y directrices para la interpretación de variantes de secuencia.
+Se desarrollaron principalmente como un recurso educativo para los genetistas de laboratorio clínico para ayudarles a proporcionar servicios de laboratorio clínico de calidad. Las directrices del ACMG incluyen 28 criterios. Durante la interpretación de variantes, éstas se clasifican en cinco niveles: Patogénicas (P), Probablemente patogénicas (LP), Significación incierta (VUS), Probablemente benignas (LB) y Benignas (B), en función de los criterios aplicados.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/acmg-guideline-table.jpg}
+\end{figure}
+
+Con la tabla anterior, se realiza un balance entre las opciones que apliquen. Cuando hay criterios de benignos y malignos, normalmente se clasifica como variante de significado incierto. 
