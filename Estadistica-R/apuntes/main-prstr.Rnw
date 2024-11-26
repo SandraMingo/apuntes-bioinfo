@@ -2801,6 +2801,8 @@ Supongamos que tenemos el modelo
 \verb@Y ~ A * B@ 
 En el que A y B tienen dos niveles (A: a1, a2; B: b1, b2).
 
+\begin{table}[h]
+\centering
 \begin{tabular}[h]{c|c|c}
   \hline
   Level of A & Level of B & Mean \\
@@ -2812,14 +2814,13 @@ a2 & b2 &  2\\
 
   \hline
 \end{tabular}
+\end{table}
 
-Podemos dibujar dos gráficos de interacción: uno con a1 y a2 en el eje X y otro con b1 y b2 en el eje X. En el primer gráfico, las líneas de b1 y b2 se cruzarían, mientras que en el segundo gráfico no.
+Podemos dibujar dos gráficos de interacción: uno con a1 y a2 en el eje X y otro con b1 y b2 en el eje X. Al dibujar los valores, las rectas de ambos gráficos se cruzan, indicando que hay una interacción entre los dos niveles. Así, la diferencia entre a1 y a2 depende del nivel de B y viceversa: \\
+Diferencia para a siendo B = b1: $8 - 3 = 5$ \\
+Diferencia para a siendo B = b2: $2 - 5 = -3$
 
-Así, la diferencia entre a1 y a2 depende del nivel de B: \\
-Diferencia para b1: $8 - 3 = 5$ \\
-Diferencia para b2: $2 - 5 = -3$
-
-Para calcular intervalos de confianza (IC), es necesario especificar el nivel de B al que se desea evaluar la diferencia entre a1 y a2, y viceversa.
+Suponiendo que las medias dadas previamente cuentan con un intervalo de confianza del 95\%, para la diferencia para a debe especificar el nivel de B concreto, y viceversa.
 
 Es posible calcular IC a diferentes niveles de los factores involucrados. Por ejemplo, nivel promedio (media marginal) o nivel específico (por ejemplo, B = b1).
 Calcular diferencias promediadas (media marginal) es una opción, pero su utilidad depende de la pregunta de investigación.
@@ -2904,7 +2905,7 @@ Las líneas rojas delimitan por dónde se debe esperar que caigan la mayor parte
 \item Las bandas de intervalo de confianza son para la propia línea de regresión, que es lo mismo que decir que son para el valor esperado de la variable de respuesta. (Estamos modelando $E[y] = \alpha + \beta x$). Cuanta más incertidumbre tengamos sobre la tendencia general, sobre la línea, más amplias serán las bandas del intervalo de confianza.
 
 \item Las bandas del intervalo de predicción son para las observaciones; así, además de la incertidumbre en torno a la recta de regresión, tenemos el $\sigma$, la varianza de las observaciones en torno a su valor medio, en torno a $E[y]$.
-\item Para aclarar lo anterior, piensa en lo siguiente: supongamos que tomamos una muestra enorme, digamos de 10 millones de personas y hace una regresión de la masa corporal sobre la altura corporal. Estimarás la recta de regresión con muy poca incertidumbre. En otras palabras, estarás muy, muy seguro de dónde está $E[masa_corporal]$ dado $altura_corporal$. Pero, independientemente del tamaño de la muestra, hay bastante variación en la masa corporal para una altura corporal dada. Así que las bandas de predicción serán relativamente anchas, para acomodar este hecho.
+\item Para aclarar lo anterior, piensa en lo siguiente: supongamos que tomamos una muestra enorme, digamos de 10 millones de personas y hace una regresión de la masa corporal sobre la altura corporal. Estimarás la recta de regresión con muy poca incertidumbre. En otras palabras, estarás muy, muy seguro de dónde está $E[masa.corporal]$ dado $altura.corporal$. Pero, independientemente del tamaño de la muestra, hay bastante variación en la masa corporal para una altura corporal dada. Así que las bandas de predicción serán relativamente anchas, para acomodar este hecho.
 
 Esta es, por cierto, la razón por la que se puede estar muy seguro de una tendencia general (el valor esperado) y, sin embargo, ser incapaz de predecir realmente el valor real de un individuo específico. Es fundamental comprender la diferencia entre predecir la media y predecir el valor de un individuo concreto.
 
