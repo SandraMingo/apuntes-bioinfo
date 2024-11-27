@@ -1822,8 +1822,8 @@ La prueba t estándar asume que las varianzas de los dos grupos son iguales, mie
 
 \subsection{Grados de libertad}
 Supongamos que tenemos los números 0, 1 y 2, y sabemos que su media es 1. Dado que tenemos tres números, ¿a cuántos de ellos podemos asignar libremente un valor? A dos de ellos, ya que el tercer número debe ajustarse para que el promedio sea 1. Así, el número de grados de libertad es el número de observaciones menos el número de parámetros que debemos estimar. En el caso de tener dos grupos, los grados de libertad se calcularían como:
-$$ N = N_1 + N_2 = N - 2$$
-o de manera equivalente:
+$$ N = N_1 + N_2 \rightarrow N - 2$$
+debido a que:
 $$(N_1 - 1) + (N_2 - 1) = N - 2$$
 
 \subsection{Test de Welch vs test de la t}
