@@ -2960,7 +2960,7 @@ mcyst <- lm(pemax ~ age + height + weight, data=cystfibr2)
 summary(mcyst)
 @
 
-La tabla tiene 4 líneas: un intercepto y tres pendientes. Ya no hay una línea, si no tres planos. La línea del intercepto la vamos a ignorar por ahora. La línea con "age" muestra el coeficiente una vez visto todo lo demás (incluyendo interacciones si las hubiera, que aquí no las hay; como en la suma de cuadrados de tipo II). En la línea de edad se muestra cómo cambia pemax en base a edad una vez ajustado por altura y peso. El p-valor es grande, dando la impresión de que pemax no cambia con edad una vez que se ha ajustado por estatura y peso. La misma interpretación se da para estatura y peso; ninguna de las tres filas tiene un p-valor que se acerque a lo significativo. El estadístico de la F dicef que con 3 (edad, altura y peso) y 21 grados de libertad, el estadístico de la F es de 4,9, y el p-valor es de 0,009. Esta F mide un modelo de una media frente a uno en el que pemax cambia por edad, altura y peso. Esa comparación dice que nuestro modelo es mejor que solo una media; en otras palabras, hay evidencias significativas frente a la hipótesis nula de que el modelo con solo el intercepto es suficiente. Hay evidencia significativa frente a la hipótesis nula de que no hay interacción entre pemax, estatura, edad y peso. 
+La tabla tiene 4 líneas: un intercepto y tres pendientes. Ya no hay una línea, si no tres planos. La línea con "age" muestra el coeficiente una vez visto todo lo demás (incluyendo interacciones si las hubiera, que aquí no las hay; como en la suma de cuadrados de tipo II); se muestra cómo cambia pemax en base a edad una vez ajustado por altura y peso. El p-valor es grande, dando la impresión de que pemax no cambia con edad una vez que se ha ajustado por estatura y peso. La misma interpretación se da para estatura y peso; ninguna de las tres filas tiene un p-valor que se acerque a lo significativo. Con 3 (edad, altura y peso) y 21 (residuos) grados de libertad, el estadístico de la F es de 4,9, y el p-valor es de 0,009. Esta F mide un modelo de una media frente a uno en el que pemax cambia por edad, altura y peso. Esa comparación dice que nuestro modelo es mejor que solo una media; en otras palabras, hay evidencias significativas frente a la hipótesis nula de que el modelo con solo el intercepto es suficiente, es decir, no hay interacción entre pemax, estatura, edad y peso. 
 
 Para los R cuadrados, aparecen uno múltiple y otro ajustado. Ambos hacen referencia a la misma idea: cuánta variabilidad en la variable dependiente (pemax) se puede explicar o capturar con el modelo. Esto hay dos formas de medirlo. El R cuadrado múltiple coge las observaciones de pemax, coge las predicciones de pemax de acuerdo al modelo, calcula la correlación entre lo observado y predicho y lo eleva al cuadrado. El problema del número es que solo puede subir a medida que se introducen términos. El R cuadrado ajustado utiliza el error residual, comparando cómo cambia teniendo en cuenta el número de términos que se van introduciendo. Esta línea indica que en torno al 40\% de la variabilidad de la variable dependiente se puede explicar por el modelo. 
 
@@ -2970,7 +2970,7 @@ anova(mcyst)
 Anova(mcyst)
 @
 
-Al mirar edad tras calcular \code{anova} sin ajustar por estatura o peso (de forma secuencial), resulta ser muy significativa. Como es significativo, una vez que se introduce edad, estatura no dice nada, ni peso. Al mirar el \code{Anova}, en este modelo se muestra lo mismo que la tabla anterior en la que nada es significativo.
+Al mirar edad tras calcular \code{anova} sin ajustar por estatura o peso (de forma secuencial), resulta ser muy significativa. Como es significativo, una vez que se introduce edad, estatura no dice nada, ni peso. Al mirar el \code{Anova}, en este modelo se muestra lo mismo que la tabla anterior de los interceptos en la que nada es significativo.
 
 <<results='hide', fig.width=6.5, fig.height=6.5>>=
 scatterplotMatrix( ~ age+height+pemax+weight,
@@ -3002,7 +3002,7 @@ Así que, para resumir, cuando las variables predictoras están correlacionadas:
 \subsection{Interacciones entre variables continuas}
 Se pueden añadir interacciones entre variables continuas, pero son más difíciles de visualizar, ya que representan superficies curvas. Esto se debe a que la pendiente de una de las variables cambia a medida que lo hace la otra, mientras que un modelo aditivo es solo un plano. 
 
-Suponeindo que tenemos $y = \alpha + \beta_1 x_1 + \beta_2 x_2 + \beta_{1,2}\ x_1\ x_2 + \epsilon$, una tabla de coeficientes muestra cada variable cuando todo lo demás también está en el modelo, incluyendo la interacción. En la fórmula,  $\beta_{12}\ x_1\ x_2$ es literalmente el producto de $\beta_{1,2}$ por el producto de $x_1$ y $x_2$. Se puede calcular la derivada parcial: $\frac{\partial y}{\partial x_1} = \beta_1 + \beta_{1,2}\ x_2$. El ritmo de cambio de la variable dependiente con la variable independiente varía con la segunda variable independiente. 
+Suponiendo que tenemos $y = \alpha + \beta_1 x_1 + \beta_2 x_2 + \beta_{1,2}\ x_1\ x_2 + \epsilon$, una tabla de coeficientes muestra cada variable cuando todo lo demás también está en el modelo, incluyendo la interacción. En la fórmula,  $\beta_{12}\ x_1\ x_2$ es literalmente el producto de $\beta_{1,2}$ por el producto de $x_1$ y $x_2$. Se puede calcular la derivada parcial: $\frac{\partial y}{\partial x_1} = \beta_1 + \beta_{1,2}\ x_2$. El ritmo de cambio de la variable dependiente con la variable independiente varía con la segunda variable independiente. 
 
 <<>>=
 mah <- lm(pemax ~ age + height, data = cystfibr2)
@@ -3113,9 +3113,9 @@ Mirando los valores R, podemos ver que el modelo justifica el 40\% de la variabl
 
 Para remarcar: el ANOVA II y el de coeficientes tienen los mismos p-valores. Esto se debe a que no hay interacción. Esto no ocurría antes al tener en cuenta la interacción.
 
-La conclusión es que se debe dejar la pendiente, pero se puede ignorar la variable sexo ya que no hay evidencia de que ese coeficiente sea distinto de 0 y, por tanto, afecte al modelo.
+En conclusión, viendo la tabla generada por \code{Anova}, vemos que edad es significativo, pero sexo no. Por tanto, dejamos la pendiente en el modelo, pero podemos ignorar la variable sexo, ya que no hay evidencia de que ese coeficiente sea distinto de 0 y, por tanto, afecte al modelo.
 
-\subsection{Comparación formal de moelos}
+\subsection{Comparación formal de modelos}
 Terminamos el modelo ajustando pemax solo por edad.
 <<>>=
 mcyst3 <- lm(pemax ~ age, data = cystfibr2)
@@ -3212,9 +3212,7 @@ Los tres tipos principales son:
 
 \section{Diagnósticos}
 \subsection{Diagnóstico del modelo}
-Se trata de modelos, por lo que podemos, y debemos, comprobar algunos de sus supuestos básicos. 
-
-En general, para los modelos lineales (ANOVAs, regresiones, etc) queremos comprobar:
+Se trata de modelos, por lo que podemos, y debemos, comprobar algunos de sus supuestos básicos. En general, para los modelos lineales (ANOVAs, regresiones, etc) queremos comprobar:
 \begin{itemize}
 \item Varianza constante (en todos los grupos o en el intervalo de las variables independientes). A menudo se denomina «homocedasticidad» (donde «heteroscedasticidad» es lo contrario).
 \item Linealidad (para la regresión).
