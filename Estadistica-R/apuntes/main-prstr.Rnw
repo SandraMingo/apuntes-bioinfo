@@ -2081,6 +2081,7 @@ theplot <- ggplot(data = dftmp, aes(x = factor(1), y = y)) +
 print(theplot)
 rm(dftmp, theplot)
 @
+
 Aquí, el número de observaciones es pequeño, por lo que el plot violín no está justificado; pero sería la mejor representación. Los puntos son las diferencias intrasujeto.
 
 <<fig.show='hold', fig.width=5, fig.height=5>>=
@@ -2091,6 +2092,7 @@ for(i in unique(dmyc$id))
            y1 = dmyc$myc[dmyc$cond == "NC" & dmyc$id == i],
            col = "red")
 @
+
 Este plot es bastante feo. El objetivo está en mostrar por qué el test de la t muestra grandes diferencias, pero el plot no. En casi todos los casos, a diferencia intrasujeto es positiva (NC-cancer da un resultado positivo). Además, la variabilidad intersujeto es muy grande en relación con la magnitud del efecto. Los dos valores de un sujeto están altamente correlacionados, pero los grados de libertad son menores. 
 
 %18/11 - Ramón
@@ -2563,6 +2565,7 @@ Básicamente, una interacción significa que el efecto de una variable depende d
 <<out.width = '8cm', out.height = '8cm'>>=
 with(dcholest, interaction.plot(Drug, Diet, y, type = "b"))
 @
+
 En este gráfico se ve lo que hemos mencionado antes: el fármaco A es mejor para personas que siguen una dieta alta en grasas, pero el fármaco B es mejor en los otros dos casos. Este gráfico muestra el cruce.
 
 Un gráfico de caja también puede ayudar a mostrar la interacción. Se muestran dos diferentes, que difieren por el orden en que se especifican los factores (uno u otro puede ser más fácil de decodificar visualmente):
@@ -2899,6 +2902,7 @@ scatterplot(Metabolic.rate..W. ~ Body.mass..g., log = "xy",
 library(HH)
 ci.plot(metablog)
 @
+
 Las líneas rojas delimitan por dónde se debe esperar que caigan la mayor parte de los puntos. Las líneas rojas dependen de la variabilidad de las y, mientras que el IC permite ajustar los parámetros del modelo. Si el tamaño de muestra es muy grande, se puede estimar la línea con mucha precisión. AUnque se sepa realmente el valor esperado de y dado x, en torno a la media los valores pueden tener mucha variabilidad.  
 
 \begin{itemize}
