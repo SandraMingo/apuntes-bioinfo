@@ -16,6 +16,13 @@
 \usepackage{amsmath}
 \usepackage{array}
 
+\usepackage{tocloft}
+
+\advance\cftchapnumwidth 0.8em\relax
+\advance\cftsecnumwidth 0.8em\relax
+\advance\cftsubsecindent 0.5em\relax
+\advance\cftsubsecnumwidth 0.8em\relax
+
 \newcommand{\code}[1]{\texttt{#1}}
 
 <<setup,include=FALSE,cache=FALSE>>=
