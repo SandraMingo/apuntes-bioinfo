@@ -358,3 +358,115 @@ Se desarrollaron principalmente como un recurso educativo para los genetistas de
 \end{figure}
 
 Con la tabla anterior, se realiza un balance entre las opciones que apliquen. Cuando hay criterios de benignos y malignos, normalmente se clasifica como variante de significado incierto. 
+
+%28/11 - Dido
+\chapter{Caracterización de cohortes}
+Cuando se secuencia un conjunto de muestras, se puede realizar para el diagnóstico o para hacer un análisis holístico y global (exploración de los datos). En este contexto, se pueden realizar varios pasos para ver si hay puntos en común entre los datos o si se describe alguna tendencia.
+
+\section{Carga mutacional tumoral (TMB)}
+La TMB es una medida cuantitativa del \textbf{número total de mutaciones por megabase} de ADN en el genoma de un tumor. Sirve como indicador de la \textbf{inestabilidad genómica} y a menudo se asocia con el potencial del tumor para producir neoantígenos que desencadenen una respuesta inmunitaria. El TMB se utiliza habitualmente como \textbf{biomarcador} para predecir la eficacia de la inmunoterapia, como los inhibidores de puntos de control inmunitarios, ya que un mayor TMB suele correlacionarse con mejores resultados terapéuticos. La TMB se suele calcular con mutaciones puntuales, y se pueden excluir las mutaciones sinónimas.
+
+Hay muchas herramientas para calcular el TMB, como puede ser \href{https://github.com/anitalu724/MutScape}{MutScape}. Contiene varios sets de herramientas, como la detección de genes significativamente mutados, anotación de mutaciones asociados a cáncer o las estadísticas de la carga mutacional. Estas herramientas utilizan los ficheros en formato VCF o MAF (para esto último, se puede convertir un VCF con la herramienta \href{https://github.com/mskcc/vcf2maf}{VCF2MAF}. También calcula las mutational signatures, inestabilidad cromosómica, anotación de mutaciones accionables por fármacos, etc. 
+
+A continuación se muestra un gráfico o plot de una cohorte de muestras tumorales divididas por el tumor primario. Se representa la carga mutacional. Testículo tiene una carga mutacional muy baja (1 mutación por megabase), pero el útero tiene mucha. Esto puede servir para poder identificar el tumor primario hipermutado. Es un buen primer enfoque para caracterizar la cohorte.
+
+%FIXME añadir plot
+
+\section{Oncoplot}
+Un oncoplot es una representación visual utilizada habitualmente en genómica del cáncer para resumir y mostrar el panorama mutacional de una cohorte de muestras tumorales. Suele mostrar mutaciones, CNV y otras alteraciones en genes clave relacionados con el cáncer de varios pacientes, utilizando un formato similar a un mapa de calor. Cada fila representa un gen, cada columna representa una muestra y los colores o símbolos indican tipos específicos de alteraciones.
+
+%FIXME añadir plot
+
+Estos oncoplots se generan y trabajan con la herramienta \href{https://bioconductor.org/packages/devel/bioc/vignettes/maftools/inst/doc/maftools.html}{Maftools}. 
+
+\href{https://www.cbioportal.org/}{Cbioportal} es una plataforma donde se han subido los genomas de muchos estudios de cáncer para poder visualizarlos a través de oncoplots. Se pueden seleccionar unos genes para buscar en muestras sacadas del atlas de cáncer pangenómico (TCGA). 
+
+\section{Mutational signatures}
+Las firmas mutacionales son \textbf{patrones únicos de mutaciones} en el ADN que reflejan los procesos subyacentes que causan alteraciones genéticas en un tumor. Estos procesos pueden incluir la exposición a factores ambientales (por ejemplo, radiación UV, fumar), deficiencias en la reparación del ADN o actividades enzimáticas. El análisis de las firmas mutacionales ayuda a identificar la etiología de las mutaciones, descubrir mecanismos de desarrollo tumoral y orientar las decisiones terapéuticas vinculando firmas específicas a posibles vulnerabilidades u opciones de tratamiento.
+
+\href{https://cancer.sanger.ac.uk/signatures/}{COSMIC} ha generado las firmas mutacionales utilizando análisis de gran escala. Las colecciones de formas están clasificadas en función de las mutaciones que se estén analizando (mutaciones puntuales, dobletes, indels, etc). La mayoría de etiologías son desconocidas, pero sí se caracteriza una huella. La herramienta oficial es \href{https://github.com/AlexandrovLab/SigProfilerExtractor}{SigProfilerExtractor} para generar el análisis.
+
+%FIXME añadir plot
+
+Un patrón se puede descomponer en distintas firmas. Se puede inferir el mecanismo de acción que causó el tumor mediante el ProfilerExtractor y \href{https://github.com/AlexandrovLab/SigProfilerMatrixGenerator}{ProfilerMatrixGenerator}. 
+
+Una vez calculadas las firmas de cada una de las muestras (aunque se computen en conjunto), se realiza la descomposición para que la composición de firmas de cada una de las muestras. Así, se puede ver si un mutor tiene la huella de haber sido tratado con quimioterapia con platino, si está asociado al tabaco, etc. 
+
+%FIXME añadir plot de heatmap
+
+\section{Otros aspectos relevantes}
+La \textbf{inestabilidad cromosómica (CIN)} se refiere al aumento de la tasa de cambios cromosómicos, incluyendo ganancias, pérdidas y reordenamientos de cromosomas dentro de una célula. La CIN contribuye a la heterogeneidad tumoral, la progresión y la resistencia a las terapias al crear diversidad genética y promover la adaptación al estrés o a los tratamientos.
+
+Los \textbf{neoantígenos} son péptidos de nivel que se presentan en la superficie de las células tumorales como resultado de mutaciones suáticas. Estos antígenos únicos son reconocidos por el sistema inmunitario y pueden desencadenar una respuesta inmunitaria antitumoral. Los neoantígenos son un punto clave en la inmunoterapia del cáncer, sobre todo para desarrollar vacunas personalizadas contra el cáncer e inhibidores de puntos de control inmunitario.
+
+La \textbf{inestabilidad de microsatélites (MSI)} es una enfermedad caracterizada por la acumulación de mutaciones en secuencias repetitivas de ADN denominadas microsatélites debido a defectos en el sistema de reparación de errores de emparejamiento del ADN (MMR). La MSI suele asociarse a ciertos tipos de cáncer, como el colorrectal, el endometrial y el gástrico, y sirve como biomarcador de la respuesta a la inmunoterapia, en particular a los inhibidores de puntos de control inmunitarios.
+
+\chapter{Copy Number Variants (CNV)}
+La variación del número de copias (CNV) es un fenómeno en el que se repiten secciones del genoma
+y el número de repeticiones en el genoma varía de un individuo a otro.
+La variación del número de copias es un tipo de variación estructural: en concreto, es un tipo de duplicación o que afecta a un número considerable de pares de bases (genes enteros).
+Aproximadamente dos tercios de todo el genoma humano pueden estar compuestos por repeticiones y el 4,8-9,5\% del genoma humano pueden clasificarse como variaciones del número de copias.
+Cada vez hay más pruebas de que las CNV desempeñan un papel importante en las enfermedades humanas.
+
+Las variaciones del número de copias se estudiaron originalmente mediante \textbf{técnicas citogenéticas}, que son técnicas que permiten observar la estructura física del cromosoma.
+Una de estas técnicas es la \textbf{hibridación fluorescente in situ (FISH)}, que consiste en insertar sondas fluorescentes que requieren un alto grado de complementariedad en el genoma para unirse. Al microscopio se podían ver bandas y patrones en los cromosomas para ver si habían surgido deleciones, inserciones o translocaciones. Pequeñas CNVs no se veían.
+La \textbf{hibridación genómica comparada (CGH)} también se utilizaba habitualmente para detectar variaciones en el número de copias mediante la visualización de fluoróforos y la posterior comparación de la longitud de los cromosomas, con mayor resolución. Compara la longitud esperada con la observada por fluorescencia. Con secuenciación, la detección de CNVs mejoró considerablemente. 
+
+\section{Llamada de variantes de número de copias}
+Se han desarrollado muchos algoritmos para realizar la llamada de variantes en el número de copias.
+La base de estos algoritmos varía en función de la tecnología NGS utilizada para secuenciar los datos.
+La secuenciación del genoma completo (WGS) a menudo utiliza estrategias de mapeo de profundidad de lectura o de extremo pareado, mientras que la secuenciación del exoma (WES) se basa en la normalización de la cobertura y el análisis de regiones específicas (si una región en lugar de tener una cobertura de 200x tiene una cobertura de 600x, se puede inferir que está triplicada; pero depende mucho de la preparación de la librería). 
+Entre los principales retos a los que se enfrenta la llamada de VNC se encuentran la distinción entre variantes verdaderas y artefactos técnicos, el manejo de regiones de baja calidad y la detección fiable de puntos de rotura (breakpoints).
+Una interpretación adecuada requiere algoritmos robustos y la validación con técnicas complementarias de laboratorio (como MLPA), ya que los algoritmos, sobre todo en el caso de exomas, no funcionan del todo bien.
+
+Algunos programas para la llamada de variantes en el número de copias en \textbf{WGS} son:
+\begin{itemize}
+\item \href{https://github.com/Illumina/manta}{Manta}: Diseñado para detectar variantes estructurales (VS) y CNV a partir de datos WGS. Utiliza un enfoque basado en gráficos, ofreciendo una alta sensibilidad a duplicaciones, deleciones y reordenamientos complejos. Funciona bien con datos de alta cobertura y es particularmente adecuado para CNVs grandes.
+\item \href{https://github.com/dellytools/delly}{Delly}: Se especializa en la detección de variantes estructurales, incluidas duplicaciones, deleciones, inserciones y translocaciones. Aprovecha las lecturas divididas y discordantes, lo que proporciona una gran precisión en conjuntos de datos WGS.
+\item \href{https://genomebiology.biomedcentral.com/articles/10.1186/gb-2014-15-6-r84}{Lumpy}: Un llamador de variantes estructurales que combina lecturas divididas, lecturas discordantes y profundidad de cobertura. Eficaz para datos WGS, capaz de detectar CNV de varios tamaños y tipos.
+\end{itemize}
+
+Para \textbf{WGS}, se utilizan:
+\begin{itemize}
+\item \href{https://cnvkit.readthedocs.io/en/stable/}{CNVkit}: Diseñado específicamente para datos WES, pero también compatible con paneles específicos. Normaliza la profundidad de lectura a la vez que tiene en cuenta las características únicas de los diseños de captura de exomas. Alta precisión para CNV pequeñas y medianas en regiones codificantes.
+\item \href{https://github.com/vplagnol/ExomeDepth}{ExomeDepth}: Paquete R adaptado para WES, que compara la profundidad de lectura entre muestras con un panel de controles. Muy adecuado para aplicaciones clínicas, ya que ofrece una alta sensibilidad y especificidad en las regiones capturadas.
+\item \href{https://www.nature.com/articles/s41588-023-01449-0}{GATK gCNV}: Parte de la suite GATK, desarrollada para la detección de CNV en WES. Utiliza un modelo bayesiano para integrar datos de múltiples muestras y mejorar la precisión.
+\end{itemize}
+
+Una base de datos que recoge la frecuencia poblacional de CNVs es \href{https://dgv.tcag.ca/dgv/app/about}{DGV o Database of Genomic Variants}. Resumen de la variación estructural en el genoma humano (alteraciones genómicas que afectan a segmentos de ADN de más de 50 pb). El contenido de la base de datos sólo representa la variación estructural identificada en muestras de control sanas, por lo que proporciona un catálogo útil de datos de control para los estudios que pretenden correlacionar la variación genómica con los datos fenotípicos. La base de datos se actualiza continuamente con nuevos datos procedentes de estudios de investigación revisados por expertos.
+
+\chapter{Snakemake y pipeline management}
+Todos los pasos vistos anteriormente se deben automatizar, ya que es inviable realizar los pasos individuales para una gran cantidad de muestras.
+
+Snakemake es un potente y flexible sistema de gestión de flujos de trabajo diseñado para crear pipelines de análisis de datos reproducibles y escalables utilizando un lenguaje basado en Python.
+Utiliza una sintaxis declarativa para definir flujos de trabajo, donde cada paso (o «regla») especifica la entrada, la salida y los comandos para procesar los datos.
+Snakemake determina automáticamente las dependencias entre los pasos y los ejecuta de manera eficiente, ya sea en una máquina local, un clúster o un entorno en la nube.
+
+Para un proceso de análisis de variantes somáticas y de línea germinal, Snakemake proporciona la estructura para integrar múltiples herramientas y scripts en un flujo de trabajo cohesivo.
+Garantiza un orden de ejecución adecuado, gestiona archivos intermedios y admite puntos de comprobación y pasos condicionales para canalizaciones dinámicas.
+
+Los ficheros necesarios para un workflow en Snakemake son:
+\begin{itemize}
+\item \textbf{Snakefile:} es el archivo central que define el flujo de trabajo. Contiene reglas que especifican cómo se transforman los archivos de entrada en archivos de salida, comandos para herramientas de llamada de variantes (BWA, GATK, MuTect2, etc) y dependencias entre pasos (por ejemplo, alineación $\rightarrow$ llamada de variantes $\rightarrow$ anotación).
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width = 0.36\textwidth]{figs/snakemake-rule.png}
+\end{figure}
+
+\item \textbf{Fichero de configuración (config.yaml):} almacena parámetros personalizables para la pipeline, tales como rutas de archivos para los datos de entrada (FastQ, BAM, etc) y rutas del genoma de referencia, ajustes específicos de la herramienta (por ejemplo, umbrales de mutación o ploidía). Permite la reutilización y simplifica la adaptación del proceso a nuevos conjuntos de datos.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.5\textwidth]{figs/snakemake-config.png}
+\end{figure}
+
+\item \textbf{Entornos o módulos:} garantizan un entorno de software coherente y reproducible. Cuenta de archivos de entorno conda (environment.yaml) o definiciones de módulos para herramientas y dependencias necesarias. 
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.3\textwidth]{figs/snakemake-env.png}
+\end{figure}
+\end{itemize}
+
+Snakemake permite crear un gráfico con todos los pasos de la pipeline para verificar si los pasos están ordenados de forma correcta.
