@@ -3301,4 +3301,16 @@ par(oldpar)
 
 En este caso, los diagnósticos tienen mejor pinta, indicando que este modelo sí está bien.
 
+\begin{table}[htbp]
+\centering
+\begin{tabular}{p{4.5cm}|p{4cm}|p{4.5cm}}
+Supuesto & Gráfico clave & Indicador de problemas \\ \hline \hline
+Linealidad & Residuals vs Fitted & Patrones curvados o no aleatorios \\ \hline
+Independencia de residuos & Residuals vs Fitted & Residuos no distribuidos aleatoriamente\\ \hline
+Normalidad de residuos & Normal Q-Q & Puntos alejados de la línea diagonal\\ \hline
+Homocedasticidad & Scale-Location & Aumento o disminución sistemático de la dispersión \\ \hline
+Ausencia de observaciones influyentes & Residuals vs Leverage & Puntos fuera de Cook's Distance
+\end{tabular}
+\end{table}
+
 \end{document}
