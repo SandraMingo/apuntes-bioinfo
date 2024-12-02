@@ -3276,7 +3276,7 @@ El gráfico de la parte superior izquierda se utiliza para juzgar si la forma fu
 
 El gráfico superior derecho (un «gráfico q-q») se utiliza para evaluar la normalidad aproximada de los residuos: se desea que los puntos se sitúen más o menos a lo largo de la línea de puntos (con algún margen para las desviaciones en las colas). En este caso, el «gráfico q-q» no es perfecto (incluso si descartamos el valor atípico), aun cuando los datos procedían de una normal; esto es totalmente normal (recuerda que estamos realizando un muestreo).
 
-La parte inferior derecha difiere en modelos de regresión y experimentos con factores. Aquí se muestran los residuos frente a combinaciones de niveles de factores. Observa cómo este gráfico muestra cuatro líneas verticales en ambos modelos, el aditivo y el de interacción, pero los gráficos de la parte superior izquierda y de la parte inferior izquierda difieren en el número aparente de líneas verticales. Esto se debe a que en el modelo de interacción, dos de los grupos caen prácticamente en el mismo sitio, por lo que las predicciones se muestran apiladas.
+La parte inferior derecha difiere en modelos de regresión y experimentos con factores. Aquí se muestran los residuos frente a combinaciones de niveles de factores. Este gráfico muestra cuatro líneas verticales en ambos modelos, el aditivo y el de interacción, pero los gráficos de la parte superior izquierda y de la parte inferior izquierda difieren en el número aparente de líneas verticales. Esto se debe a que en el modelo de interacción, dos de los grupos caen prácticamente en el mismo sitio, por lo que las predicciones se muestran apiladas.
 
 \subsection{Diagnósticos, ejemplo con modelos de regresión}
 
@@ -3290,7 +3290,7 @@ Ahora puedes ver por qué con los modelos de regresión podemos utilizar el grá
 
 Sobre el "gráfico q-q", las cosas no pintan muy bien aquí. Esta distribución tiene varios residuos muy grandes, es de cola pesada y también está algo sesgada. El plot se aleja de la línea vertical de forma asimétrica.
 
-La parte inferior derecha puede ser difícil de interpretar: muestra dos cantidades (residuos y brazo de palanca) que, juntas, forman parte de la distancia de Cook. La distancia de Cook mide el efecto de los puntos individuales sobre los coeficientes ajustados, es decir, mide lo que cambiaría el modelo si cambiamos cada punto en el ajuste (los valores de la distancia de Cook superiores a 1 suelen indicar un punto posiblemente muy influyente, pero cualquier punto con una distancia de Cook muy destacada merece un análisis más detenido).  El gráfico denominado "Influence plots" es muy similar a éste. Sin embargo, a menudo me resulta más sencillo mirar los gráficos de distancia de Cook (función \code{cooks.distance}).
+La parte inferior derecha puede ser difícil de interpretar: muestra dos cantidades (residuos y brazo de palanca) que, juntas, forman parte de la distancia de Cook. La distancia de Cook mide el efecto de los puntos individuales sobre los coeficientes ajustados, es decir, mide lo que cambiaría el modelo si cambiamos cada punto en el ajuste (los valores de la distancia de Cook superiores a 1 suelen indicar un punto posiblemente muy influyente, pero cualquier punto con una distancia de Cook muy destacada merece un análisis más detenido).  El gráfico denominado "Influence plots" es muy similar a éste. Sin embargo, a menudo puede resultar más sencillo mirar los gráficos de distancia de Cook (función \code{cooks.distance}).
 
 Repetimos lo anterior pero utilizando una transformación logarítmica.
 <<fig.show='hold', fig.cap='Model diagnostics for metabolic rate model after log transformation ', fig.width=6.5, fig.height=6.5>>=
@@ -3312,5 +3312,374 @@ Homocedasticidad & Scale-Location & Aumento o disminución sistemático de la di
 Ausencia de observaciones influyentes & Residuals vs Leverage & Puntos fuera de Cook's Distance
 \end{tabular}
 \end{table}
+
+%02/12 - Ramón
+La función \code{ancova} solo se utiliza para representar gráficos. La tabla de resultados utiliza la suma de cuadrados secuencial. Desde el punto de vista del modelo que va a analizar, es mucho menos flexible que \code{Anova}. La ventaja de utilizar \code{Anova} es que se puede utilizar para modelos lineales de complejidad arbitraria que pueden tener variables discretas, continuas, interacción, etc sin limitación.
+
+\subsection{Diagnóstico: ejemplo con regresión y modelo ANCOVA}
+<<f2d1z,echo=FALSE, fig.pos = '!h',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Non-constant variance in ANCOVA model'>>=
+suppressWarnings(try(rm(e1, e2, tg1, tg2, drug, tumor.size, exposure)))
+set.seed(33)
+e1 <- runif(100, 1, 15)
+e2 <- runif(250, 10, 20)
+tg1 <- 0 + 0.3 * e1 + rnorm(100)
+tg2 <- 2 + 0.2 * e2
+## tg2 <- tg2 + rnorm(25, sd = e2 * 0.1)
+tg2 <- tg2 + rnorm(length(tg2), sd = e2 * 0.1)
+tg2 <- tg2 + rnorm(length(tg2))
+exposure <- c(e1, e2)
+tumor.size <- c(tg1, tg2)
+drug <- factor(c(rep("A", 100), rep("B", 250)))
+tgd2 <- data.frame(tumor.size, exposure, drug)
+rm(drug, tumor.size, exposure, e1, e2, tg1, tg2)
+##ancova(tumor.size ~ exposure * drug, data = tgd2)
+tgd2lm <- lm(tumor.size ~ exposure * drug, data = tgd2)
+par(mfrow = c(2, 2), oma=c(0,0,3,0))
+plot(tgd2lm)
+
+@
+
+En este ejemplo, las dos figuras del lado izquierdo muestran un incremento en la varianza con los valores predichos. En este caso, habría que empezar representando los datos. 
+
+<<f2d12ww,echo=FALSE, fig.pos = '!h',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Trying to make sense of those patterns, 1'>>=
+## library(lattice)
+## xyplot(tumor.size ~ exposure | drug, data = tgd2)
+ancova(tumor.size ~ exposure * drug, data = tgd2)
+@
+
+El rango de la variable continua solapa muy poco en ambos grupos. A la hora de representar rectas, puede parecer que ambos grupos tienen pendiente e interceptos distintos, cuando la variable discreta y continua están correlacionadas (en este caso, para un fármaco se ha utilizado una exposición distinta a la del otro fármaco).
+
+\subsection{Diagnóstico: más ejemplos de varianza no constante}
+<<f2d12z,echo=FALSE, fig.pos = '!h',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Another example with non-constant variance in a regression model.'>>=
+suppressWarnings(try(rm(x1, y1)))
+
+set.seed(3)
+x1 <- runif(200, 1, 100)
+y1 <- 4 + 3 * x1 + rnorm(200, sd = 20 * (x1^0.7))
+x1y1 <- data.frame(x1, y1)
+x1y1lm <- lm(y1 ~ x1, data = x1y1)
+par(mfrow = c(2, 2), oma=c(0,0,3,0))
+plot(x1y1lm)
+rm(x1, y1, x1y1, x1y1lm)
+@
+
+Residuals vs Fitted tiene forma de embudo, y la figura de abajo refleja el mismo patrón: la varianza aumenta con los valores predichos. Los plots de la derecha no muestran ningún problema. En este caso, una transformación de los datos podría resolver el problema.
+
+<<f2d77z,echo=FALSE, fig.pos = '!h',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Yet another example of non-constant variance (plus other issues ---these is a contrived example))'>>=
+suppressWarnings(try(rm(X, U, Z, x1, y1, x1y1lm, x1y1)))
+
+set.seed(19)
+x1 <- runif(200, 1, 100)
+y1 <-  1e6 + 5 * x1 + rnorm(200, sd = (20/((x1/100)^1.1)))
+x1y1 <- data.frame(x1, y1)
+x1y1lm <- lm(y1 ~ x1, data = x1y1)
+par(mfrow = c(2, 2), oma=c(0,0,3,0))
+plot(x1y1lm)
+
+rm(x1, y1, x1y1, x1y1lm)
+@
+
+Este ejemplo es lo opuesto del anterior: la varianza de los residuos decrece con los valores predichos. Esto puede ocurrir cuando se modela una relación en la que habría que modelar el inverso. Los plots de la derecha muestran que hay algunos problemas. 
+
+\subsection{Diagnóstico: un par de ejemplos de modelos de ANOVA que están bien}
+<<f2dg1az,echo=FALSE, fig.pos = '!h',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Diagnostic plots from an ANOVA model with interactions and unbalanced data'>>=
+
+set.seed(13)
+sex <- factor(rep(c("Male", "Female"), c(60, 60)))
+smoking <- factor(rep(rep(c("No", "Yes"), c(30, 30)), 2))
+hdl <- rep(c(1, 1.5, 5, 2), rep(30, 4))
+hdl <- hdl + rnorm(length(hdl), sd = 1.5)
+hdl1B <- data.frame(hdl, sex, smoking)[1:110,]
+rm(hdl, sex, smoking)
+
+m6B <- lm(hdl ~ smoking * sex, data = hdl1B)
+par(mfrow = c(2, 2), oma=c(0,0,3,0))
+plot(m6B)
+@
+
+En el lado de la izquierda hay 4 bandas verticales porque los valores predichos caen en cuatro grupos dependiendo de fumar, no fumar y el sexo. Estos gráficos muestran que el modelo está bien y no hay nada problemático. El plot de Residuals vs Leverage no muestra que sea constante porque el diseño no está balanceado (no todos los puntos tienen el mismo leverage). 
+
+<<f2d1v,echo=FALSE, fig.pos = '!h',fig.width=5.8, fig.height=5.8, fig.cap='', fig.lp="fig:", fig.cap='Diagnostic plots from another ANOVA model with interactions and unbalanced data'>>=
+
+set.seed(38)
+exercise <- factor(rep(c("Type_I", "Type_II"), c(60, 60)))
+drug <- factor(rep(rep(c("A", "B"), c(30, 30)), 2))
+dsdd <- rep(c(3, 2, 6, 4), rep(30, 4))
+dsdd <- dsdd + rnorm(length(dsdd), sd = 2)
+dsdd[c(1, 21, 13)] <- dsdd[c(1, 21, 13)] + 27
+dsdd1B <- data.frame(dsdd, exercise, drug)[1:110,]
+rm(dsdd, exercise, drug)
+
+mdsB <- lm(dsdd ~ drug * exercise, data = dsdd1B)
+par(mfrow = c(2, 2), oma = c(0, 0, 3, 0))
+plot(mdsB)
+
+@
+
+El Q-Q plot no muestra nada problemático, pero resalta algunas observaciones con residuos muy grandes. El modelo no está mal por esos residuos desviados. El Residuals vs Leverage plot tampoco identifica observaciones con distancias de Cook muy grandes, ya que ninguna está por encima de 0,5, pero sí hay algunos residuos con una distancia más grande. Esto se observa también en Residuals vs Fitted. La línea roja debería estar centrada en 0, lo cual corresponde menos en el tercero grupo. Las observaciones extremas llevan la media del grupo para ellos, desplazando la media y teniendo los residuos un valor negativo. Este modelo es con interacción, por lo que puede haber un par de observaciones que desajustan el modelo con respecto a un grupo. Scale-Location es el resultado de lo anterior.
+
+\subsection{Diagnóstico: más ejemplos con diseños experimentales}
+<<>>=
+## See how diagnostics suggest missing interaction or
+## at least suggest something is wrong.
+set.seed(1)
+sex <- factor(rep(c("Male", "Female"), c(20, 20)))
+drug <- factor(rep(rep(c("A", "B"), c(10, 10)), 2))
+y <- rep(c(8, 16, 10, 12), rep(10, 4))
+y <- y + rnorm(length(y), sd = 1.5)
+y.data1 <- data.frame(y, sex, drug)
+rm(y, sex, drug)
+with(y.data1, tapply(y, list(sex, drug), mean))
+
+## Fit the model
+myAdditive2 <- lm(y ~ sex + drug, data = y.data1)
+myInteract2 <- lm(y ~ sex * drug, data = y.data1)
+summary(myAdditive2)
+summary(myInteract2)
+@
+
+<<fig.cap='Additive model, myAdditive2,  when there is interaction'>>=
+par(oma=c(0,0,3,0), mfrow = c(2, 3))
+plot(myAdditive2, which = c(1:5)) ## look at first plot
+@
+
+Se saca la distancia de Cook directamente para poder determinarla. Este modelo presenta un problema similar al anterior. El Q-Q plot es un poco feo, pero lo que nos alera es Residuals vs Fitted. El plot diagnóstico nos ayuda para identificar un problema estructural. La línea roja (las medias de los grupos) están sistemáticamente desviadas de 0, estando dos por encima y dos por debajo. En este caso, lo que faltó fue el modelo con interacción.
+
+<<fig.cap='Interaction model, myInteract2, when there is interaction'>>=
+par(oma=c(0,0,3,0), mfrow = c(2, 3))
+plot(myInteract2, which = c(1:5))
+@
+
+Ahora el modelo no tiene ningún problema. El Q-Q plot, aunque pueda parecer algo problemático, los datos han salido de una distribución normal. Lo ideal es poner un envoltorio de bootstrap en torno al Q-Q plot para identificar si hay variabilidad que cabe esperar o no. Esto se puede generar con la librería \code{car}.
+
+<<>>=
+############
+## Large cook's in anova
+set.seed(1)
+sex <- factor(rep(c("Male", "Female"), c(20, 20)))
+drug <- factor(rep(rep(c("A", "B"), c(10, 10)), 2))
+y <- rep(c(8, 12, 11, 15), rep(10, 4))
+y <- y + rnorm(length(y), sd = 1.5)
+y.data2 <- data.frame(y, sex, drug)
+rm(y, sex, drug)
+## create a large outlier
+
+y.data2[1, 1] <- 30
+with(y.data2, tapply(y, list(sex, drug), mean))
+
+## ## Fit the model
+myAdditive2b <- lm(y ~ sex + drug, data = y.data2)
+## myInteract <- lm(y ~ sex * drug, data = y.data2)
+## summary(myAdditive)
+## summary(myInteract)
+@
+
+<<fig.cap='myAdditive2b: large Cook with balanced data'>>=
+## ## diagnostics, all of them except 6th
+## we actually have a large Cook's distance
+par(oma=c(0,0,3,0), mfrow = c(2, 3))
+plot(myAdditive2b, which = 1:5)
+@
+
+Este ejemplo ilustra el uso del cuarto plot que no sale por defecto por R. Hay una observación con un outlier. Sin ver la figura de Cook's Distance, en constant leverage se ve un valor atípico, pero no podríamos determinar su distancia de Cook. En el plot de Cook's Distance se ve que ese punto es muy influyente (no solo es mayor de 0,8, si no que además es muy elevado en comparación con los demás), por lo que habría que realizar el análisis con y sin esa observación.
+
+<<>>=
+## model with and without first obs
+summary(lm(y ~ sex + drug, data = y.data2))
+summary(lm(y ~ sex + drug, data = y.data2[-1, ]))
+@
+
+<<fig.cap='myAdditive2b removing the large offending value'>>=
+#### Diagnostics if we remove the offending value
+par(oma=c(0,0,3,0), mfrow = c(2, 3))
+plot(lm(y ~ sex + drug, data = y.data2[-1, ]), which = 1:5)
+@
+
+Una vez eliminada esa observación, las observaciones no tienen una distancia de Cook muy destacable.
+
+Ahora, creamos un desequilibrio en los datos eliminando dos observaciones (pero no la que tiene un residuo grande). Observa cómo obtenemos el gráfico de residuos frente a la palanca y podemos ver claramente la observación con la gran distancia de Cook.
+
+<<>>=
+## The model with two observations missing
+## create unbalance
+y.data3 <- y.data2[-c(35, 40), ]
+with(y.data3, tapply(y, list(sex, drug), mean))
+myAdditive3 <- lm(y ~ sex + drug, data = y.data3)
+@
+
+<<fig.cap='myAdditive3: missing two observations'>>=
+par(oma=c(0,0,3,0), mfrow = c(2, 3))
+plot(myAdditive3, which = 1:5) ## see Cook's
+@
+
+En Residuals vs Leverage, se muestra que la observación 1 es muy influyente, no solo por el brazo de palanca (hay otras observaciones con ese brazo de palanca), pero por el residuo tan grande.
+
+\subsection{Diagnóstico: otras cuestiones}
+\begin{itemize}
+\item Con el paquete \code{car} se puede generar un Q-Q plot extendido.
+\item Los gráficos "Componente+Residual" (o residual parcial) nos permiten examinar, en modelos con múltiples regresores, las desviaciones de la linealidad y podrían sugerir la transformación apropiada. Los gráficos "CERES" son una variación de los gráficos "Componente + Residual" que funcionan bien incluso si las relaciones son fuertemente no lineales. Ambos también están disponibles en \code{car}.
+\item Diversos diagnósticos relacionados con dfbetas nos permiten identificar observaciones influyentes en términos específicos del modelo.
+\item Los factores de inflación de la varianza nos ayudan a detectar posibles problemas causados por colinealidad (correlaciones entre variables independientes).
+\item Los gráficos de variables añadidas son especialmente útiles en problemas de regresión múltiple con múltiples variables independientes; pueden ayudar a identificar puntos influyentes (que se enmascaran fácilmente con múltiples variables) y también pueden ayudar a intentar encontrar una buena relación funcional (pero Componente+Residual son más útiles en este caso). De nuevo, disponible en \code{car}.
+\item También se dispone de diversas pruebas numéricas y diagnósticos (por ejemplo, pruebas de no linealidad o de homocedasticidad).
+
+\item ¿Qué ocurre si los diagnósticos detectan un problema? Los procedimientos habituales son asegurarse de que el modelo es correcto y, posiblemente, transformar la respuesta o algunos de los predictores, y tal vez utilizar modelos más complejos (por ejemplo, para modelar la varianza, etc.). Pero \textbf{antes} de ajustar un modelo, hay que pensar detenidamente cuál es el modelo biológico apropiado del fenómeno. Eso podría dictar, por ejemplo, transformaciones razonables a priori de la respuesta o los predictores, o cuál debe ser la forma funcional. (Por ejemplo, modelar la tasa metabólica como una función de la masa corporal fue una mala idea; existen hay muchos argumentos de peso que sugieren que lo mejor es una relación logarítmica).
+
+\end{itemize}
+
+\section{Selección de modelo y variables}
+\subsection{Selección de modelos}
+Lo primero que hay que tener en cuenta es que los procedimientos basados exclusivamente en criterios de significación estadística pueden seleccionar variables «estadísticamente importantes» (según una definición adecuada de «importante»), pero no tienen por qué ser las más relevantes desde el punto de vista biológico, causal, etc. Se trata de un resumen muy rápido de algunas de las razones por las que ajustamos modelos estadísticos y, a continuación, quizá llevemos a cabo la selección de variables y/o modelos:
+
+\begin{itemize}
+\item \textbf{Interpretación/comprensión:} ¿por qué las cosas son así? ¿Qué factores son relevantes para un proceso y por qué? Se trata de obtener una comprensión científica en el sentido de «descubrir la verdad». ¿Es la falta de sueño la causa de lo que sea? ¿O son las diferencias en la exposición a la luz? O ... En esto consiste a menudo gran parte (¡¡no toda!!) la modelización científica.
+
+\item \textbf{Predicción:} predecir una variable a partir de otras. Esto puede no tener nada que ver con la intervención (que es lo que suele perseguir la inferencia causal) o con la comprensión de un proceso.
+
+Ejemplo: los bancos podrían querer filtrar a los clientes con pocas probabilidades de devolver un crédito. En realidad no intentan corregir el comportamiento de nadie, no intentan entender por qué la gente pide dinero que no puede devolver. Sólo quieren predecir (para no ofrecerles determinados productos financieros).
+
+O puede que se quiera estimar la respuesta a un tratamiento basándose en el perfil de expresión génica de los pacientes. No se trata de entender por qué la sobreexpresión o represión de ese gen conduce a esa respuesta, sino sólo de predecirla, para dar a cada paciente el mejor tratamiento. (En otras palabras, no se intenta "comprender la verdadera relación entre la expresión génica y la respuesta al tratamiento").
+
+Muchos otros modelos son de este tipo. Por ejemplo, muchos modelos meteorológicos son así: si ves las predicciones de AEMET sólo importa que sean correctas (y a menudo lo son). No se intenta modificar nada (por ejemplo, "intentemos hacer de hoy un día lluvioso") ni comprender.
+
+\item \textbf{Inferencia causal, intervención:} ¿qué ocurriría en Y si manipuláramos X? Por ejemplo, si consiguiéramos que la gente comiera legumbres dos veces por semana, ¿cuántos cánceres de colon podríamos prevenir?
+\end{itemize}
+
+Sí, la inferencia causal y la intervención, por un lado, y la comprensión, por otro, suelen estar muy relacionadas. Pero no son lo mismo. Por ejemplo, se puede comprender relativamente bien un proceso concreto y, sin embargo, ser incapaz de predecir exactamente lo que hará una intervención debido a la presencia de variables modificadoras.
+
+Y a veces puede que no comprendamos los mecanismos en detalle y, sin embargo, seamos capaces de llevar a cabo intervenciones muy exitosas si somos capaces de estimar el efecto causal de una variable.
+
+Por supuesto, la intervención tampoco está totalmente desvinculada del éxito de la predicción. Los elementos de los modelos que desempeñan un papel en la predicción meteorológica y climatológica también están presentes en los modelos causales que se utilizan para orientar (o intentar orientar, desgraciadamente sin mucho éxito) las acciones para evitar el desastre del cambio climático; aquí nos preguntamos "¿qué variables debemos cambiar, y a qué valores, para conseguir este resultado o evitar este otro?"
+
+Pero los modelos que pueden ser excelentes para predecir el resultado actual pueden ser muy malos para predecir nuevas circunstancias; la inferencia causal y la intervención son el último objetivo, mientras que si usted mira AEMET por la mañana, lo que le preocupa es predecir sin intentar modificar o entender...
+
+Y, tal vez de forma contraintuitiva, algunos modelos que están "más cerca de la verdad" en el sentido de "incorporan todas las variables que importan" pueden en realidad ser mucho peores que modelos más simples (es decir, "menos verdaderos") para hacer predicciones. 
+
+\subsection{Selección de variables}
+En cuanto a los procedimientos estadísticos, lo resumiremos así: por favor, desconfía de los procedimientos automatizados de selección de variables que se basan en valores p o estadísticos F de variables individuales (en todas sus variantes, como stepwise, etc.). Estos procedimientos rara vez hacen lo que se quiere, suelen ser extremadamente inestables, etc. Son triviales de implementar, y eso los hace muy comunes, pero rara vez son lo que la pregunta científica necesita. Asegúrate de utilizar la orientación temática para orientarte sobre cuáles son las hipótesis sensatas que debes probar y en qué orden. El conocimiento de la materia puede dictar cuáles son y cuáles no son candidatas a ser eliminadas y en qué orden.
+
+Una cuidadosa comparación de modelos, por ejemplo usando algo como \verb@ anova(model1, model2) @, como hemos visto podría ser una buena idea. Observa, de nuevo, que \verb@ anova(modelo1, modelo2) @ se trata de comparar modelos.
+
+\subsection{Selección de modelo utilizando AIC y \code{step}}
+Si realmente se necesitan procedimientos automatizados o semiautomatizados, entonces las estrategias razonables utilizan criterios de comparación de modelos como el AIC (por ejemplo, con la función \code{step}) son mucho más sensatas.  Pero el enfoque, ahora, es diferente: estamos haciendo \textbf{selección de modelo}, no la selección de variables. Y estamos tratando de lograr un objetivo diferente: estamos tratando de encontrar el mejor modelo para hacer predicciones. En otras palabras, estamos tratando de encontrar el modelo que, cuando se aplica a los nuevos datos, dará las mejores predicciones.
+
+\subsubsection{Introducción a AIC}
+El Criterio de Información de Akaike (AIC) es una métrica utilizada para comparar modelos estadísticos en términos de su bondad de ajuste y complejidad. El AIC de un modelo se define como:
+
+\(2\ \ln(\hat{L}) - 2\ k\)
+
+donde $k$ es el número de parámetros en el modelo, $\hat{L}$ es el valor de la función de verosimilitud evaluada en los estimadores de máxima verosimilitud (MLE, por sus siglas en inglés), y $\ln$ es el logaritmo base $e$). 
+
+Algunas definiciones alternativas multiplican el AIC por -1. En ese caso, los mejores modelos serán aquellos con menor AIC. En nuestra definición, buscamos maximizar el AIC, pero el principio subyacente no cambia: el objetivo es balancear el ajuste del modelo (representado por la verosimilitud) y la penalización por complejidad (número de parámetros).
+
+El AIC favorece los modelos con alta verosimilitud, penalizando aquellos con demasiados parámetros para evitar el sobreajuste. Esto se logra porque $2k$ aumenta con la complejidad del modelo, mientras que $-2 ln(\hat{L})$ disminuye al mejorar el ajuste.
+
+La verosimilitud mide la probabilidad de observar un conjunto de datos dado un modelo estadístico con parámetros específicos. El estimador de máxima verosimilitud (MLE) es el valor de los parámetros que maximiza esta probabilidad.
+
+\textbf{Ejemplo con tiradas de una moneda}
+Supongamos que lanzamos una moneda y obtenemos cara ($x=1$). Si $\theta$ es la probabilidad de obtener cara y el valor verdadero de $\theta$ es 0,5, entonces la probabilidad de observar $x=1$ es:
+$$P(x = 1 | \theta = 0,5) = 0,5$$
+
+En este caso, $\theta = 0,5$ es consistente con la observación.
+
+Ahora lanzamos la moneda dos veces y obtenemos dos caras ($x = 2$). La probabilidad de este resultado dado $\theta = 0,5$ es:
+$$P(x = 2 | \theta = 0,5) = 0,5 \cdot 0,5 = 0,25$$
+
+Sin embargo, si dejamos que $\theta$ varíe, el valor que maximiza la probabilidad es $\theta = 1$ (la moneda siempre cae en cara). Este es el estimador de máxima verosimilitud. 
+
+Ahora consideremos tres lanzamientos, con un resultado de dos caras y una cruz ($x = 2, n = 3$). Si $\theta = 0,7$, las posibles combinaciones y su probabilidad son:
+$$P(x = 2 | \theta = 0,7) = \begin{pmatrix} 3 & 2 \end{pmatrix} \cdot 0,7^2 \cdot (1 - 0,7)^1 = 3 \cdot 0,49 \cdot 0,3 = 0,441$$
+
+Sin embargo, la estimación de máxima verosimilitud para este caso es $\hat{\theta} = \frac{2}{3} = 0,666$, ya que maximiza la verosimilitud del resultado observado.
+
+En el contexto de máxima verosimilitud, la densidad $f(y_i | x_i, \theta)$ describe cómo los datos $y_i$ están distribuidos dado el modelo. La función de verosimilitud se construye como el producto de estas densidades para todas las observaciones. Maximizar esta función equivale a encontrar los parámetros ($\theta$) que mejor describen los datos según la densidad asumida.
+
+Esencialmente, $L(\theta)$, es la probabilidad de los datos bajo el parámetro $\theta$ (es mejor pensar en la densidad conjunta, ya que incluye, entonces, distribuciones continuas). Para un conjunto de datos, podemos encontrar el valor de $\theta$, los parámetros, que hace que la probabilidad sea tan grande como puede ser; esta sería la estimación de máxima verosimilitud del parámetro(s) $\theta$.  Así que en la expresión anterior, $\hat{L}$ es el valor de la probabilidad cuando se evalúa con los parámetros que hacen que la probabilidad sea lo más grande posible, es decir, en el valor(es) que hacen que los datos sean lo más probable posible. En un ejemplo de regresión, éste sería el valor de la probabilidad cuando los coeficientes de regresión (y el intercepto) toman los valores estimados por el software de regresión.
+
+El cálculo AIC es el logaritmo de la verosimilitud penalizado por el número de parámetros. En otras palabras, el AIC muestra el equilibrio entre un buen ajuste (a los datos actuales) y el número de parámetros: los modelos con muchos parámetros podrían ajustarse mejor a los datos (es decir, tener mayor verosimilitud), pero un ligero aumento de la verosimilitud podría no justificar algunos de esos parámetros. Así que el AIC dice algo así como "una mayor verosimilitud es buena, pero no se deje llevar añadiendo demasiados parámetros". Con demasiados parámetros, el modelo podría ser demasiado complejo no para los datos actuales (la probabilidad ha aumentado), sino para hacer buenas predicciones en otros conjuntos de datos. Demasiados parámetros aumentan el riesgo de \textbf{sobreajuste}.
+
+Tres características clave de la AIC:
+\begin{enumerate}
+\item El AIC (bajo ciertos supuestos) es una estimación insesgada de la precisión predictiva del modelo: la probabilidad esperada del modelo cuando se aplica a nuevos datos.
+\item El AIC mide (de nuevo, bajo ciertos supuestos) lo cerca de los valores reales que están las predicciones del modelo. En este caso, la «proximidad» se evalúa mediante la divergencia de Kullback-Leibler, una medida de distancia entre distribuciones de probabilidad.
+\item El AIC es equivalente a la validación cruzada «leave-one-out» para (muchos) modelos lineales (incluida la regresión lineal y los efectos mixtos). En un conjunto de observaciones, se deja una fuera y, con las demás, se calcula la predicción y se compara con el valor observado que se había dejado fuera. 
+\end{enumerate}
+
+\begin{figure}[htbp]
+  \begin{center}
+    \includegraphics[width=0.40\paperwidth,keepaspectratio]{figs/aic-otsuka.png}
+    \caption{AIC as estimate of expected likelihood.  From J.\ Otsuka (2023), \textit{Thinking about statistics. The philosophical foundations.}, Routledge, Figure 4.2, p.~116. Se quiere ajustar un modelo lineal (sin intercepto en este caso). De la misma población se busca obtener más datos y hacer predicciones con la recta concreta. Esto se repite varias veces y se calcula la media. De la misma población se sacan nuevos datos y se calcula la recta, esta vez con pendiente diferente. Se generan predicciones y se obtiene la verosimilitud. AIC da la verosimilitud media, diciendo la verosimilitud de observaciones nuevas con el procedimiento de calcular el modelo.}
+  \end{center}
+\end{figure}
+
+Supongamos que tenemos varios modelos y medimos el AIC de cada uno. La selección de modelos mediante el AIC nos dirá que prefiramos el modelo con el mayor AIC. (Nota: mayor si definimos AIC como arriba; deberíamos preferir el modelo con el AIC más pequeño si definimos AIC como
+$AIC = -2 \ln(\hat{L}) + 2\ k$).
+
+La idea clave es que el AIC nos permite seleccionar modelos de forma que nos quedemos con el modelo que tenga (entre los que consideremos) el mejor rendimiento predictivo en muestras futuras.
+
+\begin{enumerate}
+\item  El modelo así seleccionado (es decir, el modelo con el mejor AIC) no tiene por qué ser el modelo que tiene "todos y cada uno de los parámetros que realmente afectan al resultado": los "modelos más pequeños", los modelos que no incluyen algunos parámetros, podrían funcionar mejor. 
+
+Para repetirlo: para un tamaño de muestra determinado, el mejor modelo según el AIC podría indicarle que NO incluya una variable que realmente tenga un efecto (que sea "significativa"). No todas las variables que "realmente tienen un efecto" mejoran necesariamente el rendimiento predictivo; del mismo modo, si la relación es realmente ligeramente cuadrática, añadir el parámetro del término cuadrático no mejora necesariamente el rendimiento predictivo. Sí, esto significa que los "modelos verdaderos" (en términos de variables, parámetros, etc.) no son necesariamente los mejores modelos para el rendimiento predictivo, y que los modelos más simples suelen ser mejores. 
+
+\item El tamaño (el número de parámetros) del modelo seleccionado depende del tamaño de la muestra: con muestras de mayor tamaño, a menudo podemos permitirnos ajustar modelos más grandes y, por tanto, con muestras de mayor tamaño, el AIC suele seleccionar modelos más grandes. (Más grande puede significar «más variables» o «más parámetros» si incluimos, por ejemplo, relaciones no lineales, etc.).
+
+\end{enumerate}
+
+\subsubsection{Selección de modelo utilizando AIC}
+AIC no requiere que los modelos estén encajados. En R, la función \code{step} utiliza AIC, empezando con el modelo más grande a ajustar. Esta función intenta quitar términos y ver cuál de ellos, al quitarlo, mejora más AIC (se minimiza). En pasos posteriores, puede quitar términos o volver a añadirlos para comparar AIC.
+
+<<>>=
+step(mcyst2, direction = "both")
+@
+
+Primero se calcula el AIC con el modelo complejo, y después empieza a eliminar términos. El primer término que se elimina es la interacción. A continuación se puede quitar la variable sexo, quitar la variable edad, añadir la interacción o no hacer nada. Quitar la variable sexo produce el mejor AIC (el más bajo), por lo que realiza eso. Posteriormente se valora quitar edad, volver a añadir sexo o no hacer nada. En este caso, no hace nada y se queda así.
+
+<<>>=
+step(mcyst, direction = "both")
+@
+
+En este caso se calcula el modelo con edad, peso y estatura. El mejor modelo que puede encontrar con AIC es pemax en función de peso.
+
+<<>>=
+## In metab, we drop the interaction
+step(metab_b_r, direction = "both")
+
+## But nothing can be dropped here
+step(longev_b_r, direction = "both")
+@
+
+\subsection{Diferencias entre selección de modelos utilizando AIC y comparación de modelos mediante \code{anova} (y testeo de hipótesis mediante \code{Anova})}
+La principal diferencia es que cuando comparamos modelos utilizando la función \code{anova}, o examinamos cada uno de los términos de un modelo ajustado con, por ejemplo, la función \code{Anova}, estamos realizando pruebas de hipótesis estadísticas. 
+Por el contrario, el criterio AIC no se utiliza para realizar pruebas de hipótesis, sino que es un criterio relacionado con el rendimiento predictivo; por lo tanto, cuando llevamos a cabo la selección de modelos utilizando el AIC, intentamos encontrar el mejor modelo, donde «mejor» significa «mejor desde el punto de vista de la predicción».
+
+Una segunda diferencia es que cuando utilizamos \code{anova} y \code{Anova} para comparar modelos o evaluar la significación de diferentes variables, generalmente no lo hacemos (no deberíamos hacerlo) con decenas o cientos de modelos y variables. Estamos probando algunas hipótesis específicas y lo hacemos "manualmente". En cambio, utilizando la selección de modelos con AIC (o criterios similares) el procedimiento se ejecutará automáticamente y podrá comparar potencialmente cientos de modelos.
+
+Una tercera diferencia es que la mayoría de los procedimientos automatizados como \code{step} con AIC añadirá o eliminará una "variable completa". Sin embargo, con \code{Anova} (y \code{glht}, y otros) puede probar hipótesis específicas de su interés, incluyendo hipótesis en las que, por ejemplo, la media de dos niveles de un factor es igual a la tercera, etc.
+
+Por último, tenga en cuenta que \code{anova} sólo debe utilizarse para comparar modelos anidados (incluso si \code{Anova} y otros puede probar hipótesis de interés para usted). \code{step} seguirá las reglas de comparación codiciosas para pasar de un modelo a otro, pero si insiste podría mirar el AIC de una gran colección de modelos (o todos los modelos posibles para un conjunto de variables) y comparar entre modelos aunque no sean versiones anidadas entre sí. De nuevo, hacer esto utilizando el AIC podría ser sensato porque el objetivo es la predicción, no la comprobación de hipótesis.
+
+Simplificando un poco las cuestiones, la comprobación de hipótesis y la construcción de modelos utilizando herramientas como \code{anova} y \code{Anova} son cosas que se hacen cuando se quiere comprender un fenómeno, mientras que la selección de modelos utilizando criterios como AIC es lo que se hace cuando se quiere construir modelos con el mejor rendimiento predictivo.
+
+Como consecuencia de lo anterior, por supuesto, a veces utilizar \code{step} es algo que no tendría sentido y que ni siquiera se plantearía, por ejemplo en un experimento limpio y claro con dos factores: se quiere utilizar un ANOVA, no hace falta \code{step}. Y, del mismo modo, con miles de variables posibles, ejecutar miles de pruebas de modelo manualmente no tendría sentido si está intentando construir un buen modelo predictivo; utilice un procedimiento que intente encontrar el mejor modelo desde el punto de vista de la predicción.
+
+\newpage
+\subsection{Un modelo largo de pemax como ejemplo}
+
+<<>>=
+mcystL <- lm(pemax ~ age * height * weight * sex, data = cystfibr2)
+summary(mcystL)
+Anova(mcystL)
+
+mcystL_r <- step(mcystL, direction = "both")
+summary(mcystL_r)
+Anova(mcystL_r)
+
+## Manually reducing it. Be careful here!!!
+mcystL_r2 <- update(mcystL_r, . ~ . -age:weight:sex - height:sex - age:weight)
+Anova(mcystL_r2)
+anova(mcystL_r2, mcystL_r)
+@
+
 
 \end{document}
