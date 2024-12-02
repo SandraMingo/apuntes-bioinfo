@@ -238,3 +238,135 @@ plink --bfile HapMap_3_r3_2 --mind 0.02 --make-bed --out HapMap_3_r3_3
 \end{lstlisting}
 
 Tras analizar el output, vemos que no se ha eliminado ningún individuo. Esto se debe a que, como primero se eliminan los SNP, se recalcula el missingness para los individuos y el que antes sí eliminábamos, ya no cumple con la condición (los SNPs de los que no tenía información son aquellos que se han eliminado por tener poca información de individuos).
+
+%02/12 - Lucía Sánchez
+A continuación miramos la discrepancia entre sexos. La discrepancia de sexo se refiere a la diferencia entre el sexo asignado y el determinado. Puede estudiarse con `--check-sex`, que genera un documento con 6 columnas:
+\begin{enumerate}
+\item FID: family ID
+\item IID: individual ID
+\item PEDSEX: sex from the pedigree file (1 = male, 2 = female)
+\item SNPSEX: sex determined by X chromosome
+\item STATUS: problem/ok
+\item F: the actual X chromosome inbreeding (homozygosity) estimate. This estimate allows to determine the sex of the individuals, being F < 0.2 assigned to females, and F > 0.8, to males.
+\end{enumerate}
+
+Primero utilizamos ese flag para determinar el número de personas con sexo masculino y femenino:
+\begin{lstlisting}[language=bash]
+plink --bfile HapMap_3_r3_3 --check-sex --out plink
+\end{lstlisting}
+
+Ese fichero se carga en R y se genera un histograma con F estimado:
+\begin{lstlisting}[language=R]
+sex <- read.table("plink.sexcheck", header = TRUE)
+p <- ggplot(sex, aes(F)) +
+  geom_histogram(color="black", fill="#E69F00", binwidth=.005)
+p
+\end{lstlisting}
+
+Para ver el número de hombres y mujeres predichos:
+\begin{lstlisting}[language=R]
+#males
+sum(sex$SNPSEX == 1)
+
+#females
+sum(sex$SNPSEX == 2)
+\end{lstlisting}
+Obtenemos 81 hombres y 84 mujeres. Ahora queremos ver si hay alguna discordancia entre el sexo predicho y el computado:
+\begin{lstlisting}[language=R]
+discordance <- sex[sex$PEDSEX != sex$SNPSEX,]
+discordance
+\end{lstlisting}
+
+Vemos que hay un individuo que discrepa, por lo que queremos filtrarlo. Generamos un fichero .txt con el FID e IID de la persona problemática.
+\begin{lstlisting}[language=bash]
+grep "PROBLEM" plink.sexcheck | awk '{print $1, $2}' > sex_discrepancy.txt
+\end{lstlisting}
+
+Posteriormente utilizamos el flag --remove para eliminar los individuos en el fichero txt.
+\begin{lstlisting}[language=bash]
+plink --bfile HapMap_3_r3_3 --remove sex_discrepancy.txt --make-bed --out HapMap_3_r3_4
+\end{lstlisting}
+
+Ahora analizamos minor allele frequency (MAF). El MAF se refiere a la frecuencia del alelo menos frecuente en un locus. Debemos eliminar los SNP con un MAF bajo porque la potencia estadística de los GWAS no permite detectar asociaciones si la frecuencia del alelo es demasiado baja. Generamos un fichero .txt con los SNPs autosomales y después eliminamos aquellos con el MAF más pequeño. 
+\begin{lstlisting}[language=bash]
+# Select autosomal SNPs (from chromosomes 1 to 22).
+awk '{ if ($1 >= 1 && $1 < 23) print $2}' HapMap_3_r3_4.bim > snp_1_22.txt
+#Remove unlisted variants
+plink --bfile HapMap_3_r3_4 --extract snp_1_22.txt --make-bed --out HapMap_3_r3_5
+\end{lstlisting}
+
+A continuación utilizamos el flag --freq para computar el MAF en los cromosomas autosomales.
+\begin{lstlisting}[language=bash]
+plink --bfile HapMap_3_r3_5 --freq --out plink
+\end{lstlisting}
+
+Cargamos el fichero generado y representamos la distribución de MAF en un histograma, estableciendo un límite del 5\%.
+\begin{lstlisting}[language=R]
+maf_freq <- read.table("plink.frq", header = TRUE)
+p <- ggplot(maf_freq, aes(MAF)) +
+	geom_histogram(color="black", fill="#E69F00", binwidth=.005) +
+	geom_vline(xintercept = .05, linetype="dotted", color = "black", linewidth=.9)
+p
+\end{lstlisting}
+
+Estamos eliminando 1073226 SNPs y quedándonos con 325318.
+\begin{lstlisting}[language=R]
+#deleting
+sum(maf_freq$MAF >= 0.05)
+#retaining
+sum(maf_freq$MAF < 0.05)
+\end{lstlisting}
+
+Eliminamos los SNPs.
+\begin{lstlisting}[language=bash]
+plink --bfile HapMap_3_r3_5 --maf 0.05 --make-bed --out HapMap_3_r3_6
+\end{lstlisting}
+
+El siguiente paso es eliminar los SNPs que no estén en equilibrio Hardy-Weinberg. El equilibrio de Hardy-Weinberg (HWE) establece que, en un apareamiento aleatorio, las frecuencias alélicas y genotípicas permanecen constantes o estables en una población si no se introducen factores perturbadores. `--hardy` escribe una lista de recuentos de genotipos y estadísticas de la prueba exacta de equilibrio Hardy-Weinberg.
+\begin{lstlisting}[language=bash]
+plink --bfile HapMap_3_r3_6 --hardy --out plink
+\end{lstlisting}
+
+Posteriormente elegimos los SNPs con un p-valor HWE < 0,0001.
+\begin{lstlisting}[language=bash]
+awk '{ if ($9 <0.00001) print $0 }' plink.hwe > plinkzoomhwe.hwe
+\end{lstlisting}
+
+Y ahora creamos los histogramas:
+\begin{lstlisting}[language=R]
+hwe <- read.table("plink.hwe", header = TRUE)
+hwe
+p <- ggplot(hwe, aes(P)) +
+  geom_histogram(color="black", fill="#E69F00", binwidth=.05)
+p
+
+hwe_zoom <- read.table("plinkzoomhwe.hwe", header = FALSE)
+hwe_zoom
+p <- ggplot(hwe_zoom, aes(V9)) +
+  geom_histogram(color="black", fill="#E69F00")
+p
+\end{lstlisting}
+
+\section{Consideraciones de GWAS}
+En cuanto al diseño del estudio, pueden diferenciarse los estudios basados en población, en familia o en poblaciones aisladas.
+
+\subsection{Population-based GWAS}
+Se trata de un estudio de asociación genética con individuos no emparentados. El estudio más común es uno de casos y controles, siendo los casos personas con presencia de un fenotipo y los controles ausencia del mismo. Los individuos pueden seleccionarse activamente y los controles se pueden emparejar con los casos (con respecto al sexo, factores de riesgo, ...). Se realiza un reclutamiento activo. Estos estudios tienen buena potencia y son rentables si la frecuencia de la enfermedad en la población es baja (<20\%). Si la frecuencia de los casos es mayor que la frecuencia basada en población, se debe ajustar por covariantes durante el análisis estadístico. Los casos y controles que no se genotipen conjuntamente deben tener una corrección (batch correction) para ajustar por covariables.
+
+Los estudios de casos y controles se pueden clasificar en estudios retrospectivos y prospectivos. En los \textbf{estudios retrospectivos}, los sujetos se seleccionan en función de su estado de enfermedad. Se suele utilizar con enfermedades raras, ya que no es viable escoger participantes y esperar a que generen la enfermedad. Se obtienen los datos genéticos y ambientales.
+
+En los \textbf{estudios prospectivos}, se establece una cohorte y se realiza un genotipado base de todos los sujetos. Se realiza un seguimiento de los individuos y se observa si hay un desarrollo de la enfermedad. Aquellos que la desarrollen pasan a ser controles, y aquellos que no serán los controles. 
+
+Las ventajas es que estos estudios son muy rentable para asociaciones a gran escala, pero tiene la desventaja de obtener subgrupos poblacionales, generando asociaciones falsas debido a las subpoblaciones.
+
+\subsection{Family-based GWAS}
+Este estudio utiliza sujetos recogidos en familias, y se utilizó frecuentemente en los inicios de GWAS. En el caso del trío caso-padres, se genotipa a la descendencia afectada y a los padres. Se compara entre el número de alelos marcadores transmitidos de padres a descendientes con el número de alelos no transmitidos. Se puede tralizar la prueba de desequilibrio de transmisión (TDT) o prueba de asociación para identificar el vínculo genético entre un marcador genético (SNP) y un rasgo (fenotipo). Examina la segregación de un alelo dentro de una familia. La ventaja es que es robusto frente a estratificación poblacional y con enfermedades de baja prevalencia (< 1\%). Además, se estudian los efectos de un alelo en un fenotipo individual de sus efectos indirectos en miembros familiares cercanos. No obstante, se requiere un tamaño muestral más grande que el GWAS poblacional para alcanzar la misma potencia estadística y es menos eficiente en el caso de enfermedades de aparición tardía.
+
+\subsection{Poblaciones aisladas}
+Las poblaciones aisladas son grupos separado de sus poblaciones vecinas por barreras (geográficas, culturales o lingüísticas) y que tienen un flujo genético mínimo desde ellas. Estas poblaciones aisladas han permanecido aisladas durante un periodo prolongado, teniendo un flujo genético restringido con las poblaciones vecinas. Estos estudios tienen una mayor precisión de imputación que otras pruebas con un desequilibrio de ligamiento de largo alcance. 
+Los descubrimientos en poblaciones aisladas son muy difíciles de replicar en otras poblaciones. Así, variantes funcionales raras pueden estar presente en mayor frecuencia en poblaciones aisladas, habiendo así una potencia aumentada para estudios de asociación de estas variantes.
+
+\subsection{Subestructura poblacional - práctica}
+En esta práctica estudiaremos relatedness y la estratificación poblacional. La estratificación poblacional puede ser la principal fuente de confusión. Ejemplo: estudio de casos y controles, en el que las diferencias genotípicas entre casos y controles se deben a los distintos orígenes de la población (casos: europeos, controles: asiáticos) y no a un efecto sobre el riesgo de enfermedad. La confusión se debe a que la subestructura de la población no está distribuida por igual entre los grupos de casos y controles. Así, una señal de asociación surgirá no por una asociación entre un fenotipo y un SNP, sino por diferencias de frecuencia alélica entre las poblaciones que comprenden los casos y los controles. Esto tiene dos soluciones: eliminar los individuos de ascendencia divergente o establecer la ascendencia como covariable/efecto aleatorio en modelos mixtos.
+
+Los métodos para identificación de individuos con diferencias a larga escala en ascendencia es mediante una PCA (principal component analysis) o MDS (multidimensional scaling). MDS calcula la proporción de alelos compartidos entre cada par de individuos para identificar la variación genética para cada individuo. Los resultados se muestran en un gráfico para explorar la distribución de individuos en los datos. Por ejemplo, estudio genético que incluya sujetos de Asia y Europa. El análisis MDS revelaría que los asiáticos son genéticamente más parecidos entre sí que a los europeos.

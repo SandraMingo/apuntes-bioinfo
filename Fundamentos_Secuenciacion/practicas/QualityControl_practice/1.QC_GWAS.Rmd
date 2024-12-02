@@ -166,6 +166,8 @@ plink --bfile HapMap_3_r3_2 --mind 0.02 --make-bed --out HapMap_3_r3_3
 
 And how many individuals? Does it agree with the results calculated by you? Why? 
 
+Since we first deleted the SNPs, the missingness of the individuals is calculated only with the remaining SNPs. In that sense, the individual that we marked as deleted in the previous analysis does not have a missingness over 0,2 after the removal of SNPs. We can conclude that the missingness of that person was due to the SNPs with a missingness > 0,2.
+
 # Sex discrepancy
 Sex discrepancy refers to the difference between the assigned sex and the determined one. This can be studied with `--check-sex`, which generates a document with 6 columns:
 
@@ -178,43 +180,53 @@ Sex discrepancy refers to the difference between the assigned sex and the determ
 
 Apply this flag to determine the number of females and males:
 ```{bash, include=toInclude}
-plink --bfile --check-sex --out plink
+plink --bfile HapMap_3_r3_3 --check-sex --out plink
 
 ```
 
 Use the generated file to create a histogram with the F estimate distribution among samples:
 ```{r, echo=FALSE}
 # loading
-sex <- 
+sex <- read.table("plink.sexcheck", header = TRUE)
+sex
 ```
 
 ```{r}
 # Make an histogram with the F estimate
-p <- ggplot()
+p <- ggplot(sex, aes(F)) +
+  geom_histogram(color="black", fill="#E69F00")#, binwidth=.005)
+
 p
 ```
 
 How many females were predicted? And how many males? 
 ```{r}
 # Answer these questions
+#males
+sum(sex$SNPSEX == 1)
+
+#females
+sum(sex$SNPSEX == 2)
 
 ```
 
 Is there any discordance between the predicted and the computed sex among the individuals?
 ```{r}
+discordance <- sex[sex$PEDSEX != sex$SNPSEX,]
 
+discordance
 ```
 
 ## Delete individuals with sex discrepancy
 If there were any discrepancy between predicted and reported sex, these individuals have to be filtered out. To do so, we first need to create a file (e.g. _sex_discrepancy.txt_) with the FID and IID information of the problematic individuals.
 ```{bash}
-grep "PROBLEM" plink.sexcheck | awk '{ADD}' > sex_discrepancy.txt
+grep "PROBLEM" plink.sexcheck | awk '{print $1, $2}' > sex_discrepancy.txt
 
 ```
 
 Then, apply `--remove` flag to remove individuals present in _sex_discrepancy.txt_ file.
 ```{bash}
-plink --bfile --remove --make-bed --out HapMap_3_r3_4
+plink --bfile HapMap_3_r3_3 --remove sex_discrepancy.txt --make-bed --out HapMap_3_r3_4
 
 ```
 
@@ -224,13 +236,13 @@ MAF refers to the frequency of the least often occurring allele in a locus. We n
 We are going to generate a file with just the autosomal SNPs (e.g. _snp_1_22.txt_) and, then, remove the ones with the lowest minor allele frequency. To do so, store in _snp_1_22.txt_ just the SNP identifiers present in autosomal chromosomes.
 ```{bash}
 # Select autosomal SNPs (from chromosomes 1 to 22).
-awk '{ if ($1 >= 1 && ADD) print ADD}' > snp_1_22.txt
+awk '{ if ($1 >= 1 && $1 < 23) print $2}' HapMap_3_r3_4.bim > snp_1_22.txt
 
 ```
 
 Then, use `--extract` flag from PLINK to remove all unlisted variants from the current analysis.
 ```{bash}
-plink --bfile --extract --make-bed --out HapMap_3_r3_5
+plink --bfile HapMap_3_r3_4 --extract snp_1_22.txt --make-bed --out HapMap_3_r3_5
 
 ```
  
@@ -242,21 +254,28 @@ plink --bfile HapMap_3_r3_5 --freq --out plink
 
 Load the file generated, represent the MAF distribution in a histogram and establish a threshold of 5% of minor allele frequency.
 ```{r}
-maf_freq <- 
-
+maf_freq <- read.table("plink.frq", header = TRUE)
+maf_freq
 # Make a histogram with the MAF distirbution, setting a threshold at 5% of MAF
-p <- ggplot() +
+p <- ggplot(maf_freq, aes(MAF)) +
+geom_histogram(color="black", fill="#E69F00", binwidth=.005) +
+  geom_vline(xintercept = .05, linetype="dotted",
+               color = "black", linewidth=.9)
 p
 ```
 
 How many SNPs are we retaining? How many are we removing?
 ```{r}
+#deleting
+sum(maf_freq$MAF >= 0.05)
+#retaining
+sum(maf_freq$MAF < 0.05)
 
 ```
 
 A conventional MAF threshold for a regular GWAS is between 1 - 5%, depending on sample size. In our dataset, we want to remove SNPs with MAF below 5%; use `--maf` to do so.
 ```{bash}
-plink --bfile --maf --make-bed --out HapMap_3_r3_6
+plink --bfile HapMap_3_r3_5 --maf 0.05 --make-bed --out HapMap_3_r3_6
 ```
 
 # Deletion of SNPs not in Hardy-Weinberg equilibrium
@@ -291,18 +310,20 @@ awk '{ if ($9 <0.00001) print $0 }' plink.hwe > plinkzoomhwe.hwe
 Make a representation of the p-value of both _plink.hwe_ and _plinkzoomhwe.hwe_ files
 ```{r}
 # plink.hwe
-hwe <- 
-
-p <- ggplot() +
+hwe <- read.table("plink.hwe", header = TRUE)
+hwe
+p <- ggplot(hwe, aes(P)) +
+  geom_histogram(color="black", fill="#E69F00", binwidth=.05)
 p
 
 ```
 
 ```{r}
 # plinkzoomhwe.hwe
-hwe_zoom <- 
-
-p <- 
+hwe_zoom <- read.table("plinkzoomhwe.hwe", header = FALSE)
+hwe_zoom
+p <- ggplot(hwe_zoom, aes(V9)) +
+  geom_histogram(color="black", fill="#E69F00")
 p
 
 ```

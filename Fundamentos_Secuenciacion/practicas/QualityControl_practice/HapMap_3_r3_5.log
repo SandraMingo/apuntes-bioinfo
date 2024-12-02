@@ -1,0 +1,28 @@
+PLINK v1.9.0-b.7.7 64-bit (22 Oct 2024)
+Options in effect:
+  --bfile HapMap_3_r3_4
+  --extract snp_1_22.txt
+  --make-bed
+  --out HapMap_3_r3_5
+
+Hostname: DESKTOP-5OCIJQC
+Working directory: C:\Users\Sandra\Documents\GitHub\apuntes-bioinfo\Fundamentos_Secuenciacion\practicas\QualityControl_practice
+Start time: Mon Dec 02 18:10:42 2024
+
+Random number seed: 1733159442
+7971 MB RAM detected; reserving 3985 MB for main workspace.
+1430443 variants loaded from .bim file.
+164 people (80 males, 84 females) loaded from .fam.
+112 phenotype values loaded from .fam.
+--extract: 1398544 variants remaining.
+Using 1 thread (no multithreaded calculations invoked).
+Before main variant filters, 112 founders and 52 nonfounders present.
+Calculating allele frequencies... done.
+Total genotyping rate is 0.998052.
+1398544 variants and 164 people pass filters and QC.
+Among remaining phenotypes, 56 are cases and 56 are controls.  (52 phenotypes
+are missing.)
+--make-bed to HapMap_3_r3_5.bed + HapMap_3_r3_5.bim + HapMap_3_r3_5.fam ...
+done.
+
+End time: Mon Dec 02 18:10:44 2024
