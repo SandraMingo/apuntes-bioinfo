@@ -1,0 +1,516 @@
+---
+title: "GWAS: Quality control procedures of HapMap data"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    self_contained: no
+    number_sections: yes
+    toc: yes
+    toc_depth: 6
+    toc_float:
+      collapsed: no
+---
+
+<style type="text/css">
+h1.title {
+  font-size: 38px;
+}
+h1 { /* Header 1 */
+  font-size: 28px;
+}
+h2 { /* Header 2 */
+    font-size: 22px;
+}
+h3 { /* Header 3 */
+  font-size: 18px;
+}
+</style>
+
+The International HapMap Project was born to develop a haplotype map of the human genome. 
+
+During the practices of this part of the subject, we will make use of the HapMap data to determine associations between the SNPs from this study and the outcome variable, in what are known as genome-wide association studies (GWAS).
+
+As we have already seen in the class, quality control is the first step in GWAS. This process is crucial to remove low quality samples, contamination, to get rid of errors generated during the SNP calling or to control population substructure, among other things. This is essential to ensure that our data has enough quality to perform the associations tests.
+
+As a reminder, quality control is divided into some steps:
+
+1. Control for missingness
+2. Sex discrepancy
+3. Minor allele frequency (MAF)
+4. Hardy-Weinberg equilibrium (HWE)
+5. Heterozygosity
+6. Relatedness
+7. Population substructure
+
+In this pipeline, we will control for the first six steps. This will be mainly done by PLINK, a tool that allows you to study the characteristics of your data and clean it in a simple and efficient way. R will be also used to plot some results and help in the determination of thresholds.
+
+# Setup
+```{r}
+suppressWarnings(library(ggplot2))
+suppressWarnings(library(dplyr))
+suppressWarnings(library(kableExtra))
+```
+
+```{r}
+# if needed
+#install.packages(ggplot2)
+#install.packages(dplyr)
+#install.packages("kableExtra")
+#install.packages("jquerylib")
+```
+
+```{r}
+ #Sys.setenv(PATH=paste0("C:/Users/Sandra/plink_win64_20241022",Sys.getenv("PATH")))
+ #system("echo $PATH")
+```
+
+# Missingness per individual and per SNP 
+Missigness refers to the degree of non-available data at SNP or individual level and it is directly associated with the quality of the data. A good practice consists on removing SNPs/individuals with a high proportion of missingness.
+
+To determine this proportion, we can use `--missing` from PLINK. This flag generates two files that show the proportion of missing SNPs per individual and the proportion of missing individuals per SNP, respectively. 
+
+Files created in this step:
+
+- plink.lmiss: with the SNP missingness information
+- plink.imiss: with the individual missingness information
+
+```{bash}
+
+plink --bfile HapMap_3_r3_1 --missing --out plink
+```
+Interpret the report from PLINK. How many SNPs do we have? And how many samples? Can you differentiate between males and females?
+
+As the report says, we have 1457897 variants and 165 people (80 males / 85 females).
+
+## Study of SNP missingness
+To study SNP missingness, you first need to load the `plink.lmiss` file:
+```{r}
+# loading
+snpmiss <- read.table(file="plink.lmiss", header=TRUE)
+
+kable(head(snpmiss), caption = "SNP missingness information") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = FALSE) 
+```
+
+Once loaded, you have to visualize data. Make an histogram (you can use `ggplot`) representing the `F_MISS` variable.
+```{r}
+# SNP missingness distribution representation
+p <- ggplot(snpmiss, aes(x=F_MISS)) +
+  geom_histogram(color="black", fill="#E69F00", binwidth=.0025) +
+  ggtitle('Histogram SNP missingness') +
+  ylab('Frequency') +
+  geom_vline(xintercept = .02, linetype="dotted",
+               color = "black", linewidth=.9)
+p
+```
+
+Imagine that we decide to set a threshold in 0.02. This means that we are deleting SNPs with more than 2% of their information missing. 
+
+* How many SNPs are we deleting with this threshold?
+```{r}
+sum(snpmiss$F_MISS > 0.02)
+```
+
+* How many individuals have to have missing information in a specific SNP to be removed?
+```{r}
+deleted_snp <- snpmiss[snpmiss$F_MISS > 0.02, ]
+min(deleted_snp$N_MISS)
+
+```
+
+## Study of individual missingness
+In a similar way as we have done with the SNP missingness, we want to detect the individual missingness. To do so, load the file that contains this information and, represent the individuals missingness in a histogram:
+```{r}
+# loading
+indmiss <- read.table("plink.imiss", header = TRUE)
+indmiss
+```
+
+After that, and as you've done before with the SNPs, represent the individuals missingness in a histogram.
+```{r}
+# Individual missingness distribution representation
+p <- ggplot(indmiss, aes(F_MISS)) +
+  geom_histogram(color="black", fill="#E69F00", binwidth=.0005)
+
+p
+```
+
+We decide to set again the threshold at 0.02. This means that individuals with more than 2% of missingness in their SNPs are removed. 
+
+* How many individuals are we removing in this case?
+```{r}
+sum(indmiss$F_MISS > 0.02)
+```
+
+* How many SNPs have to be absent in an individual to be removed?
+```{r}
+deleted_ind <- indmiss[indmiss$F_MISS > 0.02, ]
+min(deleted_ind$N_MISS)
+```
+
+## Filtering out by SNPs and individuals
+After representing the results, we conclude that 2% of missingness is a good threshold for both, SNPs and individuals. Therefore, we must use `--geno` and `--mind` to delete that percentage.
+```{bash}
+# Delete SNPs with missingness >0.02.
+plink --bfile HapMap_3_r3_1 --geno 0.02 --make-bed --out HapMap_3_r3_2
+
+```
+
+How many SNPs are we removing based on the info given by PLINK?
+
+```{bash}
+# Delete individuals with missingness >0.02.
+plink --bfile HapMap_3_r3_2 --mind 0.02 --make-bed --out HapMap_3_r3_3
+
+```
+
+And how many individuals? Does it agree with the results calculated by you? Why? 
+
+# Sex discrepancy
+Sex discrepancy refers to the difference between the assigned sex and the determined one. This can be studied with `--check-sex`, which generates a document with 6 columns:
+
+1. FID: Family ID
+2. IID: Individual ID
+3. PEDSEX: Sex from the pedigree file (1=male, 2=female)
+4. SNPSEX: Sex determined by X chromosome
+5. STATUS: PROBLEM / OK
+6. F: The actual X chromosome inbreeding (homozygosity) estimate. This estimate allows to determine the sex of the individuals, being F < 0.2 assigned to females, and F > 0.8, to males.
+
+Apply this flag to determine the number of females and males:
+```{bash, include=toInclude}
+plink --bfile --check-sex --out plink
+
+```
+
+Use the generated file to create a histogram with the F estimate distribution among samples:
+```{r, echo=FALSE}
+# loading
+sex <- 
+```
+
+```{r}
+# Make an histogram with the F estimate
+p <- ggplot()
+p
+```
+
+How many females were predicted? And how many males? 
+```{r}
+# Answer these questions
+
+```
+
+Is there any discordance between the predicted and the computed sex among the individuals?
+```{r}
+
+```
+
+## Delete individuals with sex discrepancy
+If there were any discrepancy between predicted and reported sex, these individuals have to be filtered out. To do so, we first need to create a file (e.g. _sex_discrepancy.txt_) with the FID and IID information of the problematic individuals.
+```{bash}
+grep "PROBLEM" plink.sexcheck | awk '{ADD}' > sex_discrepancy.txt
+
+```
+
+Then, apply `--remove` flag to remove individuals present in _sex_discrepancy.txt_ file.
+```{bash}
+plink --bfile --remove --make-bed --out HapMap_3_r3_4
+
+```
+
+# Minor allele frequency (MAF)
+MAF refers to the frequency of the least often occurring allele in a locus. We need to remove SNPs with a low MAF because the statistical power of GWAS does not allow to detect associations if the frequency of the allele is too low.
+
+We are going to generate a file with just the autosomal SNPs (e.g. _snp_1_22.txt_) and, then, remove the ones with the lowest minor allele frequency. To do so, store in _snp_1_22.txt_ just the SNP identifiers present in autosomal chromosomes.
+```{bash}
+# Select autosomal SNPs (from chromosomes 1 to 22).
+awk '{ if ($1 >= 1 && ADD) print ADD}' > snp_1_22.txt
+
+```
+
+Then, use `--extract` flag from PLINK to remove all unlisted variants from the current analysis.
+```{bash}
+plink --bfile --extract --make-bed --out HapMap_3_r3_5
+
+```
+ 
+Apply `--freq` flag to compute the minor allele frequency just on the autosomal chromosomes.
+```{bash}
+plink --bfile HapMap_3_r3_5 --freq --out plink
+
+```
+
+Load the file generated, represent the MAF distribution in a histogram and establish a threshold of 5% of minor allele frequency.
+```{r}
+maf_freq <- 
+
+# Make a histogram with the MAF distirbution, setting a threshold at 5% of MAF
+p <- ggplot() +
+p
+```
+
+How many SNPs are we retaining? How many are we removing?
+```{r}
+
+```
+
+A conventional MAF threshold for a regular GWAS is between 1 - 5%, depending on sample size. In our dataset, we want to remove SNPs with MAF below 5%; use `--maf` to do so.
+```{bash}
+plink --bfile --maf --make-bed --out HapMap_3_r3_6
+```
+
+# Deletion of SNPs not in Hardy-Weinberg equilibrium
+Hardy-Weinberg equilibrium (HWE) states that, under a random mating, allele and genotype frequencies remain constant or stable in a population if no disturbing factors are introduced.
+
+## Check the distribution of HWE p-values of all SNPs
+`--hardy` writes a list of genotype counts and Hardy-Weinberg equilibrium exact test statistics. The file contains several columns:
+
+1. CHR
+2. SNP
+3. TEST: ALL / AFF (only cases) / UNAFF (only controls)
+4. A1: minor allele
+5. A2: major allele
+6. GENO: genotype counts (minor_allele_hom/heterozygosity/major_allele_hom)
+7. O(HET): observed heterozygosity
+8. E(HET): expected heterozygosity
+9. P: Hardy-Weinberg p-value
+
+This p-value informs about the statistical differences between the observed and expected genotype counts. 
+
+Apply `--hardy` flag to obtain this information:
+```{bash}
+plink --bfile HapMap_3_r3_6 --hardy --out plink
+```
+
+After that, select SNPs with HWE p-value < 0.0001 to zoom in on the strongly deviating SNPs (e.g. _plinkzoomhwe.hwe_ file).
+```{bash, include=toInclude}
+awk '{ if ($9 <0.00001) print $0 }' plink.hwe > plinkzoomhwe.hwe
+
+```
+
+Make a representation of the p-value of both _plink.hwe_ and _plinkzoomhwe.hwe_ files
+```{r}
+# plink.hwe
+hwe <- 
+
+p <- ggplot() +
+p
+
+```
+
+```{r}
+# plinkzoomhwe.hwe
+hwe_zoom <- 
+
+p <- 
+p
+
+```
+
+## Filtering out SNPs which deviates from HWE
+We are interested in removing SNPs that deviates from the HWE. This can be done with the `---hwe` flag from PLINK. By default this flag only filters for controls.
+
+As we have seen in class, different strategies can be followed here. In our case, we filter in two steps:
+
+1. Stringent HWE threshold for controls: filtering p-value < 1e-6
+```{bash}
+plink --bfile HapMap_3_r3_6 --hwe 1e-6 --make-bed --out HapMap_hwe_filter_step1
+
+```
+
+2. Less stringent threshold for the cases: filtering p-value < 1e-10 (hint: `include-nonctrl`)
+Will this last step affect case, controls or both?
+```{bash}
+plink --bfile --hwe include-nonctrl --make-bed --out HapMap_3_r3_7
+```
+
+# Heterozygosity rate
+It refers to the presence of each of the two alleles at a given SNP within an individual. The recommendation at this step is the removal of individuals with a heterozygosity rate deviating more than 3SD from the mean.
+
+Checks for heterozygosity are performed on a set of SNPs which are not highly correlated. Therefore, to generate a list of non-(highly)correlated SNPs, we need to exclude regions in high linkage disequilibrium (regions present in the _inversions.txt_ file) and prune the SNPs.
+
+To do so, we first need to apply `--indep-pairwise 50 5 0.2`. This flags checks for pairs of variants that are in the same window and removes the one with a lower MAF (because variants in the same window are too highly correlated)
+
+* 50: window size
+* 5: number of SNPs to shift the window at each step
+* 0.2: multiple correlation coefficient for a SNP being regressed on all other SNPs simultaneously
+
+How does it work?
+
+1. Consider a window of 50 SNPs
+2. Calculate LD between each pair of SNPs in the window and remove one of a pair if the LD is greater than 0.2
+3. Shift the window 5 SNPs forward and repeat the procedure
+```{bash}
+plink --bfile HapMap_3_r3_7 --exclude inversion.txt --range --indep-pairwise 50 5 0.2 --out indepSNP
+```
+
+How many files are generated? What is the difference between each file?
+```{bash}
+
+```
+
+Now, we can apply `--het` to compute the observed and expected number of homozygous SNPs for each individual. This process is just made on the SNPs that are in approximate LD and generates a file with the following columns:
+
+1. FID: Family ID
+2. IID: Individual ID
+3. O(HOM): observed number of homozygotes
+4. E(HOM): expected number of homozygotes
+5. N(NM): number of non-missing genotypes
+6. F: inbreeding coefficient estimate
+
+Apply `--het` but just selecting the SNPs in approximate LD (using the `--extract` flag):
+```{bash, include=toInclude}
+plink --bfile HapMap_3_r3_7 --extract indepSNP.prune.in --het --out R_check
+```
+
+## Removal of individuals based on heterozygosity rate
+After calculating the homozygosity per sample, we can compute the heterozygosity rate, to remove individuals who deviate more than 3sd from the mean heterozygosity rate.
+$$
+HeterozygosityRate = \frac{NonMissingGenotypes - ObservedHomozygotes}{NonMissingGenotypes}
+$$
+
+Given this formula, please compute the heterozygosity rate and plot the heterozygosity distribution as a function of the individual missingness.
+```{r, echo=FALSE}
+# loading
+r_check <- 
+
+# Calculate Heterozygosity_rate
+r_check['HET_RATE'] <- 
+
+```
+
+```{r}
+# Plot the heterozygosity distribution a function of the individual missingness
+# To do so, you might need to use the individual missingness information from the plink.imiss file
+hetrate_toplot <- merge(indmiss[, c('IID', 'F_MISS'),], r_check[, c('IID', 'HET_RATE'), ], by='IID')
+
+# Compute the +-3SD and the mean too heterozygosity rate too
+plus3sd <- mean(r_check$HET_RATE) + 3*sd(r_check$HET_RATE)
+minus3sd <- mean(r_check$HET_RATE) - 3*sd(r_check$HET_RATE)
+meanhet <- mean(r_check$HET_RATE)
+
+# Use ggplot (geom_point) to represent the heterozygosity rate
+# Individual missingness as the x_axis
+# Heterozygosity rate as the y_axis
+p <- ggplot(hetrate_toplot)  +
+  geom_point(colour = 'darkorange', size=.5, alpha=.9) +
+  geom_hline(yintercept = plus3sd, linetype="dashed", color = "blue", alpha=.5) +
+  geom_hline(yintercept = meanhet, color = "blue", alpha=.2) +
+  geom_hline(yintercept = minus3sd, linetype="dashed", color = "blue", alpha=.5) +
+  labs(y="heterozygosity rate",
+       x="individual missingness",
+       title="Heterozygosity rate representation")
+
+p
+```
+
+How many individuals deviate more than 3sd from the heterozygosity rate mean? 
+```{r}
+
+```
+
+If there are some individuals, store their information (e.g. _heterozygosityrate_fail.txt_ file). To make a file compatible for PLINK, this file have to contain just the first two columns (FID and IID):
+```{r}
+# Individuals who deviate more than 3sd from the heterozigosity mean rate
+het_fail <- 
+write.table(het_fail[c('FID', 'IID')], 'heterozygosityrate_fail.txt', col.names = F, row.names = F, quote = F)
+
+```
+
+Remove heterozygosity rate outliers (applying the `--remove` flag).
+```{bash}
+plink --bfile --remove --make-bed --out HapMap_3_r3_8
+```
+
+# Relatedness
+It is essential to check the data for cryptic relatedness, cause GWAS assumes random population samples.
+
+## IBS/IBD estimation
+GWAS assumes non-related individuals in the analysis. Therefore, it is also useful to compute some metrics that helps to detect unknown familial relationships (e.g. sibling pairs in a case/control population-based sample) or event distantly-related individuals.
+
+How can we detect such relationships? With the genome-wide identity-by-state (IBS) and identity-by-descent (IBD) estimates for all pairs of individuals, calculated in PLINK with `--genome`. The output generated has several columns:
+
+1. FID1: Family ID for first individual
+2. IID1: Individual ID for first individual
+3. FID2: Family ID for second individual
+4. IID2: Individual ID for second individual
+5. RT: Relationship type given PED file (FS: full siblings, HS: half siblings, PO: parent-offspring, OT: other)
+6. EZ: IBD sharing expected value, based on just .fam/.ped relationship
+7. Z0: P(IBD=0)
+8. Z1: P(IBD=1)
+9. Z2: P(IBD=2)
+10. PI_HAT: P(IBD=2)+0.5*P(IBD=1) ( proportion IBD )
+11. PHE: Pairwise phenotypic code (1,0,-1 = AA, AU and UU pairs)
+12. DST: IBS distance (IBS2 + 0.5*IBS1) / ( N SNP pairs )
+13. PPC: IBS binomial test
+14. RATIO: Of HETHET : IBS 0 SNPs (expected value is 2)
+
+By adding the flag `--min`, we can remove lines with PI_HAT values below 0.2. *Remember that it is important to apply `--genome` just in SNPs in low linkage disequilibrium.
+```{bash}
+plink --bfile HapMap_3_r3_8 --extract indepSNP.prune.in --genome --min 0.2 --out pihat_min0.2
+```
+
+Now, we need to determine if our dataset contains any relation, by using the z values. Could you plot the relationship given by the relation as a function of Z1 and Z0? What kind of relations do we have? How many individuals in each of them?
+```{r}
+relatedness <- 
+
+p <- ggplot() +
+p
+```
+
+We want to focus on parent-offpring relations. How many samples are reported to have this kind of relation?
+
+Create a file (e.g. _zoom_pihat.genome_) with the PO (parent-offpring) samples:
+```{bash}
+# For example, we can retaing those individuals with a Z1 > 0.9
+awk '{ if ($8 > 0.9) print $0 }' pihat_min0.2.genome > zoom_pihat.genome
+```
+
+Repeat the representation of the relations within the dataset, but focusing on this zoomed region.
+```{r}
+relatedness_zoom <- 
+
+p <- ggplot() +
+p
+```
+
+As you can see, the plots generated show a considerable amount of related individuals in the HapMap data. As we are assuming a random population (not a family-based one), we will treat the relatedness as cryptic relatedness. For this reason, we aim to remove all relatedness.
+
+In this dataset, the majority of relatedness is due to parent-offspring. We can check it by applying `--filter-founders` flag, which excludes all samples with, at least, one known parental ID from the current analysis.
+```{bash}
+plink --bfile --filter-founders --make-bed --out HapMap_3_r3_9
+
+```
+
+With the previously generated file, we will repeat the process of computing the IBS/IBD (using `--genome` and `--min`).
+```{bash}
+plink --bfile HapMap_3_r3_9 --extract indepSNP.prune.in --genome --min 0.2 --out pihat_min0.2_in_founders
+
+```
+
+How many individuals do we find after the exclusion of all non-founders? What kind of relation do we have based on PI_HAT value?
+
+If we still find relatedness, we need to remove, for each pair of 'related' individuals with a pihat > 0.2, the one with the lowest call rate. To compute this call rate, apply `--missing` as atthe beginning of the practice:
+```{bash}
+plink --bfile HapMap_3_r3_9 --missing
+
+```
+
+To remove the individual with the lowest call rate (for each pair of related individuals), you can generate a .txt document (e.g. _0.2_low_call_rate_pihat.txt_) that contains the FID and IID information.
+```{r}
+indmiss <- 
+
+toremove <- 
+
+write.table(x = toremove, file = '0.2_low_call_rate_pihat.txt', col.names = F, row.names = F,
+            sep='\t', quote = F)
+
+```
+
+Then, you use this file to `--remove` the individual(s) with these characteristics from our dataset.
+```{bash}
+plink --bfile --remove --make-bed --out HapMap_3_r3_10
+
+```
+
+Congratulations! You have just completed the quality control step needed before performing the association tests in GWAS.

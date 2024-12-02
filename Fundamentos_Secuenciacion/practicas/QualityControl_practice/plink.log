@@ -1,0 +1,25 @@
+PLINK v1.9.0-b.7.7 64-bit (22 Oct 2024)
+Options in effect:
+  --bfile HapMap_3_r3_1
+  --missing
+  --out plink
+
+Hostname: DESKTOP-5OCIJQC
+Working directory: C:\Users\Sandra\Desktop\bioinfo\fundamentos-secuenciacion\QualityControl_practice
+Start time: Fri Nov 29 17:01:51 2024
+
+Random number seed: 1732896111
+7971 MB RAM detected; reserving 3985 MB for main workspace.
+1457897 variants loaded from .bim file.
+165 people (80 males, 85 females) loaded from .fam.
+112 phenotype values loaded from .fam.
+Using 1 thread (no multithreaded calculations invoked).
+Before main variant filters, 112 founders and 53 nonfounders present.
+Calculating allele frequencies... done.
+Warning: 225 het. haploid genotypes present (see plink.hh ); many commands
+treat these as missing.
+Total genotyping rate is 0.997378.
+--missing: Sample missing data report written to plink.imiss, and variant-based
+missing data report written to plink.lmiss.
+
+End time: Fri Nov 29 17:01:52 2024

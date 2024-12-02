@@ -1,0 +1,16 @@
+PLINK v1.9.0-b.7.7 64-bit (22 Oct 2024)
+Options in effect:
+  --bfile
+  --make-bed
+  --mind
+  --out HapMap_3_r3_2
+
+Hostname: DESKTOP-5OCIJQC
+Working directory: C:\Users\Sandra\Desktop\bioinfo\fundamentos-secuenciacion\QualityControl_practice
+Start time: Fri Nov 29 17:57:12 2024
+
+Random number seed: 1732899432
+7971 MB RAM detected; reserving 3985 MB for main workspace.
+Error: Failed to open plink.bed.
+
+End time: Fri Nov 29 17:57:12 2024
