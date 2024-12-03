@@ -21,7 +21,7 @@
 \advance\cftchapnumwidth 0.8em\relax
 \advance\cftsecnumwidth 0.8em\relax
 \advance\cftsubsecindent 0.5em\relax
-\advance\cftsubsecnumwidth 0.8em\relax
+\advance\cftsubsecnumwidth 0.9em\relax
 
 \newcommand{\code}[1]{\texttt{#1}}
 
@@ -3551,7 +3551,7 @@ Y a veces puede que no comprendamos los mecanismos en detalle y, sin embargo, se
 
 Por supuesto, la intervención tampoco está totalmente desvinculada del éxito de la predicción. Los elementos de los modelos que desempeñan un papel en la predicción meteorológica y climatológica también están presentes en los modelos causales que se utilizan para orientar (o intentar orientar, desgraciadamente sin mucho éxito) las acciones para evitar el desastre del cambio climático; aquí nos preguntamos "¿qué variables debemos cambiar, y a qué valores, para conseguir este resultado o evitar este otro?"
 
-Pero los modelos que pueden ser excelentes para predecir el resultado actual pueden ser muy malos para predecir nuevas circunstancias; la inferencia causal y la intervención son el último objetivo, mientras que si usted mira AEMET por la mañana, lo que le preocupa es predecir sin intentar modificar o entender...
+Pero los modelos que pueden ser excelentes para predecir el resultado actual pueden ser muy malos para predecir nuevas circunstancias; la inferencia causal y la intervención son el último objetivo, mientras que si miramos AEMET por la mañana, lo que nos preocupa es predecir sin intentar modificar o entender...
 
 Y, tal vez de forma contraintuitiva, algunos modelos que están "más cerca de la verdad" en el sentido de "incorporan todas las variables que importan" pueden en realidad ser mucho peores que modelos más simples (es decir, "menos verdaderos") para hacer predicciones. 
 
@@ -3596,7 +3596,7 @@ En el contexto de máxima verosimilitud, la densidad $f(y_i | x_i, \theta)$ desc
 
 Esencialmente, $L(\theta)$, es la probabilidad de los datos bajo el parámetro $\theta$ (es mejor pensar en la densidad conjunta, ya que incluye, entonces, distribuciones continuas). Para un conjunto de datos, podemos encontrar el valor de $\theta$, los parámetros, que hace que la probabilidad sea tan grande como puede ser; esta sería la estimación de máxima verosimilitud del parámetro(s) $\theta$.  Así que en la expresión anterior, $\hat{L}$ es el valor de la probabilidad cuando se evalúa con los parámetros que hacen que la probabilidad sea lo más grande posible, es decir, en el valor(es) que hacen que los datos sean lo más probable posible. En un ejemplo de regresión, éste sería el valor de la probabilidad cuando los coeficientes de regresión (y el intercepto) toman los valores estimados por el software de regresión.
 
-El cálculo AIC es el logaritmo de la verosimilitud penalizado por el número de parámetros. En otras palabras, el AIC muestra el equilibrio entre un buen ajuste (a los datos actuales) y el número de parámetros: los modelos con muchos parámetros podrían ajustarse mejor a los datos (es decir, tener mayor verosimilitud), pero un ligero aumento de la verosimilitud podría no justificar algunos de esos parámetros. Así que el AIC dice algo así como "una mayor verosimilitud es buena, pero no se deje llevar añadiendo demasiados parámetros". Con demasiados parámetros, el modelo podría ser demasiado complejo no para los datos actuales (la probabilidad ha aumentado), sino para hacer buenas predicciones en otros conjuntos de datos. Demasiados parámetros aumentan el riesgo de \textbf{sobreajuste}.
+El cálculo AIC es el logaritmo de la verosimilitud penalizado por el número de parámetros. En otras palabras, el AIC muestra el equilibrio entre un buen ajuste (a los datos actuales) y el número de parámetros: los modelos con muchos parámetros podrían ajustarse mejor a los datos (es decir, tener mayor verosimilitud), pero un ligero aumento de la verosimilitud podría no justificar algunos de esos parámetros. Así que el AIC dice algo así como "una mayor verosimilitud es buena, pero no te dejes llevar añadiendo demasiados parámetros". Con demasiados parámetros, el modelo podría ser demasiado complejo no para los datos actuales (la probabilidad ha aumentado), sino para hacer buenas predicciones en otros conjuntos de datos. Demasiados parámetros aumentan el riesgo de \textbf{sobreajuste}.
 
 Tres características clave de la AIC:
 \begin{enumerate}
@@ -3620,7 +3620,7 @@ La idea clave es que el AIC nos permite seleccionar modelos de forma que nos que
 \begin{enumerate}
 \item  El modelo así seleccionado (es decir, el modelo con el mejor AIC) no tiene por qué ser el modelo que tiene "todos y cada uno de los parámetros que realmente afectan al resultado": los "modelos más pequeños", los modelos que no incluyen algunos parámetros, podrían funcionar mejor. 
 
-Para repetirlo: para un tamaño de muestra determinado, el mejor modelo según el AIC podría indicarle que NO incluya una variable que realmente tenga un efecto (que sea "significativa"). No todas las variables que "realmente tienen un efecto" mejoran necesariamente el rendimiento predictivo; del mismo modo, si la relación es realmente ligeramente cuadrática, añadir el parámetro del término cuadrático no mejora necesariamente el rendimiento predictivo. Sí, esto significa que los "modelos verdaderos" (en términos de variables, parámetros, etc.) no son necesariamente los mejores modelos para el rendimiento predictivo, y que los modelos más simples suelen ser mejores. 
+Para repetirlo: para un tamaño de muestra determinado, el mejor modelo según el AIC podría indicar que NO incluya una variable que realmente tenga un efecto (que sea "significativa"). No todas las variables que "realmente tienen un efecto" mejoran necesariamente el rendimiento predictivo; del mismo modo, si la relación es realmente ligeramente cuadrática, añadir el parámetro del término cuadrático no mejora necesariamente el rendimiento predictivo. Sí, esto significa que los "modelos verdaderos" (en términos de variables, parámetros, etc.) no son necesariamente los mejores modelos para el rendimiento predictivo, y que los modelos más simples suelen ser mejores. 
 
 \item El tamaño (el número de parámetros) del modelo seleccionado depende del tamaño de la muestra: con muestras de mayor tamaño, a menudo podemos permitirnos ajustar modelos más grandes y, por tanto, con muestras de mayor tamaño, el AIC suele seleccionar modelos más grandes. (Más grande puede significar «más variables» o «más parámetros» si incluimos, por ejemplo, relaciones no lineales, etc.).
 
@@ -3655,13 +3655,13 @@ Por el contrario, el criterio AIC no se utiliza para realizar pruebas de hipóte
 
 Una segunda diferencia es que cuando utilizamos \code{anova} y \code{Anova} para comparar modelos o evaluar la significación de diferentes variables, generalmente no lo hacemos (no deberíamos hacerlo) con decenas o cientos de modelos y variables. Estamos probando algunas hipótesis específicas y lo hacemos "manualmente". En cambio, utilizando la selección de modelos con AIC (o criterios similares) el procedimiento se ejecutará automáticamente y podrá comparar potencialmente cientos de modelos.
 
-Una tercera diferencia es que la mayoría de los procedimientos automatizados como \code{step} con AIC añadirá o eliminará una "variable completa". Sin embargo, con \code{Anova} (y \code{glht}, y otros) puede probar hipótesis específicas de su interés, incluyendo hipótesis en las que, por ejemplo, la media de dos niveles de un factor es igual a la tercera, etc.
+Una tercera diferencia es que la mayoría de los procedimientos automatizados como \code{step} con AIC añadirá o eliminará una "variable completa". Sin embargo, con \code{Anova} (y \code{glht}, y otros) se puedne probar hipótesis específicas de nuestro interés, incluyendo hipótesis en las que, por ejemplo, la media de dos niveles de un factor es igual a la tercera, etc.
 
-Por último, tenga en cuenta que \code{anova} sólo debe utilizarse para comparar modelos anidados (incluso si \code{Anova} y otros puede probar hipótesis de interés para usted). \code{step} seguirá las reglas de comparación codiciosas para pasar de un modelo a otro, pero si insiste podría mirar el AIC de una gran colección de modelos (o todos los modelos posibles para un conjunto de variables) y comparar entre modelos aunque no sean versiones anidadas entre sí. De nuevo, hacer esto utilizando el AIC podría ser sensato porque el objetivo es la predicción, no la comprobación de hipótesis.
+Por último, \code{anova} sólo debe utilizarse para comparar modelos anidados (incluso si \code{Anova} y otros puede probar hipótesis de interés). \code{step} seguirá las reglas de comparación codiciosas para pasar de un modelo a otro, pero se podría mirar el AIC de una gran colección de modelos (o todos los modelos posibles para un conjunto de variables) y comparar entre modelos aunque no sean versiones anidadas entre sí. De nuevo, hacer esto utilizando el AIC podría ser sensato porque el objetivo es la predicción, no la comprobación de hipótesis.
 
 Simplificando un poco las cuestiones, la comprobación de hipótesis y la construcción de modelos utilizando herramientas como \code{anova} y \code{Anova} son cosas que se hacen cuando se quiere comprender un fenómeno, mientras que la selección de modelos utilizando criterios como AIC es lo que se hace cuando se quiere construir modelos con el mejor rendimiento predictivo.
 
-Como consecuencia de lo anterior, por supuesto, a veces utilizar \code{step} es algo que no tendría sentido y que ni siquiera se plantearía, por ejemplo en un experimento limpio y claro con dos factores: se quiere utilizar un ANOVA, no hace falta \code{step}. Y, del mismo modo, con miles de variables posibles, ejecutar miles de pruebas de modelo manualmente no tendría sentido si está intentando construir un buen modelo predictivo; utilice un procedimiento que intente encontrar el mejor modelo desde el punto de vista de la predicción.
+Como consecuencia de lo anterior, por supuesto, a veces utilizar \code{step} es algo que no tendría sentido y que ni siquiera se plantearía, por ejemplo en un experimento limpio y claro con dos factores: se quiere utilizar un ANOVA, no hace falta \code{step}. Y, del mismo modo, con miles de variables posibles, ejecutar miles de pruebas de modelo manualmente no tendría sentido si se está intentando construir un buen modelo predictivo; utiliza un procedimiento que intente encontrar el mejor modelo desde el punto de vista de la predicción.
 
 \newpage
 \subsection{Un modelo largo de pemax como ejemplo}
