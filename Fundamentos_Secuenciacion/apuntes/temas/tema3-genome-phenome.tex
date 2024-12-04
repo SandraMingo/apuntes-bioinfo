@@ -370,3 +370,87 @@ Los descubrimientos en poblaciones aisladas son muy difíciles de replicar en ot
 En esta práctica estudiaremos relatedness y la estratificación poblacional. La estratificación poblacional puede ser la principal fuente de confusión. Ejemplo: estudio de casos y controles, en el que las diferencias genotípicas entre casos y controles se deben a los distintos orígenes de la población (casos: europeos, controles: asiáticos) y no a un efecto sobre el riesgo de enfermedad. La confusión se debe a que la subestructura de la población no está distribuida por igual entre los grupos de casos y controles. Así, una señal de asociación surgirá no por una asociación entre un fenotipo y un SNP, sino por diferencias de frecuencia alélica entre las poblaciones que comprenden los casos y los controles. Esto tiene dos soluciones: eliminar los individuos de ascendencia divergente o establecer la ascendencia como covariable/efecto aleatorio en modelos mixtos.
 
 Los métodos para identificación de individuos con diferencias a larga escala en ascendencia es mediante una PCA (principal component analysis) o MDS (multidimensional scaling). MDS calcula la proporción de alelos compartidos entre cada par de individuos para identificar la variación genética para cada individuo. Los resultados se muestran en un gráfico para explorar la distribución de individuos en los datos. Por ejemplo, estudio genético que incluya sujetos de Asia y Europa. El análisis MDS revelaría que los asiáticos son genéticamente más parecidos entre sí que a los europeos.
+
+%04/12 - Lucía Sánchez
+\chapter{Análisis estadístico o de asociación}
+La imputación permite predecir otros SNPs no secuenciados debido a que se heredan conjuntamente, ampliando así la información de los SNPs. Los softwares que se pueden utilizar son:
+\begin{itemize}
+\item \textbf{IMPUTE2 y MACH}: utilizan un modelo de Markov oculto (HMM) para estimar los genotipos que faltan, mediante la inferencia de haplotipos y el uso de parámetros genéticos previamente especificados, como las tasas de mutación y de recombinación
+\item \textbf{BEAGLE}: no necesita tales parámetros. Estima los valores que faltan mediante el uso de haplotipos agrupados localmente con algoritmos HMM y de maximización de expectativas (EM).
+\end{itemize}
+
+El test de asociación se realiza después de la imputación. El test de asociación que se realice depende del fenotipo (binario o continuo), el control de covariantes (edad, sexo) y la estructura poblacional (estratificación u homogeneidad), pudiendo ser regresiones lineales, regresiones lineales múltiples, modelos lineares mixtos, regresiones logísticas, etc. Los tipos de análisis que se pueden encontrar en función de la dominancia son:
+\begin{itemize}
+\item \textbf{Modelo dominante:} La presencia del alelo B aumenta el riesgo de enfermedad en la misma medida para los genotipos BB y AB, en comparación con el riesgo de referencia para los AA.
+\item \textbf{Modelo codominante o aditivo:} Cada copia adicional del alelo B aumenta el riesgo de enfermedad de forma aditiva, o por el contrario, aumenta el efecto protector.
+\item \textbf{Modelo recesivo:} Se necesitan dos copias del alelo B para expresar la característica fenotípica relacionada con este alelo.
+\end{itemize}
+
+\section{Tipos de test de asociación}
+\subsection{Modelos lineares}
+Se describen mediante la fórmula:
+$$y = \beta_0 + \beta_1 \cdot X_{1i} + \epsilon_1$$
+
+Siendo $y$ la variable dependiente (respuesta/outcome), $\beta_0$ el término constante del modelo, $\beta_1$ el coeficiente de regresión, $X_{1i}$ la variable independiente o predictora y $\epsilon_1$ el término del error. $i$ representa el número de observaciones o muestras.
+
+Los cambios que se producen en el outcome (y) se puede modelar como una función lineal de la variable independiente. Así, un cambio en la variable independiente produce un cambio en la variable dependiente, siendo ésta numérica. 
+
+Un ejemplo: Se desea estimar si el tabaco (medido como el número de cigarrillos fumados al mes) influye en el volumen residual pulmonar (VR: volumen de aire que queda en los pulmones tras una espiración máxima). Si existe una asociación entre el tabaco y el VR, el número de cigarrillos (variable independiente) se asociaría con una reducción del VR (variable dependiente)
+
+En este caso, la variable predictora va a ser categórica, representando los distintos SNPs. Normalmente, el estimador (la pendiente) suele estar relacionado con el p-valor. 
+
+\subsection{Modelos de regresión lineal múltiple}
+Se incluyen otros predictores o covariables. Los términos en la variable dependiente se modelan con todos los predictores independientes. Una manera de regular la estratificación de la población es metiéndolo como covariable.
+
+Siguiendo con el ejemplo previo, nos damos cuenta de que el volumen residual puede verse afectado no sólo por el número de cigarrillos fumados al mes, sino también por la edad y el sexo. Ahora tendremos tres variables independientes para probar la dependiente: tabaco, sexo y edad.
+
+\subsection{Modelos lineares mixtos}
+Estos modelos sirven para modelar estructuras de datos más complejas. Las variables predictoras se dividen en dos:
+\begin{itemize}
+\item \textbf{Efecto fijo:} son las variable que se espera que tengan un efecto en la variable respuesta. Un ejemplo sería los SNP y el entorno o las covariables clínicas.
+\item \textbf{Efectos aleatorios:} no nos interesa su impacto en la variable de respuesta, pero sabemos que pueden estar influyendo en los patrones que observamos, por lo que queremos separarlos del modelo para ver cómo verdaderamente el efecto fijo afecta al outcome. Aquí se contarían variables categóricas que queremos controlar.
+\end{itemize}
+
+Un ejemplo sería un estudio de la deprivación del sueño. Se restringe el tiempo de sueño de 18 individuos y la reacción de su organismo durante 10 días. El objetivo es determinar cómo cambia la reacción de los individuso durante su deprivación de sueño. Si se mide como regresión lineal simple, la variabilidad va cambiando. Si se clusteriza cada dato por individuo, se puede ver que la recta que se traza es más ajustada a los datos, demostrando que hay una estructura compleja que no se puede determinar por un modelo lineal.
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{p{7cm}|p{7cm}}
+Modelo de regresión lineal & Modelos mixtos \\ \hline
+Suponen una relación lineal entre las variables dependientes e independientes. & Relajan el supuesto de independencia entre las observaciones. \\
+\\
+Adecuado para analizar datos con una estructura simple (se supone que las observaciones son independientes entre sí). & Adecuado para analizar datos con una estructura agrupada (las observaciones están anidadas dentro de grupos / mediciones repetidas en los mismos sujetos). \\
+\\
+Los modelos de regresión lineal suelen incluir efectos fijos: parámetros asociados a las variables predictoras. Estos efectos son constantes en todos los niveles de cualquier variable de agrupación. & Los modelos mixtos incluyen efectos fijos (como los modelos lineales) y efectos aleatorios (captan la variabilidad a distintos niveles).\\
+\\
+Tareas de regresión simple: se desea predecir una variable de resultado continua a partir de una o más variables predictoras. & Se utilizan en análisis de datos longitudinales, análisis de medidas repetidas y modelización jerárquica. Son apropiados cuando los datos no son independientes y se desea tener en cuenta las correlaciones dentro del grupo o la variabilidad específica de los sujetos.
+\end{tabular}
+\end{table}
+
+\subsection{Regresión logística}
+La regresión logística sigue la fórmula:
+$$y = \frac{e^{(\beta_0 + \beta_1X_{1i)}}}{1 + e^{(\beta_0 + \beta_1X{1i})}}$$
+
+Los cambios en la variable dependiente (y) pueden modelizarse como una función logística de las variables independientes. Hay dos variantes:
+El modelo de regresión logística múltiple es como la lineal múltiple, pero logística, es decir, se añaden varias variables independientes. El modelo multinomial cuenta con una variable dependiente con más de dos categorías.
+
+Siguiendo con el ejemplo, nos interesa detectar si existe una asociación entre el número de cigarrillos: (variable independiente continua) y el volumen residual inferior a 1 litro (variable dependiente binaria: sí/no). En la regresión logística múltiple, se añadiría sexo como covariable, mientras que en la regresión logística multinomial la variable dependiente tendría más de dos categorías.
+
+\section{Visualización de datos}
+El plot se denomina como Manhattan plot. Las asociaciones significativas se muestran en la parte superior del gráfico. El eje x va por orden en los distintos cromosomas. 
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = \textwidth]{figs/manhattan-plot.png}
+\end{figure}
+
+\section{Nivel de significancia de GWAS}
+A la hora de mirar el nivel de significancia de GWAS, nos encontramos con el problema del testeo múltiple. El p-valor representa la probabilidad de obtener resultados tan extremos como los observados si la hipótesis nula es correcta. La hipótesis nula dice que no hay una relación significativa entre el predictor y la variable respuesta. El nivel de significancia se suele poner en 0,05. 
+
+Por ejemplo, estamos probando (hipótesis nula) que no hay una relación significativa entre el predictor (SNP, edad y sexo) con la variable respuesta (volumen residual). Si el p-valor es 0,03, si no hubiera una relación entre esas variables (y la hipótesis nula fuera cierta), la probabilidad de tener resultados tan extremos como los observados sería de 0,03. 
+
+Con un nivel de significancia de 0,05, todavía hay una probabilidad de que no haya una relación significativa, aunque sea pequeña. Esto no es un problema cuando se realiza un solo análisis, pero cuando se realizan muchos, se incrementa el número de falsos positivos. Por ello, se debe controlar el testo múltiple y ajustar el p-valor. Esto se puede realizar de varias formas:
+\begin{itemize}
+\item \textbf{Corrección de Bonferroni:} divide el nivel de significancia por el número de análisis realizados para ver el nivel de significancia que se debe comprobar en cada análisis individual. No obstante, es algo restrictivo, incrementando los falsos negativos.
+\item \textbf{False Discovery Rate (FDR):} se describió por Benjamini y Hochberg en 1995, y monitoriza el número de falsos positivos en relación al número de resultados positivos, siendo así menos estricto.
+\end{itemize}
