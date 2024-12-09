@@ -454,3 +454,49 @@ Con un nivel de significancia de 0,05, todavía hay una probabilidad de que no h
 \item \textbf{Corrección de Bonferroni:} divide el nivel de significancia por el número de análisis realizados para ver el nivel de significancia que se debe comprobar en cada análisis individual. No obstante, es algo restrictivo, incrementando los falsos negativos.
 \item \textbf{False Discovery Rate (FDR):} se describió por Benjamini y Hochberg en 1995, y monitoriza el número de falsos positivos en relación al número de resultados positivos, siendo así menos estricto.
 \end{itemize}
+
+%09/12 - Fátima
+\chapter{Epidemiología molecular: introducción a la inferencia causal}
+Los biobancos son grandes estudios poblacionales que siguen a personas aparentemente sanas. En el portal de \href{https://portal.gdc.cancer.gov/analysis_page?app=}{TGCA} se han creado algunas herramientas que permiten construir una cohorte: obtener los pacientes con un tipo de cáncer para sacar cierta información. Se pueden ver los tipos de datos disponibles y aplicando distintos filtros. Como bioinformáticos, no nos gusta acceder a las bases de datos mediante front-end, ya que esto solo sirve para consultas pequeñas. Nosotros accederemos desde R (script en la carpeta de prácticas, \texttt{tcga.R}).
+
+Para prácticamente todos los biobancos existen APIs para acceder y un paquete de R para poder minar las bases de datos. En este caso, como queremos acceder a TGCA, utilizaremos el paquete de TCGAretriever.
+
+ \section{Correlación vs causalidad}
+ La correlación no implica causalidad. Hay muchos ejemplos en los que hay variables confusoras que hacen que haya correlación entre ambos eventos, pero no causalidad: ventas de helados y ataques de tiburones (verano como variable confusora), consumo de chocolate y premios Nobel en un país (país con gran inversión y poder adquisitivo). 
+ 
+Hay veces que es complicado ver si algo es causal o no. La ciencia ha tratado de investigar la causalidad en variables asociadas en modelos animales y ensayos clínicos. En ratones, se puede simular la situación mediante knock-outs para demostrar causalidad de forma directa, pero la experimentación con animales es complicada y de aquí a unos años puede estar incluso prohibida. En el caso de los ensayos clínicos, se pueden buscar individuos con características que se quieren simular, se puede ver el outcome. No obstante, son muy caros y muy largos. Otra opción es mediante modelos digitales que permitan simular \textit{in silico} la asociación y causalidad con distintos fenotipos. Ahora que hay tantos biobancos y se invierte tanto dinero en ellos, se pueden obtener muchos datos observacionales. 
+
+\section{Inferencia causal}
+La inferencia causal nos permite sacar conclusiones causales a partir de los datos observacionales de los que a priori solo podemos sacar asociaciones. Para ver causalidad habría que comparar a un mismo individuo en dos situaciones, pero es complicado obtener esos estados (no puedes comparar el efecto de una aspirina en una persona comparando su estado tomándosela y no tomándosela, ya que no se puede realizar ambas). 
+
+El efecto causal de un tratamiento en un mismo individuo es la diferencia entre el valor del outcome si el individuo se trata y el valor del outcome si no se trata. No obstante, es imposible obtener esos dos outcomes. 
+
+Se hizo un estudio en el que se miró si el consumo de alcohol tiene relación con sufrir un infarto. Idealmente, se buscaba tener datos de las distintas personas sin consumo de alcohol y con consumo, midiendo el tiempo hasta que sufre un infarto. Cada una de las dos columnas tiene una distribución (función de probabilidad). Con esta información, lo que tenemos en un estudio observacional es para una persona, una variable que dice si toma o no alcohol y el tiempo de supervivencia en su grupo correspondiente. Esto es un problema de valores perdidos: sabiendo la distribución de los datos (de estudios observacionales anteriores), podemos simular y rellenar la tabla con los valores faltantes (el tiempo hasta sufrir un infarto para cada persona en el grupo faltante).
+
+\subsection{Neyman-Rubin Causal Model}
+El teorema de Rubin dice que si la variable es totalmente independiente del outcome que se mide (si tomar alcohol y tener un infarto es independiente), no se necesita para cada persona los dos valores, ya que se puede sustraer la media de las dos variables y se obtiene una estimación muy buena que correspondería a tener para cada individuo los dos valores y extraer la media. Hay variantes genéticas que predisponen al consumo de alcohol, y variantes genéticas que predisponen al infarto. Si las variantes son diferentes, se puede clasificar a cada persona en su grupo.
+
+\section{Genes como variables instrumentales}
+De forma aleatoria, nosotros tenemos un genotipo u otro, por lo que se puede considerar como variable instrumental. Esto sirve para la \textbf{mendelian randomization}, la cual se basa en el supuesto de que las variantes genéticas aportan una fuente de variación exógena en la exposición.
+
+Hay muchos supuestos:
+\begin{enumerate}
+\item La variante genética tiene que estar asociada con el trait asociado
+\item La variante genética no puede estar asociada con ninguna variable confusora
+\item La variante genética no puede estar asociada directamente con el outcome
+\end{enumerate}
+
+Esto se puede realizar en R con el paquete \texttt{MendelianRandomization}.
+
+betaX y betaXse son vectores numéricos que describen las asociaciones de las variantes genéticas con la exposición. 
+betaX son los coeficientes beta de los análisis de regresión univariable de la exposición/tratamiento sobre cada variante genética. 
+betaXse son los errores estándar.
+betaY y betaYse son vectores numéricos que describen las asociaciones de las variantes genéticas con el resultado: 
+betaY son los coeficientes beta de los análisis de regresión del resultado en cada variante genética 
+betaYse son los errores estándar
+Correlación es una matriz con las correlaciones con signo entre las variantes. Si no se proporciona una matriz de correlación, se asume que las variantes no están correlacionadas.
+exposition es una cadena de caracteres que indica el nombre del factor de riesgo, por ejemplo, LDL-colesterol
+outcome es una cadena de caracteres que indica el nombre del resultado, por ejemplo, cardiopatía coronaria. 
+snps es un vector de caracteres que contiene los nombres de las distintas variantes genéticas (SNP) del conjunto de datos, por ejemplo rs12785878. 
+
+No es necesario nombrar la exposición, el resultado o los SNPs, pero estos nombres se utilizan en las funciones gráficas y pueden ser útiles para realizar un seguimiento de los distintos análisis.
