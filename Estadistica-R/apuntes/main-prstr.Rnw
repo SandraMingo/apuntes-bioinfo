@@ -15,6 +15,7 @@
 \usepackage{makecell}
 \usepackage{amsmath}
 \usepackage{array}
+\usepackage[shortlabels]{enumitem}
 
 \usepackage{tocloft}
 
@@ -35,6 +36,8 @@ opts_knit$set(stop_on_error = 2L)
 
 \begin{abstract}
 Este curso es una introducción rápida a un «entorno para la computación estadística y los gráficos», que proporciona una amplia variedad de técnicas estadísticas y gráficas: modelización lineal y no lineal, pruebas estadísticas, análisis de series temporales, clasificación, agrupación, etc. Prácticamente todos los análisis estadísticos que se realizan en Bioinformática se pueden llevar a cabo con R. Además, la «minería de datos» está bien cubierta en R: el clustering (a menudo llamado «análisis no supervisado») en muchas de sus variantes (jerárquico, k-means y familia, modelos de mezcla, fuzzy, etc), bi-clustering, clasificación y discriminación (desde el análisis discriminante a los árboles de clasificación, bagging, máquinas de vectores soporte, etc), todos tienen muchos paquetes en R. Así, tareas como la búsqueda de subgrupos homogéneos en conjuntos de genes/sujetos, la identificación de genes que muestran una expresión diferencial (con ajuste para pruebas múltiples), la construcción de algoritmos de predicción de clases para separar a los pacientes de buen y mal pronóstico en función del perfil genético, o la identificación de regiones del genoma con pérdidas/ganancias de ADN (alteraciones del número de copias) pueden llevarse a cabo en R de forma inmediata.
+
+Texto traducido desde las notas de Ramón Díaz-Uriarte con explicaciones más detalladas cogidas en clase y durante el estudio propio.
 \end{abstract}
 
 \pagestyle{plain}
@@ -3680,6 +3683,590 @@ mcystL_r2 <- update(mcystL_r, . ~ . -age:weight:sex - height:sex - age:weight)
 Anova(mcystL_r2)
 anova(mcystL_r2, mcystL_r)
 @
+
+%09/12 - Ramón
+\chapter{Elección de covariantes, interpretar coeficientes e inferencia causal}
+\section{Contexto general}
+Se busca elegir covariables para inferir o estudiar los efectos causales. Se busca estimar adecuadamente el efecto de las causas, no identificar las causas de los efectos. 
+
+Si nuestro propósito al ajustar modelos estadísticos es sólo la predicción, la inversión de los coeficientes de regresión cuando una covariable está en el modelo con o sin otras covariables, y otros fenómenos contraintuitivos similares, no son un problema. El problema puede surgir si queremos interpretar lo que significan los coeficientes.
+
+La interpretación que a menudo queremos dar es causal. Por ejemplo, en un modelo en el que la variable dependiente o de resultado es la salud cardiovascular y una de las variables predictoras es el consumo de vino tinto, podríamos decir que estamos intentando comprender si el consumo de vino tinto afecta (es decir, tiene un efecto sobre) la salud cardiovascular. Es posible que queramos hacerlo para poder hacer recomendaciones de salud pública o tomar medidas personales (¿debería empezar a beber un poco de vino?).  Intuitivamente, si una variable, X, tiene un efecto causal sobre una variable, Y, la manipulación de X cambiará el valor de Y.
+
+"(...) efectos causales en
+poblaciones, es decir, \textbf{cantidades numéricas} que miden los cambios en la distribución de un resultado bajo \textbf{intervenciones} diferentes."
+
+El contrafactual es algo contrario a los hechos. Al hacer inferencia causal, eso es lo que nos importa, ya que comparamos distintos resultados, de los cuales algunos observamos y otros no podemos observar porque son contrarios a los hechos que han sucedido. Cuando queremos hacer inferencia causal, comparamos lo que vemos con lo que habríamos visto (lo cual es contrafactual).
+
+Asociación espúrea hace referencia a asociaciones ficticias o aparentes. No obstante, la asociación es real: los datos demuestran una clara asociación entre las variables, pero quizás no refleja una asociación causal entre los dos eventos. 
+
+\section{Grafos, DAGs y notación}
+<<load_libs, echo=FALSE, results='hide',message=FALSE>>=
+## Plots, with dagitty
+library(dagitty)
+
+## library(rethinking) ## for drawdag
+## Installing rethinking can be complicated just for a few graphs
+## So have a fallback if rethinking not available
+if(!suppressWarnings(require("rethinking", quietly = TRUE))) {
+    drawdag <- plot
+}
+
+library(car)
+@
+
+Los conceptos causales se pueden representar con grafos. En la figura, la Edad es una \textbf{causa común} del Ejercicio y el Colesterol, y el Ejercicio también tiene un efecto directo sobre el Colesterol.  Dirigidos porque hay una dirección y, por tanto, vemos flechas, no sólo aristas; acíclicos porque no hay ciclos: no se pasa dos veces por una variable si se siguen las flechas.
+
+<<dag_1, results='hide', echo=FALSE>>=
+common_cause <- dagitty("dag {
+Age -> Exercise
+Age -> Cholesterol
+Exercise -> Cholesterol
+}")
+
+@
+
+\section{Ejemplo introductorio del ajuste por covariantes de causa común: colesterol, ejercicio y edad}
+Supongamos que tomamos muestras de una población en la que, a medida que las personas envejecen, hacen más ejercicio y tienen niveles más altos de colesterol. Al mismo tiempo, para una edad determinada, cuanto más ejercicio hace la gente, más bajo es su nivel de colesterol.  Dada una muestra de datos en la que hemos recogido la edad, los patrones de ejercicio y los niveles de colesterol, ¿cómo deberíamos analizar los datos?
+
+<<plot_dag_1, fig.width = 4, fig.height=2, fig.lp='fig:', results = 'hide', echo=FALSE, fig.align = 'center', fig.cap='Cholesterol, Exercise, Age example',out.width='10cm', fig.pos="!h">>=
+coordinates(common_cause) <- list(x = c(Exercise = 1, Age = 2, Cholesterol = 3),
+                                  y = c(Exercise = 0, Age = -1, Cholesterol = 0))
+
+drawdag(common_cause, xlim = c(0.5, 3.5), ylim = c(0, 1.3))
+## text(x = 2, y = 1.2, labels ="a)", cex = 1.2)
+
+@
+
+\begin{figure}[h!]
+  \centering
+  \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{figs/chol-ex1-crop}% first figure itself
+%       \caption{first figure}
+    \end{minipage}\hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{figs/chol-ex2-crop} %second figure itself
+%       \caption{second figure}
+    \end{minipage}
+  % \includegraphics[width=0.50\paperwidth,keepaspectratio]{chol-ex1.pdf}
+  % \includegraphics[width=0.50\paperwidth,keepaspectratio]{chol-ex2.pdf}
+   \caption{\label{fig:chol-exercise-pearl-et-al} Relationships between
+     Cholesterol and Exercise, by age and over the complete population. }
+\end{figure}
+
+
+A medida que las personas se hacen mayores, el colesterol sube, pero a medida que el ejercicio sube, el colesterol baja. Habiendo introducido Edad en el modelo, vemos la verdadera relación causal de ejercicio sobre colesterol (las líneas de pendiente negativa). Sin embargo, si nos olvidamos de ajustar por edad y solo lo representamos, vemos que a medido que se aumenta el ejercicio, aumentan los niveles de colesterol.
+
+<<simul_1, results='hide', echo = TRUE>>=
+N <- 1e4
+################## Common_cause
+common_cause <- data.frame(Age = rnorm(N, 30, 5))
+common_cause$Exercise <- 2 * common_cause$Age + rnorm(N)
+common_cause$Cholesterol <- 3 * common_cause$Age -
+  common_cause$Exercise +
+  rnorm(N)
+
+@
+
+<<code_1, results='show', echo = TRUE>>=
+m_common_cause_adjust <- lm(Cholesterol ~ Exercise + Age,
+                            data = common_cause)
+m_common_cause_no_adjust <- lm(Cholesterol ~ Exercise,
+                               data = common_cause)
+
+## Function "S" is from the car library
+S(m_common_cause_adjust)
+S(m_common_cause_no_adjust)
+@
+
+Debemos ajustar (o controlar) por Edad, la causa común del Ejercicio y la Edad: si no ajustamos por Edad, la estimación del efecto del Ejercicio sobre el Colesterol está confundida por la Edad que tiene efectos tanto sobre el Ejercicio como sobre el
+Cuando se trata de variables categóricas, este patrón. Cuando la asociación de dos variables cambia, o incluso invierte su signo cuando tenemos en cuenta otra, también se denomina paradoja de Simpson. La edad es un \textbf{confundador}.
+
+\section{Ajuste por covariantes: hongos y la variable post-tratamiento}
+Se realiza un experimento para evaluar los efectos de un tratamiento antifúngico (Tratamiento) sobre el tamaño final de la planta (Tamaño). También se mide la cantidad de hongos (variable posterior al tratamiento, Fungus). Dado que la calidad de las parcelas varía, lo que podría afectar al tamaño final de las plantas, se ha incluido una variable (o variables) Parcela para medir la calidad de la parcela (pretratamiento, aunque esto es irrelevante, ya que esta variable, o variables, no se ven afectadas por el tratamiento). El DAG se muestra en la Fig. \ref{fig:plot_fungus_1}.
+
+<<dag_fungus_1, results='hide', echo=FALSE>>=
+fungus1 <- dagitty("dag {
+Treatment -> Fungus
+Fungus -> Size
+Plot -> Size
+}")
+
+@
+
+<<plot_fungus_1, fig.width = 4, fig.height=1.4, fig.lp='fig:', results = 'hide', echo=FALSE, fig.align = 'center', fig.cap='Fungus, first example',out.width='9cm', fig.pos="!h">>=
+coordinates(fungus1) <- list(x = c(Treatment = 1, Fungus = 2,
+                                        Plot = 2.5,
+                                        Size = 3),
+                                  y = c(Treatment = -0.5, Fungus = 0,
+                                        Plot = -1,
+                                        Size = 0))
+
+drawdag(fungus1, xlim = c(0.5, 3.5), ylim = c(-.1, 1.3))
+## text(x = 2, y = 1.2, labels ="a)", cex = 1.2)
+
+@
+
+Definitivamente, queremos ajustar por Parcela para reducir la variabilidad de nuestras estimaciones.
+
+Qué ocurre con los hongos: no queremos ajustarlo, ya que el ajuste por hongos nos impediría estimar el efecto del tratamiento: El tratamiento afecta al tamaño de las plantas a través de los hongos. Una vez que sabemos acerca de los hongos, el tratamiento no dice nada sobre el tamaño. Se puede decir que hongo "apantalla" el tamaño (en inglés \textit{screens off}), ya que al condicionar hongo, hagas lo que hagas en tratamiento, no ves los efectos en el tamaño.
+
+Incluso si la relación real es como la mostrada en \ref{fig:plot_fungus_2}, no querríamos utilizar Fungus como covariante. Tratamiento no es independiente de tamaño dado Fungus, pero Fungus media la relación. Añadiendo Fungus en el modelo estadístico, no se estaría estimando el efecto total de tratamiento en tamaño.
+
+<<dag_fungus_2, results='hide', echo=FALSE>>=
+fungus2 <- dagitty("dag {
+Treatment -> Fungus
+Treatment -> Size
+Fungus -> Size
+Plot -> Size
+}")
+
+@
+
+<<plot_fungus_2, fig.width = 4, fig.height=1.4, fig.lp='fig:', results = 'hide', echo=FALSE, fig.align = 'center', fig.cap='Fungus, second example',out.width='9cm',fig.pos="!h">>=
+coordinates(fungus2) <- list(x = c(Treatment = 1, Fungus = 2,
+                                        Plot = 2.5,
+                                        Size = 3),
+                                  y = c(Treatment = -0.5, Fungus = 0,
+                                        Plot = -1,
+                                        Size = 0))
+
+drawdag(fungus2, xlim = c(0.5, 3.5), ylim = c(-.1, 1.3))
+## text(x = 2, y = 1.2, labels ="a)", cex = 1.2)
+
+@
+
+\section{Fungus como collider}
+Supongamos ahora que el Hongo no afecta al Tamaño final. Pero tanto el hongo como el tamaño se ven afectados por la humedad (la humedad y la calidad de la parcela son variables diferentes). Por otra parte, y esto es crucial, la humedad no se ha medido, por lo que no hay manera para que podamos ajustar para ella, y se muestra como U en el DAG a continuación, la figura \ref{fig:fungus_collider}.
+
+<<dag_fungus_3, results='hide', echo=FALSE>>=
+fungus3 <- dagitty("dag {
+Treatment -> Fungus
+U -> Fungus
+U -> Size
+Plot -> Size
+}")
+
+@
+
+<<fungus_collider, fig.width = 4, fig.height=1.4, fig.lp='fig:', results = 'hide', echo=FALSE, fig.align = 'center', fig.cap='Fungus, collider example',out.width='9cm',fig.pos="!h">>=
+coordinates(fungus3) <- list(x = c(Treatment = 1,
+                                   Fungus = 2,
+                                   Plot = 1,
+                                   U = 1,
+                                   Size = 3),
+                             y = c(Treatment = -1.5,
+                                   Fungus = -1,
+                                   Plot = 0,
+                                   U = -0.5,
+                                   Size = 0))
+
+drawdag(fungus3, xlim = c(0.5, 3.5), ylim = c(-.1, 1.6))
+## text(x = 2, y = 1.2, labels ="a)", cex = 1.2)
+
+@
+
+En la figura \ref{fig:fungus_collider}, Fungus es descendiente tanto de U como de Treatment. Esto se llama un \textbf{collider}. Condicionar a Fungus nos llevará a asociar Tratamiento y humedad (U), incluso cuando en realidad son independientes el uno del otro. Y eso nos llevaría a estimar erróneamente que el Tratamiento tiene un efecto sobre el Tamaño (U afecta al Tamaño y U se asocia con el Tratamiento cuando condicionamos sobre el Hongo), cuando el Tratamiento realmente no tiene un efecto sobre el Tamaño.
+
+\section{Estructuras DAG básicas}
+\subsection{Las tres estructuras DAG básicas}
+Las estructuras DAG básicas con sus nombres se presentan en la Figura \ref{fig:plot_dag_struct}.
+<<dag_struct, results='hide', echo=FALSE>>=
+chain <- dagitty("dag {
+X -> Z
+Z -> Y
+}")
+
+fork <- dagitty("dag {
+Z -> X
+Z -> Y
+}")
+
+collider <- dagitty("dag {
+X -> Z
+Y -> Z
+}")
+
+@
+
+<<plot_dag_struct, fig.width = 5, fig.height=2.5, fig.lp='fig:', results = 'hide', echo=FALSE, fig.align = 'center', fig.cap='Basic DAG structures',out.width='14cm',fig.pos="!h">>=
+op <- par(mfrow = c(1, 3))
+
+coordinates(chain) <- list(x = c(X = 1,
+                                 Y = 3,
+                                 Z = 2),
+                           y = c(X = 0,
+                                 Y = 0,
+                                 Z = 0))
+
+coordinates(fork) <- list(x = c(X = 1,
+                                 Y = 3,
+                                 Z = 2),
+                           y = c(X = 0,
+                                 Y = 0,
+                                 Z = -.50))
+
+coordinates(collider) <- list(x = c(X = 1,
+                                 Y = 3,
+                                 Z = 2),
+                           y = c(X = -.5,
+                                 Y = -.5,
+                                 Z = 0))
+
+
+
+drawdag(chain, xlim = c(0.5, 3.5), ylim = c(-1, 1.3))
+text(x = 2, y = -.4, labels ="a) Chain.\n Z mediates", cex = 1.1)
+
+
+drawdag(fork, xlim = c(0.5, 3.5), ylim = c(-1, 1.3))
+text(x = 2, y = -.4, labels ="b) Fork.\n Z common cause", cex = 1.1)
+
+
+drawdag(collider, xlim = c(0.5, 3.5), ylim = c(-1, 1.3))
+text(x = 2.1, y = -.4, labels ="c) Inverted fork with collider.\n Z common effect: collider", cex = 1.1)
+
+@
+
+Cada una de esas estructuras determina el patrón de asociación entre variables. Por ejemplo, en el caso de la cadena, sabemos que X causa Z, que a su vez causa Y. Ésas son las relaciones causales. Ahora, ¿qué asociaciones observaremos? Se puede pensar en los DAG como tuberías, y la asociación fluye (o no) a través de estas tuberías.  Tanto un mediador como una causa común, si se condicionan, bloquean el flujo de información porque cierran la tubería; por el contrario, un colisionador, si se condiciona, abre la tubería.
+
+Reformulemos lo anterior. En el ejemplo de la cadena en la Figura \ref{fig:plot_dag_struct} a), si no condicionamos en Z, la tubería está abierta, por lo que X e Y se asocian\footnote{Etrictamente: "es muy probable que estén asociadas" ya que podría ocurrir que no lo estuvieran, pero sería raro.}. Pero si condicionamos en Z, cerramos la tubería, el flujo de asociación, y ahora X e Y son condicionalmente independientes dado Z. Lo mismo ocurre en la Figura \ref{fig:plot_dag_struct} b). Pero lo contrario sucede en la Figura \ref{fig:plot_dag_struct} c).
+
+\begin{enumerate}[a)]
+
+\item \textbf{Chain}: X e Y están asociados. Pero el condicionamiento sobre Z hará que X e Y sean independientes (no habrá asociación). 
+
+\item \textbf{Fork}:  X e Y están asociados. Pero el condicionamiento sobre Z hará que X e Y sean independientes (no habrá asociación).
+
+Este es el ejemplo habitual de \textit{confounding}, donde vemos asociación   debido a una causa común.
+
+\item \textbf{Inverted fork with collider}: X e Y son independientes. Pero el condicionamiento en Z hará que X e Y se asocien. un modelo lineal, estarían correlacionadas. Asociación y no independencia son conceptos más generales que la correlación.
+
+Supongamos que sólo nos fijas en un valor, o pequeño conjunto de valores, de Z (en eso consiste el condicionamiento); ahora bien, si X tiene algún valor, el valor de Y tiene que compensar el valor de X, de modo que el valor de Z sea el que condicionamos.
+\end{enumerate}
+
+\subsection{Descendientes y ancestros en las estructuras DAG básicas}
+Hemos modificado las estructuras básicas de la siguiente forma:
+\begin{itemize}
+\item En la fila superior, hemos añadido un descendiente de Z
+\item En la fila inferior, hemos añadido un ancestro de Z
+\end{itemize}
+
+<<dag_struct2, results='hide', echo=FALSE>>=
+c1 <- dagitty("dag {
+X -> Z
+Z -> Y
+Z -> W
+}")
+
+c2 <- dagitty("dag {
+X -> Z
+Z -> Y
+W -> Z
+}")
+
+
+f1 <- dagitty("dag {
+Z -> X
+Z -> Y
+Z -> W
+}")
+
+
+f2 <- dagitty("dag {
+Z -> X
+Z -> Y
+W -> Z
+}")
+
+
+co1 <- dagitty("dag {
+X -> Z
+Y -> Z
+Z -> W
+}")
+
+co2 <- dagitty("dag {
+X -> Z
+Y -> Z
+W -> Z
+}")
+
+@
+
+<<plot_dag_struct2, fig.width = 5, fig.height=4.5, fig.lp='fig:', results = 'hide', echo=FALSE, fig.align = 'center', fig.cap='Descendants and ancestors in the basic DAG structures',out.width='12cm'>>=
+op <- par(mfrow = c(2, 3))
+
+coordinates(c1) <- list(x = c(X = 1,
+                              Y = 3,
+                              Z = 2,
+                              W = 2),
+                        y = c(X = 0,
+                              Y = 0,
+                              Z = 0,
+                              W = -0.5))
+
+coordinates(c2) <- list(x = c(X = 1,
+                              Y = 3,
+                              Z = 2,
+                              W = 2),
+                        y = c(X = 0,
+                              Y = 0,
+                              Z = 0,
+                              W = -.5))
+
+
+coordinates(f1) <- list(x = c(X = 1,
+                              Y = 3,
+                              Z = 2,
+                              W = 2),
+                           y = c(X = 0,
+                                 Y = 0,
+                                 Z = -.50,
+                                 W = -1))
+
+
+coordinates(f2) <- list(x = c(X = 1,
+                              Y = 3,
+                              Z = 2,
+                              W = 2),
+                           y = c(X = 0,
+                                 Y = 0,
+                                 Z = -.50,
+                                 W = -1))
+
+
+
+coordinates(co1) <- list(x = c(X = 1,
+                              Y = 3,
+                              Z = 2,
+                              W = 2),
+                        y = c(X = -1,
+                              Y = -1,
+                              Z = -.5,
+                              W = 0))
+
+
+
+coordinates(co2) <- list(x = c(X = 1,
+                              Y = 3,
+                              Z = 2,
+                              W = 2),
+                        y = c(X = -1,
+                              Y = -1,
+                              Z = -0.5,
+                              W = 0))
+
+
+drawdag(c1, xlim = c(0.5, 3.5), ylim = c(-1, 1.3))
+text(x = 2, y = -.4, labels ="d)", cex = 1.4)
+
+drawdag(f1, xlim = c(0.5, 3.5), ylim = c(-1, 1.3))
+text(x = 2, y = -.4, labels ="e)", cex = 1.4)
+
+drawdag(co1, xlim = c(0.5, 3.5), ylim = c(-1, 1.3))
+text(x = 2, y = -.4, labels ="f)", cex = 1.4)
+
+
+drawdag(c2, xlim = c(0.5, 3.5), ylim = c(-1, 1.3))
+text(x = 2, y = -.4, labels ="g)", cex = 1.4)
+
+drawdag(f2, xlim = c(0.5, 3.5), ylim = c(-1, 1.3))
+text(x = 2, y = -.4, labels ="h)", cex = 1.4)
+
+drawdag(co2, xlim = c(0.5, 3.5), ylim = c(-1, 1.3))
+text(x = 2, y = -.4, labels ="i)", cex = 1.4)
+
+@
+
+Estas son las consecuencias:
+\begin{enumerate}[a)]
+\setcounter{enumi}{3}
+\item Si no se puede medir Z, pero se puede medir W, y W y Z están muy fuertemente asociados, condicionar sobre W puede ayudar a eliminar algún sesgo si se necesitan hacer X e Y condicionalmente independientes.  Porque el flujo a través de Z no ha sido interrumpido. Además:
+
+  \begin{enumerate}[label=\arabic*.]
+  \item X y W están asociados.
+  \item Y y W están asociados.
+  \item X y W son independientes si condicionamos en Z.
+  \item Y y W son independient si condicionamos en Z.
+  \end{enumerate}
+
+\item Como arriba: condicionar en W no hace que X e Y sean independientes. Además:
+
+  \begin{enumerate}[label=\arabic*.]
+  \item X y W están asociados.
+  \item Y y W están asociados.
+  \item X y W son independientes si condicionamos en Z.
+  \item Y y W son independient si condicionamos en Z.
+  \end{enumerate}
+
+\item \textbf{Atención}: condicionar en W hace que X e Y estén asociadas. 
+Esta es la regla general: \textbf{condicionar a un colisionador} (como en c)) o \textbf{un descendiente de un colisionador hará que los ancestros se asocien}. ¿Por qué? Piensa en el hospital, los huesos rotos y la neumonía; en lugar de mirar a la gente en la puerta del hospital, mira a la gente río abajo (por ejemplo, la gente que ha ingresado en el hospital). O piensa de nuevo en las tuberías: pon un grifo en W y ciérralo.Además:
+\begin{enumerate}[label=\arabic*.]
+  \item X y W están asociados.
+  \item Y y W están asociados.
+  \item X y W son independientes si condicionamos en Z.
+  \item Y y W son independient si condicionamos en Z.
+  \end{enumerate}
+
+\item Condicionar a W no hará que X e Y sean independientes. Observa también que \textbf{ahora Z es un colisionador con respecto a X y W}. Así que el condicionamiento sobre Z inducirá una asociación entre X y W. Además:
+  \begin{enumerate}[label=\arabic*.]
+  \item X y W son independientes.
+  \item Y y W están asociados.
+  \item X y W están asociados si condicionamos en Z.
+  \item Y y W son independientes si condicionamos en Z.
+  \end{enumerate}
+
+\item Condicionar a W no hará que X e Y sean independientes. Además:
+  \begin{enumerate}[label=\arabic*.]
+  \item X y W están asociados.
+  \item Y y W están asociados.
+  \item X y W son independientes si condicionamos en Z.
+  \item Y y W son independientes si condicionamos en Z.
+  \end{enumerate}
+
+
+\item Ahora Z es un colisionador con respecto a los tres pares de variables X, Y, W.
+  \begin{enumerate}[label=\arabic*.]
+    \item X e Y son independientes.
+  \item X y W son independientes.
+  \item Y y W son independientes.
+  \item X y W están asociados si condicionamos en Z (Z es un collider).
+  \item Y y W están asociados si condicionamos en Z. 
+  \item X e Y están asociados si condicionamos en Z. 
+  \end{enumerate}
+\end{enumerate}
+
+\section{Ejemplos adicionales}
+\subsection{Variable collider pretratamiento que no debemos ajustar}
+Supongamos las relaciones de la Figura \ref{fig:plot_dag_ptr}, y estamos interesados en el efecto de X sobre Y ($U_1$ y $U_2$ son dos variables diferentes no medidas). ¿Deberíamos ajustar por L, que es una variable previa al tratamiento?
+
+<<dag_ptr, results='hide', echo=FALSE>>=
+ptr <- dagitty("dag {
+X -> Y
+U_1 -> L
+U_2 -> L
+U_1 -> Y
+U_2 -> X
+}")
+@
+
+<<plot_dag_ptr, fig.width = 4, fig.height=2.73, fig.lp='fig:', results = 'hide', echo=FALSE, fig.align = 'center', fig.cap='A pretreatment collider.',out.width='9cm', fig.pos= "!h">>=
+coordinates(ptr) <- list(x = c(L = 1, X = 2, Y = 3, U_1 = 0.8, U_2 = 0.8),
+                         y = c(L = 0, X = 0, Y = 0, U_1 = -.5, U_2 = .5))
+
+drawdag(ptr, xlim = c(0.5, 3.5), ylim = c(-.51, .6))
+## text(x = 2, y = 1.2, labels ="a)", cex = 1.2)
+@
+
+<<dag_ptr22, results='hide', echo=FALSE>>=
+ptr22 <- dagitty("dag {
+Diet -> Outcome
+U_g -> Exercise
+U_c  -> Exercise
+U_g -> Outcome
+U_c  -> Diet
+}")
+@
+
+<<plot_dag_ptr22, fig.width = 4, fig.height=2.73, fig.lp='fig:', results = 'hide', echo=FALSE, fig.align = 'center', fig.cap='A pretreatment collider; Uc: country, Ug: genetics.',out.width='9cm', fig.pos= "!h">>=
+coordinates(ptr22) <- list(x = c(Exercise = 1, Diet = 2,
+                                 Outcome = 3,
+                                 U_g = 0.8,
+                                 U_c = 0.8),
+                           y = c(Exercise = 0,
+                                 Diet = 0,
+                                 Outcome = 0,
+                                 U_c = .5,
+                                 U_g = -.5))
+
+drawdag(ptr22, xlim = c(0.5, 3.5), ylim = c(-.51, .6))
+## text(x = 2, y = 1.2, labels ="a)", cex = 1.2)
+@
+
+No, no ajustar por L (Ejercicio): es un colisionador ($U_1$ y $U_2$ son sus padres) en el camino de vuelta entre X e Y. Si ajustamos por L, inducirá una asociación no causal entre X e Y.
+
+Moraleja principal de esta historia: \textbf{ajustar por todas las posibles variables pre-tratamiento no siempre es una buena idea}.
+Otra moraleja de la historia: \(U_c\) podría no ser una variable no medida. Tal vez esté ahí, en el conjunto de datos, pero no se ha utilizado. Si se incluyera en el modelo, habríamos bloqueado la puerta trasera.
+
+Aún así, la moraleja principal de esta historia se mantiene: \textbf{Ajustar todas las variables posibles antes del tratamiento no siempre es una buena idea.}
+
+\subsection{¿Debemos ajustar por la causa de la causa?}
+Supongamos que las relaciones de la figura \ref{fig:plot_dag_zxy}, y estamos interesados en el efecto de X en Y. ¿Debemos ajustar para Z?
+
+<<dag_zxy, results='hide', echo=FALSE>>=
+ccc <- dagitty("dag {
+Z -> X
+X -> Y
+}")
+@
+
+<<plot_dag_zxy, fig.width = 4, fig.height=.5, fig.lp='fig:', results = 'hide', echo=FALSE, fig.align = 'center', fig.cap='Cause of a cause.',out.width='8cm', fig.pos= "!h">>=
+coordinates(ccc) <- list(x = c(Z = 1, X = 2, Y = 3),
+                         y = c(Z = 0, X = 0, Y = 0))
+
+drawdag(ccc, xlim = c(0.5, 3.5), ylim = c(-.051, .051))
+## text(x = 2, y = 1.2, labels ="a)", cex = 1.2)
+@
+
+Respuesta corta: no. Si se hace, se aumentará el ruido de la estimación del efecto de X sobre Y. No introducirá sesgo, pero aumentará el error estándar del efecto estimado. 
+
+Respuesta más larga: no, pero a veces la gente ajusta por Z porque Z podría ser una causa común de X e Y. Aquí el argumento es «si no ajusto por Z y Z es una causa común de X e Y, introduciré un sesgo que dará lugar a una confusión posiblemente muy grave. Si ajusto por Z cuando Z es sólo la causa de X, lo que ocurrirá es que el error estándar de la estimación de X en Y aumentará, pero no habrá sesgo». 
+
+¿Hay alguna forma de decidirlo? Sí, podría ser posible examinar si realmente es necesario ajustar por Z y, entonces, evitar ajustar por Z. 
+
+\subsection{La causa de la causa y amplificación del sesgo}
+Consideremos ahora el DAG (U es una variable no medida) de la figura \ref{fig:plot_dag_bias_amp}:
+<<dag_bias_amp, results='hide', echo=FALSE>>=
+bamp <- dagitty("dag {
+Z -> X
+X -> Y
+U -> X
+U -> Y
+}")
+@
+
+<<plot_dag_bias_amp, fig.width = 4, fig.height=1.5, fig.lp='fig:', results = 'hide', echo=FALSE, fig.align = 'center', fig.cap='Cause of a cause and bias amplification.',out.width='8cm', fig.pos= "!h">>=
+coordinates(bamp) <- list(x = c(Z = 1, X = 2, Y = 3, U = 1),
+                         y = c(Z = 0, X = 0, Y = 0, U = -.5))
+
+drawdag(bamp, xlim = c(0.5, 3.5), ylim = c(0, .9))
+## text(x = 2, y = 1.2, labels ="a)", cex = 1.2)
+@
+
+Ajustar por Z es generalmente una muy mala idea aquí, porque puede conducir a \textbf{amplificación del sesgo}: amplificación del sesgo inducido por U. Por supuesto, las cosas estarían bien si se pudiera ajustar por U (pero U no se ha medido). En realidad, Z podría utilizarse como instrumento, o variable instrumental, pero al ajustar por ella, Z no se está utilizando como instrumento. Las variables instrumentales se utilizan con frecuencia en la inferencia causal en economía y sociología.
+
+\subsection{Ejemplo: paradoja nacimiento-peso}
+La «paradoja del peso al nacer» es una cuestión de gran relevancia práctica que, si no se analiza y comprende bien, podría dar lugar a recomendaciones perjudiciales.
+
+\begin{quoting}
+  Los lactantes con bajo peso al nacer (BPN) en grupos con una alta prevalencia de BPN tienen una tasa de mortalidad más baja que los lactantes con BPN en grupos con una baja prevalencia de BPN, mientras que ocurre lo contrario con los lactantes de peso normal. (...)
+
+  Por ejemplo, cuando los estudios compararon las tasas de mortalidad entre bebés con BPN nacidos de fumadores y no fumadores, los bebés de fumadores tenían tasas de mortalidad más bajas.
+
+  Aunque está ampliamente aceptado que los niños nacidos de madres fumadoras tienen tienen un peso inferior al nacer y un mayor riesgo de mortalidad neonatal, se ha se ha sugerido que el efecto del tabaquismo materno se ve modificado por el que fumar es beneficioso para los bebés con BPN.
+\end{quoting}
+
+Este es otro caso de sesgo colisionador, en este caso estratificando sobre un efecto común. En la figura \ref{fig:bw-paradoja} hay dos posibles DAG causales que conducirían a esta paradoja.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\textwidth]{figs/bw-paradox-1-crop}
+  \centering
+  \includegraphics[width=0.9\textwidth]{figs/bw-paradox-2-crop}
+  \caption{\label{fig:bw-paradox}. Two DAGs that would result in the
+    birth-weight paradox. The
+    presence or not of an arrow from LBW to Mortality is not the relevant feature.}
+\end{figure}
+
+¿Y qué es U y qué explicación intuitiva tiene este fenómeno? El bajo peso al nacer puede deberse a otras causas médicas distintas del tabaquismo. Una vez que sabemos que un bebé tiene bajo peso al nacer, si sabemos que es hijo de una madre fumadora, entonces es menos probable que el bebé tenga esas otras afecciones. De hecho, no necesitamos que BPN tenga ningún efecto sobre la mortalidad. Fíjate en el último DAG de la figura \ref{fig:bw-paradoja}: Fumar es perjudicial, pero otras causas de bajo peso al nacer pueden ser más perjudiciales que fumar. Así, entre los bebés con bajo peso al nacer, los de madres fumadoras presentan tasas de mortalidad más bajas. Pero decir a las embarazadas que fumen sería una muy mala idea.
+
+\section{Relevancia en trabajo experimental/observacional}
+Si el trabajo implica datos observacionales y se desea interpretar las estimaciones de los análisis como medidas del efecto, esto es obviamente relevante.
+
+Si sólo se realiza trabajo experimental, a menudo se querrá ajustar por covariables adicionales y, entonces, saber qué covariables utilizar se convierte en algo crucial si se quiere interpretar correctamente los efectos de las manipulaciones experimentales. Además, se podría decir que la inferencia causal a partir de datos experimentales hace uso de contrafactuales.
 
 
 \end{document}
