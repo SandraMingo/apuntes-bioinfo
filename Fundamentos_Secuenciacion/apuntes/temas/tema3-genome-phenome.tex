@@ -500,3 +500,237 @@ outcome es una cadena de caracteres que indica el nombre del resultado, por ejem
 snps es un vector de caracteres que contiene los nombres de las distintas variantes genéticas (SNP) del conjunto de datos, por ejemplo rs12785878. 
 
 No es necesario nombrar la exposición, el resultado o los SNPs, pero estos nombres se utilizan en las funciones gráficas y pueden ser útiles para realizar un seguimiento de los distintos análisis.
+
+%11/12 - Jorge de la Barrera jdelabarrera@cnic.es
+\chapter{Genetic Susceptibility (Polygenic Risk Scores)}
+\section{La búsqueda de variantes causantes de enfermedad}
+Las enfermedades monogénicas tienen pocas variantes, pero con mucho efecto. Las enfermedades poligénicas van al revés, teniendo muchas variantes pero con poco efecto. Entre medias están las enfermedades oligogénicas. 
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.8 \textwidth]{figs/Imagen1.jpg}
+\end{figure}
+
+Los trastornos monogénicos están causados por una única variante de alta penetrancia en un gen. 
+Son poco frecuentes en la población y se asocian a un alto riesgo relativo de desarrollar la enfermedad. 
+Por ejemplo, la enfermedad de Huntington es un trastorno monogénico.
+
+Los trastornos poligenéticos están influidos por los efectos combinados de múltiples SNP comunes, cada uno con un pequeño efecto sobre el riesgo de enfermedad. 
+Por ejemplo, la diabetes tipo 2 es un trastorno poligénico.
+
+\section{Polygenic Risk Score (PRS)}
+El PRS (polygenic risk score) es un número que estima la predisposición genética de un individuo a una enfermedad o rasgo específico. Proporciona una medida de la predisposición genética. Esta estimación se basa en su perfil genotípico y en datos estadísticamente ponderados de GWAS relevantes. Se calculan combinando información de miles de variantes genéticas, cada una con tamaños de efecto pequeños.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.8 \textwidth]{figs/Imagen2.png}
+\end{figure}
+
+Las enfermedades monogénicas suelen ser raras, pero las poligénicas comunes. Si nosotros somos capaces de tener en un score el riesgo, se pueden estratificar los individuos según su riesgo, creando predicciones más ajustadas y políticas de prevención más acorde. Así, los PRS permiten realizar una prevención más precisa, mejorar el diagnóstico, y mejorar los tratamientos. En resumen:
+\begin{itemize}
+\item \textbf{Prevención selectiva:}
+Estratificar a los individuos según su riesgo genético de desarrollar diversas enfermedades comunes.
+Optimizar el uso del cribado y los tratamientos preventivos.
+Informar a los programas de cribado de la población identificando a los individuos con mayor riesgo.
+
+\item \textbf{Diagnóstico temprano:}
+Facilitar el diagnóstico de enfermedades complejas, especialmente en conjunción con otros factores clínicos.
+Afinar las estimaciones de riesgo en familias con antecedentes de determinadas enfermedades, especialmente cuando se combinan con pruebas de riesgo monogénico.
+
+\item \textbf{Intervenciones personalizadas:}
+Mejorar la atención personalizada a los pacientes.
+Orientar las decisiones terapéuticas al proporcionar información sobre la probabilidad de que un individuo responda a terapias específicas.
+Informar sobre el pronóstico al ofrecer información sobre la posible evolución de la enfermedad y sus resultados.
+\end{itemize}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.8 \textwidth]{figs/Imagen3.png}
+\end{figure}
+
+\subsection{Entendiendo los PRSs}
+Las PRS son puntuaciones genéticas que \textbf{combinan los efectos} de muchas variantes genéticas (SNPs) para evaluar la \textbf{predisposición de un individuo} a un rasgo o enfermedad específica.
+
+Las PRS se desarrollan \textbf{utilizando datos de estudios de asociación de genoma completo (GWAS)} . 	Estos estudios identifican los SNP asociados a un rasgo o enfermedad concretos mediante el análisis de los genomas de grandes poblaciones. Su fórmula general es:
+$$PRS = \sum (efecto del SNP \cdot alelo portado)$$.
+
+Esta fórmula calcula la PRS sumando el número de alelos de riesgo que porta una persona en cada SNP relevante, ponderado por el tamaño del efecto de cada alelo.
+
+Entre los usos del PRS se encuentran:
+\begin{itemize}
+\item \textbf{Predicción de riesgos genéticos}: Las PRS pueden estimar el riesgo genético de un individuo a lo largo de su vida de desarrollar determinadas enfermedades, como cardiopatías, diabetes o cáncer.
+\item \textbf{Complementación de factores clínicos y ambientales}: Las PRS pueden utilizarse con otros factores de riesgo, como los antecedentes familiares, el estilo de vida y los indicadores clínicos, para ofrecer una imagen más completa del riesgo global de una persona.
+\item \textbf{Mejorar el diagnóstico y el tratamiento personalizado}: Las PRS pueden ayudar a afinar el diagnóstico, sobre todo en el caso de enfermedades con síntomas que se solapan. También pueden orientar las decisiones de tratamiento, ya que las personas con diferentes PRS pueden responder de forma diferente a los mismos medicamentos.
+\end{itemize}
+
+Consideraciones importantes:
+\begin{itemize}
+\item Los PRS son estimaciones de riesgo, no diagnósticos. Indican una predisposición, no la certeza de desarrollar una enfermedad.
+\item Las PRSs actuales suelen explicar sólo una pequeña fracción de la variación de un rasgo o enfermedad. Esto se debe a que los factores ambientales y las interacciones gen-ambiente también desempeñan un papel importante.
+\item La precisión de las PRSs depende de factores como el tamaño y la diversidad de los GWAS utilizados para desarrollarlas.
+\item La mayoría de las PRSs se han desarrollado utilizando datos de individuos de ascendencia europea, lo que limita su precisión y aplicabilidad a otras poblaciones.
+\item Las PRSs evolucionan rápidamente a medida que avanza la investigación y se dispone de más datos.
+\end{itemize}
+
+\subsection{Fundamentos teóricos del PRS}
+El PRS se basa en dos fundamentos. El primero es el \textbf{principio de la herencia poligénica}.
+La herencia poligénica se refiere al concepto de que múltiples genes contribuyen a un rasgo o enfermedad.
+El segundo es la \textbf{heredabilidad y su relación con la PRS}.
+La heredabilidad es la proporción de variación fenotípica en una población que puede atribuirse a factores genéticos. La heredabilidad SNP se refiere a la proporción de varianza fenotípica explicada por los SNP. El poder predictivo de una PRS tenderá hacia la heredabilidad SNP de un rasgo a medida que aumente el tamaño de las muestras GWAS.
+
+\subsection{Cálculo del PRS}
+Los estudios GWAS pueden sobrestimar los efectos de los SNP, especialmente en el caso de las variantes con asociaciones más débiles o las identificadas en muestras de pequeño tamaño. Además, puede haber redundancia causada por SNP en desequilibrio de ligamiento (LD). Por ello, es necesario ajustar el PRS. Sin ajustes, la PRS puede funcionar mal en poblaciones nuevas, lo que da lugar a predicciones inexactas.
+
+«Al analizar millones de variantes genéticas (SNP), ¿cómo decidimos cuáles importan y cuánto importan?».
+Tanto P+T como Shrinkage son enfoques para simplificar y mejorar las puntuaciones de riesgo poligénico (PRS) abordando retos como la redundancia causada por SNPs en desequilibrio de ligamiento (LD) y tamaños de efecto ruidosos debido a la limitada potencia estadística de los GWAS.
+
+\subsubsection{P+T}
+\textbf{Pruning} hace referencia a eliminar los SNP que estén altamente correlacionados (en LD) con otros, manteniendo sólo el más significativo. 
+Primero se utiliza un umbral de desequilibrio de ligamiento (LD) para reducir la redundancia entre los SNP retenidos. Por ejemplo, se utiliza un umbral LD de $r^2 > 0,2$. Además, se analiza LD entre SNPs en la población de referencia: \\
+SNP1 y SNP2: $r^2=0,8$ (LD alto).\\
+SNP3: $r^2=0,05$ (LD bajo con otros).\\
+Se conserva sólo un SNP por bloque LD: \\
+SNP2 se mantiene del par SNP1-SNP2 porque tiene un p-valor más pequeño. \\
+SNP3 se mantiene porque está en LD bajo con los otros.
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{l l l}
+& $\beta$ & p \\ \hline
+\st{SNP1} & \st{0,12} & \st{$1 \cdot 10^{-6}$} \\
+SNP2 & 0,09 & $3 \cdot 10^{-8}$ \\
+SNP3 & 0,07 & $0,02$ \\
+\st{SNP4} & \st{0,05} & \st{$0,04$} \\
+\st{SNP5} & \st{0,02} & \st{$0,1$} \\
+\end{tabular}
+\end{table}
+
+ \textbf{Thresholding} descarta los SNP con asociaciones débiles (valores p altos) para centrarse en los SNP con efectos estadísticamente significativos.
+Primero se establece un umbral de valor p para filtrar los SNP en función de su importancia estadística.
+Aquí, seleccionamos el umbral de p<0,05. Así, retenemos los SNPs SNP1, SNP2 y SNP3, quedando SNP4 y SNP5 excluidos.
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{l l l}
+& $\beta$ & p \\ \hline
+SNP1 & 0,12 & $1 \cdot 10^{-6}$ \\
+SNP2 & 0,09 & $3 \cdot 10^{-8}$ \\
+SNP3 & 0,07 & $0,02$ \\
+\st{SNP4} & \st{0,05} & \st{$0,04$} \\
+\st{SNP5} & \st{0,02} & \st{$0,1$} \\
+\end{tabular}
+\end{table}
+ 
+Estos dos métodos permiten simplificar el modelo, ya que se centra en los SNP más significativos e independientes. Además, es eficaz, al reducir la complejidad computacional mediante el pruning de SNPs correlacionados. No obstante, puede descartar SNP débilmente asociados que contribuyen colectivamente al rasgo. Los umbrales de LD también pueden variar entre poblaciones, lo que reduce la generalizabilidad de la PRS.
+ 
+ \subsubsection{Shrinkage}
+ Shrinkage es necesario por:
+\begin{itemize}
+\item \textbf{Datos ruidosos:} los tamaños del efecto ($\beta$) estimados a partir de GWAS suelen ser ruidosos, especialmente para SNPs con asociaciones débiles.
+\item \textbf{Poligenicidad:} La mayoría de los rasgos son poligénicos, lo que significa que muchos SNPs contribuyen con pequeños efectos en lugar de unos pocos SNPs con grandes efectos.
+\item \textbf{Estructura LD:} Los SNP están correlacionados debido al desequilibrio de ligamiento (LD), que puede inflar las señales de los SNP no causales.
+\end{itemize}
+ 
+La contracción (shrinkage) se refiere a un conjunto de técnicas de regularización utilizadas para reducir la magnitud de los coeficientes de regresión en modelos estadísticos. 
+
+Función en las puntuaciones de riesgo poligénico (PRS):
+\begin{itemize}
+\item Optimiza los tamaños del efecto SNP: Mejora la estimación de los tamaños de efecto de los polimorfismos de nucleótido único (SNP).
+\item Mejora el rendimiento predictivo: Aumenta la precisión y robustez de las PRS refinando las estimaciones de los coeficientes.
+\end{itemize}
+
+\paragraph{Bayesiano}
+La \textbf{reducción bayesiana} aplica un enfoque bayesiano para estimar los tamaños del efecto genético ($\beta$) de los SNP en un modelo poligénico.
+En este enfoque se considera un prior (distribución a priori) para los tamaños del efecto que refleja nuestras suposiciones (por ejemplo, la mayoría de los SNP tienen efectos pequeños o nulos).
+Las estimaciones del tamaño del efecto se actualizan utilizando los datos disponibles (pruebas) para obtener una distribución posterior.
+Este método reduce las estimaciones hacia cero, en particular para los SNP con poco apoyo estadístico, evitando el sobreajuste.
+
+\paragraph{Semi-Bayesiano}
+En los métodos bayesianos, es necesario especificar una distribución a priori. Pero, ¿y si no sabemos cómo debe ser la distribución a priori? Los \textbf{métodos bayesianos empíricos} estiman la prioridad directamente a partir de los propios datos, lo que hace que el enfoque esté más orientado a los datos. Combinan las ventajas de los métodos bayesianos con una mayor flexibilidad.
+
+\paragraph{LDPred}
+\textbf{LDPred} es un método de PRS que mejora la precisión modelando explícitamente el desequilibrio de ligamiento (LD), la asociación no aleatoria de alelos en diferentes loci genéticos. Los métodos tradicionales, como la poda y el umbral, a menudo ignoran el LD o lo tratan de forma inadecuada, lo que conduce a una menor precisión. Utiliza estadística bayesiana con un modelo a priori de mezcla normal para modelar los efectos genéticos, asumiendo que una pequeña proporción de variantes tienen efectos sustanciales mientras que la mayoría tienen un impacto mínimo. Calcula los efectos medios posteriores de las variantes combinando el previo con la información LD de un panel de referencia. Esto tiene en cuenta la correlación entre variantes y pondera con precisión sus contribuciones a la PRS.
+Requiere estadísticas de resumen GWAS e información LD de un panel de referencia con patrones LD similares a los datos de entrenamiento. Se recomienda un panel de referencia de al menos 1.000 individuos. 
+
+Como datos de entrada requiere de:
+\begin{itemize}
+\item \textbf{Summary statistics de GWAS:} suelen incluir el ID del SNP, el tamaño del efecto (beta u odds ratio), el valor p y el tamaño de la muestra.
+\item \textbf{Panel de referencia LD:} Este panel proporciona información sobre la correlación entre SNPs y permite al algoritmo LDpred tener en cuenta con precisión el desequilibrio de ligamiento (LD).
+\end{itemize}
+
+Los parámetros son el radio LD, el cual determina el número de SNPs a cada lado de un SNP dado que considera al calcular la media posterior del tamaño del efecto, y la fracción de variantes causales ($\rho$), que refleja la proporción de SNPs que se supone que tienen un efecto distinto de cero sobre el rasgo o la enfermedad.
+
+Un radio de LD grande podría considerar erróneamente loci no ligados como ligados debido a errores en la estimación de LD, lo que llevaría a estimaciones de efecto imprecisas y problemas de convergencia. 
+Un radio LD pequeño puede no tener en cuenta el LD entre loci genuinamente ligados.
+Valor por defecto de M/3000 donde M es el número total de SNPs $\sim$ ventana de LD de 2Mb de media 
+
+La fracción de variantes causales refleja la proporción de SNP que se supone que tienen un efecto distinto de cero sobre el rasgo o la enfermedad. Es desconocida y puede variar significativamente entre diferentes fenotipos. Es común probar un rango de valores $\rho$ cuando se construye una PRS con LDpred, de forma similar a como se exploran los umbrales del valor p en el método de poda y umbral (P+T).
+El valor $\rho$ óptimo suele determinarse evaluando la precisión predictiva de la PRS en un conjunto de datos de validación independiente.
+
+\subsection{PRS en la práctica - ejemplo de un estudio}
+Aquí analizamos el ejemplo del estudio con el artículo llamado "Genome-wide polygenic scores for common diseases identify individuals with risk equivalent to monogenic mutations". De forma general, las variantes comunes están implicadas en enfermedades comunes y tienen poco efecto. No obstante, hay algunos ejemplos de variantes comunes de alto impacto que influyen en enfermedades comunes.
+
+En las enfermedades comunes, las mutaciones raras confieren un riesgo varias veces mayor a los portadores heterocigotos. 
+\begin{table}[htbp]
+\begin{tabular}{l l l l}
+Mutation & Affected population & Increment of risk & Disease \\ \hline
+Familial hypercol. & 0,4\% & x3 & CAD \\
+HNF1A Glu508Lys & 0,01\% (0,7\% Latinos) & x5 & Type2 diabetes
+\end{tabular}
+\end{table}
+
+Esto es muy relevante para los portadores, pero la mayoría de la población de riesgo sigue sin identificarse.
+
+Los objetivos del estudio son crear una puntuación poligénica de todo el genoma (GPS) para cinco enfermedades complejas comunes para poder identificar individuos con un riesgo clínicamente significativo (comparable a los niveles conferidos por mutaciones monogénicas raras) y que esté basada en estadísticas de resumen e imputación de grandes GWAS recientes (principalmente de ascendencia europea).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.8 \textwidth]{figs/Imagen4.png}
+\end{figure}
+
+\newpage
+Primero se cogieron estudios de GWAS que asocien el genotipo con un trait/enfermedad. Un panel de individuos permite calcular los bloques LD. Así, se crean 31 polygenic scores para cada enfermedad, 24 para el P+T y 7 para LDPred. Con la cohorte de Biobank se valida y se prueba en otra subcohorte. 
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.8 \textwidth]{figs/Imagen5.png}
+\end{figure}
+
+Para todas las enfermedades se calculó la predicción (el área bajo la curva) utilizando las variantes significativas en GWAS, la estrategia P+T y el algoritmo LDPred. Este método intenta repartir el efecto o la imagen duplicada/triplicada de los SNPs que se encuentran en el mismo LD, y se compara el dataset de validación y en el dataset de prueba. El área bajo la curva de ambos datasets son similares, lo que significa que los modelos funcionan bien para las poblaciones estudiadas.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.8 \textwidth]{figs/Imagen6.png}
+\end{figure}
+
+\newpage
+En cuanto al riesgo de CAD acorde al GPS, se normalizó la distribución y se clasificó según el incremento del riesgo. El 8\% de la población tiene un riesgo 3x, el 2,3\% un riesgo 4x y un 0,5\% de la población un riesgo del 5x. El boxplot muestra que los casos tienen un mayor riesgo, y los controles un score menor.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = \textwidth]{figs/Imagen7.png}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.8 \textwidth]{figs/Imagen8.png}
+\end{figure}
+
+\newpage
+En CAD hay un predictor para individuos con 3 veces más riesgo, que representan un 8\% de la población. También se muestran otros factores de riesgo y su nivel de significancia. Por ejemplo, fumar e hipertensión son factores de riesgo con un p-valor significativo. 
+En la comparación entre individuos con un GPS alto y aquellos con puntajes promedio, las personas con un GPS alto tienden a tener otros factores de riesgo (por ejemplo, antecedentes familiares o niveles elevados de biomarcadores). Esto refuerza la utilidad del GPS como complemento a otras medidas de riesgo tradicionales.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.8 \textwidth]{figs/Imagen9.png}
+\end{figure}
+
+En conclusión:
+\begin{itemize}
+\item La posibilidad de identificar a los individuos con un riesgo genético significativamente mayor, en una amplia gama de enfermedades comunes y a cualquier edad, plantea una serie de oportunidades y retos para la medicina clínica.
+\item Cuando se disponga de estrategias eficaces de prevención o detección precoz, las cuestiones clave serán la asignación de atención y recursos a individuos con distintos niveles de riesgo genético y la integración de la estratificación del riesgo genético con otros factores de riesgo, incluidas las mutaciones monogénicas raras y los factores clínicos y ambientales.
+\item Cuando estas estrategias no existan o no sean óptimas, la identificación de los individuos de alto riesgo facilitará el diseño de estudios eficaces de la historia natural para descubrir marcadores precoces de la aparición de la enfermedad y de ensayos clínicos para probar estrategias de prevención.
+\item El riesgo asociado a una puntuación poligénica elevada puede no reflejar un único mecanismo subyacente de patogenicidad. Prácticamente todas las enfermedades muestran un resultado final (la patología), pero lo que lleva a ella no se muestra.
+\item La utilidad de los conocimientos y los posibles perjuicios para el individuo pueden variar en función de la enfermedad y la etapa de la vida. Será importante considerar cómo evaluar los riesgos absolutos y relativos y cómo comunicar estos riesgos para atender mejor a cada paciente; por ejemplo, para fomentar la adopción de modificaciones en el estilo de vida o el cribado de la enfermedad.
+\item Las puntuaciones de riesgo poligénico aquí descritas se derivaron y probaron en individuos de ascendencia principalmente europea, por lo que no tendrán un poder predictivo óptimo para otros grupos étnicos.
+\end{itemize}
