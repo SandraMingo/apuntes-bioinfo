@@ -734,3 +734,147 @@ En conclusión:
 \item La utilidad de los conocimientos y los posibles perjuicios para el individuo pueden variar en función de la enfermedad y la etapa de la vida. Será importante considerar cómo evaluar los riesgos absolutos y relativos y cómo comunicar estos riesgos para atender mejor a cada paciente; por ejemplo, para fomentar la adopción de modificaciones en el estilo de vida o el cribado de la enfermedad.
 \item Las puntuaciones de riesgo poligénico aquí descritas se derivaron y probaron en individuos de ascendencia principalmente europea, por lo que no tendrán un poder predictivo óptimo para otros grupos étnicos.
 \end{itemize}
+
+%13/12 - Jorge de la Barrera
+\chapter{Inherited Family Diseases}
+\section{Conceptos genéticos clave}
+Las enfermedades hereditarias tienen agregación familiar. 
+A medida que se van produciendo generaciones de meiosis, los individuos van obteniendo segmentos más pequeños debido a la recombinación (distancia genética). Cuando se va haciendo recombinación homóloga, la distancia de las recombinaciones es la distancia genética.   
+Un morgan se define como la distancia genética entre dos loci con una media de un evento de cruce por generación. No sucede igual en todas las regiones del genoma (debido al linkage desequilibrium). A medida que pasan las generaciones, la distancia genética va aumentando: la primera generación tiene 1/2 morgan (50 cM segmentos), pero en la generación k 1/k morgan, es decir, 100/k cM segmentos.
+
+Identity by descent son regiones del genoma que se heredan de un mismo progenitor. Identity by state son regiones iguales, pero que no descienden del mismo antepasado; un genoma lo pudo heredar y el otro adquirir.
+
+El desequilibrio de ligamiento (LD) se refiere a la asociación no aleatoria de alelos en dos o más loci genéticos. Los grupos de alelos permanecen heredados juntos como una unidad a lo largo de muchas generaciones, formando lo que se denominan bloques de LD. Las zonas que se recombinan más son más variables. Por regla general, si algo está muy conservado es porque es útil.
+
+El SNP3 es el SNP causal, y el SNP que se caracteriza es el SNP4. En la población islandesa se verían lincados, pero en la francesa no. Estos bloques varían entre poblaciones. Siempre que se utilicen marcadores para marcar regiones del genoma y se vincula con ciertos traits, se puede dar este problema. 
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/ld-blocks.png}
+\end{figure}
+
+Cuando se genotipa, se pueden utilizar CHIPs o arrays. Sin embargo, actualmente se emplea más la secuenciación debido a su mayor capacidad para detectar variantes genéticas. En ambos casos, se obtiene el genotipo, pero no se puede determinar directamente si dos SNPs pertenecen al mismo cromosoma (materno/paterno) o están en cromosomas diferentes. Esta distinción es crucial. Por ejemplo, si un individuo tiene dos copias de un gen y ambas contienen mutaciones muy deletéreas, las consecuencias dependerán de cómo estén distribuidas:
+Si ambas mutaciones están en una misma copia del cromosoma, la otra copia funcional puede compensar el defecto.
+Si las mutaciones están repartidas en las dos copias (una en cada cromosoma), el individuo podría desarrollar la enfermedad.
+La tarea de ordenar los genotipos según los cromosomas a los que pertenecen se denomina \textbf{phasing}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = \textwidth]{figs/Imagen1.png}
+\end{figure}
+
+Hay distintas formas de phasing:
+\begin{itemize}
+\item \textbf{Phasing físico:} Este método utiliza las lecturas físicas del genoma para inferir la fase. Las lecturas largas o tecnologías específicas como PacBio o Hi-C pueden ayudar a determinar directamente qué variantes están en el mismo cromosoma.
+
+\item \textbf{Phasing por imputación (estadístico):} sabiendo las frecuencias de los alelos, se pueden inferir diferentes frecuencias en los datos. Esta misma idea se puede utilizar para inferir los haplotipos. La imputación suele capturar variantes frecuentes (polimorfismos). Para hacer el phasing estadístico, siempre es necesaria una referencia de haplotipos. Infiere la disposición de los alelos en cada uno de los cromosomas de un individuo (haplotipos) a partir de datos de genotipo que no especifican qué alelo está en cada cromosoma. Para ello, utiliza patrones de desequilibrio de ligamiento a nivel poblacional y haplotipos de referencia para resolver la fase incierta. Algoritmos como SHAPEIT, EAGLE y BEAGLE aplican modelos ocultos de Markov y paneles de referencia para mejorar la precisión del desfase. La precisión del desfase es esencial para identificar variantes causales en estudios de asociación de enfermedades, detectar segmentos de identidad por descendencia (IBD) y comprender los patrones de recombinación y la historia demográfica. Transforma los datos brutos de genotipo en información detallada de haplotipos, lo que permite realizar análisis genéticos y evolutivos más refinados.
+\end{itemize}
+
+El \textbf{equilibrio de Hardy-Weinberg} es el equilibrio de los genotipos en función de los alelos. Se utiliza en GWAS porque una variante que no esté en equilibrio se trata de una mutación reciente (que todavía se está equilibrando) o sufre de genetic drift. También puede darse a non-random mating (poblaciones cerradas y muy endogámicas) o por selección natural (que un genotipo no se establezca por ser muy deletéreo).
+
+Hay fundamentalmente dos modelos: aditivo y dominante. En el aditivo, es necesario tener todas las copias de un gen para expresar un fenotipo, ya que se van sumando los efectos. En el modelo dominante, con tener una sola copia es suficiente para mostrar el fenotipo.
+
+La \textbf{heredabilidad} se define como la proporción de la varianza fenotípica de un rasgo atribuible a factores genéticos. Tiene dos versiones:
+\begin{itemize}
+\item \textbf{Heredabilidad en sentido amplio ($H^2$):} Representa la proporción de varianza fenotípica explicada por todos los factores genéticos, incluidos los efectos aditivos, los efectos dominantes y los efectos epistáticos.
+
+\item \textbf{Herencia en sentido estricto ($h^2$):} Mide específicamente la proporción de varianza fenotípica explicada por efectos genéticos aditivos, representando el grado en que los genes transmitidos por los padres determinan el fenotipo de su descendencia.
+\end{itemize}
+
+Varía entre 0,0 (ausencia de heredabilidad) y 1,0 (fuerte heredabilidad), y una puntuación a partir de 0,7 o 0,8 se considera que tiene una influencia grande en la heredabilidad de un rasgo.
+
+$h^2$ se ha estimado tradicionalmente utilizando gemelos o familias. No obstante, ahora existen muchos métodos que permiten estimar la heredabilidad.
+
+La \textbf{penetrancia} se refiere a la proporción de individuos portadores de una mutación específica que realmente presentan el fenotipo asociado. La \textbf{expresividad} describe la variación en la expresión fenotípica entre individuos portadores de la misma mutación.
+
+La heterogeneidad genética se puede clasificar en dos tipos. La heterogeneidad del locus hace referencia a que las mutaciones en diferentes genes pueden provocar independientemente el mismo trastorno. En la heterogeneidad alélica, 
+diferentes mutaciones dentro del mismo gen pueden producir la misma enfermedad.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = \textwidth]{figs/genetic-heterogeneity.png}
+\end{figure}
+
+\section{Variantes genéticas en humanos}
+El genoma humano tiene alrededor de 3,2 billones de pares de bases, o 3,2 Gb. Como somos diploides, en total son 6,4. La tasa de mutación es de $0,5 \cdot 10^{-8}$ a $1,5 \cdot 10{-8}$ por par de bases por generación. Así, salen unas 60-100 mutaciones de novo por generación. Todas las variantes compatibles con la vida existen en la población, pero la mayoría son rarísimas.
+
+Como existe agregación familiar, se puede analizar el pedigrí para ver la segregación mendeliana.
+
+\subsection{Linkage analysis}
+El linkage analysis se utiliza para identificar regiones del genoma que se heredan conjuntamente con el fenotipo de una enfermedad, especialmente en enfermedades familiares. Estudiando los patrones de herencia en las familias, los investigadores pueden acotar las regiones genómicas que probablemente contengan genes causantes de enfermedades. La identificación de los segmentos que son IBD entre los individuos afectados puede señalar las regiones del genoma que probablemente contengan mutaciones causantes de la enfermedad. Ejemplo clásico: El descubrimiento del gen de la enfermedad de Huntington en el cromosoma 4.
+
+Ligamiento es la tendencia de los alelos de los loci próximos a transmitirse juntos como una unidad intacta (haplotipo). La fracción recombinante ($\Theta$) varía entre 0,0 y 0,5, siendo 0,0 genes estrechamente ligados, sin recombinación y 0,5 no ligados, recombinación independiente. La distancia del mapa en centimorgans representa la longitud genética sobre la que se producirá un cruce recombinante en el 1\% de las meiosis.
+
+El análisis de ligamiento basado en LOD implica la comparación de probabilidades de observar el patrón de segregación de 2 loci bajo modelos específicos, incluyendo una hipótesis nula de ausencia de ligamiento (surtido independiente - los loci se recombinan como si estuvieran en cromosomas diferentes) y una hipótesis alternativas de ligamiento (difieren en el grado de entrecruzamiento, es decir, diferentes valores de eventos de recombinación).
+$$Z = \frac{\text{Likelihood of the data if loci linked at a particular} \Theta}{\text{Likelihood of the data if loci are unlinked} (\Theta = 0.5)}$$
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/Imagen3.jpg}
+\end{figure}
+
+\subsection{Family-based analysis}
+En el análisis por familias, se utilizan los datos de individuos estrechamente emparentados -como padres, hijos y hermanos- para investigar la base genética de rasgos o enfermedades.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width =0.8 \textwidth]{figs/Imagen4.jpg}
+\end{figure}
+
+En este ejemplo, no se ve ningún genotipo con los dos alelos menores. Se utiliza el supuesto de que no se observa al no ser viable (deletéreo). 
+
+La \textbf{prueba de desequilibrio de transmisión (TDT)} comprueba si un alelo en un locus determinado (relacionado con una enfermedad o rasgo) es transmitido a la descendencia afectada por los progenitores con más frecuencia de lo esperado por azar. Los padres heterocigotos transmiten los alelos m1 y m2 en un locus determinado con la misma frecuencia (50\%); la descendencia afectada debería recibir el alelo asociado a la enfermedad con mayor frecuencia. No es necesario un grupo de control, y es resistente a la estratificación de la población en el análisis de asociación basado en la familia.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = \textwidth]{figs/Imagen5.jpg}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/filtering_approaches.png}
+\end{figure}
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{p{3cm}|p{8cm}|p{4cm}}
+Modelo de herencia & Características clave & Ejemplos de enfermedades \\ \hline
+Autosómica dominante & Una copia del gen mutado es suficiente, afecta a ambos sexos & Enfermedad de Huntington, poliposis adenomatosa familiar \\
+Autosómica recesiva & Se necesitan dos copias del gen mutado, portadores sanos & Fibrosis quística, anemia de células falciformes \\
+Ligada al X (dominante) & Afecta a ambos sexos, mujeres menos afectadas, transmitida por hombres a todas sus hijas & Síndrome de Rett \\
+Ligada al X (recesiva) & Afecta principalmente a hombres, mujeres son portadoras & Hemofilia \\
+Ligada al Y & Solo afecta a hombres, transmitida de padres a hijos & Algunas formas de infertilidad masculina \\
+Mitocondrial & Transmitida por la madre, afecta a ambos sexos & Neuropatía óptica hereditaria de Leber \\
+Multifactorial & Influencia de múltiples genes y factores ambientales & Enfermedades cardíacas, diabetes tipo 2
+\end{tabular}
+\end{table}
+
+Para variantes de baja frecuencia en la población, se establece un límite MAF compatible con la prevalencia de la enfermedad en la población: monogénica/variante única y oligogénica/variantes múltiples. Para medir el efecto, se utilizan distintos predictores:
+\begin{itemize}
+\item \textbf{SIFT (Sorts Intolerant from Tolerant):} funciona a nivel de variantes. Toma una secuencia de consulta y utiliza información de alineamiento múltiple para predecir sustituciones toleradas y deletéreas para cada posición de la secuencia de consulta. SIFT es un procedimiento de varios pasos que busca secuencias similares, elige secuencias estrechamente relacionadas que puedan compartir una función similar a la secuencia de consulta, obtiene la alineación de estas secuencias elegidas y calcula las probabilidades normalizadas de todas las posibles sustituciones a partir del alineamiento. Las posiciones con probabilidades normalizadas inferiores a 0,05 se consideran deletéreas, mientras que las superiores o iguales a 0,05 se consideran toleradas.
+\item \textbf{PolyPhen (Polymorphism Phenotyping):} funciona a nivel de variantes. Predice el posible impacto de las sustituciones de aminoácidos en la estabilidad y función de las proteínas humanas utilizando consideraciones estructurales y evolutivas comparativas. Realiza una anotación funcional de polimorfismos de un solo nucleótido (SNP), asigna SNP codificantes a transcripciones de genes, extrae anotaciones de secuencias de proteínas y atributos estructurales y construye perfiles de conservación. Estima la probabilidad de que la mutación de sentido erróneo sea perjudicial basándose en una combinación de todas estas propiedades.
+\item \textbf{CADD (Combined Annotation-Dependent Depletion):} funciona a nivel de variantes (incluidas las no codificantes). Prioriza variantes causales particularmente contribuyentes altamente penetrantes a desórdenes Mendelianos severos. Puede puntuar SNV humanas e INDELS cortas El entrenamiento del modelo CADD requiere la identificación de variantes que son fijas o casi fijas en poblaciones humanas, pero que están ausentes en la secuencia genómica inferida del ancestro humano-ape (variantes proxy-neutrales). La composición de la secuencia de este conjunto de variantes se utiliza para dibujar un conjunto coincidente de variantes proxy-deletéreas. Utilizando más de 60 anotaciones diversas, se entrena un modelo de aprendizaje automático para clasificar las variantes como proxy-neutrales frente a proxy-deletéreas. Todas las SNV potenciales del genoma humano de referencia se anotan utilizando las mismas características, y se calculan las puntuaciones crudas de CADD. Se obtiene una tabla de conversión PHRED a partir de la clasificación relativa de los núcleos de estos modelos.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/cadd.jpg}
+\end{figure}
+
+\item \textbf{LoFtool (Depletion of loss-of-function):} LoF en 60 706 individuos no emparentados y muestran que el cuartil más intolerante de genes clasificados está enriquecido en enfermedades raras y de aparición temprana y explica el 87\% de las mutaciones OMIM haploinsuficientes de novo, un 17\% más que cualquier otra herramienta de puntuación de genes. Las mutaciones LoF de alta confianza se definieron aquí como variantes con ganancia de parada, alteración del sitio de empalme y desplazamiento de marco que no son el alelo ancestral (en todos los primates), en el último 5\% del transcrito, en exones e intrones con sitios de empalme no canónicos a su alrededor, en intrones de menos de 15 pb, en genes con un solo exón y en sitios aceptores rescatados por un sitio aceptor dentro del marco.
+\end{itemize}
+
+Otras fuentes externas pueden ser ClinVar (recoge datos sobre variantes genéticas y sus efectos asociados, tanto patógenos como benignos, en las enfermedades humanas), Genotype-Tissue Expression GTEx (ofrece una visión detallada de la expresión génica en los tejidos humanos y su relación con la variación genética) y bibliografía de los genes de interés. 
+
+\section{Práctica: paper}
+Para ver estos conceptos de forma práctica, analizaremos el papel "A Human Hereditary Cardiomyopathy Shares a Genetic Substrate With Bicuspid Aortic Valve". Se analizaron varias familias por la presencia y ausencia de R530X y V943F. Se trata de una enfermedad oligogénica que se hereda junta. 
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = \textwidth]{figs/pedigri1.png}
+\includegraphics[width = \textwidth]{figs/pedigri2.png}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.85\textwidth]{figs/Imagen1-paper.png}
+\caption{(A) Localización cromosómica de los genes identificados en humanos y ratones. (B) Conservación de las secuencias de aminoácidos y ADN en las regiones afectadas en las variantes. (C) Principales predictores y datos de prevalencia de las variantes identificadas. (D) Análisis qPCR de los genes candidatos en corazones de ratón en diferentes estadios de desarrollo, en relación con la expresión de GAPDH. Ambos genes mostraron una expresión dinámica a lo largo del periodo examinado.  (E) La región C-terminal de la proteína codificada por la isoforma 202 de TMX3 no está conservada (panel izquierdo), pero la mutación introducida en el genoma del ratón afecta a una Phe conservada (panel derecho). (F) Estructura genética de la Tmx3 de ratón. El homólogo de ratón de la principal isoforma humana comparte su estructura, pero sólo existe un transcrito codificador de proteína en ratón. }
+\end{figure}
