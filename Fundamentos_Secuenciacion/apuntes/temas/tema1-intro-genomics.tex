@@ -79,12 +79,12 @@ Las enfermedades, en función de su base genética, pueden clasificarse en monog
 \chapter{Métodos de secuenciación}
 La secuenciación permite pasar de la información contenida en el ADN a un dominio digital mediante una representación abstracta. 
 
-El primer método de secuenciación fue el \textbf{método Maxam-Gilbert}, que utilizaba un marcador en el extremo 5' del ADN. En este proceso, el ADN se trataba con diferentes compuestos químicos para provocar rupturas específicas en función de cada base nitrogenada. Los fragmentos resultantes se separaban en un gel de acrilamida mediante electroforesis, y se revelaban mediante autoradiografía de rayos X. La secuencia se deducía observando el patrón de bandas resultante. Para los curiosos \href{https://www.youtube.com/watch?v=_B5Dj8PL4E0}{véase ésto}.
+El primer método de secuenciación fue el \textbf{método Maxam-Gilbert}, que utilizaba un marcador en el extremo 5' del ADN. En este proceso, el ADN se trataba con diferentes compuestos químicos para provocar rupturas específicas en función de cada base nitrogenada. Los fragmentos resultantes se separaban en un gel de acrilamida mediante electroforesis, y se revelaban mediante autoradiografía de rayos X. La secuencia se deducía observando el patrón de bandas resultante.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width = 0.3\textwidth]{figs/maxam-gilbert.png}
-\caption{\textbf{Principio de la secuenciación Maxam-Gilbert}: Las copias del fragmento de ADN monocatenario que se desea secuenciar se marcan radioactivamente y se les somete a cuatro reacciones de degradación de bases por separado (A+G, G, C+T y C). Se obtienen fragmentos de ADN de diferente longitud tras la escisión del resto de la cadena en las zonas degradadas. Los productos se cargan en cuatro pocillos separados de un gel de poliacrilamida. La secuencia se lee de abajo a arriba como GTATGC. Si se encuentra una G frente a un hueco en el gel, se confirma que se trata de 5-metilcitosina en la cadena molde.}
+\caption{\textbf{Principio de la secuenciación Maxam-Gilbert}: Se llevaron a cabo cuatro reacciones separadas para la degradación de bases en un fragmento de ADN monocatenario: A+G, G, C+T y C. Se obtienen fragmentos de ADN de diferente longitud tras la degradación de las bases y la escisión del esqueleto de azúcar-fosfato. Los productos se cargan en cuatro pocillos separados de un gel de poliacrilamida. La secuencia se lee de abajo a arriba como GTATGC. Si se encuentra una G frente a un hueco en el gel, se confirma que se trata de 5-metilcitosina en la cadena molde.}
 \end{figure}
 
 Otro método clave es el de \textbf{terminación de cadena, o método de Sanger}. Este utiliza deoxinucleótidos modificados, que tienen un átomo de hidrógeno en el grupo 2' de la pentosa, en lugar de un grupo hidroxilo (OH). Esto impide la unión del extremo 5' al 3', deteniendo así la extensión de la cadena de ADN. El resultado es una mezcla de fragmentos de distintos tamaños, los cuales se marcan con isótopos radioactivos o, en versiones más modernas, con fluoróforos. La secuencia se obtiene mediante detección de colores en una única reacción, simplificando el análisis. La clave de este método \marginpar[\footnotesize Pregunta examen] \ es el uso de dideoxinucleótidos, que interrumpen la actividad de la ADN polimerasa, permitiendo detener la cadena de manera controlada.
@@ -97,10 +97,10 @@ Otro método clave es el de \textbf{terminación de cadena, o método de Sanger}
 
 El primer secuenciador automático fue el ABI370, capaz de secuenciar hasta 5000 bases al día. Sin embargo, se necesitarían aproximadamente 16,000 años para secuenciar todo el genoma humano usando esta tecnología. Este secuenciador innovador reemplazaba los geles por electroforesis capilar y un detector de fluorescencia. Durante el Proyecto Genoma Humano en los años 90 y 2000, desarrollado en colaboración entre el sector público y privado, se introdujeron mejoras significativas a los secuenciadores, como el modelo ABI377, que empleaba varios capilares para incrementar la eficiencia. Sin embargo, la secuenciación de regiones altamente repetitivas del genoma, como los telómeros y centrómeros, fue compleja, y la primera descripción completa del genoma humano fue publicada hace apenas un año.
 
-\section{Shotgun genome sequencing y Proyecto Genoma Humano}
-A finales de los 90, comenzó el PGH. Los métodos que se utilizaron en el proyecto fueron \href{https://www.youtube.com/watch?v=aShY577MoM0}{los siguientes}:
+\section{Métodos de secuenciación empleados en el Proyecto Genoma Humano}
+Los métodos que se utilizaron en el proyecto fueron los siguientes:
 \begin{itemize}
-\item \textbf{Hierarchical Shotgun:} Fue el primer método en utilizarse. La idea era fragmentar el genoma humano en fragmentos grandes (150-350kb) en BACs. Entonces, a partir de estos genomas bacterianos el ADN se clona (plásmidos) en fragmentos más pequeños (2-10kb) usando enzimas de restricción. Y se volvían a fragmentar (usando distintas ER) para secuenciarse. Finalmente, se buscaban los solapamientos entre secuencias para formar contigs, los cuales se ensamblan progresivamente para reconstruir la secuencia original. 
+\item \textbf{Hierarchical Shotgun:} En este método, el ADN se clona en fragmentos más pequeños usando enzimas de restricción. Estos fragmentos se solapan y forman contigs, los cuales se ensamblan progresivamente para reconstruir la secuencia original.
 \item \textbf{Whole-genome Shotgun:} Similar al método anterior, pero se realiza directamente sobre el genoma completo en lugar de partir de cromosomas bacterianos. El ADN se clona en bacterias, se fragmenta y se ensamblan los contigs mediante solapamiento.
 \end{itemize}
 
@@ -109,10 +109,11 @@ A finales de los 90, comenzó el PGH. Los métodos que se utilizaron en el proye
 \includegraphics[width = 0.8\textwidth]{figs/HGP-sequencing.png}
 \caption{\textbf{Estrategias de secuenciación en el Proyecto Genoma Humano.} (Izquierda) La estrategia de hierarchical shotgun (HS) consiste en descomponer el genoma en un camino de mosaico de clones BAC (bacterial artificial chromosome) superpuestos, realizar la secuenciación en cada BAC y volver a ensamblarlo, y luego fusionar las secuencias de clones adyacentes. El método tiene la ventaja de que todos los contigs de secuencias y scaffolds derivados de un BAC pertenecen a un único compartimento con respecto al anclaje al genoma. (Derecha) La estrategia WGS (Whole-genome shotgun) consiste en secuenciar todo el genoma e intentar reensamblar toda la colección. Con el método WGS, cada contig y scaffold es un componente independiente que debe anclarse al genoma. En general, muchos scaffolds no pueden anclarse sin esfuerzos dirigidos. (Los contigs son bloques contiguos de secuencia; los scaffolds son conjuntos de contigs unidos por lecturas emparejadas de ambos extremos de un inserto plasmídico).}
 \end{figure}
+
 La electroforesis capilar, usada en ambos métodos, permite separar fragmentos de ADN de diferentes tamaños a través de un capilar con un detector de fluorescencia, logrando una lectura precisa de aproximadamente 500 pares de bases por fragmento. Con el tiempo, los costos de secuenciación disminuyeron gracias a avances en técnicas posteriores al método de Sanger.
 
 \section{NGS: la siguiente generación de tecnología de secuenciación del ADN}
-La secuenciación de segunda generación o Next-Generation Sequencing (NGS) permite una secuenciación paralela y masiva, también conocida como \textbf{high-throughput sequencing}. Los principales métodos NGS incluyen 454 Roche, Solexa Illumina, ABI/SOLiD, Complete Genomics, Pacific Biosciences, Ion Torrent y Oxford Nanopore. Estas tecnologías amplifican los fragmentos de la molécula de ADN original 
+La secuenciación de segunda generación o Next-Generation Sequencing (NGS) permite una secuenciación paralela y masiva, también conocida como \textbf{high-throughput sequencing}. Los principales métodos NGS incluyen 454 Roche, Solexa Illumina, ABI/SOLiD, Complete Genomics, Pacific Biosciences, Ion Torrent y Oxford Nanopore.
 
 \subsection{Preparación de librerías de NGS}
 Las librerías de secuenciación se preparan fragmentando el ADN y generando secuencias que luego se amplifican y procesan en el secuenciador, obteniendo las lecturas o reads. Estas librerías se amplifican clonalmente mediante tres métodos:
@@ -130,7 +131,7 @@ Los métodos de secuenciación de segunda generación se pueden clasificar en se
 \begin{itemize}
 \item \textbf{Secuenciación por síntesis (SBS)}
 \begin{itemize}
-\item \textbf{Ciclo de terminación reversible (CRT) Illumina/Solexa:} una evolución del método Sanger. Se utiliza ADN unido a beads o cristales y se añaden dNTPs modificados con el grupo 3’ OH bloqueado, limitando así la acción de la polimerasa y parando la duplicación de la cadena. Cada ciclo implica la incorporación de un nucleótido, seguido de una señal fluorescente específica del nucleótido unido. Posteriormente, el grupo OH se desbloquea con un químico de lavado para que el proceso continúe. La señal que se detecta no es de un único nucleótido, si no del conjunto de nucleótidos del cluster, que debido a la amplificación clonal, debería ser la misma señal amplificada. Esto se realiza por el límite de detección de fluorescencia de los microscopios. Además, la placa con los moldes tiene en los límites unos marcadores que permiten que el microscopio se enfoque a la altura a la que debe. 
+\item \textbf{Ciclo de terminación reversible (CRT):} una evolución del método Sanger. Se utiliza ADN unido a beads o cristales y se añaden dNTPs modificados con el grupo 3’ OH bloqueado, limitando así la duplicación de la polimerasa. Cada ciclo implica la incorporación de un nucleótido, seguido de una señal fluorescente específica del nucleótido unido. Posteriormente, el grupo OH se desbloquea con un químico de lavado para que el proceso continúe. La señal que se detecta no es de un único nucleótido, si no del conjunto de nucleótidos del cluster, que debido a la amplificación clonal, debería ser la misma señal amplificada. Esto se realiza por el límite de detección de fluorescencia de los microscopios. Además, la placa con los moldes tiene en los límites unos marcadores que permiten que el microscopio se enfoque a la altura a la que debe. 
 
 \begin{figure}[htbp]
 \centering
@@ -149,9 +150,9 @@ Los microscopios se clasifican en microscopios de 4 canales y de 2 canales. Los 
 \caption{Comparación entre los microscopios de 4 y de 2 canales.}
 \end{figure}
 
-Las ventajas de la secuenciación CRT es que es la que produce la mayor cantidad de secuencias secuenciadas a la vez (mayor throughput), con mayor precisión y longitud de lectura de las NGS -> estándar actual con 2 canales. La desventaja es el límite que puede secuenciar, que es en torno a 150 bases por cada extremo. 
+Las ventajas de la secuenciación CRT es que es la que produce la mayor cantidad de secuencias secuenciadas a la vez (mayor throughput). La desventaja es el límite que puede secuenciar, que es en torno a 150 bases por cada extremo. 
 
-\item \textbf{Adición de nucleótidos simple (SNA):} en cada ciclo se añade un solo tipo de nucleótido, detectando su incorporación. Este método es sensible a los homopolímeros (repeticiones del mismo nucleótido), pero puede generar problemas de fase si la señal no es proporcional al número de nucleótidos añadidos. Por lo que puede tener problemas con los homopolímeros muy largos.
+\item \textbf{Adición de nucleótidos simple (SNA):} en cada ciclo se añade un solo tipo de nucleótido, detectando su incorporación. Este método es sensible a los homopolímeros (repeticiones del mismo nucleótido), lo que puede generar problemas de fase si la señal no es proporcional al número de nucleótidos añadidos.
 \begin{itemize}
 \item \textbf{Pirosecuenciación:} emplea pirofosfato liberado en la síntesis de ADN. Debido a su enlace de alta energía, la acción de la pirofosfatasa acoplada a la luciferasa produce que se emita una señal de luz proporcional al número de nucleótidos añadidos. Este método es rápido, económico y preciso, aunque presenta limitaciones con secuencias largas debido al cambio de fase en el momento en el que se produzca un error. La calidad de la secuenciación es Q45 (99,997\%). 
 
@@ -175,7 +176,7 @@ Se trata de una estrategia que se basa en la detección de las modificaciones en
 
 \item \textbf{Secuenciación por ligación (SBL)}
 \begin{itemize}
-\item \textbf{Secuenciación por SOLiD:} Este método (no lo usa nadie xd, pero) emplea sondas de ligación con dos bases complementarias a la base que se secuencia. En cada ciclo, una ligasa une una sonda marcada con un fluoróforo y luego se elimina la fluorescencia para repetir el ciclo, generando datos precisos, aunque menos comunes en la práctica. Se van mapeando dos nucleótidos a la vez, dejando un espacio de 3 nucleótidos. Por ello, se repite cinco veces añadiendo espaciadores (offsets) que corren el sitio de unión de la sonda y permitan el solapamiento de las lecturas.
+\item \textbf{Secuenciación por SOLiD:} Este método emplea sondas de ligación con dos bases complementarias a la base que se secuencia. En cada ciclo, una ligasa une una sonda marcada con un fluoróforo y luego se elimina la fluorescencia para repetir el ciclo, generando datos precisos, aunque menos comunes en la práctica. Se van mapeando dos nucleótidos a la vez, dejando un espacio de 3 nucleótidos. Por ello, se repite cinco veces añadiendo espaciadores que permitan el solapamiento de las lecturas.
 
 \begin{figure}[htbp]
 \centering
@@ -183,7 +184,7 @@ Se trata de una estrategia que se basa en la detección de las modificaciones en
 \caption{\textbf{Ilustración del método de secuenciación por ligación utilizando la plataforma SOLiD.} (a) Esquema de los diferentes pasos seguidos por el método SOLiD de ligadura por cuatricromía: hibridación de primers, ligadura selectiva de las sondas, obtención de imágenes por cuatricromía y escisión de la sonda. El ciclo SOLiD se repite nueve veces más. El producto de extensión se elimina y la plantilla se reajusta con un cebador complementario a la posición n -1 para una segunda ronda de ciclos de ligación. (b) Se realizan cinco rondas de reajuste del cebador para cada etiqueta de secuencia. Mediante el procedimiento de reajuste de cebadores, prácticamente todas las bases se consultan en dos reacciones de ligación independientes con dos cebadores diferentes.}
 \end{figure}
 
-\item \textbf{Complete Genomics (Nanoballs, BGI):} El ADN se amplifica mediante rolling circle para formar moléculas de ADN grandes con forma de ovillo (nanobolas o NDB), que luego se hibridan en una placa (la flowcell). El ADN se secuencia de forma iterativa con sondas fluorescentes que se unen por ligacion (como en el método anterior). Este método permite una alta densidad de nanobolas en cada flowcell, teniendo así una precisión muy alta (más que los métodos de SBS). No obstante, ya que sólo permite secuenciar lecturas pequeñas, se utilizan distintos adaptadores a los que se unen las sondas, lo que permite aumentar el throughput. Hay partes de la tecnología que no se conocen y está principalmente disponible en China.
+\item \textbf{Complete Genomics (Nanoballs, BGI):} Amplifica ADN mediante rolling circle para formar ovillos, que luego se hibridan en una placa. Las sondas fluorescentes hibridan de forma iterativa para secuenciar el ADN. Este método permite una alta densidad de secuencias pequeñas, teniendo así una precisión muy alta. No obstante, permite secuenciar lecturas pequeñas y, al final, se utilizan distintos adaptadores a los que se unen las sondas, permitiendo aumentar el througput. Hay partes de la tecnología que no se conocen y está principalmente disponible en China.
 \end{itemize}
 \end{itemize}
 
@@ -192,15 +193,15 @@ La NGS de segunda generación presenta una tasa de error de Q25-Q35 y ciertas li
 \begin{itemize}
 \item \textbf{Lecturas cortas} generan dificultades en el ensamblaje de genomas completos y en la identificación de variantes estructurales.
 \item \textbf{Errores de secuenciación} especialmente en regiones complejas y repetitivas, como secuencias AT/GC (SBS) y homopolímeros (SNA).
-\item \textbf{Sesgo de amplificación} algunas regiones se amplifican mejor que otras, lo que afecta a la uniformidad en las lecturas.
+\item \textbf{Sesgo de amplificación} algunas regiones se amplifican mejor que otras, afectando la uniformidad en las lecturas.
 \item \textbf{Alto coste de los equipos}
 \item \textbf{Fenómeno de la cadena retrasada} cuando no se incorpora un nucleótido, produciendo un descabalgamiento del ciclo de lectura real y el ciclo de lectura en el que creemos que estamos.
-\item \textbf{Persistencia de errores en los cluster} al producirse un error en el cluster, el error se queda a lo largo de la secuenciación. P.ej.: en el primer ciclo.
-\item \textbf{Cambios epigenéticos} pueden afectar negativamente a la precisión de secuenciación por sus diferencias químicas, ya que podría incorcorarse otro nt durante la polimerización. 
+\item \textbf{Persistencia de errores en los cluster} al producirse un error en el cluster, el error se queda a lo largo de la secuenciación.
+\item \textbf{Cambios epigenéticos}
 \end{itemize}
 
 \section{Resumen}
-La secuenciación ha cambiado la forma de hacer y entender la biología. La secuenciación de segunda generación o NGS permite secuenciar millones de moldes de ADN al mismo tiempo. Generalmente, el molde de ADN es amplificado clonalmente, y las llamadas se hacen mediante el consenso de los moldes clonales. Hay dos tipos de secuenciación NGS: por síntesis con la polimerasa o por ligación (SOLiD y Nanoballs). Hay dos tipos de secuenciación por síntesis. La adición simple de nucleótidos (pirosecuenciación 454 y Ion Torrent) añade un dNTP distinto en cada ciclo, pero tiene problemas con moldes homopoliméricos. La terminación cíclica reversible (Illumina) añade todos los dNTP en cada ciclo y secuencia la misma posición en el molde, pero puede sufrir de desfase (con los microscopios de 2 canales).
+La secuenciación ha cambiado la forma de hacer y entender la biología. La secuenciación de segunda generación o NGS permite secuenciar millones de moldes de ADN al mismo tiempo. Generalmente, el molde de ADN es amplificado clonalmente, y las llamadas se hacen mediante el consenso de los moldes clonales. Hay dos tipos de secuenciación NGS: por síntesis con la polimerasa o por ligación (SOLiD y Nanoballs). Hay dos tipos de secuenciación por síntesis. La adición simple de nucleótidos (pirosecuenciación 454 y Ion Torrent) añade un dNTP distinto en cada ciclo, pero tiene problemas con moldes homopoliméricos. La terminación cíclica reversible (Illumina) añade todos los dNTP en cada ciclo y secuencia la misma posición en el molde, pero puede sufrir de desfase.
 %Importante a quedar claro: diferencia entre secuenciación por síntesis y por ligación, y dentro de ellos la diferencia entre el método CRT y SNA. Los métodos de ligación hay que saber que existen, pero no es habitual trabajar con ellos. 
 
 \section{Quizz}
@@ -459,24 +460,13 @@ Answer: Sanger
 %04/11 - Álvaro Serrano
 \chapter{Alineadores y NGS}
 \section{Preparación de librería}
-Una librería es una colección de fragmentos de ADN de tamaño aleatorio obtenidos a partir de una muestra que se desea secuenciar. El proceso comienza con la extracción del material genético (ADN o ARN), seguido de su fragmentación en piezas pequeñas que posteriormente serán leídas. A continuación, se añaden adaptadores a los extremos de los fragmentos, lo que permite su hibridación con una fase sólida para realizar la amplificación. Finalmente, se purifican los fragmentos para obtener solo las moléculas del tamaño deseado, dependiendo del método de secuenciación que se vaya a utilizar.
+Una librería es una colección de fragmentos de ADN de tamaño aleatorio obtenidos a partir de una muestra que se desea secuenciar. El proceso comienza con la extracción del material genético (ADN o ARN -> ADNc), seguido de su fragmentación en piezas pequeñas que posteriormente serán leídas. Los extremos de los fragmentos deben repararse a continuación y se les añade adaptadores (primers conocidos), que permiten su hibridación con una fase sólida donde realizar la amplificación. Finalmente, se purifican los fragmentos para obtener solo las moléculas del tamaño deseado, dependiendo del método de secuenciación que se vaya a utilizar. Por ejemplo, si quisiesemos secuenciar single-end con Illumina, añadir fragmentos de más de 150bp produciría ruido en la secuenciación.
 
 \subsection{Fragmentación del material genético}
-Existen distintas aproximaciones en la fragmentación del ADN:
-% Mejor empezar por tagmentación porque todo lo que va a continuación va a colación con el de ligación, tanto la rotura, como la reparación, métodos y comparación, etc.
-\item \textbf{Aproximación por tagmentación: }
-En este método, se utiliza la enzima tagmentasa, una transposasa que corta la secuencia de ADN e incorpora adaptadores de manera enzimática \footnote{Los transposones son elementos móviles dentro del ADN.}. La tagmentación es rápida y eficiente, pues combina la fragmentación y la adición de adaptadores en un solo paso.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width = 0.8\textwidth]{figs/tagmentation.png}
-\caption{Representación esquemática de la fragmentación por tagmentación.}
-\end{figure}
-\end{itemize}
-
+Existen distintas técnicas para fragmentar el ADN, cada una con sus ventajas y desventajas:
 \begin{itemize}
 \item \textbf{Aproximación por ligación:} 
-En este otro, la cadena de ADN se puede romper con distintas técnicas (cada una con sus ventajas y desventajas). Los fragmentos de ADN resultantes se reparan añadiendo una adenina en los extremos, lo que permite la unión complementaria de los adaptadores. Esto produce fragmentos con un adaptador en cada extremo. Cada fragmento tiene así dos componentes: la secuencia del adaptador para la secuenciación y la secuencia molde de ADN. Además, cada fragmento puede llevar un identificador único (UMI, por sus siglas en inglés). 
+En este método, los fragmentos de ADN se preparan añadiendo una adenina en los extremos, lo que permite la unión complementaria de los adaptadores. Esto produce fragmentos con un adaptador en cada extremo. Cada fragmento tiene así dos componentes: la secuencia del adaptador para la secuenciación y la secuencia molde de ADN. Además, cada fragmento puede llevar un identificador único (UMI, por sus siglas en inglés). Los UMIs permiten rastrear la molécula original de la que provienen sus copias y diferenciar los productos con distinta molécula original como, por ejemplo, los de las copias de un gen de dos cromosomas homólogos.
 
 \begin{figure}[htbp]
 \centering
@@ -489,9 +479,9 @@ Las técnicas de fragmentación por ligación incluyen:
 \item \textit{Fragmentación física (sonicación)}:
 Mediante un sonicador, se aplican ondas sonoras que generan vibración por resonancia, dividiendo el ADN en fragmentos. La frecuencia de las ondas determina el tamaño de los fragmentos obtenidos.
 \item \textit{Fragmentación química:}
-Se utilizan agentes químicos, como ácidos o bases fuertes, para romper los enlaces fosfodiéster del ADN. Este método es útil en casos donde la epigenética no es relevante, ya que los químicos fuertes pueden modificar las marcas epigenéticas mediante procesos de oxidación o reducción.
+Se utilizan agentes químicos, como ácidos o bases fuertes, para romper los enlaces fosfodiéster del ADN. Este método es muy barato, pero los químicos fuertes pueden modificar las marcas epigenéticas mediante procesos de oxidación o reducción. Es útil en casos donde la epigenética no es relevante.
 \item \textit{Fragmentación enzimática:}
-Se emplean endonucleasas, que son enzimas capaces de cortar las cadenas de ADN en puntos específicos, produciendo fragmentos con extremos cohesivos o romos. Este método permite una fragmentación precisa, pero puede introducir sesgos en la representatividad de la librería generada.
+Se emplean endonucleasas, que son enzimas capaces de cortar las cadenas de ADN en puntos específicos, produciendo fragmentos con extremos cohesivos o romos. Es muy barato y fácilmente escalable. Este método permite una fragmentación precisa (cortes en patrón), pero puede introducir sesgos en la representatividad de la librería generada (pérdida de material) -> si la diana de restricción en cuestión está sub o sobrerrepresentada en algunas regiones del genoma. Recuérdese el paso de purificación (selección por tamaño de fragmento). Por ello, se suele utilizar un cóctel de ER para evitar soscabar la reprentabilidad de los cortes. 
 \end{itemize}
 
 \begin{figure}[htbp]
@@ -511,11 +501,21 @@ Pro & Broad range & Well for RNA & Standard lab equipment \\
 & No interferences & & \\
 & Easy to implement & & \\ \hline
 Cons & Expensive equipment & Cations interfere with some seq methods & Fragmentation bias \\
-& Loss of material & & Ratio material/enzymes \\
+& Loss of material (efecto Bach -> fragmentos pequeños degradables) & & Ratio material/enzymes \\
 & Modification of bases & & Sample-to-sample variation
 \end{tabular}}
 \caption{Pros y contras de cada método de fragmentación por ligación}
 \end{table}
+
+\item \textbf{Aproximación por tagmentación: }
+En este método, se utiliza la enzima tagmentasa, una transposasa que corta la secuencia de ADN e incorpora adaptadores de manera enzimática \footnote{Los transposones son elementos móviles dentro del ADN.}. La tagmentación es rápida y eficiente, pues combina la fragmentación y la adición de adaptadores en un solo paso.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/tagmentation.png}
+\caption{Representación esquemática de la fragmentación por tagmentación.}
+\end{figure}
+\end{itemize} 
 
 \subsection{Reparación de extremos y ligación de adaptadores}
 Después de la fragmentación del ADN, es necesario reparar los extremos de los fragmentos. Como la fragmentación no suele producir cortes limpios, los fragmentos generados suelen presentar extremos sobresalientes (overhangs). Para corregir esto, se realiza un tratamiento enzimático con polimerasas, que además añade una adenina (A) en los extremos 3’. Estos extremos, con la adenina añadida, facilitan la ligación de los adaptadores, los cuales suelen tener un overhang de timina (T) para permitir una unión complementaria con los fragmentos de ADN.
@@ -526,10 +526,11 @@ Después de la fragmentación del ADN, es necesario reparar los extremos de los 
 \caption{Representación de los adaptadores en caso de secuenciación simple, dual y UDI-UMI.}
 \end{figure}
 
-Los adaptadores empleados en la secuenciación tienen distintas configuraciones. Por lo general, se colocan dos tipos de adaptadores: el adaptador P5 en un extremo y el adaptador P7 en el otro. Esta disposición permite identificar las direcciones de lectura durante el proceso de secuenciación. Además, algunos adaptadores incluyen identificadores moleculares únicos, conocidos como UMIs (Unique Molecular Identifiers), que permiten rastrear de forma única cada molécula de ADN. Durante la amplificación, todas las moléculas con el mismo UMI corresponden a la misma molécula de ADN original. Esto tiene múltiples beneficios:
+Los adaptadores empleados en la secuenciación tienen distintas configuraciones. Por lo general, se colocan dos tipos de adaptadores: el adaptador P5 (para single-end) en un extremo y el adaptador P7 (se añade para pair-end) en el otro. Esta disposición permite identificar e inducir las direcciones de lectura durante el proceso de secuenciación -> Dadas las interacciones iónicas y químicas de los adaptadores, se pegan de un lado o de otro. 
+Además, algunos adaptadores incluyen identificadores moleculares únicos, conocidos como UMIs (Unique Molecular Identifiers), que permiten rastrear de forma única cada molécula de ADN. Durante la amplificación, todas las moléculas con el mismo UMI corresponden a la misma molécula de ADN original. Esto tiene múltiples beneficios:
 \begin{itemize}
 \item \textbf{Eliminación de duplicados de PCR:} Permite distinguir duplicados generados por PCR de secuencias originales.
-\item \textbf{Disminuir el ratio de error:} La lectura de la misma molécula varias veces permite detectar posibles errores generados durante la construcción de la librería o la amplificación. Si diferentes secuencias presentan un UMI idéntico pero difieren en algún nucleótido, se puede deducir que ha habido un error, ya que las secuencias deberían ser idénticas. Esto ayuda a reducir el índice de error y a detectar variantes poco frecuentes.
+\item \textbf{Disminuir el ratio de error:} La lectura de la misma molécula varias veces permite detectar posibles errores generados durante la construcción de la librería o la amplificación. Si diferentes secuencias presentan un UMI idéntico, pero difieren en algún nucleótido, se deduce que ha habido un error, ya que las secuencias deberían ser idénticas. Esto ayuda a reducir el índice de error y a detectar variantes poco frecuentes.
 \end{itemize}
 
 \begin{figure}[htbp]
@@ -585,7 +586,7 @@ El formato de archivo usado por los alineadores es generalmente \textbf{FastQ} p
 
 Cuando se trabaja con alineadores, el proceso suele generar un perfil con picos que representan las bases detectadas, a cada uno de los cuales se le asigna un nombre de base. El alineador produce un archivo final que contiene tanto la secuencia de bases asignadas como la calidad de lectura de cada base en un formato codificado llamado \textbf{Phred33}, que usa caracteres ASCII para representar los valores de calidad.
 
-En formatos antiguos, la cabecera de cada secuencia incluía datos detallados, como el nombre del instrumento de secuenciación, el identificador de la flowcell, las coordenadas X e Y del clúster, el número de la muestra y el índice del par de lectura. En el formato actual, esta información en la cabecera ha sido simplificada o se presenta de manera distinta.
+En formatos antiguos, la cabecera de cada secuencia incluía datos detallados, como el nombre del instrumento de secuenciación, el identificador del flowcell, las coordenadas X e Y del clúster, el número de la muestra y el índice del par de lectura. En el formato actual, esta información en la cabecera ha sido simplificada o se presenta de manera distinta.
 
 En cuanto al tipo de secuenciación, se distinguen dos tipos:
 \begin{itemize}
@@ -648,7 +649,7 @@ Existen programas diseñados específicamente para el mapeo, llamados alineadore
 \subsection{Algoritmos de mapeo por hashing}
 El mapeo inicia con una etapa de \textbf{indexación del genoma}, un proceso intensivo en tiempo y memoria que se realiza solo una vez por genoma de referencia y por programa. En esta fase, los algoritmos de alineamiento utilizan técnicas como \textbf{hashing} o \textbf{índices} basados en \textbf{k-mers} (subsecuencias de longitud fija). Con una ventana móvil, se anotan las posiciones de cada k-mer en la secuencia de referencia.
 
-Posteriormente, las lecturas se comparan con el diccionario de k-mers para localizar sus posiciones sin usar una ventana móvil adicional. A continuación, se construye un "árbol de posibilidades" que evalúa la compatibilidad de cada lectura con la referencia. Si una mutación en la lectura no coincide con la referencia, el k-mer no estará en el índice, y se buscarán los k-mers más cercanos, evaluando la mapping quality según el número de errores (mismatches) y la distancia de edición. El objetivo es minimizar los gaps (espacios sin coincidencias) para mejorar la precisión del alineamiento.
+Posteriormente, las lecturas se comparan con el diccionario de k-mers para localizar sus posiciones sin usar una ventana móvil adicional. A continuación, se construye un "árbol de posibilidades" que evalúa la compatibilidad de cada lectura con la referencia. Si una mutación en la lectura no coincide con la referencia, el k-mer no estará en el índice, y se buscarán los k-mers más cercanos, evaluando el mapping quality según el número de errores (mismatches) y la distancia de edición. El objetivo es minimizar los gaps (espacios sin coincidencias) para mejorar la precisión del alineamiento.
 
 \begin{figure}[htbp]
 \centering
@@ -671,9 +672,9 @@ Existen opciones para reportar todos los alineamientos, solo los mejores, o aque
 
 La calidad de mapeo usa la misma escala Phred33 que las calidades de lectura, y los resultados de alineación se almacenan en formatos SAM, BAM o CRAM:
 \begin{itemize}
-\item \textbf{SAM:} Formato de texto plano que se puede leer por la terminal.
+\item \textbf{SAM:} Formato de texto plano que se puede leer por la terminar.
 \item \textbf{BAM:} Versión binaria de SAM.
-\item \textbf{CRAM:} Similar a BAM, pero usado principalmente por el ENA-EBI, optimizado para almacenar una cantidad masiva de datos de forma compacta. Almacena las variantes de nucleótidos (mismatch call) de una secuencia con respecto a una secuencia de referencia y su posición (mismatch position) con respecto al inicio de la secuencia que contiene la variante (start offsets).
+\item \textbf{CRAM:} Similar a BAM, pero usado principalmente por el EBI, optimizado para almacenar una cantidad masiva de datos de forma compacta.
 \end{itemize}
 
 Los formatos SAM y BAM se pueden convertir entre sí mediante la herramienta \textbf{samtools}, que permite especificar el grado de compresión.
@@ -722,7 +723,7 @@ Se distinguen dos enfoques principales en la secuenciación de tercera generaci�
 \section{Secuenciación de molécula única a tiempo real - PacBio}
 La tecnología de PacBio (Pacific Biosciences) emplea una única molécula de ADN de longitud variable, generalmente en el rango de varias kilobases. Se preparan fragmentos circulares de ADN al añadir estructuras químicas en forma de horquilla en los extremos, lo que permite la circularización de la molécula y una lectura continua de la secuencia.
 
-El secuenciador PacBio utiliza una flowcell con pocillos que contienen cámaras donde se detectan señales de fluorescencia para identificar los nucleótidos incorporados en tiempo real. Este proceso funciona gracias a una polimerasa anclada en cada pocillo que, al añadir nucleótidos marcados con fluorescencia, permite que la cámara capture el cambio y lea la secuencia. La velocidad de secuenciación es de aproximadamente 3 bases por segundo.
+El secuenciador PacBio utiliza un flowcell con pocillos que contienen cámaras donde se detectan señales de fluorescencia para identificar los nucleótidos incorporados en tiempo real. Este proceso funciona gracias a una polimerasa anclada en cada pocillo que, al añadir nucleótidos marcados con fluorescencia, permite que la cámara capture el cambio y lea la secuencia. La velocidad de secuenciación es de aproximadamente 3 bases por segundo.
 
 Cada pocillo secuencia una molécula única no amplificada que proviene directamente del organismo a estudiar. Al estar la molécula circularizada, la secuenciación puede realizarse de manera continua: la polimerasa desnaturaliza la cadena, incorpora nucleótidos y la cadena sintetizada se deshibrida, permitiendo múltiples pasadas sobre la misma región.
 
