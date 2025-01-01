@@ -103,7 +103,7 @@ donde ord() convierte el carácter a su representación ASCII. Por ejemplo, el s
 $$ p = 10^{-\frac{Q}{10}}$$
 
 \textbf{Ejemplos:}
-Para el carácter "~", el código ASCII es 126, por lo que su Q es $126-33 = 93$. En este caso, la p sería de $0,5 \cdot 10^{-10}$ .  Así, el carácter "!", cuyo ASCII es 33, tiene una Q de 0 y una p de 1. 
+Para el carácter "~", el código ASCII es 126, por lo que su Q es $126-33 = 93$. En este caso, la p sería $10^{\frac{93}{10}} = 10^{-9,3} \approx 5 \cdot 10^{-10}$ .  De igual forma, el carácter "!", cuyo ASCII es 33, tiene una Q de 0 y una p de 1. 
 
 En este caso, como las letras en mayúscula y minúscula tienen un código ASCII diferente, no se puede pasar todo a mayúsculas o minúsculas como en FASTA.
 
@@ -494,7 +494,7 @@ También se pueden retocar otras propiedades:
 \item linewidth: el ancho de la línea en píxeles
 \item markeredgecolor: el color del borde del marcador
 \item markerfacecolor: el color interno del marcador
-\item markerzie: el tamaño del marcador
+\item markersize: el tamaño del marcador
 \end{itemize}
 En general, estos parámetros aplican a todo el gráfico. Sin embargo, se puede establecer anchos y colores distintos para cada una de las líneas llamando al plot varias veces:
 \begin{lstlisting}[language=Python]
@@ -515,7 +515,7 @@ Se pueden crear distintos tipos de gráficos:
 \item Diagrama de barras (bar plot): la función \texttt{bar(x, y, width, bottom, style...} crea un gráfico de barras verticales u horizontales (\texttt{barh}). El parámetro width indica la separación entre las barras, y bottom permite poner barras apiladas.
 \item Contour: Esta función \texttt{contour(Z, n)} traza isolíneas desde la matriz Z, donde Z se interpreta como alturas con respecto al plano xy. Z debe ser al menos una matriz de 2x2. El número de niveles puede especificarse utilizando el parámetro «n»; de lo contrario, se calculan automáticamente a partir de las alturas máxima y mínima de Z.
 \item Pcolor: La función \texttt{pcolor(c)} dibuja una matriz coloreada con colores dados por C. El gráfico muestra una columna y una fila menos que las columnas y filas de la matriz. Esta función (si no se dan otros parámetros) obtiene el color para la celda (i, j) del elemento (i, j) de la matriz C usando el mapa de colores actual.
-\item Diagrama de dispersión (scatter plot): La función \texttt{scatter(x, y, s = 20, c=u'b', ...} crea un diagrama de dispersión con coordenadas x e y. Los vectores x e y deben tener el mismo tamaño. El tamaño de los puntos puede especificarse con s y su color con c. Tanto el tamaño como el color pueden darse para todos los puntos juntos utilizando un único valor o para cada punto individual utilizando un vector. Para la primera configuración, basta con dar un único escalar para el tamaño y una cadena para el color. Para la segunda, se debe dar un vector del mismo tamaño de x e y para los tamaños. Para los colores, se puede especificar un vector que contenga indixes f el mapa de colores, o un array de tamaño len(x) x 3 con colores en RGB.
+\item Diagrama de dispersión (scatter plot): La función \texttt{scatter(x, y, s = 20, c=u'b', ...} crea un diagrama de dispersión con coordenadas x e y. Los vectores x e y deben tener el mismo tamaño. El tamaño de los puntos puede especificarse con s y su color con c. Tanto el tamaño como el color pueden darse para todos los puntos juntos utilizando un único valor o para cada punto individual utilizando un vector. Para la primera configuración, basta con dar un único escalar para el tamaño y una cadena para el color. Para la segunda, se debe dar un vector del mismo tamaño de x e y para los tamaños. Para los colores, se puede especificar un vector que contenga índices del mapa de colores, o un array de tamaño len(x) x 3 con colores en RGB.
 \end{itemize}
 
 \paragraph{Opciones globales para gráficos}
@@ -616,8 +616,8 @@ plt.show()
 \end{figure}
 
 \section{Biopython}
-Biopython es una librería Python con herramientas para computación biológica. Se trata de un proyecto de código abierto miembro de la Open Bioinformatics (OBF). Una fundación que promueve el código abierto en la investigación biológica.
-El objetivo de esta librería es facilitar al máximo el uso de python en bioinformática para el análisis sintáctico de archivos, funciones para trabajar con secuencias y características, trabajar con sitios bioinformáticos online como NCBI o ExPASy, alineamientos, etc.
+Biopython es una librería Python con herramientas para computación biológica. Se trata de un proyecto de código abierto miembro de la Open Bioinformatics Foundation (OBF), una fundación que promueve el código abierto en la investigación biológica.
+El objetivo de esta librería es facilitar al máximo el uso de Python en bioinformática para el análisis sintáctico de archivos, funciones para trabajar con secuencias y características, trabajar con sitios bioinformáticos online como NCBI o ExPASy, alineamientos, etc.
 
 \subsection{Seq}
 La clase Seq es la clase básica para representar secuencias en Biopython. Se representan las secuencias biológicas como cadenas. Así, se puede iterar sobre las bases, realizar slicing, concatenar secuencias y utilizar otros métodos de cadenas. Todas estas operaciones devuelven nuevos objetos de tipo Seq, que son inmutables, como los strings.
