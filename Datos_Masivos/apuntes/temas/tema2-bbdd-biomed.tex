@@ -77,7 +77,7 @@ Para cargar un JSON, se utiliza el método \texttt{json.loads()}. Así, el JSON 
 \begin{tabular}{l | l}
 dict = json.loads(str) & Convierte un string en un diccionario \\
 str = json.dumps(dict) & Convierte un diccionario en un string \\
-json.dump(dict, file) & Escribe un objeto JSON (dict) en un fichero)
+json.dump(dict, file) & Escribe un objeto JSON (dict) en un fichero
 \end{tabular}
 \caption{Resumen}
 \end{table}
@@ -130,7 +130,7 @@ Rango disponible & Rango definido & Categoría \\ \hline
 \caption{Códigos de retorno}
 \end{table}
 
-Un servidor es un ordenador en un data center. Cada servicio tiene asignado un puerto, ya que en un mismo servidor puede haber varios servicios web. Las direcciones IP (técnicamente IPv4) se dividen en cuatro bloques de tres números que van del 0 al 255 (esto ocupa 8 bites). Así, en el mundo puede haber un máximo de $255^4$ direcciones IP en el mundo. Por ello, a los servicios se les añade después de la dirección IP el puerto. En el caso de la web de la UAM, se trata de 150.244.214.237:80 para HTTP y 150.244.214.237:443 para HTTP. Todos los servicios seguros (HTTPS) se conectan al puerto 443. Una vez conectados al servidor, se puede utilizar el método \texttt{GET} para obtener como respuesta la web que se está pidiendo. Esto se puede realizar en Python con la librería requests y la función get, como se explicó anteriormente. También está el método \texttt{POST} para enviar datos o información a un servidor. Estos datos se incluyen en el cuerpo de la petición, no están visibles en la URL, por lo que se suele utilizar para los login al ser más seguro (usuario y contraseña está oculto a la vista). En resumen: se pide información con GET y se envía información con POST. 
+Un servidor es un ordenador en un data center. Cada servicio tiene asignado un puerto, ya que en un mismo servidor puede haber varios servicios web. Las direcciones IP (técnicamente IPv4) se dividen en cuatro bloques de tres números que van del 0 al 255 (esto ocupa 8 bites). Así, en el mundo puede haber un máximo de $255^4$ direcciones IP en el mundo. Por ello, a los servicios se les añade después de la dirección IP el puerto. En el caso de la web de la UAM, se trata de 150.244.214.237:80 para HTTP y 150.244.214.237:443 para HTTPS. Todos los servicios seguros (HTTPS) se conectan al puerto 443. Una vez conectados al servidor, se puede utilizar el método \texttt{GET} para obtener como respuesta la web que se está pidiendo. Esto se puede realizar en Python con la librería requests y la función get, como se explicó anteriormente. También está el método \texttt{POST} para enviar datos o información a un servidor. Estos datos se incluyen en el cuerpo de la petición, no están visibles en la URL, por lo que se suele utilizar para los login al ser más seguro (usuario y contraseña está oculto a la vista). En resumen: se pide información con GET y se envía información con POST. 
 
 \textbf{Ejemplo: \href{https://rest.ensembl.org/}{https://rest.ensembl.org/}}
 Aquí se pueden ver todos los endpoints (las distintas funcionalidades) de la página Ensembl. 
