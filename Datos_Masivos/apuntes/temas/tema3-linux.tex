@@ -282,10 +282,10 @@ echo ho{rs, m, p, roscop}e
 
 Se pueden utilizar dos puntos que implican el rango entre los dos valores. Así, \texttt{{x..z}} genera la lista x y z. También se puede anidar:
 \begin{lstlisting}[language=bash]
-echo {z..a}
-echo{1..9}
-echo{X{1,2}, Y{3,4}}
-echo{X,Y}{1..4}
+echo {z..a} #z y x w v u t ... c b a
+echo{1..9} # 1 2 3 4 5 6 7 8 9
+echo{X{1,2}, Y{3,4}} # X1 X2 Y3 Y4
+echo{X,Y}{1..4} #X1 X2 X3 X4 Y1 Y2 Y3 Y4
 \end{lstlisting}
 
 \section{Sustitución de comandos}
@@ -335,7 +335,7 @@ El ciclo awk es leer el fichero de entrada línea por línea. Por cada línea, a
 
 Awk lee la entrada en unidades llamadas registros. Los registros están separados por un carácter llamado separador de registros. El separador de registros es, por defecto, el carácter de nueva línea, por lo que los registros suelen ser líneas. El separador de registros puede cambiarse asignando un valor diferente a la variable RS. Awk lleva la cuenta del número de registros que se han leído en la variable NR. 
 
-Cada registro se divide en partes llamadas campos. Por defecto, los campos están separados por espacios en blanco (uno o más espacios, tabuladores o nuevas líneas). El separador de campos se puede cambiar asignando la variable FS, o en la línea de comandos con la opción -F. El número de campos de un registro se almacena en la variable NF Se hace referencia a los campos con el signo \$:
+Cada registro se divide en partes llamadas campos. Por defecto, los campos están separados por espacios en blanco (uno o más espacios, tabuladores o nuevas líneas). El separador de campos se puede cambiar asignando la variable FS, o en la línea de comandos con la opción -F. El número de campos de un registro se almacena en la variable NF. Se hace referencia a los campos con el signo \$:
 \begin{itemize}
 \item \$0 es todo el registro
 \item \$i, siendo i un número mayor que 0, es el campo número i.
