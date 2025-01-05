@@ -597,9 +597,9 @@ La construcción de librerías en Single Cell se realiza mediante chips (que son
 \section{Formatos de datos}
 El formato de archivo usado por los alineadores es generalmente \textbf{FastQ} para las secuencias, aunque \textbf{Fast5} o \textbf{HDF5} también se emplean en algunos casos, especialmente en secuenciación de célula única (single cell), donde se necesita un mayor nivel de detalle (matrices de datos muy grandes) en el almacenamiento de datos.
 
-Cuando se trabaja con alineadores, el proceso suele generar un perfil con picos que representan las bases detectadas, a cada uno de los cuales se le asigna el nombre de base. El alineador produce un archivo final dividido en campos que contiene: (i) el nombre de la @secuencia y (ii) la secuencia de bases asignadas, (iii) un + con posibles metadatos y (iv) la calidad de lectura de cada base en un formato codificado llamado \textbf{Phred33}, que usa caracteres ASCII para representar los valores de calidad.
+Cuando se trabaja con alineadores, el proceso suele generar un perfil con picos que representan las bases detectadas, a cada uno de los cuales se le asigna el nombre de base. El alineador produce un archivo final dividido en campos que contiene: (i) el nombre de la $@$secuencia, (ii) la secuencia de bases asignadas, (iii) un + con posibles metadatos y (iv) la calidad de lectura de cada base en un formato codificado llamado \textbf{Phred33}, que usa caracteres ASCII para representar los valores de calidad.
 
-En formatos antiguos, la cabecera de cada secuencia incluía datos detallados, como el nombre del instrumento de secuenciación, el identificador de la flowcell, las coordenadas X e Y del clúster, el número de la muestra y si es single-end(_1) o pair-end(_2). En el formato actual, esta información en la cabecera ha sido simplificada o se presenta de manera distinta, pero además presenta el nombre del UMI.
+En formatos antiguos, la cabecera de cada secuencia incluía datos detallados, como el nombre del instrumento de secuenciación, el identificador de la flowcell, las coordenadas X e Y del clúster, el número de la muestra y si es single-end(\_1) o pair-end(\_2). En el formato actual, esta información en la cabecera ha sido simplificada o se presenta de manera distinta, pero además presenta el nombre del UMI.
 
 En cuanto al tipo de secuenciación, se distinguen dos tipos:
 \begin{itemize}
@@ -624,7 +624,7 @@ Durante un experimento de secuenciación, se utiliza un programa llamado \textbf
 FastQC proporciona varias métricas clave para evaluar la calidad: 
 \begin{itemize} 
 \item \textbf{Calidad promedio por secuencia}: muestra la calidad media de las bases en cada posición a lo largo de todas las secuencias. 
-\item \textbf{Proporciones de bases por posición}: indica la proporción de bases (A, T, C, G) en cada posición. ?
+\item \textbf{Proporciones de bases por posición}: indica la proporción de bases (A, T, C, G) en cada posición. 
 \item \textbf{Contenido de bases por posición}: permite identificar cualquier sesgo en el contenido de bases a lo largo de la secuencia. 
 \item \textbf{Contenido GC:} al inicio de la secuenciación, puede haber una variación en el contenido GC debido a la secuencia de los adaptadores, pero si se estabiliza después de las primeras bases, indica una secuenciación correcta y se pueden cortar los primeros nucleótidos. 
 \end{itemize}
@@ -637,8 +637,10 @@ Las secuencias generadas se comparan con \textbf{genomas de referencia}, que gen
 Los genomas de referencia y sus anotaciones se pueden encontrar en sitios como \href{https://hgdownload.soe.ucsc.edu/downloads.html}{UCSC Genome Browser}. Es importante tener en cuenta las diferencias en las anotaciones genómicas entre repositorios europeos y americanos, ya que pueden variar en la numeración y anotación de los cromosomas.
 
 El formato FASTA se compone de dos líneas consecutivas:
-– “>” Nombre de la secuencia y descripción opcional
-– Línea(s) con la secuencia completa
+\begin{itemize}
+\item “>” Nombre de la secuencia y descripción opcional
+\item Línea(s) con la secuencia completa
+\end{itemize}
 Aunque puede haber sólo una secuencia por archivo, es común que haya varias secuencias en el mismo archivo (multifasta). Y cuenta con varias extensiones (.fasta, .fas, .fa, .fna, .fsa).
 
 \section{Alineamientos y mapeo}
@@ -679,11 +681,11 @@ Posteriormente, las lecturas se comparan con el diccionario de k-mers para local
 La \textbf{transformación de Burrows-Wheeler} es un método de compresión que permite realizar búsquedas rápidas de alineamiento en el genoma de referencia, optimizando el rendimiento de los alineadores.
 
 \subsection{Estados de lecturas post-mapeo y mapping quality}
-Una vez mapeadas las lecturas al genoma de referencia, se puecen obtener los distintos estados:
+Una vez mapeadas las lecturas al genoma de referencia, se pueden obtener los distintos estados:
 \begin{itemize}
 \item \textbf{Lecturas no mapeadas:} No encuentran ninguna coincidencia en la referencia.
 \item \textbf{Lecturas con mapeo único:} Mapean la secuencia en una sola posición de la referencia. Normalmente se trabaja con estas lecturas.
-\item \textbf{Lecturas con mapeo múltiple (multimappers):} Ha mapeado varias posiciones. Se distinguen mapeos primarios y secundarios en función de la puntuación de mapeo. Se puede concatener con técnicas heurísticas.
+\item \textbf{Lecturas con mapeo múltiple (multimappers):} Ha mapeado varias posiciones. Se distinguen mapeos primarios y secundarios en función de la puntuación de mapeo. Se puede concatenar con técnicas heurísticas.
 \end{itemize}
 
 Existen opciones para reportar todos los alineamientos, solo los mejores, o aquellos que superan un umbral de calidad específico.
@@ -697,7 +699,6 @@ La calidad de mapeo usa la misma escala Phred33 que las calidades de lectura, y 
 
 Los formatos SAM y BAM se pueden convertir entre sí mediante la herramienta \textbf{samtools}, que permite especificar el grado de compresión.
 
-# No se ve arroba en el pdf :c
 La cabecera del archivo S/BAM comienza con todas las líneas que empiezan por $@$ que almacena metadatos como la versión de SAM, la ordenación, los contigs y la información general del mapeo. A continuación se muestran los datos de la secuencia.
 \begin{figure}
 \centering
