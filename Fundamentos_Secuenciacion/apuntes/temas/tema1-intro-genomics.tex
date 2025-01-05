@@ -466,7 +466,7 @@ Answer: Sanger
 \end{enumerate}
 
 %04/11 - Álvaro Serrano
-\chapter{Alineadores y NGS}
+\chapter{Alineadores y fomatos de NGS}
 \section{Preparación de librería}
 Una librería es una colección de fragmentos de ADN de tamaño aleatorio obtenidos a partir de una muestra que se desea secuenciar. El proceso comienza con la extracción del material genético (ADN o ARN -> ADNc), seguido de su fragmentación en piezas pequeñas que posteriormente serán leídas. Los extremos de los fragmentos deben repararse a continuación y se les añade adaptadores (primers conocidos), que permiten su hibridación con una fase sólida donde realizar la amplificación. Finalmente, se purifican los fragmentos para obtener solo las moléculas del tamaño deseado, dependiendo del método de secuenciación que se vaya a utilizar. Por ejemplo, si quisiesemos secuenciar single-end con Illumina, añadir fragmentos de más de 150bp produciría ruido en la secuenciación.
 
@@ -560,10 +560,10 @@ En el método conocido como \textbf{Duplex Sequencing}, se emplean UMIs distinto
 \caption{Visión general de la secuenciación dúplex. (a) Esquema de un adaptador de secuenciación dúplex, que muestra la etiqueta aleatoria de doble cadena y la secuencia espaciadora invariante. (b) La ligación de los adaptadores con el ADN de la muestra da lugar a una secuencia única de 12 nt en ambos extremos de la molécula. La amplificación por PCR de cada cadena de un dúplex de ADN da lugar a dos productos de PCR distintos pero relacionados. (c) Las lecturas que comparten secuencias únicas de etiquetas $\alpha$ y $\beta$ se agrupan en familias de etiquetas de forma $\alpha \beta$ o $\beta \alpha$, y se crea un SSCS (single-strand consensus sequence) para cada familia de etiquetas. Las mutaciones son de tres tipos diferentes: errores de secuenciación (puntos azules o morados); errores de PCR de primera ronda (puntos marrones); mutaciones verdaderas (puntos verdes). La formación del SSCS elimina el primer tipo de error, pero no los errores de PCR de la primera ronda. La comparación de los SSCS de las familias emparejadas con etiquetas $\alpha \beta$ y $\beta \alpha$, genera un DCS (duplex consensus sequence), que elimina estos errores de PCR de primera ronda. Las mutaciones verdaderas se puntúan si y sólo si están presentes en la misma posición en ambas cadenas del ADN. "Detecting ultralow-frequency mutations by Duplex Sequencing, Nature, 2014"}
 \end{figure}
 
-Aunque los métodos basados en UMIs son altamente eficaces para detectar variantes de muy baja frecuencia, su uso es limitado debido a su alto costo, ya que requieren múltiples lecturas de la misma secuencia para asegurar precisión.
+Aunque los métodos basados en UMIs son altamente eficaces para detectar variantes de muy baja frecuencia, su uso es limitado debido a su alto costo, ya que requieren múltiples lecturas de la misma secuencia (mucha redundancia) para asegurar precisión (el consenso). Utilizando UMIs en un sólo una hebra, se necesita una redundancia de 1/30, y con duplex sequencing 1/200 para tener una buena representación. A veces, no interesa gastar tanto poder de secuenciación. 
 
 \subsection{Adaptadores para secuenciación de célula única (single cell)}
-En la secuenciación de célula única (Single Cell), se emplean adaptadores y primers que contienen UMIs específicos tanto para cada célula como para cada molécula de ADN. Esto permite diferenciar si las lecturas corresponden a una célula particular y, dentro de esa célula, a una molécula específica. En Single Cell, se utiliza un enfoque de consenso: las lecturas múltiples de la misma molécula permiten generar una secuencia de consenso para mejorar la precisión de los datos.
+En la secuenciación de célula única (Single Cell), se emplean adaptadores y primers que contienen identificadores UMIs específicos tanto para cada célula como para cada molécula de ADN. Esto permite diferenciar si las lecturas corresponden a una célula particular y, dentro de esa célula, a una molécula específica. En Single Cell, se utiliza un enfoque de consenso: las lecturas múltiples de la misma molécula permiten generar una secuencia de consenso para mejorar la precisión de los datos. A la hora de crear una biblioteca, esto es muy importante para aprovechar lo máximo posible el poder de secuenciación (presupuesto).
 
 \begin{figure}[htbp]
 \centering
@@ -571,7 +571,7 @@ En la secuenciación de célula única (Single Cell), se emplean adaptadores y p
 \caption{Descripción esquemática de la generación de GEM (gel beads-in-emulsions) y el código de barras con el flujo de trabajo del chip GEM-X. Los GEM se generan combinando perlas de gel con código de barras, una mezcla maestra que contiene células y aceite de partición en un chip GEM-X 3' o 5'. Para lograr una resolución unicelular, las células se suministran a una dilución límite, de modo que la mayoría ($\approx$90-99\%) de los GEM generados no contienen ninguna célula, mientras que el resto contiene en gran medida una sola célula.}
 \end{figure}
 
-La construcción de librerías en Single Cell se realiza mediante chips que permiten el paso de flujo de células individuales junto con liposomas que contienen la mezcla de PCR. Cada mezcla de PCR tiene adaptadores con un barcode específico de célula, pero diferentes barcodes de molécula. Esto permite identificar y diferenciar las células individuales entre sí.
+La construcción de librerías en Single Cell se realiza mediante chips (que son como cajitas) que permiten el paso de flujo de células individuales junto con una especie de liposomas que contienen la mezcla de PCR. Cada mezcla de PCR tiene adaptadores con un barcode específico de célula, pero diferentes barcodes de molécula. Esto permite identificar y diferenciar las células individuales entre sí.
 
 %Glosario
 \begin{table}[htbp]
@@ -595,11 +595,11 @@ La construcción de librerías en Single Cell se realiza mediante chips que perm
 \end{table}
 
 \section{Formatos de datos}
-El formato de archivo usado por los alineadores es generalmente \textbf{FastQ} para las secuencias, aunque \textbf{Fast5} o \textbf{HDF5} también se emplean en algunos casos, especialmente en secuenciación de célula única (single cell), donde se necesita un mayor nivel de detalle en el almacenamiento de datos.
+El formato de archivo usado por los alineadores es generalmente \textbf{FastQ} para las secuencias, aunque \textbf{Fast5} o \textbf{HDF5} también se emplean en algunos casos, especialmente en secuenciación de célula única (single cell), donde se necesita un mayor nivel de detalle (matrices de datos muy grandes) en el almacenamiento de datos.
 
-Cuando se trabaja con alineadores, el proceso suele generar un perfil con picos que representan las bases detectadas, a cada uno de los cuales se le asigna un nombre de base. El alineador produce un archivo final que contiene tanto la secuencia de bases asignadas como la calidad de lectura de cada base en un formato codificado llamado \textbf{Phred33}, que usa caracteres ASCII para representar los valores de calidad.
+Cuando se trabaja con alineadores, el proceso suele generar un perfil con picos que representan las bases detectadas, a cada uno de los cuales se le asigna el nombre de base. El alineador produce un archivo final dividido en campos que contiene: (i) el nombre de la @secuencia y (ii) la secuencia de bases asignadas, (iii) un + con posibles metadatos y (iv) la calidad de lectura de cada base en un formato codificado llamado \textbf{Phred33}, que usa caracteres ASCII para representar los valores de calidad.
 
-En formatos antiguos, la cabecera de cada secuencia incluía datos detallados, como el nombre del instrumento de secuenciación, el identificador de la flowcell, las coordenadas X e Y del clúster, el número de la muestra y el índice del par de lectura. En el formato actual, esta información en la cabecera ha sido simplificada o se presenta de manera distinta.
+En formatos antiguos, la cabecera de cada secuencia incluía datos detallados, como el nombre del instrumento de secuenciación, el identificador de la flowcell, las coordenadas X e Y del clúster, el número de la muestra y si es single-end(_1) o pair-end(_2). En el formato actual, esta información en la cabecera ha sido simplificada o se presenta de manera distinta, pero además presenta el nombre del UMI.
 
 En cuanto al tipo de secuenciación, se distinguen dos tipos:
 \begin{itemize}
@@ -623,21 +623,26 @@ Durante un experimento de secuenciación, se utiliza un programa llamado \textbf
 
 FastQC proporciona varias métricas clave para evaluar la calidad: 
 \begin{itemize} 
-\item \textbf{Calidad promedio de la secuencia}: muestra la calidad media de las bases en cada posición. 
-\item \textbf{Proporciones de bases por posición}: indica la proporción de bases (A, T, C, G) en cada posición. 
+\item \textbf{Calidad promedio por secuencia}: muestra la calidad media de las bases en cada posición a lo largo de todas las secuencias. 
+\item \textbf{Proporciones de bases por posición}: indica la proporción de bases (A, T, C, G) en cada posición. ?
 \item \textbf{Contenido de bases por posición}: permite identificar cualquier sesgo en el contenido de bases a lo largo de la secuencia. 
 \item \textbf{Contenido GC:} al inicio de la secuenciación, puede haber una variación en el contenido GC debido a la secuencia de los adaptadores, pero si se estabiliza después de las primeras bases, indica una secuenciación correcta y se pueden cortar los primeros nucleótidos. 
 \end{itemize}
 
-\section{Preprocesamiento y genomas de referencia} 
-El preprocesamiento de las lecturas aumenta la calidad de las secuencias, mejora el mapeo, elimina posibles contaminantes y sesgos, y descarta segmentos no informativos.
+\section{Preprocesamiento y genomas de referencia (FASTA)} 
+El preprocesamiento de las lecturas aumenta la calidad de las secuencias, mejora el mapeo en la referencia, elimina posibles contaminantes y sesgos, y descarta segmentos no informativos.
 
-Las secuencias generadas se comparan con \textbf{genomas de referencia}, que generalmente están en formato \textbf{FASTA}. En estos archivos, los nucleótidos están representados según el código IUPAC para permitir una representación estándar de variaciones. Históricamente, los genomas de referencia se creaban con la información genética de un solo individuo. Sin embargo, hoy en día, se basan en el consenso de los genomas de múltiples individuos, lo que permite identificar variantes y posiciones con alta confianza que difieren entre individuos.
+Las secuencias generadas se comparan con \textbf{genomas de referencia}, que generalmente están en formato \textbf{FASTA}. En estos archivos, los nucleótidos están representados según el código IUPAC para permitir una representación estándar de variaciones entre individuos. Históricamente, los genomas de referencia se creaban con la información genética de un solo individuo. Sin embargo, hoy en día, se basan en el consenso de los genomas de múltiples individuos, lo que permite identificar variantes y posiciones con alta confianza que difieren entre individuos; por ello, la necesidad de usar el código IUPAC.
 
 Los genomas de referencia y sus anotaciones se pueden encontrar en sitios como \href{https://hgdownload.soe.ucsc.edu/downloads.html}{UCSC Genome Browser}. Es importante tener en cuenta las diferencias en las anotaciones genómicas entre repositorios europeos y americanos, ya que pueden variar en la numeración y anotación de los cromosomas.
 
+El formato FASTA se compone de dos líneas consecutivas:
+– “>” Nombre de la secuencia y descripción opcional
+– Línea(s) con la secuencia completa
+Aunque puede haber sólo una secuencia por archivo, es común que haya varias secuencias en el mismo archivo (multifasta). Y cuenta con varias extensiones (.fasta, .fas, .fa, .fna, .fsa).
+
 \section{Alineamientos y mapeo}
-El alineamiento es el proceso de comparar secuencias de ADN, ARN o proteínas para identificar regiones de similitud, lo cual puede revelar relaciones funcionales, estructurales o evolutivas entre especies. Los objetivos principales del alineamiento son:
+El alineamiento es el proceso de comparar secuencias de ADN, ARN o proteínas para identificar regiones de similitud, lo cual puede revelar relaciones funcionales, estructurales o evolutivas entre las secuencias. Los objetivos principales del alineamiento son:
 \begin{itemize}
 \item Determinar el grado de homología para inferir relaciones filogenéticas
 \item Identificar dominios funcionales
@@ -650,10 +655,10 @@ El alineamiento es el proceso de comparar secuencias de ADN, ARN o proteínas pa
 Aunque a menudo se usan indistintamente, el alineamiento y el mapeo tienen diferencias importantes:
 \begin{itemize}
 \item \textbf{Alineamiento:} Cada posición de la secuencia de consulta se compara exhaustivamente con una secuencia de referencia para evaluar su precisión en cada sitio.
-\item \textbf{Mapeo:} El objetivo es encontrar los loci más probables en la referencia donde una secuencia podría alinearse, priorizando eficiencia en velocidad y memoria.
+\item \textbf{Mapeo:} El objetivo es encontrar los loci más probables en la referencia donde una secuencia podría alinearse, priorizando eficiencia en velocidad y memoria. Es decir, encontrar la posición en la que se encuentra una secuencia lo más rápido posible.
 \end{itemize}
 
-Existen programas diseñados específicamente para el mapeo, llamados alineadores de corta lectura, que permiten configuraciones de mapeo como mapeo único, mapeo múltiple o mapeo con calidades parciales. Dependiendo del tipo de secuenciación, se emplean diferentes alineadores:
+Existen programas diseñados específicamente para el mapeo, llamados alineadores de lectura corta, que permiten configuraciones de mapeo como mapeo único, mapeo múltiple o mapeo con calidades parciales. Intentan ser rápidos y eficientes con el uso de la memoria. Dependiendo del tipo de secuenciación, se emplean diferentes alineadores:
 \begin{itemize}
 \item \textbf{Para ADN:} Novoalign, Bowtie2, BWA
 \item \textbf{Para ARN:} RSEM, Salmon, Sleuth
@@ -674,11 +679,11 @@ Posteriormente, las lecturas se comparan con el diccionario de k-mers para local
 La \textbf{transformación de Burrows-Wheeler} es un método de compresión que permite realizar búsquedas rápidas de alineamiento en el genoma de referencia, optimizando el rendimiento de los alineadores.
 
 \subsection{Estados de lecturas post-mapeo y mapping quality}
-Una vez mapeadas las lecturas al genoma de referencia, estas pueden clasificarse en distintos estados:
+Una vez mapeadas las lecturas al genoma de referencia, se puecen obtener los distintos estados:
 \begin{itemize}
 \item \textbf{Lecturas no mapeadas:} No encuentran ninguna coincidencia en la referencia.
-\item \textbf{Lecturas con mapeo único:} Mapean en una sola posición. Normalmente se trabaja con estas lecturas.
-\item \textbf{Lecturas con mapeo múltiple (multimappers):} Mapean en varias posiciones. Se distinguen primarios y secundarios en función de la puntuación de mapeo.
+\item \textbf{Lecturas con mapeo único:} Mapean la secuencia en una sola posición de la referencia. Normalmente se trabaja con estas lecturas.
+\item \textbf{Lecturas con mapeo múltiple (multimappers):} Ha mapeado varias posiciones. Se distinguen mapeos primarios y secundarios en función de la puntuación de mapeo. Se puede concatener con técnicas heurísticas.
 \end{itemize}
 
 Existen opciones para reportar todos los alineamientos, solo los mejores, o aquellos que superan un umbral de calidad específico.
@@ -686,13 +691,14 @@ Existen opciones para reportar todos los alineamientos, solo los mejores, o aque
 La calidad de mapeo usa la misma escala Phred33 que las calidades de lectura, y los resultados de alineación se almacenan en formatos SAM, BAM o CRAM:
 \begin{itemize}
 \item \textbf{SAM:} Formato de texto plano que se puede leer por la terminal.
-\item \textbf{BAM:} Versión binaria de SAM.
+\item \textbf{BAM:} Versión binaria de SAM. Normalmente se utiliza el BAM porque está más comprimido y es más portable.
 \item \textbf{CRAM:} Similar a BAM, pero usado principalmente por el ENA-EBI, optimizado para almacenar una cantidad masiva de datos de forma compacta. Almacena las variantes de nucleótidos (mismatch call) de una secuencia con respecto a una secuencia de referencia y su posición (mismatch position) con respecto al inicio de la secuencia que contiene la variante (start offsets).
 \end{itemize}
 
 Los formatos SAM y BAM se pueden convertir entre sí mediante la herramienta \textbf{samtools}, que permite especificar el grado de compresión.
 
-La cabecera del archivo S/BAM comienza con \@ y almacena metadatos como la versión de SAM, la ordenación, los contigs y la información general del mapeo. 
+# No se ve arroba en el pdf :c
+La cabecera del archivo S/BAM comienza con todas las líneas que empiezan por $@$ que almacena metadatos como la versión de SAM, la ordenación, los contigs y la información general del mapeo. A continuación se muestran los datos de la secuencia.
 \begin{figure}
 \centering
 \includegraphics[width = \textwidth]{figs/sam-header.png}
@@ -701,12 +707,12 @@ La cabecera del archivo S/BAM comienza con \@ y almacena metadatos como la versi
 
 Los datos de alineación incluyen: 
 \begin{itemize} 
-\item Nombre de la lectura 
+\item QName - Nombre de la lectura 
 \item Flag: Indica si la lectura está mapeada o no, entre otras propiedades. Sigue la codificación de \href{https://broadinstitute.github.io/picard/explain-flags.html}{picard}.
-\item Cromosoma: Donde se ha mapeado la lectura. 
-\item Posición inicial en el cromosoma 
-\item Calidad de mapeo 
-\item CIGAR string: Codificación de los eventos de alineamiento (match, mismatch, inserciones, deleciones). Por ejemplo, un CIGAR de 3M1D2M1I1M indica que hay 3 match, 1 deleción, 2 match, 1 inserción y 1 match.
+\item RName - Cromosoma donde se ha mapeado la lectura. 
+\item Pos: Posición inicial del mapeado en el cromosoma 
+\item MapQ - Calidad de mapeo 
+\item CIGAR string: \~ resumen del mapeado y alineamiento. Codifica el número de los tipos de eventos en el alineamiento (match, mismatch, inserciones, deleciones). Por ejemplo, un CIGAR de 3M1D2M1I1M indica que hay 3 match, 1 deleción, 2 match, 1 inserción y 1 match.
 \item Información sobre el mapeo del par: En caso de secuenciación paired-end, se incluye la ubicación de la pareja de la lectura. 
 \end{itemize}
 
