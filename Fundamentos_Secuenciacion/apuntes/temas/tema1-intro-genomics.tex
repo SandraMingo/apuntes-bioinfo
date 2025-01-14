@@ -16,7 +16,7 @@ La bioinformática ha crecido a la par de la genómica en múltiples niveles. In
 \begin{figure}[htbp]
 \centering
 \includegraphics[width = 0.5\textwidth]{figs/history-bioinfo.png}
-\caption{Breve historia de la bioinformática en tres niveles: como disciolina, como material que utiliza y como las personas que trabajan en ella. Evolución desde 1980 hasta 2020.}
+\caption{Breve historia de la bioinformática en tres niveles: como disciplina, como material que utiliza y como las personas que trabajan en ella. Evolución desde 1980 hasta 2020.}
 \end{figure}
 
 \section{Avances tecnológicos en secuenciación}
@@ -424,7 +424,7 @@ Answer: High error rate in homopolymers
 
 Answer: 454
 
-\item What is a main disadvantage of secong-generation sequencing systems?
+\item What is a main disadvantage of second-generation sequencing systems?
 \begin{itemize}
 \item Low precision in SNP detection
 \item Short read lengths
@@ -700,7 +700,7 @@ La calidad de mapeo usa la misma escala Phred33 que las calidades de lectura, y 
 Los formatos SAM y BAM se pueden convertir entre sí mediante la herramienta \textbf{samtools}, que permite especificar el grado de compresión.
 
 La cabecera del archivo S/BAM comienza con todas las líneas que empiezan por $@$ que almacena metadatos como la versión de SAM, la ordenación, los contigs y la información general del mapeo. A continuación se muestran los datos de la secuencia.
-\begin{figure}
+\begin{figure}[htbp]
 \centering
 \includegraphics[width = \textwidth]{figs/sam-header.png}
 \caption{Campos que incluye la cabecera de los ficheros SAM y BAM.}
@@ -708,12 +708,12 @@ La cabecera del archivo S/BAM comienza con todas las líneas que empiezan por $@
 
 Los datos de alineación incluyen: 
 \begin{itemize} 
-\item QName - Nombre de la lectura 
+\item QName: Nombre de la lectura 
 \item Flag: Indica si la lectura está mapeada o no, entre otras propiedades. Sigue la codificación de \href{https://broadinstitute.github.io/picard/explain-flags.html}{picard}.
-\item RName - Cromosoma donde se ha mapeado la lectura. 
+\item RName: Cromosoma donde se ha mapeado la lectura. 
 \item Pos: Posición inicial del mapeado en el cromosoma 
-\item MapQ - Calidad de mapeo 
-\item CIGAR string: \~ resumen del mapeado y alineamiento. Codifica el número de los tipos de eventos en el alineamiento (match, mismatch, inserciones, deleciones). Por ejemplo, un CIGAR de 3M1D2M1I1M indica que hay 3 match, 1 deleción, 2 match, 1 inserción y 1 match.
+\item MapQ: Calidad de mapeo 
+\item CIGAR string: resumen del mapeado y alineamiento. Codifica el número de los tipos de eventos en el alineamiento (match, mismatch, inserciones, deleciones). Por ejemplo, un CIGAR de 3M1D2M1I1M indica que hay 3 match, 1 deleción, 2 match, 1 inserción y 1 match.
 \item Información sobre el mapeo del par: En caso de secuenciación paired-end, se incluye la ubicación de la pareja de la lectura. 
 \end{itemize}
 
@@ -1112,7 +1112,7 @@ Las ventajas de WGS es que no hay ADN "basura", y que mucha regulación ocurre e
 WGS tiene tres aplicaciones fundamentales:
 \begin{itemize}
 \item \textbf{Ensamblajes:} El ensamblaje de un genoma es una de las principales ventajas de poder secuenciar un genoma completo. Los ensamblajes basados en NGS implican reconstruir secuencias desde lecturas cortas, lo que es muy exigente computacionalmente. De las lecturas se forman los contigs, los cuales se ensamblan en scaffolds. Finalmente, los scaffolds se pueden ensamblar en pseudocromosomas y cromosomas. La generación de un genoma completo, pese a seguir siendo caro, ha reducido su coste desde el Proyecto Genoma Humano. Es importante poder hacer un ensamblado porque el genoma de referencia no es representativo por la diversidad natural y en algunos casos tiene muchos huecos.
-\item \textbf{Genome-wide Association Studies (GWAS):} El análisis de variaciones a nivel genómico se puede realizar mediante la seuenciación de datos genómicos. No obstante, sigue habiendo problemas en cuanto a la relevancia y la estadística).
+\item \textbf{Genome-wide Association Studies (GWAS):} El análisis de variaciones a nivel genómico se puede realizar mediante la secuenciación de datos genómicos. No obstante, sigue habiendo problemas en cuanto a la relevancia y la estadística.
 \item \textbf{Análisis de variantes estructurales:} La variación estructural, o la reorganización de partes del genoma de varias formas solo es posible capturarla mediante la secuenciación del genoma completo.
 \end{itemize}
 
@@ -1322,7 +1322,7 @@ Como ya se ha mencionado, la variación estructural relacionada con los cambios 
 Existen dos técnicas principales actualmente en uso: la hibridación genómica comparativa (CGH) y la detección de CNV basada en secuenciación (CNV-seq).
 
 \subsection{Hibridación genómica comparativa (CGH)}
-Se cogía una secuencia referencia y una muestra, marcándolas con fluorescentes distintos. Se hibridizaba, y dependiendo del color de la muestra resultante, se podía estimar la abundancia relativa. 
+Se coge una secuencia referencia y una muestra, marcándolas con fluorescentes distintos. Se hibrida, y dependiendo del color de la muestra resultante, se puede estimar la abundancia relativa. 
 
 \begin{figure}[h!]
 \centering
