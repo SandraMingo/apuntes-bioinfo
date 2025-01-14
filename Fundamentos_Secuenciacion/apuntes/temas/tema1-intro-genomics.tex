@@ -16,7 +16,7 @@ La bioinformática ha crecido a la par de la genómica en múltiples niveles. In
 \begin{figure}[htbp]
 \centering
 \includegraphics[width = 0.5\textwidth]{figs/history-bioinfo.png}
-\caption{Breve historia de la bioinformática en tres niveles: como disciplina, como material que utiliza y como las personas que trabajan en ella. Evolución desde 1980 hasta 2020.}
+\caption{Breve historia de la bioinformática en tres niveles: como disciolina, como material que utiliza y como las personas que trabajan en ella. Evolución desde 1980 hasta 2020.}
 \end{figure}
 
 \section{Avances tecnológicos en secuenciación}
@@ -424,7 +424,7 @@ Answer: High error rate in homopolymers
 
 Answer: 454
 
-\item What is a main disadvantage of second-generation sequencing systems?
+\item What is a main disadvantage of secong-generation sequencing systems?
 \begin{itemize}
 \item Low precision in SNP detection
 \item Short read lengths
@@ -694,13 +694,13 @@ La calidad de mapeo usa la misma escala Phred33 que las calidades de lectura, y 
 \begin{itemize}
 \item \textbf{SAM:} Formato de texto plano que se puede leer por la terminal.
 \item \textbf{BAM:} Versión binaria de SAM. Normalmente se utiliza el BAM porque está más comprimido y es más portable.
-\item \textbf{CRAM:} Similar a BAM, pero usado principalmente por el ENA-EBI, optimizado para almacenar una cantidad masiva de datos de forma compacta. Almacena las variantes de nucleótidos (mismatch call) de una secuencia con respecto a una secuencia de referencia y su posición (mismatch position) con respecto al inicio de la secuencia que contiene la variante (start offsets).
+\item \textbf{CRAM:} Similar a BAM, pero usado principalmente por el ENA-EBI. Es una versión del BAM aun más comprimida. Está optimizado para almacenar una cantidad masiva de datos de forma compacta y poder procesarlos en gran cantidad y velocidad. Almacena las variantes de nucleótidos (mismatch call) de una secuencia con respecto a una secuencia de referencia y su posición (mismatch position) con respecto al inicio de la secuencia que contiene la variante (start offsets).
 \end{itemize}
 
 Los formatos SAM y BAM se pueden convertir entre sí mediante la herramienta \textbf{samtools}, que permite especificar el grado de compresión.
 
 La cabecera del archivo S/BAM comienza con todas las líneas que empiezan por $@$ que almacena metadatos como la versión de SAM, la ordenación, los contigs y la información general del mapeo. A continuación se muestran los datos de la secuencia.
-\begin{figure}[htbp]
+\begin{figure}
 \centering
 \includegraphics[width = \textwidth]{figs/sam-header.png}
 \caption{Campos que incluye la cabecera de los ficheros SAM y BAM.}
@@ -708,42 +708,47 @@ La cabecera del archivo S/BAM comienza con todas las líneas que empiezan por $@
 
 Los datos de alineación incluyen: 
 \begin{itemize} 
-\item QName: Nombre de la lectura 
+\item QName - Nombre de la lectura 
 \item Flag: Indica si la lectura está mapeada o no, entre otras propiedades. Sigue la codificación de \href{https://broadinstitute.github.io/picard/explain-flags.html}{picard}.
-\item RName: Cromosoma donde se ha mapeado la lectura. 
+\item RName - Cromosoma donde se ha mapeado la lectura. 
 \item Pos: Posición inicial del mapeado en el cromosoma 
-\item MapQ: Calidad de mapeo 
-\item CIGAR string: resumen del mapeado y alineamiento. Codifica el número de los tipos de eventos en el alineamiento (match, mismatch, inserciones, deleciones). Por ejemplo, un CIGAR de 3M1D2M1I1M indica que hay 3 match, 1 deleción, 2 match, 1 inserción y 1 match.
-\item Información sobre el mapeo del par: En caso de secuenciación paired-end, se incluye la ubicación de la pareja de la lectura. 
+\item MapQ - Calidad de mapeo 
+\item CIGAR string: \~ resumen del mapeado y alineamiento. Codifica el número de los tipos de eventos en el alineamiento (match, mismatch, inserciones, deleciones). Por ejemplo, un CIGAR de 3M1D2M1I1M indica que hay 3 match, 1 deleción, 2 match, 1 inserción y 1 match. Pueden servir para procesar rápidamente las secuencias con grep, sed, awk...
+\item Información sobre el mapeo del par: esta columna se añade cuando se aplican herramientas sobre este .bam como incluso transformaciones. En caso de secuenciación paired-end, se incluye la ubicación de la pareja de la lectura. 
 \end{itemize}
 
 %06/11 - Álvaro Serrano
 \subsection{Otros formatos de ficheros en bioinformática}
 \paragraph{Bed para intervalos}
-Este formato da información de coordenadas. Tiene 3 columnas obligatorias: cromosoma, posición de inicio (0 based) y posición de fin (1 based). Estas posiciones se pueden restar para obtener el tamaño del fragmento. Bed es un formato abierto que puede incluir otras columnas: nombre, score, strand, etc. Estos ficheros son de texto plano, aunque tienen la extensión .bed. 
+Este formato da información de coordenadas. Tiene 3 columnas obligatorias: cromosoma, posición de inicio (0 based) y posición de fin (1 based). Estas posiciones se pueden restar para obtener el tamaño del fragmento. Pensad en un intervalo semiabierto [ ... ): 0 based hace referenca a un extremo cerrado de un intervalo "[" -> incluye la posición 0; y 1 based a uno abierto ")" -> hasta la posición anterior, no incluye la última posición porque es la siguiente. Bed es un formato abierto que puede incluir otras columnas, aunque en general las BD públicas respetan el siguiente convenio: nombre, score, strand, etc. Estos ficheros son de texto plano, aunque tienen la extensión .bed. 
 
 \paragraph{VCF para llamada de variantes}
-Las variantes son posiciones en el genoma que se marcan como mutadas. Tiene una cabecera que empieza con una doble almohadilla. Es un fichero de texto plano, que se puede binarizar en un fichero bcf. Dentro del cuerpo, las columnas son cromosoma, posición de la mutación, ID, nucleótido en la referencia, alternativa (nucleótido observado en la mutación), calidad (profundidad a la que se ha secuenciado, es decir, veces que se ha secuenciado una determinada posición), filtro , información adicional, tipo de formato y muestras. También aporta información sobre la fase, es decir, si una misma lectura detecta varias mutaciones.
+Las variantes son posiciones en el genoma que se marcan como mutadas. Tiene una cabecera que empieza con una doble almohadilla (##). Es un fichero de texto plano, que se puede binarizar en un fichero bcf. Dentro del cuerpo, el nombre de las columnas se marca con una #. Las columnas son: cromosoma, posición de la mutación, ID, nucleótido en la referencia, alternativa (nucleótido observado en la mutación), calidad (profundidad a la que se ha secuenciado, es decir, veces que se ha secuenciado una determinada posición), filtro (-> ¿es realmente una variante o la llamada está sesgada?), información adicional, tipo de formato y muestras. También aporta información sobre si las mutaciones ocurren en fase, es decir, si una misma lectura detecta varias mutaciones.
+# La fase es interesante en secuenciación en un pool de individuos.
 
 \paragraph{GTF y GFF para transcriptomas de referencia} 
-Estos archivos contienen anotaciones de elementos (secuencia codificante, non-coding RNA, etc) referidos al genoma, por lo que es útil para experimentos de transcriptómica. Cada característica está en una fila con nueve columnas separadas por tabuladores: nombre de la secuencia, fuente, característica, posición de inicio y de fin (ambas basadas en 1), score, strand, frame y atributos. 
+Estos archivos contienen anotaciones de elementos (secuencia codificante, non-coding RNA, etc.) referidos al genoma, por lo que es útil para experimentos de transcriptómica. Cada característica está en una fila con nueve columnas separadas por tabuladores: nombre de la secuencia, fuente, característica, posición de inicio y de fin (ambas basadas en 1 -> intervalo abierto), score, strand (+/-), frame (0, 1 o 2) y atributos (notación). 
 
 \paragraph{CSV y TSV para cuentas}
-No hay especificaciones de formato, ni límites en cuanto a la dimensión de la matriz. Son ficheros tabulares estándares. Es importante tener buenas prácticas, es decir, utilizar nombres intuitivos para columnas y filas, y no utilizar espacios, si no puntos o barras bajas. En las filas se guardan las observaciones, y las columnas las características. 
+Son ficheros tabulares estándares. CSV -> separador/espaciador = coma; TSV -> espaciador = tabluación. No hay especificaciones de formato, ni límites en cuanto a la dimensión de la matriz. Es importante tener buenas prácticas, es decir, utilizar nombres intuitivos para columnas y filas, y no utilizar espacios, si no puntos o barras bajas. En las filas se guardan las observaciones, y las columnas las características. 
 
 \chapter{Secuenciación de tercera generación}
-La secuenciación de segunda generación, como los métodos basados en Illumina, permite obtener lecturas pequeñas (de alrededor de 100-300 pb) y de alta precisión, pero presenta limitaciones al enfrentar regiones genómicas complejas, como las altamente repetitivas, debido a la longitud de las lecturas. La secuenciación de tercera generación surge para superar estas limitaciones, proporcionando lecturas más largas (de varias kilobases) que permiten el análisis detallado de variantes estructurales, lo cual es esencial para estudios de genómica estructural y ensamblaje de genomas complejos.
+La secuenciación de segunda generación, como los métodos basados en Illumina, permite obtener lecturas pequeñas (de alrededor de 100-300 pb) y de alta precisión, pero presenta limitaciones al enfrentar regiones genómicas complejas, como las altamente repetitivas, debido a la longitud de las lecturas. Se basa en la fragmentación de una muestra de DNA, la amplificación clonal de un DNA molde y su fijación de ese clúster en una fase sólida y la secuenciación de ese clúster. 
+
+    Paréntesis metido de mala manera: Los SNPs arrays es un metodo previo a la secuenciación que trata de la hibridación in situ, en una placa con sondas capturan secuencias concretas con fluoróforos para ver si están o no y dónde.
+
+La secuenciación de tercera generación surge para superar estas limitaciones, proporcionando lecturas más largas (de varias kilobases) que permiten el análisis detallado de variantes estructurales (como fusión de cromosomas), lo cual es esencial para estudios de genómica estructural y ensamblaje de genomas complejos. Requieren algoritmos de mapeo y alineamiento distintos.
 
 Se distinguen dos enfoques principales en la secuenciación de tercera generación:
 \begin{itemize}
 \item \textbf{Secuenciación de molécula única:} secuencia cada molécula individual sin amplificación clonal, reduciendo así el sesgo introducido por técnicas de PCR. Destacan PacBio y Oxford Nanopore, cada uno con sus características particulares en cuanto a precisión, velocidad y métodos de detección.
-\item \textbf{Aproximaciones sintéticas (basadas en Illumina):} permiten reconstruir secuencias largas a partir de lecturas cortas mediante ensamblaje. Estas no se consideran tercera generación en sentido estricto, pero comparten ciertos objetivos en cuanto a mejorar la resolución de lecturas largas (se habla de pseudotercera generación).
+\item \textbf{Aproximaciones sintéticas (basadas en Illumina):} permiten reconstruir secuencias largas a partir de lecturas cortas de Illumina mediante ensamblaje.  Es parecido a lo que se hizo en el PGH. Estas no se consideran tercera generación en sentido estricto, pero comparten ciertos objetivos en cuanto a mejorar la resolución de lecturas largas (se habla de pseudotercera generación).
 \end{itemize}
 
 \section{Secuenciación de molécula única a tiempo real - PacBio}
 La tecnología de PacBio (Pacific Biosciences) emplea una única molécula de ADN de longitud variable, generalmente en el rango de varias kilobases. Se preparan fragmentos circulares de ADN al añadir estructuras químicas en forma de horquilla en los extremos, lo que permite la circularización de la molécula y una lectura continua de la secuencia.
 
-El secuenciador PacBio utiliza una flowcell con pocillos que contienen cámaras donde se detectan señales de fluorescencia para identificar los nucleótidos incorporados en tiempo real. Este proceso funciona gracias a una polimerasa anclada en cada pocillo que, al añadir nucleótidos marcados con fluorescencia, permite que la cámara capture el cambio y lea la secuencia. La velocidad de secuenciación es de aproximadamente 3 bases por segundo.
+El secuenciador \href{https://www.youtube.com/watch?v=_lD8JyAbwEo}{PacBio} utiliza una flowcell con pocillos que contienen cámaras donde se detectan señales de fluorescencia para identificar los nucleótidos incorporados en tiempo real. Este proceso funciona gracias a una polimerasa anclada en cada pocillo que, al añadir nucleótidos marcados con fluorescencia, permite que la cámara (el obturador) capture el cambio y lea la secuencia. La velocidad de secuenciación es de aproximadamente 3 bases por segundo.
 
 Cada pocillo secuencia una molécula única no amplificada que proviene directamente del organismo a estudiar. Al estar la molécula circularizada, la secuenciación puede realizarse de manera continua: la polimerasa desnaturaliza la cadena, incorpora nucleótidos y la cadena sintetizada se deshibrida, permitiendo múltiples pasadas sobre la misma región.
 
@@ -759,11 +764,10 @@ PacBio permite dos enfoques distintos:
 \item \textbf{Circular Consensus Sequencing (CCS):} se secuencian fragmentos más cortos repetidamente, lo que permite asegurar la precisión en cada posición al promediar múltiples lecturas del mismo fragmento.
 \end{itemize}
 
-Este método es especialmente útil en el ensamblaje de genomas debido a la longitud de las lecturas. La calidad en el modo CCS puede alcanzar valores elevados (Q50), aunque en regiones de homopolímeros extensos puede haber dificultades en la discriminación precisa de nucleótidos individuales, generando posibles discrepancias con la secuencia real si solo se realiza una pasada.
-%PacBio Sequencing - How it works YouTube
+Este método es especialmente útil en el ensamblaje de genomas debido a la longitud de las lecturas. La calidad en el modo CCS puede alcanzar valores elevados (Q50), aunque en regiones de homopolímeros extensos puede haber dificultades en la discriminación precisa de nucleótidos individuales, generando posibles discrepancias con la secuencia real si solo se realiza una pasada. 
 
 \section{Secuenciación por Nanoporos - Oxford Nanopore Technology (ONT)}
-La tecnología de secuenciación por nanoporos, desarrollada por Oxford Nanopore, utiliza proteínas alfa-hemolisinas que forman poros a través de los cuales pasa una cadena de ADN, generando una señal eléctrica que permite identificar los nucleótidos en tiempo real. Esta señal, medida como una interferencia de corriente (diferencia de potencial), permite la identificación directa de bases sin la necesidad de etiquetas de fluorescencia, lo cual distingue a ONT de otros métodos de secuenciación.
+La tecnología de secuenciación por nanoporos, desarrollada por Oxford Nanopore, utiliza proteínas alfa-hemolisinas que forman poros a través de los cuales pasa una cadena de ADN, generando una señal eléctrica que permite identificar los nucleótidos en tiempo real. Esta señal, medida como una interferencia de corriente (diferencia de potencial), permite la identificación \textbf{directa} de bases sin la necesidad de etiquetas de fluorescencia, lo cual distingue a ONT de otros métodos de secuenciación.
 
 En el caso de ADN de doble cadena, el sistema emplea una proteína motora que desnaturaliza el ADN, permitiendo que solo una cadena pase a través del poro. A medida que cada nucleótido atraviesa el poro, la interferencia generada, conocida como \textbf{"squiggle" o garabato}, se mide y se asocia con una secuencia de bases. Para traducir esta señal en una secuencia, se comparan patrones de squiggles generados experimentalmente con secuencias sintéticas (o "similares"), lo que permite identificar los nucleótidos en cada posición.
 
@@ -773,7 +777,7 @@ En el caso de ADN de doble cadena, el sistema emplea una proteína motora que de
 \caption{Una celda de flujo MinION contiene 512 canales con 4 nanoporos en cada canal, para un total de 2.048 nanoporos utilizados para secuenciar ADN o ARN. Los pocillos se insertan en una membrana de polímero resistente a la electricidad soportada por una matriz de microesqueletos conectados a un chip sensor. Cada canal se asocia a un electrodo independiente en el chip sensor y es controlado y medido individualmente por el circuito de integración de aplicaciones específicas (ASIC). La corriente iónica pasa a través del nanoporo porque se aplica un voltaje constante a través de la membrana, donde el lado trans está cargado positivamente. Bajo el control de una proteína motora, primero se desenrolla una molécula de ADN de doble cadena (o un dúplex híbrido de ARN-ADN) y, a continuación, el ADN o ARN monocatenario con carga negativa se desplaza a través del nanoporo, impulsado por el voltaje. A medida que los nucleótidos atraviesan el nanoporo, se mide un cambio de corriente característico que se utiliza para determinar el tipo de nucleótido correspondiente a unas 450 bases por s. "Nanopore sequencing technology, bioinformatics and applications, Nature, 2021"}
 \end{figure}
 
-El sistema ONT incluye una región denominada \textbf{k-mero} en el poro, que es el área de mayor estrechamiento y donde la señal de corriente es más intensa. Esto permite capturar mayor información y mejorar la precisión de la secuenciación, aunque este proceso es complejo y requiere el uso de algoritmos avanzados, como redes neuronales, para categorizar las señales y asignar los nucleótidos correspondientes.
+El sistema ONT incluye una región denominada \textbf{k-mero} en el poro, que es el área de mayor estrechamiento y donde se interrumpe la corriente. Cuanto mayor sea el k-mero, se puede capturar mayor información y mejorar la precisión de la secuenciación. Aunque este proceso es complejo y requiere el uso de algoritmos avanzados, como redes neuronales, para categorizar las señales y asignar los nucleótidos correspondientes.
 
 La tecnología de ONT es altamente precisa y tiene la capacidad de secuenciar hasta 500 megabases, con un tamaño promedio de lectura de entre 4-6 kilobases. Sin embargo, la calidad de las lecturas puede ser inferior a otros métodos de secuenciación, con una precisión de aproximadamente 92-93\%, debido en parte a las limitaciones en la resolución de homopolímeros y otras regiones repetitivas.
 
@@ -1112,7 +1116,7 @@ Las ventajas de WGS es que no hay ADN "basura", y que mucha regulación ocurre e
 WGS tiene tres aplicaciones fundamentales:
 \begin{itemize}
 \item \textbf{Ensamblajes:} El ensamblaje de un genoma es una de las principales ventajas de poder secuenciar un genoma completo. Los ensamblajes basados en NGS implican reconstruir secuencias desde lecturas cortas, lo que es muy exigente computacionalmente. De las lecturas se forman los contigs, los cuales se ensamblan en scaffolds. Finalmente, los scaffolds se pueden ensamblar en pseudocromosomas y cromosomas. La generación de un genoma completo, pese a seguir siendo caro, ha reducido su coste desde el Proyecto Genoma Humano. Es importante poder hacer un ensamblado porque el genoma de referencia no es representativo por la diversidad natural y en algunos casos tiene muchos huecos.
-\item \textbf{Genome-wide Association Studies (GWAS):} El análisis de variaciones a nivel genómico se puede realizar mediante la secuenciación de datos genómicos. No obstante, sigue habiendo problemas en cuanto a la relevancia y la estadística.
+\item \textbf{Genome-wide Association Studies (GWAS):} El análisis de variaciones a nivel genómico se puede realizar mediante la seuenciación de datos genómicos. No obstante, sigue habiendo problemas en cuanto a la relevancia y la estadística).
 \item \textbf{Análisis de variantes estructurales:} La variación estructural, o la reorganización de partes del genoma de varias formas solo es posible capturarla mediante la secuenciación del genoma completo.
 \end{itemize}
 
@@ -1322,7 +1326,7 @@ Como ya se ha mencionado, la variación estructural relacionada con los cambios 
 Existen dos técnicas principales actualmente en uso: la hibridación genómica comparativa (CGH) y la detección de CNV basada en secuenciación (CNV-seq).
 
 \subsection{Hibridación genómica comparativa (CGH)}
-Se coge una secuencia referencia y una muestra, marcándolas con fluorescentes distintos. Se hibrida, y dependiendo del color de la muestra resultante, se puede estimar la abundancia relativa. 
+Se cogía una secuencia referencia y una muestra, marcándolas con fluorescentes distintos. Se hibridizaba, y dependiendo del color de la muestra resultante, se podía estimar la abundancia relativa. 
 
 \begin{figure}[h!]
 \centering
