@@ -105,8 +105,8 @@ Una vez calculado el HWE y con el test se ve cómo difieren los resultados, se v
 
 \subsubsection{Heterocigosidad}
 La heterocigosidad indica la proporción de loci heterocigotos en un individuo, es decir, se refiere a la presencia de los dos alelos en un SNP de un individuo. Se recomienda eliminar todos los individuos que se desvíen $\pm 3 SD$ de la media:
-$$HeterozygosityRate_ind = \frac{NonMissingCounts - HomozygousGenotypeCount}{NonMissingCounts}$$
-Un alto nivel de heterozigosidad se puede deber a una calidad baja de las muestras o contaminación, y unos niveles bajos a inbreeding o una relación entre las muestras.
+$$HeterozygosityRate_{ind} = \frac{NonMissingCounts - HomozygousGenotypeCount}{NonMissingCounts}$$
+Un alto nivel de heterocigosidad se puede deber a una calidad baja de las muestras o contaminación, y unos niveles bajos a inbreeding o una relación entre las muestras.
 
 \subsubsection{Relatedness}
 Relatedness es el último paso del control de calidad. En los GWAS más comunes, se asume que no hay asociación entre los participantes del estudio. El grado de relatedness se puede definir como número de alelos compartidos entre los individuos dos a dos. Se mide mediante identity by descent (IBD), que es la proporción de los genomas de dos individuos compartiendo alelos heredados de un ancestro común. 
@@ -355,7 +355,7 @@ Se trata de un estudio de asociación genética con individuos no emparentados. 
 
 Los estudios de casos y controles se pueden clasificar en estudios retrospectivos y prospectivos. En los \textbf{estudios retrospectivos}, los sujetos se seleccionan en función de su estado de enfermedad. Se suele utilizar con enfermedades raras, ya que no es viable escoger participantes y esperar a que generen la enfermedad. Se obtienen los datos genéticos y ambientales.
 
-En los \textbf{estudios prospectivos}, se establece una cohorte y se realiza un genotipado base de todos los sujetos. Se realiza un seguimiento de los individuos y se observa si hay un desarrollo de la enfermedad. Aquellos que la desarrollen pasan a ser controles, y aquellos que no serán los controles. 
+En los \textbf{estudios prospectivos}, se establece una cohorte y se realiza un genotipado base de todos los sujetos. Se realiza un seguimiento de los individuos y se observa si hay un desarrollo de la enfermedad. Aquellos que la desarrollen pasan a ser casos, y aquellos que no serán los controles. 
 
 Las ventajas es que estos estudios son muy rentable para asociaciones a gran escala, pero tiene la desventaja de obtener subgrupos poblacionales, generando asociaciones falsas debido a las subpoblaciones.
 
