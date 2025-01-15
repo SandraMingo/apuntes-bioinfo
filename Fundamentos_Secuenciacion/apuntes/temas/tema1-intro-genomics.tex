@@ -16,7 +16,7 @@ La bioinformática ha crecido a la par de la genómica en múltiples niveles. In
 \begin{figure}[htbp]
 \centering
 \includegraphics[width = 0.5\textwidth]{figs/history-bioinfo.png}
-\caption{Breve historia de la bioinformática en tres niveles: como disciolina, como material que utiliza y como las personas que trabajan en ella. Evolución desde 1980 hasta 2020.}
+\caption{Breve historia de la bioinformática en tres niveles: como disciplina, como material que utiliza y como las personas que trabajan en ella. Evolución desde 1980 hasta 2020.}
 \end{figure}
 
 \section{Avances tecnológicos en secuenciación}
@@ -424,7 +424,7 @@ Answer: High error rate in homopolymers
 
 Answer: 454
 
-\item What is a main disadvantage of secong-generation sequencing systems?
+\item What is a main disadvantage of second-generation sequencing systems?
 \begin{itemize}
 \item Low precision in SNP detection
 \item Short read lengths
@@ -700,7 +700,7 @@ La calidad de mapeo usa la misma escala Phred33 que las calidades de lectura, y 
 Los formatos SAM y BAM se pueden convertir entre sí mediante la herramienta \textbf{samtools}, que permite especificar el grado de compresión.
 
 La cabecera del archivo S/BAM comienza con todas las líneas que empiezan por $@$ que almacena metadatos como la versión de SAM, la ordenación, los contigs y la información general del mapeo. A continuación se muestran los datos de la secuencia.
-\begin{figure}
+\begin{figure}[htbp]
 \centering
 \includegraphics[width = \textwidth]{figs/sam-header.png}
 \caption{Campos que incluye la cabecera de los ficheros SAM y BAM.}
@@ -708,34 +708,32 @@ La cabecera del archivo S/BAM comienza con todas las líneas que empiezan por $@
 
 Los datos de alineación incluyen: 
 \begin{itemize} 
-\item QName - Nombre de la lectura 
+\item QName: Nombre de la lectura 
 \item Flag: Indica si la lectura está mapeada o no, entre otras propiedades. Sigue la codificación de \href{https://broadinstitute.github.io/picard/explain-flags.html}{picard}.
-\item RName - Cromosoma donde se ha mapeado la lectura. 
+\item RName: Cromosoma donde se ha mapeado la lectura. 
 \item Pos: Posición inicial del mapeado en el cromosoma 
-\item MapQ - Calidad de mapeo 
-\item CIGAR string: \~ resumen del mapeado y alineamiento. Codifica el número de los tipos de eventos en el alineamiento (match, mismatch, inserciones, deleciones). Por ejemplo, un CIGAR de 3M1D2M1I1M indica que hay 3 match, 1 deleción, 2 match, 1 inserción y 1 match. Pueden servir para procesar rápidamente las secuencias con grep, sed, awk...
+\item MapQ: Calidad de mapeo 
+\item CIGAR string: resumen del mapeado y alineamiento. Codifica el número de los tipos de eventos en el alineamiento (match, mismatch, inserciones, deleciones). Por ejemplo, un CIGAR de 3M1D2M1I1M indica que hay 3 match, 1 deleción, 2 match, 1 inserción y 1 match. Pueden servir para procesar rápidamente las secuencias con grep, sed, awk...
 \item Información sobre el mapeo del par: esta columna se añade cuando se aplican herramientas sobre este .bam como incluso transformaciones. En caso de secuenciación paired-end, se incluye la ubicación de la pareja de la lectura. 
 \end{itemize}
 
 %06/11 - Álvaro Serrano
 \subsection{Otros formatos de ficheros en bioinformática}
 \paragraph{Bed para intervalos}
-Este formato da información de coordenadas. Tiene 3 columnas obligatorias: cromosoma, posición de inicio (0 based) y posición de fin (1 based). Estas posiciones se pueden restar para obtener el tamaño del fragmento. Pensad en un intervalo semiabierto [ ... ): 0 based hace referenca a un extremo cerrado de un intervalo "[" -> incluye la posición 0; y 1 based a uno abierto ")" -> hasta la posición anterior, no incluye la última posición porque es la siguiente. Bed es un formato abierto que puede incluir otras columnas, aunque en general las BD públicas respetan el siguiente convenio: nombre, score, strand, etc. Estos ficheros son de texto plano, aunque tienen la extensión .bed. 
+Este formato da información de coordenadas. Tiene 3 columnas obligatorias: cromosoma, posición de inicio (0 based) y posición de fin (1 based). Estas posiciones se pueden restar para obtener el tamaño del fragmento. En un intervalo semiabierto [ ... ), 0 based hace referencia a un extremo cerrado de un intervalo "[" incluyendo la posición 0; y 1 based a uno abierto ")" hasta la posición anterior, no incluye la última posición porque es la siguiente. Bed es un formato abierto que puede incluir otras columnas, aunque en general las bases de datos públicas respetan el siguiente convenio: nombre, score, strand, etc. Estos ficheros son de texto plano, aunque tienen la extensión .bed. 
 
 \paragraph{VCF para llamada de variantes}
-Las variantes son posiciones en el genoma que se marcan como mutadas. Tiene una cabecera que empieza con una doble almohadilla (##). Es un fichero de texto plano, que se puede binarizar en un fichero bcf. Dentro del cuerpo, el nombre de las columnas se marca con una #. Las columnas son: cromosoma, posición de la mutación, ID, nucleótido en la referencia, alternativa (nucleótido observado en la mutación), calidad (profundidad a la que se ha secuenciado, es decir, veces que se ha secuenciado una determinada posición), filtro (-> ¿es realmente una variante o la llamada está sesgada?), información adicional, tipo de formato y muestras. También aporta información sobre si las mutaciones ocurren en fase, es decir, si una misma lectura detecta varias mutaciones.
-# La fase es interesante en secuenciación en un pool de individuos.
+Las variantes son posiciones en el genoma que se marcan como mutadas. Tiene una cabecera que empieza con una doble almohadilla (\#\#). Es un fichero de texto plano, que se puede binarizar en un fichero bcf. Dentro del cuerpo, el nombre de las columnas se marca con una \#. Las columnas son: cromosoma, posición de la mutación, ID, nucleótido en la referencia, alternativa (nucleótido observado en la mutación), calidad (profundidad a la que se ha secuenciado, es decir, veces que se ha secuenciado una determinada posición), filtro (respondiendo a si es realmente una variante o la llamada está sesgada), información adicional, tipo de formato y muestras. También aporta información sobre si las mutaciones ocurren en fase, es decir, si una misma lectura detecta varias mutaciones. La fase es interesante en secuenciación en un pool de individuos.
 
 \paragraph{GTF y GFF para transcriptomas de referencia} 
-Estos archivos contienen anotaciones de elementos (secuencia codificante, non-coding RNA, etc.) referidos al genoma, por lo que es útil para experimentos de transcriptómica. Cada característica está en una fila con nueve columnas separadas por tabuladores: nombre de la secuencia, fuente, característica, posición de inicio y de fin (ambas basadas en 1 -> intervalo abierto), score, strand (+/-), frame (0, 1 o 2) y atributos (notación). 
+Estos archivos contienen anotaciones de elementos (secuencia codificante, non-coding RNA, etc.) referidos al genoma, por lo que es útil para experimentos de transcriptómica. Cada característica está en una fila con nueve columnas separadas por tabuladores: nombre de la secuencia, fuente, característica, posición de inicio y de fin (ambas basadas en 1, intervalo abierto), score, strand (+/-), frame (0, 1 o 2) y atributos (notación). 
 
 \paragraph{CSV y TSV para cuentas}
-Son ficheros tabulares estándares. CSV -> separador/espaciador = coma; TSV -> espaciador = tabluación. No hay especificaciones de formato, ni límites en cuanto a la dimensión de la matriz. Es importante tener buenas prácticas, es decir, utilizar nombres intuitivos para columnas y filas, y no utilizar espacios, si no puntos o barras bajas. En las filas se guardan las observaciones, y las columnas las características. 
+Son ficheros tabulares estándares. CSV viene de comma-separated values, indicando que el separador entre las distintas entradas es la coma. Para TSV, se trata del tabulador (tab-separated values). No hay especificaciones de formato, ni límites en cuanto a la dimensión de la matriz. Es importante tener buenas prácticas, es decir, utilizar nombres intuitivos para columnas y filas, y no utilizar espacios, si no puntos o barras bajas. En las filas se guardan las observaciones, y las columnas las características. 
 
 \chapter{Secuenciación de tercera generación}
 La secuenciación de segunda generación, como los métodos basados en Illumina, permite obtener lecturas pequeñas (de alrededor de 100-300 pb) y de alta precisión, pero presenta limitaciones al enfrentar regiones genómicas complejas, como las altamente repetitivas, debido a la longitud de las lecturas. Se basa en la fragmentación de una muestra de DNA, la amplificación clonal de un DNA molde y su fijación de ese clúster en una fase sólida y la secuenciación de ese clúster. 
-
-    Paréntesis metido de mala manera: Los SNPs arrays es un metodo previo a la secuenciación que trata de la hibridación in situ, en una placa con sondas capturan secuencias concretas con fluoróforos para ver si están o no y dónde.
+Los SNPs arrays es un metodo previo a la secuenciación que trata de la hibridación in situ, en una placa con sondas capturan secuencias concretas con fluoróforos para ver si están o no y dónde.
 
 La secuenciación de tercera generación surge para superar estas limitaciones, proporcionando lecturas más largas (de varias kilobases) que permiten el análisis detallado de variantes estructurales (como fusión de cromosomas), lo cual es esencial para estudios de genómica estructural y ensamblaje de genomas complejos. Requieren algoritmos de mapeo y alineamiento distintos.
 
@@ -1116,7 +1114,7 @@ Las ventajas de WGS es que no hay ADN "basura", y que mucha regulación ocurre e
 WGS tiene tres aplicaciones fundamentales:
 \begin{itemize}
 \item \textbf{Ensamblajes:} El ensamblaje de un genoma es una de las principales ventajas de poder secuenciar un genoma completo. Los ensamblajes basados en NGS implican reconstruir secuencias desde lecturas cortas, lo que es muy exigente computacionalmente. De las lecturas se forman los contigs, los cuales se ensamblan en scaffolds. Finalmente, los scaffolds se pueden ensamblar en pseudocromosomas y cromosomas. La generación de un genoma completo, pese a seguir siendo caro, ha reducido su coste desde el Proyecto Genoma Humano. Es importante poder hacer un ensamblado porque el genoma de referencia no es representativo por la diversidad natural y en algunos casos tiene muchos huecos.
-\item \textbf{Genome-wide Association Studies (GWAS):} El análisis de variaciones a nivel genómico se puede realizar mediante la seuenciación de datos genómicos. No obstante, sigue habiendo problemas en cuanto a la relevancia y la estadística).
+\item \textbf{Genome-wide Association Studies (GWAS):} El análisis de variaciones a nivel genómico se puede realizar mediante la secuenciación de datos genómicos. No obstante, sigue habiendo problemas en cuanto a la relevancia y la estadística.
 \item \textbf{Análisis de variantes estructurales:} La variación estructural, o la reorganización de partes del genoma de varias formas solo es posible capturarla mediante la secuenciación del genoma completo.
 \end{itemize}
 
@@ -1326,7 +1324,7 @@ Como ya se ha mencionado, la variación estructural relacionada con los cambios 
 Existen dos técnicas principales actualmente en uso: la hibridación genómica comparativa (CGH) y la detección de CNV basada en secuenciación (CNV-seq).
 
 \subsection{Hibridación genómica comparativa (CGH)}
-Se cogía una secuencia referencia y una muestra, marcándolas con fluorescentes distintos. Se hibridizaba, y dependiendo del color de la muestra resultante, se podía estimar la abundancia relativa. 
+Se coge una secuencia referencia y una muestra, marcándolas con fluorescentes distintos. Se hibrida, y dependiendo del color de la muestra resultante, se puede estimar la abundancia relativa. 
 
 \begin{figure}[h!]
 \centering
