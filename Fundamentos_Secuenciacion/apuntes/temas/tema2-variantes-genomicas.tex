@@ -145,7 +145,7 @@ Con esto hemos creado los bams que utilizamos en la parte anterior de las varian
 \section{Recalibración de la calidad de base}
 Cada posición de la secuencia tiene su calidad de base. Las diferentes tecnologías NGS tienen sus sesgos dependiendo del contexto, por lo que es importante hacer la recalibración para corregir empíricamente esos sesgos. La recalibración de bases no es lo mismo que la recalibración de variantes (eso viene después con los VCF).
 
-La recalibración de bases consta de dos pasos. Primero, BaseRecalibrator parsea las lecturas y crea una tabla en la que se asigna a cada lectura el ciclo durante el que se leyó la base, su puntuación y la puntuación de las bases que van antes y después. EL modelo computa cuántas veces hay un cambio en la referencia según dbSNP, excluyendo los loci de alta variabilidad. Después, la herramienta ApplyBQSR parsea las lecturas y, utilizando la matriz de antes, recalibra las puntuaciones. Así, las calidades son más similares a las puntuaciones empíricas, pudiendo utilizarse para el variant calling.
+La recalibración de bases consta de dos pasos. Primero, BaseRecalibrator parsea las lecturas y crea una tabla en la que se asigna a cada lectura el ciclo durante el que se leyó la base, su puntuación y la puntuación de las bases que van antes y después. El modelo computa cuántas veces hay un cambio en la referencia según dbSNP, excluyendo los loci de alta variabilidad. Después, la herramienta ApplyBQSR parsea las lecturas y, utilizando la matriz de antes, recalibra las puntuaciones. Así, las calidades son más similares a las puntuaciones empíricas, pudiendo utilizarse para el variant calling.
 
 \section{Llamada de variantes somáticas}
 Las variantes son cambios permanentes en el ADN de un organismo que pueden deberse a errores durante la replicación, durante la recombinación durante la formación de gametos y por factores externos como radiación, viruses, transposones, rayos ultravioleta, etc. El genoma entre humanos es idéntico en un 99,9\%. El 0,1\% restante es la fuente de variabilidad, permitiendo los mecanismos de evolución, las diferencias fenotípicas entre individuos y en la respuesta a enfermedades y fármacos. 
@@ -370,12 +370,18 @@ Hay muchas herramientas para calcular el TMB, como puede ser \href{https://githu
 
 A continuación se muestra un gráfico o plot de una cohorte de muestras tumorales divididas por el tumor primario. Se representa la carga mutacional. Testículo tiene una carga mutacional muy baja (1 mutación por megabase), pero el útero tiene mucha. Esto puede servir para poder identificar el tumor primario hipermutado. Es un buen primer enfoque para caracterizar la cohorte.
 
-%FIXME añadir plot
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = \textwidth]{figs/tmb.png}
+\end{figure}
 
 \section{Oncoplot}
 Un oncoplot es una representación visual utilizada habitualmente en genómica del cáncer para resumir y mostrar el panorama mutacional de una cohorte de muestras tumorales. Suele mostrar mutaciones, CNV y otras alteraciones en genes clave relacionados con el cáncer de varios pacientes, utilizando un formato similar a un mapa de calor. Cada fila representa un gen, cada columna representa una muestra y los colores o símbolos indican tipos específicos de alteraciones.
 
-%FIXME añadir plot
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = \textwidth]{figs/oncoplot.png}
+\end{figure}
 
 Estos oncoplots se generan y trabajan con la herramienta \href{https://bioconductor.org/packages/devel/bioc/vignettes/maftools/inst/doc/maftools.html}{Maftools}. 
 
@@ -386,13 +392,20 @@ Las firmas mutacionales son \textbf{patrones únicos de mutaciones} en el ADN qu
 
 \href{https://cancer.sanger.ac.uk/signatures/}{COSMIC} ha generado las firmas mutacionales utilizando análisis de gran escala. Las colecciones de formas están clasificadas en función de las mutaciones que se estén analizando (mutaciones puntuales, dobletes, indels, etc). La mayoría de etiologías son desconocidas, pero sí se caracteriza una huella. La herramienta oficial es \href{https://github.com/AlexandrovLab/SigProfilerExtractor}{SigProfilerExtractor} para generar el análisis.
 
-%FIXME añadir plot
+\begin{figure}[htbp]
+\centering
+\includegraphics[width =0.6\textwidth]{figs/mutational-signatures.png}
+\end{figure}
 
 Un patrón se puede descomponer en distintas firmas. Se puede inferir el mecanismo de acción que causó el tumor mediante el ProfilerExtractor y \href{https://github.com/AlexandrovLab/SigProfilerMatrixGenerator}{ProfilerMatrixGenerator}. 
 
 Una vez calculadas las firmas de cada una de las muestras (aunque se computen en conjunto), se realiza la descomposición para que la composición de firmas de cada una de las muestras. Así, se puede ver si un mutor tiene la huella de haber sido tratado con quimioterapia con platino, si está asociado al tabaco, etc. 
 
-%FIXME añadir plot de heatmap
+\begin{figure}[htbp]
+\centering
+\includegraphics[width = 0.5\textwidth]{figs/heatmap.png}
+\end{figure}
+
 
 \section{Otros aspectos relevantes}
 La \textbf{inestabilidad cromosómica (CIN)} se refiere al aumento de la tasa de cambios cromosómicos, incluyendo ganancias, pérdidas y reordenamientos de cromosomas dentro de una célula. La CIN contribuye a la heterogeneidad tumoral, la progresión y la resistencia a las terapias al crear diversidad genética y promover la adaptación al estrés o a los tratamientos.
@@ -426,7 +439,7 @@ Algunos programas para la llamada de variantes en el número de copias en \textb
 \item \href{https://genomebiology.biomedcentral.com/articles/10.1186/gb-2014-15-6-r84}{Lumpy}: Un llamador de variantes estructurales que combina lecturas divididas, lecturas discordantes y profundidad de cobertura. Eficaz para datos WGS, capaz de detectar CNV de varios tamaños y tipos.
 \end{itemize}
 
-Para \textbf{WGS}, se utilizan:
+Para \textbf{WES}, se utilizan:
 \begin{itemize}
 \item \href{https://cnvkit.readthedocs.io/en/stable/}{CNVkit}: Diseñado específicamente para datos WES, pero también compatible con paneles específicos. Normaliza la profundidad de lectura a la vez que tiene en cuenta las características únicas de los diseños de captura de exomas. Alta precisión para CNV pequeñas y medianas en regiones codificantes.
 \item \href{https://github.com/vplagnol/ExomeDepth}{ExomeDepth}: Paquete R adaptado para WES, que compara la profundidad de lectura entre muestras con un panel de controles. Muy adecuado para aplicaciones clínicas, ya que ofrece una alta sensibilidad y especificidad en las regiones capturadas.
