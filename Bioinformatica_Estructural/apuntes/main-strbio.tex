@@ -1,0 +1,73 @@
+\documentclass{config/apuntes}
+
+\title{Bioinformática Estructural}
+\author{Sandra Mingo Ramírez}
+\date{2024/25}
+\acronym{STRBIO}
+
+\usepackage[all]{nowidow}
+\usepackage{listing}
+\usepackage{color}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{soul}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{
+  frame=tb,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\usepackage{tocloft}
+
+\advance\cftchapnumwidth 0.9em\relax
+\advance\cftsecnumwidth 0.6em\relax
+\advance\cftsubsecindent 0.5em\relax
+\advance\cftsubsecnumwidth 0.5em\relax
+\begin{document}
+
+\begin{abstract}
+La biología estructural permite el estudio de las estructuras de macromoléculas, el origen de esta estructura y su relación con la función biológica. La función específica está íntimamente ligada a la conformación tridimensional; la configuración estructural de las biomoléculas depende a su vez de su composición básica. Por ello, se busca obtener y comprender diferentes resultados de modelado de estructuras proteicas para resolver problemas biológicos. También es importante comprender las bases teóricas, tanto conceptuales como algorítmicas, de la predicción y análisis de estructura de macromoléculas, e interpretar los resultados de estos programas.
+\end{abstract}
+
+\pagestyle{plain}
+
+\maketitle
+
+\tableofcontents
+
+%Tema 1: Aplicaciones y métodos de bioinformática estructural en biología y biomedicina
+%Tema 2: Aplicaciones para visualización de estructuras 3D de moléculas biológicas
+%Tema 3: Métodos alternativos para la predicción de estructuras secundarias y terciarias de proteínas
+%Tema 4: Acoplamiento (docking) computacional de proteínas y fármacos
+%Examen 40% 
+%Prácticas 60%
+	%5% play with secondary structures and protein DDBB
+	%15% working with structures
+	%30% casp-like exercise
+	%5% randomized peer-assessment -> opcional, es un 5% adicional en la asignatura
+	%10% docking
+	%Electronic Lab Notebook: esto es el objetivo, esto es lo que hemos hecho, esto es lo que hemos conseguido
+
+\input{temas/tema1-structural.tex}
+
+
+\end{document}
