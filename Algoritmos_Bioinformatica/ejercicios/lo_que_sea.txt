@@ -1,0 +1,7 @@
+We can read the file as a string with the method `.read` for files in section 6 of the pdf
+    in https://github.com/joseDorronsoro/Notes-on-Python/blob/master/slides_python_short_2020.pdf
+    
+    We can also use a counter and increase it each time we use the method '.readline'. 
+    
+    The number of chars will be the length of the string and since each line ends with '\n,'
+    we can count these carriage returns to get the number of lines.
