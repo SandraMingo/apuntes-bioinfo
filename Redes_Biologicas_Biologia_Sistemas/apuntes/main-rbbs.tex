@@ -1,0 +1,69 @@
+\documentclass{config/apuntes}
+
+\title{Redes Biológicas y Biología de Sistemas}
+\author{Sandra Mingo Ramírez}
+\date{2024/25}
+\acronym{RBBS}
+
+\usepackage[all]{nowidow}
+\usepackage{listing}
+\usepackage{color}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{soul}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{
+  frame=tb,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\usepackage{tocloft}
+
+\advance\cftchapnumwidth 0.9em\relax
+\advance\cftsecnumwidth 0.6em\relax
+\advance\cftsubsecindent 0.5em\relax
+\advance\cftsubsecnumwidth 0.5em\relax
+\begin{document}
+
+\begin{abstract}
+La biología de sistemas busca entender la importancia de cuantificar en biología y poder formular algunos problemas biológicos en modelos matemáticos relativamente simples. Los modelos son siempre simplificaciones grandes de los sistemas biológicos complejos. Muchas veces, esas simplificaciones no son abstractas, si no que reflejan el conocimiento que se tiene de los sistemas. No obstante, todos son imperfectos, ya que no contienen toda la información posible. Como decía el estadístico George Box, todos los modelos son erróneos, pero algunos son útiles. Por eso, en esta asignatura aprenderemos a cuantificar en biología y construir modelos matemáticos.
+\end{abstract}
+
+\pagestyle{plain}
+
+\maketitle
+
+\tableofcontents
+
+%GUÍA DOCENTE
+%Ejercicios 60%
+%Memoria 15%
+%Defensa 15%
+%Participación 10%
+
+%50% Teoría: 40% examen preguntas cortas/problemas, 60% projecto en grupo
+%50% Prácticas: 
+
+\input{temas/tema1-sistemas.tex}
+
+
+\end{document}
