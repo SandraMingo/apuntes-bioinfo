@@ -72,39 +72,80 @@ El radio típico de una proteína en \textit{E. coli} es de 2-5 nm. Una distanci
 Este hacinamiento molecular tiene consecuencias físicas: muchas reacciones bioquímicas están limitadas por la \textbf{difusión lenta} de las moléculas. Por ello, las células han desarrollado estructuras como los microtúbulos para facilitar el transporte y la movilidad, y las constantes de reacción medidas \textit{in vitro} no son iguales a las medidas \textit{in vivo}
 
 \section{Dinámicas en biología}
-Todos los sistemas biológicos cambian y evolucionan en el tiempo con una gran diversidad en cuanto a las escalas temporales.
-Hay muchos ejemplos en Biología en los que un comportamiento transitorio es importante. Las células perciben señales que pueden codificar información en amplitud, duración y frecuencia.
+Los sistemas biológicos son dinámicos, es decir, cambian con el tiempo. Estos cambios pueden ocurrir a diferentes escalas temporales, desde milisegundos hasta años, y son fundamentales para entender cómo funcionan los organismos. Por ejemplo, las células responden a señales externas (como nutrientes o estrés) codificando información en la amplitud, duración y frecuencia de estas señales.
 
-Los sistemas dinámicos, es decir, sistemas que cambian con el tiempo, se describen con ecuaciones diferenciales, ya que las ecuaciones diferenciales simbolizan la dinámica o velocidad de cambio de las variables que importan en base a otras. Siendo p la cantidad de proteína:
-$$\frac{dP}{dt}$$
-Si la derivada es negativa, significa que a medida que aumenta el tiempo, la proteína disminuye. Si por el contrario es positiva, entonces la proteína aumenta su expresión en el tiempo. Si la derivada es mucho mayor que 1, aumenta rápido, mientras que si es menor que 1 (pero valor positivo), aumenta despacio. La velocidad de cambio va a ser una función de todas las variables de las que dependa la cantidad de p.
-$$\frac{dP}{dt} = f(p, ARN, TF,) \rightarrow f(u, t; \mu)$$
-Siendo u las variables dinámicas y $\mu$ los parámetros. u(t) indica las trayectorias o soluciones, por lo que es importante especificar las condiciones iniciales.
-Si todas las variables dinámicas aparecen con el exponente 1 como máximo, el sistema es lineal; de lo contrario, se trata de un sistema no lineal.
+Los sistemas dinámicos en biología se modelan con \textbf{ecuaciones diferenciales}, que describen cómo cambian las variables biológicas (como la concentración de proteínas) en el tiempo. Estas ecuaciones capturan la velocidad de cambio de una variable en función de otras variables. Por ejemplo, si $P(t)$ es la cantidad de una proteína en el tiempo $t$, su dinámica se describe como:
+$$\frac{dP}{dt} = f(P, ARN, TF, ...)$$
+donde $dP/dt$ es la velocidad de cambio de la proteína y $f(P, ARN, TF)$ una función dependiente de la proteína P, el ARN, los factores de transcripción TF, y otros factores.
 
-Las ecuaciones diferenciales ordinarias representan sistemas homogéneros que cambian de forma continua en el tiempo (determinístico). No obstante, generalmente la biología no es así; no hay sistemas totalmente predecibles por fluctuaciones o eventos probabilísticos, y no tienen por qué ser homogéneos. 
+Para la interpretación de la derivada $dP/dt$ se tiene en cuenta:
+\begin{itemize}
+\item Si $dP/dt > 0$: la proteína aumenta con el tiempo.
+\item Si $dP/dt < 0$: la proteína disminuye con el tiempo.
+\item Si $dP/dt > 1$: el cambio es rápido.
+\item Si $dP/dt < 1$: el cambio es lento.
+\end{itemize}
 
-En el artículo se ha estudiado el proceso de apoptosis de células tumorales tras dar una droga. Las proteínas se han marcado fluorescentemente, y se puede ver cómo cambian las distintas proteínas tras la adminsitración de la droga. Esto se puede simular de forma precisa, pero estas simulaciones se corresponden a experimentos de los que se obtiene una media poblacional. Las proteínas individuales tienen fluctuaciones en el tiempo. Todas las fluctuaciones están promedidadas, por lo que el modelo de ecuaciones diferenciales determinista simula el promedio de las células. En los experimentos se mide la fluorescencia total en la célula, no su localización subcelular.
+La función genérica es: $\frac{dP}{dt} = f(u, t; \mu)$, siendo $u$ las variables dinámicas, $\mu$ los parámetros y $u(t)$ las trayectorias o soluciones. Para esto, es importante especificar las \textbf{condiciones iniciales}. Si todas las variables en $f$ tienen exponente 1, el sistema es \textbf{lineal}. Si alguna variable tiene un exponente mayor que 1, el sistema es \textbf{no lineal}.
 
-Hay otros sistemas en los que las coordenadas espaciales se deben tener en cuenta, como puede ser durante el desarrollo. Cuando se mide el proceso del desarrollo, las células deben mantener constancia de la posición espacial en la que se encuentra. Esto se debe a que las células anteriores se diferencian de forma distinta a las células posteriores. Los genes se expresan en oleadas. En estos casos, se utilizan las ecuaciones diferenciales parciales, teniendo en cuenta el tiempo y las coordenadas espaciales para las variables dinámicas. 
+\subsection{Sistemas deterministas vs estocásticos}
+Las ecuaciones diferenciales ordinarias (EDOs) describen sistemas \textbf{deterministas}, donde el comportamiento es predecible y continuo en el tiempo (homogéneo). Sin embargo, en biología, muchos sistemas son \textbf{estocásticos} (aleatorios) debido a fluctuaciones intrínsecas. Por ejemplo, en un experimento de apoptosis en células tumorales:
+\begin{itemize}
+\item Las proteínas marcadas con fluorescencia muestran fluctuaciones individuales en el tiempo.
+\item Las simulaciones deterministas capturan el promedio poblacional, pero no las variaciones individuales.
+\end{itemize}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.6\textwidth]{figs/simul-cells.png}
+\end{figure}
+
+En el artículo se ha estudiado el proceso de apoptosis de células tumorales tras administrar una droga (un fármaco). Las proteínas se han marcado fluorescentemente, y se puede ver cómo cambian las distintas proteínas tras la administración. Esto se puede simular de forma precisa, pero estas simulaciones se corresponden a experimentos de los que se obtiene una media poblacional. Las proteínas individuales tienen fluctuaciones en el tiempo. Todas las fluctuaciones están promedidadas, por lo que el modelo de ecuaciones diferenciales determinista simula el promedio de las células. En los experimentos se mide la fluorescencia total en la célula, no su localización subcelular.
+
+En algunos sistemas, como el desarrollo embrionario, las \textbf{coordenadas espaciales} son cruciales. Las células se diferencian según su posición, y los genes se expresan en "oleadas". Para modelar estos sistemas, se usan \textbf{ecuaciones diferenciales parciales (EDPs),} que consideran tanto el tiempo como el espacio.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.6\textwidth]{figs/pde-embryo.png}
+\end{figure}
 
 \section{Procesos dinámicos simples celulares: crecimiento celular, dilución proteica y degradación}
-El crecimiento celular es constante en cuanto al tiempo.
-Siendo N(t) el número de células en un tiempo dado, ¿cuántas células se obtienen al cabo de un tiempo determinado? La variable N cambia a lo largo del tiempo, por lo que hay que utilizar una ecuación diferencial que da la velocidad de cambio de N con el tiempo según la tasa de crecimiento r: 
-$$\frac{dN}{dt} = r N \rightarrow r = \frac{1}{T_{div}}$$
-Se trata de un sistema lineal con una sola variable. El siguiente paso es la separación de variables para posteriormente derivar. 
-$$\frac{dN}{N} = r \cdot dt \rightarrow \int \frac{dN}{N} = \int r \cdot dt \rightarrow \int \frac{dN}{N} = r \cdot \int dt \rightarrow ln N = r t$$
-Añadiendo la constante de integración:
-$$e^{ln N(t)} = rt + c \rightarrow N(t) = c_0 \cdot e^{rt}$$
-Para determinar $c_0$, es necesario especificar condiciones iniciales. Por tanto, hay que establecer que en el momento en el que se inicia el experimento (N(0)), se parte de x células.
-$$N(0) = c_0 \cdot e^{r\cdot 0} = c_0$$
-Así:
+\subsection{Crecimiento celular}
+El crecimiento celular es un proceso dinámico donde el número de células $N(t)$ aumenta con el tiempo. La velocidad de crecimiento se describe con la ecuación:
+$$\frac{dN}{dt} = rN$$
+donde r es la tasa de crecimiento y $N(t)$ el número de células en el tiempo t. Se trata de un sistema lineal con una sola variable. Los pasos para resolver la ecuación son:
+\begin{enumerate}
+\item Separar variables:
+$$\frac{dN}{N} = r dt$$
+\item Integrar ambos lados:
+$$\int \frac{dN}{N} = \int r \cdot dt \rightarrow ln N = r t + C$$
+\item Aplicar exponencial
+$$N(t) = e^{rt + C} = e^C \cdot e^{rt}$$
+\item Definir la constante $e^C = N(0)$, el número inicial de células o condiciones iniciales:
 $$N(t) = N(0) \cdot e^{rt}$$
+\end{enumerate}
 
+El tiempo de duplicación $T_{div}$ indica el tiempo necesario para que $N(t)$ se duplique. Se calcula como:
 $$N(T_{div}) = 2N(0) = N(0) \cdot e^{r \cdot T_{div}}$$
+Dividiendo por $N(0)$:
 $$ e^{r \cdot T_{div}} = 2 \rightarrow r \cdot T_{div} = ln 2 \rightarrow r = \frac{ln 2}{T_{div}}$$
 
+\subsection{Dilución proteica}
+Durante el crecimiento celular, las proteínas se diluyen debido al aumento del volumen celular. Si $P(t)$ es la cantidad de una proteína, su dinámica se describe como:
+$$\frac{dP}{dt} = rP - \frac{P}{T_{div}}$$
+
+\subsection{Degradación proteica}
+Las proteínas también se degradan con una tasa constante $k_d$. La dinámica se describe como:
+$$\frac{dP}{dt} = -k_dP \rightarrow P(t) = P(0) \cdot e^{-k_dt}$$
+
+\subsection{Combinación de procesos}
+En una célula, el crecimiento, la dilución y la degradación ocurren simultáneamente. La dinámica combinada se describe como:
+$$\frac{dP}{dt} = rP - \frac{P}{T_{div}} - k_dP$$
+Esta ecuación captura cómo cambia la proteína debido al crecimiento, la dilución y la degradación.
+
 \subsection{Ejercicio: Malthusian growth of bacteria}
+Con el modelo lineal de crecimiento celular, ¿cuánto tiempo tardará una sola bacteria que se divide a un ritmo constante en llenar todos los océanos del mundo?. Datos: Supongamos que las bacterias tienen un volumen de 1 micrómetro cúbico y se dividen cada 30 minutos (valores típicos en \textit{E. coli}). El volumen estimado de todos los océanos es de $292.131.000 km^3$.
+
 Tenemos los siguientes datos:
 $$V_{oceans} = 300.000.000 km^3 = 3 \cdot 10^8 km^3 = 3 \cdot 10^8 \cdot 10^{27} \mu m^3 = 3 \cdot 10^{35} \mu m^3$$
 $$V_{bac} = 1 \mu m$$
