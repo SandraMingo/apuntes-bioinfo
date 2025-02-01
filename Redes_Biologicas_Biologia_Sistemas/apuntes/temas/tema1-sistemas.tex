@@ -146,17 +146,21 @@ Esta ecuación captura cómo cambia la proteína debido al crecimiento, la diluc
 \subsection{Ejercicio: Malthusian growth of bacteria}
 Con el modelo lineal de crecimiento celular, ¿cuánto tiempo tardará una sola bacteria que se divide a un ritmo constante en llenar todos los océanos del mundo?. Datos: Supongamos que las bacterias tienen un volumen de 1 micrómetro cúbico y se dividen cada 30 minutos (valores típicos en \textit{E. coli}). El volumen estimado de todos los océanos es de $292.131.000 km^3$.
 
-Tenemos los siguientes datos:
+Podemos redondear el volumen de todos los océanos como:
 $$V_{oceans} = 300.000.000 km^3 = 3 \cdot 10^8 km^3 = 3 \cdot 10^8 \cdot 10^{27} \mu m^3 = 3 \cdot 10^{35} \mu m^3$$
-$$V_{bac} = 1 \mu m$$
+Los datos de una bacteria son:
+$$V_{bacteria} = 1 \mu m^3$$
 $$T_{div} = 30 mins = 0,5 h$$
-$$c_0 = 1$$
+Como partimos de una bacteria, la condición inicial es $c_0 = 1$.
 
-$$r = \frac{ln 2}{30 min} = 0.023$$
-$$N(t) = 1 \cdot e^{0.023 \cdot t}$$
+Queremos que las bacterias colonicen todos los océanos. Para ello, se busca obtener el siguiente número de bacterias:
+$$N = \frac{V_{oceans}}{V_{bacteria}} = \frac{3 \cdot 10^{35} \mu m^3}{1 \mu m^3} = 3 \cdot 10^{35}$$
 
-$$N = V_o / V_b$$
+Tenemos las siguientes fórmulas:
+$$r = \frac{ln 2}{T_{div}} $$
+$$N(t) = N(0) \cdot e^{rt} \rightarrow N(t) = e^{rt}$$
 
+Sustituyendo, quedaría lo siguiente:
 $$3 \cdot 10^{35} = e^{\frac{ln 2}{0,5} \cdot t} \rightarrow ln 3 + 35 \cdot ln 10 = \frac{ln 2}{0,5} \cdot t \rightarrow t = 58 h$$
 
 Este modelo no es útil porque está demasiado simplificado. Hay que tener en cuenta los nutrientes, las restricciones espaciales, etc. 
