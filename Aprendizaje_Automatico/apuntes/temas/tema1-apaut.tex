@@ -2,20 +2,20 @@
 \chapter{Introducción}
 \section{Repaso: Álgebra lineal}
 \subsection{Notación general}
-Se denota un \textbf{vector} $\mathrm{\textbf{x}}$ como $x \in \mathbb{R}^n$ con $n$ entradas, donde $x_i \in \mathbb{R}$ es la entrada i-ésima. Un vector se puede ver como una matriz de dimensiones $n \times 1$ y se denomina también como vector-columna.
-$$x = \begin{pmatrix}
+Se denota un \textbf{vector} $\vec{x}$ como $x \in \mathbb{R}^n$ con $n$ entradas, donde $x_i \in \mathbb{R}$ es la entrada i-ésima. Un vector se puede ver como una matriz de dimensiones $n \times 1$ y se denomina también como vector-columna.
+$$\vec{x} = \begin{pmatrix}
 x_1 \\ x_2 \\ ... \\ x_n
 \end{pmatrix} \in \mathbb{R}^n$$
 
-Se denota una \textbf{matriz} $\mathrm{\textbf{A}}$ como $A \in \mathbb{R}^{m \times n}$ con n columnas y m filas, donde $A_{i,j} \in \mathbb{R}$ es la entrada en la fila i-ésima y columna j-ésima.
-$$A = \begin{pmatrix}
+Se denota una \textbf{matriz} $\vec{A}$ como $A \in \mathbb{R}^{m \times n}$ con n columnas y m filas, donde $A_{i,j} \in \mathbb{R}$ es la entrada en la fila i-ésima y columna j-ésima.
+$$\vec{A} = \begin{pmatrix}
 A_{1,1} & ... & A_{1,n} \\
 ... & & ...\\
 A_{m,1} & ... & A_{m,n}
 \end{pmatrix} \in \mathbb{R}^{m \times n}$$
 
-Una \textbf{matriz de identidad} $I \in \mathbb{R}^{n \times n}$ es una matriz cuadrada con 1 en la diagonal principal y 0 en el resto. Para cualquier matriz $A \in \mathbb{R}^{n \times n}$, se cumple que $A \times I = I \times A = A$.
-$$I = \begin{pmatrix}
+Una \textbf{matriz de identidad} $\vec{I} \in \mathbb{R}^{n \times n}$ es una matriz cuadrada con 1 en la diagonal principal y 0 en el resto. Para cualquier matriz $\vec{A} \in \mathbb{R}^{n \times n}$, se cumple que $\vec{A} \times \vec{I} = \vec{I} \times \vec{A} = \vec{A}$.
+$$\vec{I} = \begin{pmatrix}
 1 & 0 & ... & 0 \\
 0 & ... & ... & ... \\
 ... & ... & ... & 0 \\
@@ -27,11 +27,11 @@ $$I = \begin{pmatrix}
 Hay dos tipos de productos vector-vector:
 \begin{itemize}
 \item \textbf{Producto interno:}
-Dados dos vectores $x,y \in \mathbb{R}^n$, el producto interno es un escalar.
-$$x^T y = \sum^n_{i=1} x_iy_i \in \mathbb{R} $$
+Dados dos vectores $\vec{x},\vec{y} \in \mathbb{R}^n$, el producto interno es un escalar.
+$$\vec{x}^T y = \sum^n_{i=1} x_iy_i \in \mathbb{R} $$
 
 \item \textbf{Producto externo:}
-Dados dos vectores $x \in \mathbb{R}^m, y \in \mathbb{R}^n$, el producto externo es una matriz de $m \times n$.
+Dados dos vectores $\vec{x} \in \mathbb{R}^m, \vec{y} \in \mathbb{R}^n$, el producto externo es una matriz de $m \times n$.
 $$xy^T = \begin{pmatrix}
 x_1 y_1 & ... & x_1 y_n \\
 ...  & & ... \\
@@ -39,7 +39,7 @@ x_m y_1 & ... & x_m y_n
 \end{pmatrix} \in \mathbb{R}^{m \times n}$$
 \end{itemize}
 
-\paragraph{Multiplicación matriz-vector} Dada una matriz $A \in \mathbb{R}^{m \times n}$ y un vector $x \in \mathbb{R}^n$, el producto es un vector del tamaño $\mathbb{R}^m$.
+\paragraph{Multiplicación matriz-vector} Dada una matriz $\vec{A} \in \mathbb{R}^{m \times n}$ y un vector $\vec{x} \in \mathbb{R}^n$, el producto es un vector del tamaño $\mathbb{R}^m$.
 $$Ax = \begin{pmatrix}
 A_{1,1}x_1 + A_{1,2}x_2 + ... + A_{1,n}x_n \\
 ... \\
@@ -51,8 +51,8 @@ A_{m,1}x_1 + A_{m,2}x_2 + ... + A_{m,n}x_n
 \includegraphics[width = 0.5\textwidth]{figs/matrix-vector-mult.png}
 \end{figure}
 
-\paragraph{Multiplicación matriz-matriz} Dadas dos matrices $A \in \mathbb{R}^{m \times n}$ y $B \in \mathbb{R}^{n \times p}$, el producto es una matriz de tamaño $\mathbb{R}^{m \times p}$.
-$$AB = \begin{pmatrix}
+\paragraph{Multiplicación matriz-matriz} Dadas dos matrices $\vec{A} \in \mathbb{R}^{m \times n}$ y $\vec{B} \in \mathbb{R}^{n \times p}$, el producto es una matriz de tamaño $\mathbb{R}^{m \times p}$.
+$$\vec{AB} = \begin{pmatrix}
 \sum^n_{k=1}A_{1,k}B_{k,1} & ... & \sum^n_{k=1}A_{1,k}B_{k,p} \\
 ... & ... & ...\\
 \sum^n_{k=1}A_{m,1}B_{k,1} & ... & \sum^n_{k=1}A_{m,k}B_{k,p}
@@ -64,7 +64,7 @@ $$AB = \begin{pmatrix}
 \end{figure}
 
 \subsection{Propiedades de la multiplicación de matrices}
-\paragraph{No conmutatividad} En general, la multiplicación de matrices no es conmutativa, es decir, $A \times B \neq B \times A$. Por ejemplo:
+\paragraph{No conmutatividad} En general, la multiplicación de matrices no es conmutativa, es decir, $\vec{A} \times \vec{B} \neq \vec{B} \times \vec{A}$. Por ejemplo:
 $$\begin{bmatrix}
 1 & 1 \\ 0 & 0
 \end{bmatrix} \times \begin{bmatrix}
@@ -83,7 +83,7 @@ $$\begin{bmatrix}
 
 En el caso de multiplicar una matriz con una matriz de identidad, sí se cumple la regla conmutativa.
 
-\paragraph{Matriz inversa} Si $A$ es una matriz cuadrada $m \times m$, y tiene inversa, entonces
+\paragraph{Matriz inversa} Si $\vec{A}$ es una matriz cuadrada $m \times m$, y tiene inversa, entonces
 $$AA^{-1} = A^{-1}A = I$$
 
 \paragraph{Transposición de matriz} Dada una matriz $A \in \mathbb{R}^{m \times n}$, su transpuesta $A^T$ es una matriz $n \times m$ donde $(A^T)_{ij} = A_{ij}$. Por ejemplo:
@@ -154,16 +154,16 @@ Muchos métodos de aprendizaje implican formación. La formación es la adquisic
 \end{itemize}
 
 \subsubsection{Supervisado vs no supervisado}
-Supongamos una función desconocida $y_{\Theta}(\mathrm{\textbf{x}}) = h_{\Theta}(\mathrm{\textbf{x}})$, donde x es un ejemplo de entrada y y la salida deseada. En el \textbf{aprendizaje supervisado}, se proporciona un conjunto de pares de entrenamiento (x,y), donde x es la entrada y y es la salida deseada. El objetivo es aprender una función $h_{\Theta}(\mathrm{\textbf{x}})$ que mapee las entradas a las salidas. En el \textbf{aprendizaje no supervisado}, solo se proporcionan las entradas x, y el sistema debe encontrar patrones o estructuras en los datos sin conocer las salidas. $\Theta$ hace referencia a los parámetros que tiene el modelo y que hay que entrenar. Por tanto, cuantos menos parámetros haya, más rápido va a ser el modelo.
+Supongamos una función desconocida $y_{\Theta}(\vec{x}) = h_{\Theta}(\vec{x})$, donde x es un ejemplo de entrada y y la salida deseada. En el \textbf{aprendizaje supervisado}, se proporciona un conjunto de pares de entrenamiento (x,y), donde x es la entrada y y es la salida deseada. El objetivo es aprender una función $h_{\Theta}(\vec{x})$ que mapee las entradas a las salidas. En el \textbf{aprendizaje no supervisado}, solo se proporcionan las entradas x, y el sistema debe encontrar patrones o estructuras en los datos sin conocer las salidas. $\Theta$ hace referencia a los parámetros que tiene el modelo y que hay que entrenar. Por tanto, cuantos menos parámetros haya, más rápido va a ser el modelo.
 
 \subsubsection{Fases de un algoritmo de aprendizaje}
 Las fases de un algoritmo de aprendizaje son:
 \begin{enumerate}
-\item \textbf{Hipótesis y datos}: Los datos son representados como vectores\footnote{Aunque no haya una notación general, vamos a utilizar la negrita no itálica para denominar que la variable es un vector. }  $\mathrm{\textbf{x}}_n = (x_{n1} ... x_{nD})^T$, donde D es la dimensión del vector. En el aprendizaje supervisado, también se tienen etiquetas $y_n$ que representan la salida deseada. Los datos pueden ser de diferentes tipos: numéricos, categóricos, texto, series temporales, etc. La información puede estar estructurada (datos genéticos, metereológicos, etc) o no estructurada (imágenes, audio, texto).
+\item \textbf{Hipótesis y datos}: Los datos son representados como vectores\footnote{Aunque no haya una notación general, vamos a utilizar la negrita no itálica para denominar que la variable es un vector. }  $\vec{x}_n = (x_{n1} ... x_{nD})^T$, donde D es la dimensión del vector. En el aprendizaje supervisado, también se tienen etiquetas $y_n$ que representan la salida deseada. Los datos pueden ser de diferentes tipos: numéricos, categóricos, texto, series temporales, etc. La información puede estar estructurada (datos genéticos, metereológicos, etc) o no estructurada (imágenes, audio, texto).
 
 \item \textbf{Selección del modelo}
 
-Se elige un modelo $h_{\Theta}(\mathrm{\textbf{x}})$ que intenta aproximar la relación entre las entradas y las salidas. Por ejemplo, si se elige un modelo lineal, $h_{\Theta}(\mathrm{\textbf{x}}) = a\mathrm{\textbf{x}} + b$, donde a y b son parámetros que se deben optimizar (correspondientes a $\Theta_1$ y a $\Theta_2$). 
+Se elige un modelo $h_{\Theta}(\vec{x})$ que intenta aproximar la relación entre las entradas y las salidas. Por ejemplo, si se elige un modelo lineal, $h_{\Theta}(\vec{x}) = a\vec{x} + b$, donde a y b son parámetros que se deben optimizar (correspondientes a $\Theta_1$ y a $\Theta_2$). 
 
 \begin{figure}[h]
 \centering
@@ -171,9 +171,9 @@ Se elige un modelo $h_{\Theta}(\mathrm{\textbf{x}})$ que intenta aproximar la re
 \end{figure}
 
 La función de coste $E(y_{\Theta} - y )^2$ mide el error entre la predicción del modelo y la salida real. Este error se divide en un coste reducible que se puede minimizar optimizando los parámetros del modelo, y un coste irreducible que no puede reducirse con los parámetros actuales, requiriendo un cambio en el modelo o la hipótesis. La función del coste se resume en:
-$$E(y_{\Theta} - y)^2 = [h_{\Theta}(\mathrm{\textbf{x}}) - h(\mathrm{\textbf{x}})]^2 + \epsilon$$
+$$E(y_{\Theta} - y)^2 = [h_{\Theta}(\vec{x}) - h(\vec{x})]^2 + \epsilon$$
 
-siendo $ [h_{\Theta}(\mathrm{\textbf{x}}) - h(\mathrm{\textbf{x}})]^2$ el coste reducible y $\epsilon$ el irreducible. 
+siendo $ [h_{\Theta}(\vec{x}) - h(\vec{x})]^2$ el coste reducible y $\epsilon$ el irreducible. 
 
 \item \textbf{Entrenamiento o aprendizaje}
 \item \textbf{Testeo o inferencia}
