@@ -1,0 +1,86 @@
+\section{Álgebra lineal}
+\subsection{Vectores}
+Un vector es una cantidad que tiene tanto magnitud como dirección. En el contexto de álgebra lineal, un vector es una lista ordenada de números.
+Un vector se puede representar como:
+$$\vec{v} = \begin{pmatrix}
+v_1 \\ v_2 \\ \ldots \\ v_n
+\end{pmatrix}$$
+
+\paragraph{Suma de vectores} Dos vectores del mismo tamaño se pueden sumar componente a componente.
+$$\vec{u} + \vec{v} = \begin{pmatrix}
+u_1 + v_1 \\ u_2 + v_2 \\ \ldots \\ u_n + v_n
+\end{pmatrix}$$
+
+\paragraph{Multiplicación por un escalar} Un vector se puede multiplicar por un número (escalar) multiplicando cada componente por ese número.
+$$c\vec{v} = \begin{pmatrix}
+cv_1 \\ cv_2 \\ \ldots \\ cv_n
+\end{pmatrix}$$
+
+\paragraph{Producto punto (o producto escalar)} Dados dos vectores $\vec{u}$ y $\vec{v}$, su producto punto es:
+$$\vec{u} \cdot \vec{v} = u_1v_1 + u_2v_2 + \ldots + u_nv_n$$
+El producto punto es útil para calcular ángulos entre vectores y para proyectar un vector sobre otro.
+
+\subsection{Matrices}
+Una matriz es una disposición rectangular de números en filas y columnas. Las matrices son fundamentales en álgebra lineal y se utilizan para representar transformaciones lineales, sistemas de ecuaciones lineales, y más.
+Una matriz $\vec{A}$ de tamaño $m \times n$ se representa como:
+$$\vec{A} = \begin{pmatrix}
+a_{11} & a_{12} & \ldots & a_{1n} \\
+a_{21} & a_{22} & \ldots & a_{2n} \\
+\ldots & \ldots & \ldots & \ldots \\
+a_{m1} & a_{m2} & \ldots & a_{mn} 
+\end{pmatrix}$$
+donde $a_{ij}$ es el elemento en la fila $i$ y la columna $j$.
+
+\paragraph{Suma de matrices} Dos matrices del mismo tamaño se pueden sumar elemento a elemento.
+$$\vec{A} + \vec{B} = \begin{pmatrix}
+a_{11} + b_{11} & a_{12} + b_{12} & \ldots & a_{1n} + b_{1n} \\
+a_{21} + b_{21} & a_{22} + b_{22} & \ldots & a_{2n} + b_{2n} \\
+\ldots & \ldots & \ldots & \ldots \\
+a_{m1} + b_{m1} & a_{m2} + b_{m2} & \ldots & a_{mn} + b_{mn}
+\end{pmatrix}$$
+
+\paragraph{Multiplicación por un escalar} Una matriz se puede multiplicar por un escalar multiplicando cada elemento de la matriz por ese escalar.
+$$c\vec{A} = \begin{pmatrix}
+ca_{11} & ca_{12} & \ldots & ca_{1n} \\
+ca_{21} & ca_{22} & \ldots & ca_{2n} \\
+\ldots & \ldots & \ldots & \ldots \\
+ca_{m1} & ca_{m2} & \ldots & ca_{mn} 
+\end{pmatrix}$$
+
+\paragraph{Multiplicación de matrices} Dadas dos matrices $\vec{A}$ de tamaño $m \times n$ y $\vec{B}$ de tamaño $n \times p$, su producto $\vec{C} = \vec{AB}$ es una matriz de tamaño $m \times p$ donde cada elemento $c_{ij}$ se calcula como:
+$$c_{ij} = \sum^n_{k=1} a_{ik}b_{kj}$$
+La multiplicación de matrices no es conmutativa, es decir, $\vec{AB} \neq \vec{BA}$ en general.
+
+\subsection{Transpuesta de una matriz}
+La transpuesta de una matriz $\vec{A}$, denotada como $\vec{A}^T$, se obtiene intercambiando filas por columnas.
+$$\vec{A} = \begin{pmatrix}
+a_{11} & a_{12} & \ldots & a_{1n} \\
+a_{21} & a_{22} & \ldots & a_{2n} \\
+\ldots & \ldots & \ldots & \ldots \\
+a_{m1} & a_{m2} & \ldots & a_{mn} 
+\end{pmatrix} \rightarrow \vec{A}^T = \begin{pmatrix}
+a_{11} & a_{21} & \ldots & a_{m1} \\
+a_{12} & a_{22} & \ldots & a_{m2} \\
+\ldots & \ldots & \ldots & \ldots \\
+a_{1n} & a_{2n} & \ldots & a_{mn} 
+\end{pmatrix}$$
+
+\subsection{Determinante de una matriz}
+El determinante es un valor escalar que se puede calcular a partir de los elementos de una matriz cuadrada. Es útil para determinar si una matriz tiene inversa y en la resolución de sistemas de ecuaciones lineales.
+
+Para una matriz $2 \times 2$:
+\begin{align}
+\det \vec{A}
+=
+\begin{vmatrix}
+a & b \\ 
+c & d
+\end{vmatrix}
+=ad - bc\notag
+\end{align}
+Para matrices más grandes, el cálculo del determinante es más complejo y se puede hacer mediante expansión por cofactores.
+
+\subsection{Inversa de una matriz}
+La inversa de una matriz cuadrada $\vec{A}$, denotada como $\vec{A}^{-1}$, es una matriz tal que:
+$$\vec{AA}^{-1} = \vec{A}^{-1} \vec{A} = \vec{I}$$
+donde $\vec{I}$ es la matriz de identidad. No todas las matrices tienen inversa; una matriz tiene inversa si y solo si su determinante es distinto de cero.
