@@ -1,0 +1,44 @@
+\section{Ecuaciones diferenciales}
+Una ecuación diferencial es una ecuación que relaciona una función con sus derivadas. En otras palabras, describe cómo cambia una cantidad en función de otra (por ejemplo, cómo cambia la concentración de una proteína en función del tiempo).
+La ecuación diferencial más básica es:
+$$y'(t) = \frac{dy}{dt} = f(t,y)$$
+Aquí, $y$ es la función que queremos encontrar, t es la variable independiente (como el tiempo), y $f(t, y)$ es una función que describe cómo cambia $y$ con respecto a $t$.
+
+\subsection{Ecuaciones diferenciales ordinarias (EDO)}
+Estas ecuaciones involucran una sola variable independiente, y la función desconocida depende solo de esa variable. 
+\textbf{Ejemplo:} modelar el crecimiento de una población:
+$$\frac{dP}{dt} = kP$$
+donde $P(t)$ es la población en el tiempo $t$, y $k$ es una constante de crecimiento.
+
+\subsection{Ecuaciones diferenciales parciales (EDP)}
+Las EDP involucran múltiples variables independientes, de forma que la función desconocida depende de varias variables. 
+\textbf{Ejemplo:} modelar la difusión de una sustancia en un medio:
+$$\frac{\delta u}{\delta t} = D\frac{\delta^2u}{\delta x^2}$$
+donde $u(x, t)$ es la concentración de la sustancia en la posición $x$ y el tiempo $t$, y $D$ es el coeficiente de difusión.
+
+\subsection{Orden de una ecuación diferencial}
+El orden de una ecuación diferencial es el orden de la derivada más alta que aparece en la ecuación.
+\begin{itemize}
+\item \textbf{Primer orden}: solo involucra la primera derivada
+$$\frac{dy}{dt} = f(t, y)$$
+\item \textbf{Segundo orden}: involucra la segunda derivada
+$$\frac{d^2y}{dt^2} + a\frac{dy}{dt} + by = 0$$
+\end{itemize}
+
+\subsection{Solución de una ecuación diferencial}
+Resolver una ecuación diferencial significa encontrar la función $y(t)$ que satisface la ecuación. La \textbf{solución general} es una familia de soluciones que incluye constantes arbitrarias. La \textbf{solución particular} se obtiene al asignar valores específicos a las constantes, generalmente usando condiciones iniciales o de contorno.
+
+Dependiendo del tipo de ecuación, existen diferentes métodos de resolver las ecuaciones diferenciales. Las ecuaciones diferenciales parciales (EDP) son más complejas y suelen requerir métodos avanzados como separación de variables, transformadas de Fourier o métodos numéricos. Para las ecuaciones diferenciales ordinarias (EDO), se pueden seguir los siguientes pasos:
+\begin{enumerate}
+\item \textbf{Separacion de variables}: se usa cuando la ecuación se puede separar en términos que dependen solo de $y$ y solo de $t$.
+$$\frac{dy}{dt} = ky \rightarrow \frac{dy}{y} = k dt$$
+
+Integrando ambos lados:
+$$ln |y| = kt + C \rightarrow y(t) = C e^{kt}$$
+
+\item \textbf{Ecuaciones lineales de primer orden}: se resuelven usando un factor integrante.
+$$\frac{dy}{dt} + P(t)y = Q(t)$$
+
+\item \textbf{Ecuaciones de segundo orden con coeficientes constantes}: se resuelven asumiendo una solución de la forma $y(t) = e^{rt}$, donde $r$ es una constante a determinar.
+$$\frac{d^2y}{dt^2} + a\frac{dy}{dt} + by = 0$$
+\end{enumerate}
