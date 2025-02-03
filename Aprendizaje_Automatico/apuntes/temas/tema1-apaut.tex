@@ -175,8 +175,25 @@ $$E(y_{\Theta} - y)^2 = [h_{\Theta}(\vec{x}) - h(\vec{x})]^2 + \epsilon$$
 
 siendo $ [h_{\Theta}(\vec{x}) - h(\vec{x})]^2$ el coste reducible y $\epsilon$ el irreducible. 
 
-\item \textbf{Entrenamiento o aprendizaje}
-\item \textbf{Testeo o inferencia}
+\item \textbf{Entrenamiento o aprendizaje}: En esta fase, el modelo se ajusta a los datos de entrenamiento optimizando los parámetros $\Theta$ para minimizar la función de coste.
+
+Por ejemplo, si tenemos un set de datos logarítmico, habría que cambiar de la hipótesis de modelo lineal $h_{\Theta}(x) = ax + b$ que solo valdría para una recta, por un modelo polinómico $h_{\Theta}(x) = ax^3 + bx^2 + cx + d$ para poder disminuir el error $\epsilon$. El problema es que es muy costoso matemáticamente cuando aumenta el tamaño de los datos, y puede llevar a un sobreajuste del modelo a los datos de entrenamiento. De una información discreta (un set de valores) se busca obtener una solución continua (la función). Todo esto no solo permite obtener una aproximación de los datos intermedios del set de valores dado, si no también una predicción de los datos futuros.
+
+Los errores se suelen representar al cuadrado para que no se compensen los errores negativos con los positivos. 
+
+\item \textbf{Testeo o inferencia}: Una vez entrenado, el modelo $h_{\Theta}$ se evalúa con datos nuevos (no vistos durante el entrenamiento) para ver cómo generaliza a situaciones no vistas. Así, se predice un nuevo $y(\vec{x})$ a un nuevo $\vec{x}$. Esto normalmente se hace separando un set de datos en un set de entrenamiento y un set de evaluación de forma aleatoria. 
+
+Una vez en este punto, si el error es muy elevado, se vuelve a la selección del modelo y se establece una nueva hipótesis. Esto es un proceso iterativo en el que se evalúa el rendimiento del sistema hasta que se observe un modelo con un buen ajuste tanto a los valores de entrenamiento como a los valores de test.
 \end{enumerate}
+
+\subsection{Tipos de problemas o tareas}
+\subsubsection{Aprendizaje supervisado}
+\paragraph{Regresión} El objetivo de la regresión es predecir el valor de una variable continua. La salida es un valor numérico, y se busca modelar una función continua que relacione las variables de entrada con la salida. Este proceso implica métodos estadísticos para estimar las relaciones entre las variables. Por ejemplo, predecir el precio de una casa en función de su tamaño, ubicación y otras características.
+
+\paragraph{Clasificación} En la clasificación, el objetivo es asignar una etiqueta categórica a cada instancia de datos. La salida es una etiqueta discreta, como "maligno" o "benigno". El límite de decisión es una hipersuperficie que divide el espacio de características en regiones, cada una asociada a una clase. Por ejemplo, en la clasificación de un tumor, se utilizan características como el tamaño y la tasa de crecimiento para determinar si el tumor es maligno o benigno. Aquí, las características (tamaño y tasa de crecimiento) definen el espacio de entrada, y la etiqueta (maligno/benigno) es la salida binaria.
+
+\subsubsection{Aprendizaje no supervisado}
+\paragraph{Clustering} El clustering es una técnica de aprendizaje no supervisado que busca agrupar un conjunto de objetos (o datos) de manera que aquellos que pertenecen al mismo grupo (clúster) sean más similares entre sí que con los objetos de otros grupos. La similitud se mide utilizando métricas de distancia (como la distancia euclidiana) o similitud, dependiendo del tipo de datos y del algoritmo utilizado. Un ejemplo común es la agrupación de clientes en segmentos basados en su comportamiento de compra, donde cada clúster representa un grupo de clientes con características similares.
+
 
 %\section{Reducción de dimensionalidad}
