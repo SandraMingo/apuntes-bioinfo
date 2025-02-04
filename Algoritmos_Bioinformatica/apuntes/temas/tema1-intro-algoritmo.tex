@@ -125,4 +125,54 @@ def matrix_multiplication(m_1, m_2):
 
 Aquí, la operación clave es \texttt{m\_1[p, r] * m\_2[r, q]}. Asumiendo matrices cuadradas con N filas y columnas, esta operación clave se repite $N \times N \times N = N^3$, lo cual es sustancialmente más grande que el tamaño del problema $N^2 + N^2 = 2N^2$.
 
+%04/02 
 \subsection{Búsqueda lineal}
+Para buscar una clave en una lista, lo más sencillo es comparar la clave con todos los elementos de la lista hasta que se encuentre. 
+\begin{lstlisting}
+def linear_search(key, l_ints):
+	for i, val in enumerate(l_ints):
+		if val == key:
+			return i
+				
+	return None
+\end{lstlisting}
+
+En este caso, la operación clave es \texttt{if val == key}. Encontrar la clave que esté en \texttt{l\_ints[0]}, solo se requiere una operación, pero para \texttt{l\_ints[-1]}, se requieren \texttt{N = len(l\_ints)} operaciones, al igual que si la clave no se encuentra en la lista.
+
+\subsection{Notación o, O y $\Theta$}
+Dado un algoritmo, y sabiendo la operación básica, hay una función que calcula el coste de dicha operación. La multiplicación de matrices tiene un coste $f_{MM} (N) = N^3$, y la búsqueda lineal $f_{LS}(N) = N$. Por tanto, se pueden comparar dos algoritmos mediante la comparación de su función de coste.  
+
+Suponemos que las funciones de coste son positivas y crecientes (así deberían ser los tiempos de ejecución abstractos de los algoritmos)
+
+Se dice que $f = o(g)$ si ambas son positivas en el tiempo ($\frac{f(N)}{g(N)} \rightarrow 0$), y el crecimiento de $f$ es considerablemente menor que el de $g$.
+
+Además, $f = O(g)$ si encontramos una constante C de un entero N que depende de C de manera que $f(N) \leq Cg(N)$ siempre que $N \geq N_C$. De esta forma, $g$ será eventualmente mayor que $f$ con la ayuda de $C$.
+
+Finalmente, $f = \Theta(g)$ si $f = O(g)$ y $g = O(f)$. 
+
+En resumen, y de manera informal, podemos decir:
+\begin{itemize}
+\item $f < g$ cuando $f = o(g)$
+\item $f \leq g$ cuando $f = O(g)$
+\item $f \approx g$ cuando $f = \Theta(g)$ y, por tanto, $g = \Theta(f)$
+\end{itemize}
+
+Por ejemplo, antes definimos unas funciones con coste $N^2$ y $N^3$. Al hacer $\frac{N^2}{N^3} = \frac{1}{N}$, tendiendo N a infinito, el resultado es 0, por lo que $N^2 = o(N^3)$. Además, como $N^2 \leq 1 \cdot N^3$, entonces también $N^2 = O(N^3)$, pero esto es menos preciso.
+
+\subsection{Complejidad de un algoritmo}
+A partir de un algoritmo A con un input I, se puede medir el tiempo de ejecución abstracto de la siguiente forma:
+\begin{itemize}
+\item Podemos identificar la operación clave en A y estimar su trabajo abstracto en I siguiendo el número $n_A(I)$ de veces que A se ejecuta en I.
+\item Se puede asignar un tamaño N al input I
+\item Podemos encontrar una función $f_A(N)$ de forma que $n_A(I) = O(f_A(N))$
+\end{itemize}
+En algunos casos, esto se puede refinar a $n_A(I) = \Theta(f_A(N))$. Por tanto, $f_A(N)$ da la complejidad de A sobre las entradas de tamaño N. Para el problema de Hanoi, tenemos $n_{Hanoi}(N) = 2^N - 1$. En las búsquedas lineales, aquellas búsquedas exitosas son $n^e_{LS}(N) \leq N$, pero también puede darse $n^e_{LS}(N) = 1$, por lo que el peor escenario de la búsqueda lineal es $W(N) = N$, ya que siempre $n_{LS}(k, l_ints) \leq N$.
+
+\subsection{De tiempos abstractos a tiempos reales}
+En Python, está el comando \texttt{\%timeit} que permite la estimación de tiempos de ejecución en el caso de funciones simples. 
+\begin{lstlisting}
+a = np.ones((100, 100))
+b = np.eye(100)
+%timeit -n 10 -r 1 matrix_multiplication(a, b)
+\end{lstlisting}
+Si \texttt{timeit} nos devuelve 1s (para 100 elementos), en el caso de matrices de 500 podemos esperar $500 = 5 \times 100, 500^3 = 125 \times 100^3$, es decir, 125 segundos. Esto no es muy preciso, pero sirve para una estimación. Hay que tener en cuenta que librerías grandes como \texttt{numpy} o \texttt{pandas} utilizan C o C++ para el código compilado al ser más rápido.
