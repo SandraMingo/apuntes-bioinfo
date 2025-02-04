@@ -195,5 +195,57 @@ Una vez en este punto, si el error es muy elevado, se vuelve a la selección del
 \subsubsection{Aprendizaje no supervisado}
 \paragraph{Clustering} El clustering es una técnica de aprendizaje no supervisado que busca agrupar un conjunto de objetos (o datos) de manera que aquellos que pertenecen al mismo grupo (clúster) sean más similares entre sí que con los objetos de otros grupos. La similitud se mide utilizando métricas de distancia (como la distancia euclidiana) o similitud, dependiendo del tipo de datos y del algoritmo utilizado. Un ejemplo común es la agrupación de clientes en segmentos basados en su comportamiento de compra, donde cada clúster representa un grupo de clientes con características similares.
 
+%04/02 - Aythami
+\section{Reducción de dimensionalidad}
+La reducción de dimensionalidad es una técnica fundamental en el aprendizaje automático que permite representar datos multidimensionales en un espacio de menor dimensión, preservando la mayor cantidad posible de información relevante. Esto es especialmente útil para visualización, mejora del rendimiento y manejo de la maldición de la dimensionalidad. 
+\begin{itemize}
+\item \textbf{Visualización}: Permite visualizar datos en 2D o 3D, incluso cuando los datos originales tienen muchas más dimensiones.
+\item \textbf{Mejora del rendimiento}: Reduce el tiempo de entrenamiento y el uso de memoria al trabajar con menos dimensiones. Además, elimina ruido y redundancia en los datos.
+\item \textbf{Maldición de la dimensionalidad}: Cuando el número de dimensiones es muy alto en comparación con el número de muestras, los modelos pueden volverse ineficientes o sobreajustarse.
+Ejemplo: No tiene sentido ajustar un modelo con 2.000 parámetros si solo se dispone de 10 datos. Los parámetros representan grados de libertad, y en este caso, el modelo no generalizaría bien. La reducción de dimensionalidad ayuda a eliminar información redundante y mejorar el rendimiento.
+\end{itemize}
 
-%\section{Reducción de dimensionalidad}
+No obstante, no siempre es necesario o beneficioso reducir la dimensionalidad. Por ejemplo, si las dimensiones originales ya son interpretables y no hay redundancia, o si la pérdida de información al reducir dimensiones afecta negativamente al modelo.
+
+El objetivo es reducir el número de variables (dimensiones) en un conjunto de datos, manteniendo la estructura y la información más importante. La herramienta más común es \textbf{PCA (Principal Component Analysis)}, un algoritmo basado en álgebra lineal que transforma los datos originales en un nuevo sistema de coordenadas, donde las dimensiones (componentes principales) capturan la mayor varianza posible.
+
+\subsection{Proyección de datos en dimensiones inferiores}
+La idea central de la reducción de dimensionalidad es proyectar datos de un espacio de alta dimensión a uno de menor dimensión, preservando la estructura subyacente.
+
+\paragraph{2D a 1D}
+Supongamos que tenemos datos en un espacio bidimensional ($\mathbb{R}^2$). Queremos proyectarlos en una recta unidimensional ($\mathbb{R}$). La recta es una combinación lineal de las dos dimensiones originales (desde la recta, solo nos podemos mover en una dirección, hacia delante o hacia detrás), y la proyección de los datos a esa recta no conlleva pérdida de información si la recta captura la dirección de máxima varianza. Matemáticamente:
+$$\vec{x}^{(1)} \in \mathbb{R}^2 \rightarrow z^{(1)} \in \mathbb{R}$$
+$$\vec{x}^{(2)} \in \mathbb{R}^2 \rightarrow z^{(2)} \in \mathbb{R}$$
+$$\vec{x}^{(N)} \in \mathbb{R}^2 \rightarrow z^{(N)} \in \mathbb{R}$$
+El superíndice sirve para anotar el dato, y el subíndice para la dimensión.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.6\textwidth]{figs/reduccion-dimension-2d.png}
+\end{figure}
+
+\paragraph{Extensión a más dimensiones}
+Esta idea se puede generalizar a espacios de mayor dimensión. Por ejemplo, al pasar de 3D ($\mathbb{R}^3$) a 2D ($\mathbb{R}^2$), se proyectan los datos en un plano bidimensional:
+$$\vec{x}^{(i)} \in \mathbb{R}^3 \rightarrow z^{(i)} \in \mathbb{R}^2$$
+
+\subsection{PCA: Análisis de Componentes Principales}
+En el caso de una tabla de expresión génica donde las filas representan pacientes y las columnas corresponden a genes individuales, cada paciente puede describirse como un punto en un espacio de 2000 dimensiones: $\vec{x}^{(i)} \in \mathbb{B}^{2000}$, es decir, un vector de 2000 componentes binarios.
+
+El Análisis de Componentes Principales (PCA) permite reducir estas 2000 dimensiones a un espacio de menor dimensión, por ejemplo, a dos dimensiones: $\vec{z}^{(i)} \in \mathbb{R}^2$
+
+Sin embargo, al proyectar los datos, el tipo de variable puede cambiar. En este caso, los valores transformados pierden su significado biológico directo (es decir, ya no tienen una interpretación genética específica), pero la proximidad entre puntos en el espacio bidimensional puede interpretarse como una medida de similitud genética entre sujetos.
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/gene-table1.png}
+\includegraphics[width = 0.7\textwidth]{figs/gene-table2.png}
+\end{figure}
+
+El algoritmo de PCA busca minimizar el error de proyección de los datos sobre un subespacio de menor dimensión. Para la reducción de dos dimensiones a una, esto equivale a encontrar un vector $u^{(1)} \in \mathbb{R}^n$ que minimice la distancia entre los puntos originales y sus proyecciones. Más generalmente, para reducir un espacio de $n$ dimensiones a $k$ dimensiones, PCA busca determinar $k$ vectores ortogonales $u^{(k)}$ que definan el subespacio óptimo para proyectar los datos, minimizando la pérdida de información: 
+$$\vec{x} \in \mathbb{R}^n \rightarrow \vec{z} \in \mathbb{R}^k$$
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/pca-dimensiones.png}
+\end{figure}
+
+\subsubsection{Algoritmo de PCA}
