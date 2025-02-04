@@ -51,7 +51,7 @@ ca_{m1} & ca_{m2} & \ldots & ca_{mn}
 $$c_{ij} = \sum^n_{k=1} a_{ik}b_{kj}$$
 La multiplicación de matrices no es conmutativa, es decir, $\vec{AB} \neq \vec{BA}$ en general.
 
-\subsection{Transpuesta de una matriz}
+\paragraph{Transpuesta de una matriz}
 La transpuesta de una matriz $\vec{A}$, denotada como $\vec{A}^T$, se obtiene intercambiando filas por columnas.
 $$\vec{A} = \begin{pmatrix}
 a_{11} & a_{12} & \ldots & a_{1n} \\
@@ -65,7 +65,7 @@ a_{12} & a_{22} & \ldots & a_{m2} \\
 a_{1n} & a_{2n} & \ldots & a_{mn} 
 \end{pmatrix}$$
 
-\subsection{Determinante de una matriz}
+\paragraph{Determinante de una matriz}
 El determinante es un valor escalar que se puede calcular a partir de los elementos de una matriz cuadrada. Es útil para determinar si una matriz tiene inversa y en la resolución de sistemas de ecuaciones lineales.
 
 Para una matriz $2 \times 2$:
@@ -80,7 +80,30 @@ c & d
 \end{align}
 Para matrices más grandes, el cálculo del determinante es más complejo y se puede hacer mediante expansión por cofactores.
 
-\subsection{Inversa de una matriz}
+\paragraph{Inversa de una matriz}
 La inversa de una matriz cuadrada $\vec{A}$, denotada como $\vec{A}^{-1}$, es una matriz tal que:
 $$\vec{AA}^{-1} = \vec{A}^{-1} \vec{A} = \vec{I}$$
 donde $\vec{I}$ es la matriz de identidad. No todas las matrices tienen inversa; una matriz tiene inversa si y solo si su determinante es distinto de cero.
+
+\paragraph{Norma de una matriz}
+Las normas de una matriz son herramientas matemáticas que nos permiten cuantificar el "tamaño" o la "magnitud" de una matriz. En el contexto del aprendizaje automático (Machine Learning, ML), las normas de matrices son útiles para regularizar modelos, medir errores, y entender la estabilidad de los algoritmos.
+
+Una norma de matriz es una función que asigna un número real no negativo a una matriz, cumpliendo ciertas propiedades:
+\begin{enumerate}
+\item \textbf{No negatividad:} $||\vec{A}|| \geq 0$ y $||\vec{A}|| = 0$ si y solo si $\vec{A} = 0$
+\item \textbf{Homogeneidad:} $||c\vec{A}|| = |c| \cdot ||\vec{A}||$ para cualquier escalar $c$
+\item \textbf{Desigualdad triangular:} $||\vec{A} + \vec{B}|| \leq ||\vec{A}|| + ||\vec{B}||$
+\item \textbf{Submultiplicatividad} (para normas de matrices): $||\vec{AB}|| \leq ||\vec{A}|| \cdot ||\vec{B}||$
+\end{enumerate}
+
+En ML, las normas más utilizadas son las \textbf{normas vectoriales} (aplicadas a matrices) y las \textbf{normas matriciales específicas}.
+\begin{itemize}
+\item \textbf{Norma $L_1$ (Norma de Manhattan)} En ML se utiliza en la regularización $L_1$ (Lasso) para obtener modelos dispersos (sparse model).
+
+Para un vector $\vec{v} = (v_1, v_2, \ldots, v_n)$, la norma $L_1$ se define como:
+$$||\vec{v}||_1 = \sum^n_{i=1} |v_i|$$
+
+Para una matriz $\vec{A}$, la norma $L_1$ es la máxima suma absoluta de las columnas:
+$$||\vec{A}||_1 = max_{1 \leq j \leq n} \sum^m_{i=1} |a_{ij}|$$
+
+\end{itemize}
