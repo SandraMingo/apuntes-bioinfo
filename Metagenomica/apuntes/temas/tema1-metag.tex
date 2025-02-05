@@ -31,7 +31,7 @@ Los métodos tradicionales, como la PCR y la clonación, son laboriosos y lentos
 
 Los procesos en metagenómica son los siguientes:
 \begin{enumerate}
-\item \textbf{Diseño experimental y muestreo:} Es crucial seleccionar muestras biológicas adecuadas y diseñar experimentos que permitan obtener resultados representativos. Las muestras pueden provenir de agua, suelo o tejidos humanos, y cada tipo requiere protocolos específicos. Por ejemplo, en el caso de una muestra líquida como agua de mar, se pueden utilizar filtros de distinto tamaño, y nos quedamos con el filtro adecuado en función de lo que se desea estudiar.
+\item \textbf{Diseño experimental y muestreo:} Es crucial seleccionar muestras biológicas adecuadas y diseñar experimentos que permitan obtener resultados representativos. Las muestras pueden provenir de agua, suelo o tejidos humanos, y cada tipo requiere protocolos específicos. Por ejemplo, en el caso de una columna de agua extraída del mar, se pueden utilizar filtros de distinto tamaño, y nos quedamos con el filtro adecuado en función de lo que se desea estudiar. En el caso de bacterias, filtros de 8-9 micras. Y en el caso de cianobacterias y sus microorganismos asociados, de 3 a 8 micras.
 
 \begin{figure}[h]
 \centering
@@ -39,14 +39,14 @@ Los procesos en metagenómica son los siguientes:
 \end{figure}
 
 \item \textbf{Extracción y secuenciación del ADN:} Una vez obtenida la muestra, se extrae el ADN y se prepara para la secuenciación, ya sea mediante fragmentación o amplificación de genes marcadores (como el 16S rRNA).
-\item \textbf{Ensamblaje y anotación:} Los fragmentos de ADN se ensamblan en contigs, que luego se comparan con bases de datos para identificar genes y asignar taxonomía. Sin embargo, solo se reconstruye alrededor del 50\% del metagenoma debido a la presencia de genes desconocidos. Además, se utilizan umbrales que descartan contigs de menos de 1000 pares de bases, pudiendo descartar poblaciones minoritarias. Esto se puede salvar utilizando metabarcoding secuenciando un gen (por ejemplo, el gen 16S de la subunidad pequeña del ribosoma) para que las poblaciones minoritarias sí encuentren representación. No obstante, hay que tener en cuenta que con un fragmento tan pequeño no es tan fácil discernir la especie.
+\item \textbf{Ensamblaje y anotación:} Los fragmentos de ADN se ensamblan en contigs, que luego se comparan con bases de datos para identificar genes y asignar taxonomía. Sin embargo, solo se reconstruye alrededor del 50\% del metagenoma debido a la presencia de genes desconocidos (no se sabe anotar la mitad de las lecturas). Además, se utilizan umbrales que descartan contigs de menos de 1000 pares de bases, pudiendo descartar poblaciones minoritarias. Esto se puede salvar utilizando metabarcoding secuenciando un gen (por ejemplo, el gen 16S de la subunidad pequeña del ribosoma) para que las poblaciones minoritarias sí encuentren representación. No obstante, hay que tener en cuenta que con un fragmento tan pequeño no es tan fácil discernir la especie.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width = 0.6\textwidth]{figs/assembly.png}
 \end{figure}
 
-\item \textbf{Análisis de diversidad y funcional:} Se utilizan herramientas bioinformáticas para analizar la diversidad microbiana y las rutas metabólicas presentes. Esto incluye la creación de perfiles taxonómicos y funcionales. Se ha multiplicado exponencialmente la cantidad de artículos relacionados con el metagenoma y la cantidad de datos en las bases de datos. De hecho, cuando se publican los datos, una de las primeras cosas que piden es subirlo a repositorios como MGnify, MG-Rast, HMP, NCBI-SRA, Metavir, etc.
+\item \textbf{Análisis de diversidad y funcional:} Se utilizan herramientas bioinformáticas para analizar la diversidad microbiana y las rutas metabólicas presentes en un individuo. Esto incluye la creación de perfiles taxonómicos y funcionales. Esto sirve, por ejemplo, para comparar la diversidad microbiana bajo una condición experimental con fármaco. Se ha multiplicado exponencialmente la cantidad de artículos relacionados con el metagenoma y la cantidad de datos en las bases de datos. De hecho, cuando se publican los datos, una de las primeras cosas que piden es subirlo a repositorios como MGnify, MG-Rast, HMP, NCBI-SRA, Metavir, etc. En ellas se explica cómo procesar los datos y clasificarlos para facilitar su posterior búsqueda.
 \end{enumerate}
 
 \begin{figure}[h]
@@ -55,14 +55,14 @@ Los procesos en metagenómica son los siguientes:
 \end{figure}
 
 \subsection{Ribosoma como reloj evolutivo}
-El ribosoma se ha conocido tradicionalmente como el reloj evolutivo, al ser la maquinaria que permite la traducción del ARNm a proteína. Si hay errores en el ribosoma, la mutación es deletérea, al haber una gran presión evolutiva en el ribosoma. Se pueden admitir pequeñas variaciones, las cuales se pueden utilizar para discernir los distintos grupos taxonómicos. 
+El ribosoma se ha conocido tradicionalmente como el reloj evolutivo, al ser la maquinaria que permite la traducción del ARNm a proteína. Si hay errores en el ribosoma, la mutación es deletérea, al haber una gran presión evolutiva en el ribosoma. Pero no es constante, se pueden admitir pequeñas variaciones, las cuales se pueden utilizar para discernir los distintos grupos taxonómicos. 
 
-El ARN ribosomal está presente en todos los organismos vivos, y está conservado al tener un papel crucial. Además, se utiliza para generar un árbol filogenético de todas las especies. Esto sirvió para ver que los ribosomas humanos se parecen más a las arqueas que a las bacterias.
+El ARN ribosomal está presente en todos los organismos vivos, y está conservado al tener un papel crucial. Además, se utiliza para generar un árbol filogenético de todas las especies. Esto sirvió para ver que los ribosomas humanos se parecen más a las arqueas que a las bacterias. Y se encontró que el 33\% de la diversidad del árbol corresponde con individuos nuevos que no se habían caracterizado, denominados CPR (\textit{Candidate Phyla Radiation}), con un papel bastante crucial para el establecimiento de poblaciones.
 
 \section{Aplicaciones de la metagenómica}
 La metagenómica ha revolucionado el estudio de la microbiota humana y de los ecosistemas. Proyectos como el \textbf{Human Microbiome Project} buscan caracterizar el microbioma humano en diferentes condiciones y localizaciones, identificando correlaciones entre la composición microbiana y enfermedades como la obesidad, la psoriasis y las enfermedades cardiovasculares. A este conjunto de enfermedades se le conoce como \textbf{disbiosis}, patologías causadas por desregulaciones de las poblaciones microbianas. No se conoce si se provoca primero la enfermedad y en base al microclima cambia también la microbiota o al revés, pero la caracterización del microbiota sirve como marcador de estas enfermedades.
 
-Un ejemplo destacado es el tratamiento de infecciones por \textit{Clostridium difficile} mediante trasplantes de microbiota fecal, que han demostrado restaurar la diversidad microbiana y mejorar la salud del paciente. Se utiliza el índice de Shannon como índice de diversidad.
+Un ejemplo destacado es el tratamiento de infecciones por \textit{Clostridium difficile} mediante trasplantes de microbiota fecal, que han demostrado restaurar la diversidad microbiana y mejorar la salud del paciente. Se utiliza el índice de Shannon como índice de diversidad (se ve disminuido en el sobrecrecimiento de \textit{Clostridium difficile} y aumentado con el transplante).
 
 \begin{figure}[h]
 \centering
