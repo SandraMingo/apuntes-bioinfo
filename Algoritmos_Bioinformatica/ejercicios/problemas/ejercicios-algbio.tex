@@ -1,0 +1,76 @@
+\documentclass[nochap]{config/ejercicios}
+
+\title{Ejercicios y problemas (ALGBIO)}
+\author{Sandra Mingo Ramírez}
+\date{2024/25}
+
+\usepackage[all]{nowidow}
+\usepackage{listing}
+\usepackage{color}
+\usepackage{tabularx}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\begin{document}
+\maketitle
+
+\begin{problemS}
+Sort the following functions according to their growth: \\
+$n, \sqrt{n}, n^{1.5}, n^2, n \log n, n \log \log n, n \log^2 n, 2/n, 2^n, 2^{n/2}, 37, n^2 \log n, n^3$
+
+Para ordenar las funciones utilizando la notación O, hay que ver qué ocurre cuando n tiende a infinito. De forma ascendente: \\
+$2/n, 37,\sqrt{n}, n, n \log \log n, n \log n, n \log^2 n, n^{1.5}, n^2, n^2 \log n, n^3, 2^{n/2}, 2^n$
+\end{problemS}
+
+\begin{problemS} \textbf{Python}
+A classical example of a Divide and Conquer algorithm is binary search over ordered tables, which is essentially done according to the following pseudocode:
+\begin{lstlisting}
+def bin_search(key, l_ints):
+	m = len(l_ints)//2
+	if key == l_ints[m]:
+		return m
+	elif key < l_ints[m]:
+		search key on l_ints ip to index m-1 # left table search
+	else:
+		search key on l_ints from index m+1 # right table search
+\end{lstlisting}
+
+Expand the pseudocode into a correct recursive Python function.
+\begin{lstlisting}
+def bin_search(key, l_ints):
+	m = len(l_ints)//2
+	if key == l_ints[m]:
+		return m
+	elif key < l_ints[m]:
+		bin_search(key, l_ints[:m]
+	else:
+		bin_search(key, l_ints[m + 1:]
+\end{lstlisting}
+\end{problemS}
+
+\begin{problemS}
+Identify a proper key operation for \texttt{bin\_search}. How many key comparisons are performed at most on the table [1, 2, 3, 4, 5, 6, 7] in successful searches? And in unsuccessful ones?
+
+La operación clave es la comparación \texttt{key == l\_ints}. En el mejor de los casos, solo se ejecuta una vez, pero en el peor de los casos, 3 veces.
+\end{problemS}
+
+\end{document}
