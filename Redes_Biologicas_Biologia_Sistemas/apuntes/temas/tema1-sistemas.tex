@@ -130,20 +130,7 @@ $$N(T_{div}) = 2N(0) = N(0) \cdot e^{r \cdot T_{div}}$$
 Dividiendo por $N(0)$:
 $$ e^{r \cdot T_{div}} = 2 \rightarrow r \cdot T_{div} = ln 2 \rightarrow r = \frac{ln 2}{T_{div}}$$
 
-\subsection{Dilución proteica}
-Durante el crecimiento celular, las proteínas se diluyen debido al aumento del volumen celular. Si $P(t)$ es la cantidad de una proteína, su dinámica se describe como:
-$$\frac{dP}{dt} = rP - \frac{P}{T_{div}}$$
-
-\subsection{Degradación proteica}
-Las proteínas también se degradan con una tasa constante $k_d$. La dinámica se describe como:
-$$\frac{dP}{dt} = -k_dP \rightarrow P(t) = P(0) \cdot e^{-k_dt}$$
-
-\subsection{Combinación de procesos}
-En una célula, el crecimiento, la dilución y la degradación ocurren simultáneamente. La dinámica combinada se describe como:
-$$\frac{dP}{dt} = rP - \frac{P}{T_{div}} - k_dP$$
-Esta ecuación captura cómo cambia la proteína debido al crecimiento, la dilución y la degradación.
-
-\subsection{Ejercicio: Malthusian growth of bacteria}
+\subsubsection{Ejercicio: Malthusian growth of bacteria}
 Con el modelo lineal de crecimiento celular, ¿cuánto tiempo tardará una sola bacteria que se divide a un ritmo constante en llenar todos los océanos del mundo?. Datos: Supongamos que las bacterias tienen un volumen de 1 micrómetro cúbico y se dividen cada 30 minutos (valores típicos en \textit{E. coli}). El volumen estimado de todos los océanos es de $292.131.000 km^3$.
 
 Podemos redondear el volumen de todos los océanos como:
@@ -164,3 +151,157 @@ Sustituyendo, quedaría lo siguiente:
 $$3 \cdot 10^{35} = e^{\frac{ln 2}{0,5} \cdot t} \rightarrow ln 3 + 35 \cdot ln 10 = \frac{ln 2}{0,5} \cdot t \rightarrow t = 58 h$$
 
 Este modelo no es útil porque está demasiado simplificado. Hay que tener en cuenta los nutrientes, las restricciones espaciales, etc. 
+
+%05/02 - Raúl Guantes
+\subsection{Dilución proteica}
+Durante el crecimiento celular, las proteínas se diluyen debido al aumento del volumen celular. Este fenómeno ocurre porque, al dividirse una célula, las proteínas se distribuyen entre las dos células hijas, reduciendo su concentración en cada una de ellas.
+
+\subsubsection{Modelización de la dilución proteica}
+Sea $P(t)$ el número de proteínas por célula en el tiempo $t$. Consideremos que partimos inicialmente de $P(0) = 8$ proteínas por célula y $N(0) = 1$ célula. 
+Tras un tiempo de división $T_{div}$, la célula se divide en dos células hijas, y las proteínas se distribuyen aproximadamente en partes iguales entre ellas. Por tanto:
+$$P(T_{div}) = \frac{P(0)}{2}$$
+Tras $n$ divisiones celulares, el número de proteínas por célula se reduce a:
+$$P(nT_{div}) = \frac{P(0)}{2^n}$$
+Generalizando para cualquier tiempo $t$, el número de proteínas por célula sigue la relación:
+$$P(t) = P(0) \cdot 2^{-\frac{t}{T_{div}}}$$
+
+\subsubsection{Relación con el crecimiento exponencial de la población}
+El número total de células $N(t)$ crece exponencialmente con el tiempo:
+$$N(T_{div}) = N(0) \cdot e^{r \cdot T_{div}}$$
+donde $r = ln 2 / T_{div}$ es la tasa de crecimiento. 
+
+El número total de proteínas en la población $P^{tot}(t)$ se mantiene constante, ya que las proteínas no se crean ni se destruyen, solo se distribuyen entre las células hijas:
+$$P^{tot}(t) = P^{tot}(0)$$
+Por tanto, el número de proteínas por célula $P(t)$ se puede expresar como:
+$$P(t) = \frac{P^{tot}(t)}{N(t)} = \frac{P^{tot} (0)}{N(0) \cdot e^{\frac{ln 2}{T_{div}} \cdot t}} = P(0) \cdot e^{-\frac{ln 2}{T_{div}} \cdot t}$$
+
+\subsubsection{Ecuación diferencial de la dilución proteica}
+La dinámica de la dilución proteica se describe mediante una ecuación diferencial que relaciona la tasa de cambio de $P(t)$ con el tiempo:
+$$\frac{dP}{dt} = -\frac{ln 2}{T_{div}} \cdot P(t)$$
+
+Es importante distinguir entre:
+\begin{itemize}
+\item \textbf{Ecuación diferencial:} describe cómo cambia $P(t)$ con el tiempo. En este caso, indica que la tasa de cambio de $P(t)$ es proporcional a $P(t)$ misma, con una constante de proporcionalidad negativa $- ln 2/T_{div}$.
+\item \textbf{Solución de la ecuación diferencial:} proporciona la expresión explícita de $P(t)$ en función del tiempo.
+\end{itemize}
+
+En este contexto de dilución proteica, la tasa de cambio de la cantidad de proteínas por célula $P(t)$ se puede expresar en términos de una \textbf{constante de dilución} $\delta_{dil}$, definida como:
+$$ \delta_{dil} = \frac{ln 2}{T_{div}}$$
+Por lo tanto, la ecuación diferencial que describe la dilución proteica se reescribe como:
+$$\frac{dP}{dt} = -\frac{ln 2}{T_{div}} \cdot P(t) = -\delta_{dil} \cdot P(t)$$
+Esta ecuación indica que la cantidad de proteínas por célula disminuye exponencialmente con el tiempo debido a la división celular.
+
+\subsection{Degradación activa de proteica}
+Además de la dilución, las proteínas también pueden sufrir degradación activa, un proceso en el que las proteínas son descompuestas o eliminadas de la célula. En aproximadamente el 80\% de los casos medidos, la cantidad de proteínas disminuye de forma exponencial debido a este proceso.
+
+\subsubsection{Modelización de la degradación}
+La degradación activa se modela mediante una tasa de degradación $\delta_{deg}$, que describe cómo la cantidad total de proteínas $P^{tot}(t)$ en la población celular disminuye con el tiempo:
+$$P^{tot}(t) = P^{tot}(0) \cdot e^{-\delta_{deg}\cdot t}$$
+
+La ecuación diferencial que describe este proceso es:
+$$ \frac{dP^{tot}}{dt} = -\delta_{deg} \cdot P^{tot}$$
+
+\subsubsection{Combinación de dilución y degradación}
+Cuando tanto la dilución como la degradación están presentes, la cantidad de proteínas por célula $P(t)$ se ve afectada por ambos procesos. Para modelar esto, combinamos las contribuciones de la dilución y la degradación.
+\begin{enumerate}
+\item \textbf{Cantidad total de proteínas}
+$$P^{tot}(t) = P^{tot}(0) \cdot e^{-\delta_{deg} \cdot t}$$
+
+\item \textbf{Número de células}
+$$N(t) = N(0) \cdot e^{\frac{ln 2}{T_{div}} \cdot t}$$
+
+\item \textbf{Proteínas por célula}
+$$P(t) = \frac{P^{tot} (t)}{N(t)} = \frac{P^{tot}(0) \cdot e^{-\delta_{deg} \cdot t}}{N(0) \cdot e^{\frac{ln 2}{T_{div}} \cdot t}} = P(0) \cdot e^{-(\delta_{deg} + \frac{ln2}{T_{div}})t}$$
+donde $P(0) = \frac{P^{tot}(0)}{N(0)}$ es la cantidad inicial de proteínas por célula.
+
+\item \textbf{Tasa de cambio combinada}
+
+Definimos la \textbf{tasa de disminución total} $\delta$ como la suma de la tasa de degradación activa $\delta_{deg}$ y la tasa de dilución $\delta_{dil}$:
+$$\delta = \delta_{deg} + \delta_{dil}$$
+Por tanto, la expresión para $P(t)$ se simplifica a:
+$$P(t) = P(0) \cdot e^{-\delta \cdot t}$$
+Y la ecuación diferencial que describe la dinámica combinada es:
+$$\frac{dP}{dt} = -\delta P$$
+\end{enumerate}
+
+La constante $\delta$ representa la tasa efectiva de disminución de proteínas por célula, teniendo en cuenta tanto la degradación activa como la dilución debida al crecimiento celular. Un valor mayor de $\delta$ indica una disminución más rápida de la cantidad de proteínas por célula.
+
+\subsubsection{Vida media}
+La vida media ($T_{1/2}$) es el tiempo necesario para que la concentración de una sustancia (en este caso, proteínas) se reduzca a la mitad de su valor inicial. Matemáticamente, esto se expresa como:
+$$P(T_{1/2}) = \frac{P(0)}{2}$$
+
+Partiendo de la ecuación que describe la disminución exponencial de la concentración de proteínas:
+$$P(t) = P(0) \cdot e^{-\delta t}$$
+Sustituyendo $t = T_{1/2}$ y $P(T_{1/2}) = \frac{P(0)}{2}$, obtenemos:
+$$\frac{P(0)}{2} = P(0) \cdot e^{-\delta \cdot T_{1/2}}$$
+Simplificando $P(0)$ en ambos lados:
+$$\frac{1}{2} = e^{-\delta \cdot T_{1/2}}$$
+Aplicando el logaritmo neperiano a ambos lados:
+$$ln(\frac{1}{2}) = - \delta \cdot T_{1/2}$$
+Resolviendo para $T_{1/2}$:
+$$T_{1/2} = \frac{ln 2}{\delta}$$
+Por lo tanto, la constante de disminución $\delta$ se relaciona con la vida media mediante:
+$$\delta = \frac{ln 2}{T_{1/2}}$$
+
+\subsection{Combinación: producción y degradación de proteínas}
+En muchos sistemas biológicos, las proteínas no solo se degradan, sino que también se producen activamente. Para modelar este proceso, introducimos:
+\begin{itemize}
+\item $\alpha$: la \textbf{tasa de producción} de proteínas, con unidades de proteínas por unidad de tiempo.
+\item $\delta$: la \textbf{tasa de disminución total}, que incluye tanto la degradación activa como la dilución debida al crecimiento celular, con unidad de inversa de tiempo.
+\end{itemize}
+La dinámica de la cantidad de proteínas $P(t)$ se describe mediante la siguiente ecuación diferencial:
+$$\frac{dP}{dt} = \alpha - \delta P$$
+
+\subsubsection{Resolución de la ecuación diferencial}
+Para resolver esta ecuación, seguimos los siguientes pasos:
+\begin{enumerate}
+\item \textbf{Separación de variables}
+$$\frac{dP}{\alpha - \delta P} = dt$$
+
+\item \textbf{Integración de ambos lados}
+$$\int \frac{dP}{\alpha - \delta P} = \int dt$$
+
+\item \textbf{Resolución de las integrales}
+
+La integral del lado derecho es:
+$$\int dt = t + cte$$
+
+La integral del lado izquierdo requiere una sustitución. Sea $u = \alpha - \delta P$, entonces $du = - \delta dP$, y
+$$\int \frac{dP}{\alpha - \delta P} = - \frac{1}{\delta} \int \frac{du}{u} = -\frac{1}{\delta} ln |u| + C = -\frac{1}{\delta} ln(\alpha - \delta P) + C$$
+
+\item \textbf{Igualando ambas integrales}
+$$-\frac{1}{\delta} ln (\alpha - \delta P) = t + C$$
+
+\item \textbf{Despejando $P(t)$}
+
+Multiplicamos ambos lados por $-\delta$:
+$$ln(\alpha - \delta P) = -\delta t + C'$$
+donde $C' = -\delta C$.
+
+Aplicamos la exponencial a ambos lados:
+$$\alpha - \delta P = e^{-\delta t + C'} = e^{C'} \cdot e^{-\delta t}$$
+
+Despejamos $P(t)$:
+$$P(t) = \frac{\alpha}{\delta} - \frac{e^{C'}}{\delta} e^{-\delta t}$$
+
+\item \textbf{Determinación de la constante $C'$}
+
+Aplicamos la condición inicial $P(0)$:
+$$P(0) = \frac{\alpha}{\delta} - \frac{e^{C'}}{\delta}$$
+
+Despejamos $e^{C'}$:
+$$e^{C'} = \alpha - \delta P(0)$$
+
+\item \textbf{Sustituyendo $e^{C'}$ en la solución}:
+$$P(t) = \frac{\alpha}{\delta} - \frac{\alpha - \delta P(0)}{\delta} e^{-\delta t}$$
+Y simplificando:
+$$P(t) = \frac{\alpha}{\delta} (1 - e^{-\delta t}) + P(0) e^{-\delta t}$$
+\end{enumerate}
+
+\subsubsection{Estado estacionario}
+Cuando $t\rightarrow \infty$, el término exponencial $e^{-\delta t}$ tiende a 0, y la cantidad de proteínas $P(t)$ alcanza un estado estacionario:
+$P(t) \rightarrow \frac{\alpha}{\delta}$
+Este valor representa el equilibrio entre la producción y la degradación de proteínas.
+
+
+

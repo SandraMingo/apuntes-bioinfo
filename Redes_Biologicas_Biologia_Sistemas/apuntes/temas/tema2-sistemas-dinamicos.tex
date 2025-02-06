@@ -1,0 +1,49 @@
+%05/02 - Raúl Guantes
+\chapter{Sistemas dinámicos no lineales}
+\section{Crecimiento logístico}
+El crecimiento de las poblaciones está limitado por los recursos que están disponibles. Para ello, se debe añadir un parámetro nuevo, denominado como $k$, que indica la cantidad de recursos. Suponemos que la población tiene una tasa de crecimiento $r$ positiva. Además, contamos con $N(t)$, que es el número de células a un tiempo t. 
+
+Suponiendo que hay una ecuación diferencial que dice cómo cambia la población con el tiempo en función de la variable y los parámetros r y k:
+$$\frac{dN}{dt} = f(N; r, k)$$
+Suponiendo que los recursos son ilimitados, $r N$. No obstante, si los recursos son limitados, entonces el tamaño depende de los recursos. Si la población es mayor que la disponibilidad de los recursos, la población debe disminuir y habrá células que mueran. SI el tamaño de la población es pequeño, hay recursos suficientes y la población crece. En otras palabras, la derivada es positiva o negariva según si la población crece o disminuye respectivamente. 
+$$r N (1 - \frac{N}{k}$$
+Esto se conoce como la ecuación de crecimiento logística. Esta ecuuación es no lineal porque N termina estando al cuadrado. 
+
+$$N(t) = \frac{N(0) k}{N(0) + (k - N(0))e^{-rt}}$$
+A tiempo infinito, la población tiende al valor de k, quedando en el equilibrio.
+En estado de equilibrio, la derivada en función del tiempo da 0. 
+$$0 = r N (1 - \frac{N}{K}) \begin{cases} 
+N^1_{eq} = K \rightarrow \text{Estable} \\
+N^2_{eq} = 0 \rightarrow \text{Inestable}
+\end{cases}
+$$
+
+Para entender el comportamiento a tiempos largos (en equilibrio), hay que calcular puntos de equilibrio y la estabilidad. Si tenemos un sistema biológico de verdad, al medir a tiempos largos, siempre va a estar en un estado de equilibrio estable, al ser robustos a fluctuaciones. La estabilidad se puede deducir sin resolver la ecuación diferencial mediante dos formas: la forma gráfica y la forma matemática. 
+
+\subsection{Cálculo de estabilidad de forma gráfica}
+Con una sola variable, se pinta el denominado \textbf{plano de fases}. En el eje x está la variable, y en el y la derivada de la variable con respecto al tiempo. 
+$$\frac{dN}{dt} = f(N) = rN - \frac{rN^2}{K}$$ 
+Los puntos de corte son en 0 y en k, quedando una parábola invertida. Para calcular el máximo hay que poner la derivada en 0.
+$$\frac{df}{dN} = 0 = r - \frac{2rN}{k} \rightarrow N = \rightarrow N = \frac{rk}{2r} = \frac{k}{2}$$
+
+El punto de equilibrio en k es estable, porque N siempre va a converger a ese punto, ya que en un lado la función es positiva y en el otro lado negativa.
+
+\subsection{Cálculo de estabilidad de forma matemática o por linealización}
+La ventaja de este método es que se puede aplicar al número de variables que se quiera. Esta estabilidad se obtiene por linealización. 
+Se busca analizar la función en un valor de equilibrio con una pequeña perturbación. 
+$$N = N_{eq} + \Delta N$$
+Al derivar:
+$$\frac{d(N_{eq} + \Delta N)}{dt} = f(N_{eq} + \Delta N$$
+$$(\frac{dN_{eq}}{dt} = 0) + \frac{d \Delta N}{dt}$$
+
+$f(N)$ se aproxima por un polinomio según la serie de Taylor. En otras palabras, se aproxima:
+$$f(N) \approx a + bN + cN^2 + dN^3 + \ldots$$ 
+Vamos a usar eso para realizar una aproximación alrededor de un punto $N_0$. Para aproximar en una línea recta, debe pasar por ese punto y su pendiente debe ser la pendiente de la función, es decir, la derivada de la función y la variable.
+$$a = f(N_0); b = \frac{df}{dN}; f = a + bN$$
+
+$$f(N) \approx f(N_0) + \frac{df(N_0)}{dN} (N-N_0) + \frac{1}{2} \frac{d^2f(N_0)}{dN^2} (N-N_0)^2 + \ldots \frac{1}{n!} \frac{d^n(N_0)}{dN^n}(N-N_0)^n$$
+Esta aproximación de Taylor se utiliza para aproximar la función $f(N_{eq} + \Delta N$ alrededor del punto $N_{eq}$. 
+$$\frac{d \Delta N}{dt} = f(N_{eq} + \frac{df(N_{eq})}{dN} (N-N_{eq}) \rightarrow \frac{\Delta N}{dt} = f'(N_{eq} \Delta N$$
+
+Si $f'(N_{eq}) > 0$, el punto de equilibrio es inestable, ya que aumentaría en el tiempo ($\Delta N(t) = \Delta N(0) \cdot e^{f'(N_{eq}) t}$). Si $f'(N_{eq}) < 0$, entonces el punto de equilibrio es estable.
+
