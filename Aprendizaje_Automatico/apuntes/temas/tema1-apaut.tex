@@ -38,16 +38,22 @@ x_1 y_1 & ... & x_1 y_n \\
 x_m y_1 & ... & x_m y_n
 \end{pmatrix} \in \mathbb{R}^{m \times n}$$
 
-El producto externo tiene como aplicaciones para la bioinformática:
-\subsubsection{Álgebra Lineal}
-\textbf{Matrices de Covarianza}: Se utiliza en la construcción de matrices de covarianza, que son fundamentales en estadística y análisis de datos.
-\textbf{Representación de Transformaciones}: Ayuda a representar transformaciones lineales y rotaciones en el espacio.
-\subsubsection{Análisis de Datos y Machine Learning}
-\textbf{Modelos de Regresión}: En algunos métodos de regresión, como la regresión de mínimos cuadrados, se utiliza el producto externo para construir matrices de diseño.
-\textbf{Métodos de Factorización}: Se aplica en técnicas como la factorización de matrices y la descomposición en valores singulares (SVD), que son esenciales en la reducción de dimensionalidad y análisis de componentes principales (PCA).
+El producto externo tiene las siguientes aplicaciones en bioinformática:
+\begin{itemize}
+\item \textbf{Álgebra lineal}
+\begin{itemize}
+\item \textbf{Matrices de Covarianza}: Se utiliza en la construcción de matrices de covarianza, que son fundamentales en estadística y análisis de datos.
+\item \textbf{Representación de Transformaciones}: Ayuda a representar transformaciones lineales y rotaciones en el espacio.
+\end{itemize}
+\item \textbf{Análisis de Datos y Machine Learning}
+\begin{itemize}
+\item \textbf{Modelos de Regresión}: En algunos métodos de regresión, como la regresión de mínimos cuadrados, se utiliza el producto externo para construir matrices de diseño.
+\item \textbf{Métodos de Factorización}: Se aplica en técnicas como la factorización de matrices y la descomposición en valores singulares (SVD), que son esenciales en la reducción de dimensionalidad y análisis de componentes principales (PCA).
+\end{itemize}
+\end{itemize}
 \end{itemize}
 
-\paragraph{Multiplicación matriz-vector} Dada una matriz $\vec{A} \in \mathbb{R}^{m \times n}$ y un vector $\vec{x} \in \mathbb{R}^n$, el producto es un vector del tamaño $\mathbb{R}^m$. El proceso consiste en multiplicar cada fila de la matriz $𝐴$ por el vector $𝑥$ y sumar los resultados.
+\paragraph{Multiplicación matriz-vector} Dada una matriz $\vec{A} \in \mathbb{R}^{m \times n}$ y un vector $\vec{x} \in \mathbb{R}^n$, el producto es un vector del tamaño $\mathbb{R}^m$. El proceso consiste en multiplicar cada fila de la matriz $\vec{A}$ por el vector $\vec{x}$ y sumar los resultados.
 $$Ax = \begin{pmatrix}
 A_{1,1}x_1 + A_{1,2}x_2 + ... + A_{1,n}x_n \\
 ... \\
@@ -59,13 +65,29 @@ A_{m,1}x_1 + A_{m,2}x_2 + ... + A_{m,n}x_n
 \includegraphics[width = 0.5\textwidth]{figs/matrix-vector-mult.png}
 \end{figure}
 
-\subsection{Aplicaciones del Producto Externo}
-\subsubsection{Álgebra Lineal}
-\textbf{Matrices de Covarianza}: Se utiliza en la construcción de matrices de covarianza, que son fundamentales en estadística y análisis de datos.
-\textbf{Representación de Transformaciones}: Ayuda a representar transformaciones lineales y rotaciones en el espacio.
-\subsubsection{Análisis de Datos y Machine Learning}
-\textbf{Modelos de Regresión}: En algunos métodos de regresión, como la regresión de mínimos cuadrados, se utiliza el producto externo para construir matrices de diseño.
-\textbf{Métodos de Factorización}: Se aplica en técnicas como la factorización de matrices y la descomposición en valores singulares (SVD), que son esenciales en la reducción de dimensionalidad y análisis de componentes principales (PCA).
+Entre las aplicaciones de la multiplicación matriz-vector se encuentran:
+\begin{itemize}
+\item \textbf{Álgebra lineal y matemáticas puras}
+\begin{itemize}
+\item \textbf{Sistemas de Ecuaciones Lineales}: Resolver sistemas de ecuaciones de la forma \(Ax = b\).
+\item \textbf{Transformaciones Lineales}: Representar y aplicar transformaciones lineales como rotaciones, escalamientos y reflexiones.
+\end{itemize}
+\item \textbf{Computación y Algoritmos}
+\begin{itemize}
+\item \textbf{Algoritmos de Optimización}: Implementar métodos de optimización como gradiente descendente.
+\item \textbf{Análisis de Gráficos}: Procesar datos en grafos y redes, como algoritmos de PageRank.
+\item \textbf{Compresión de Datos}: Utilizar en algoritmos de compresión de datos y análisis de componentes principales (PCA).
+\end{itemize}
+\item \textbf{Machine Learning e Inteligencia Artificial}
+\begin{itemize}
+\item \textbf{Regresión Lineal}: Resolver problemas de regresión lineal para ajustar modelos a datos.
+\item \textbf{Redes Neuronales}: Calcular activaciones y actualizar pesos en redes neuronales.
+\end{itemize}
+\item \textbf{Bioinformática}
+\begin{itemize}
+\item \textbf{Análisis de Datos Genómicos}: Procesar y analizar grandes volúmenes de datos genómicos y de secuenciación.
+\end{itemize}
+\end{itemize}
 
 \paragraph{Multiplicación matriz-matriz} Dadas dos matrices $\vec{A} \in \mathbb{R}^{m \times n}$ y $\vec{B} \in \mathbb{R}^{n \times p}$, el producto es una matriz de tamaño $\mathbb{R}^{m \times p}$.
 $$\vec{AB} = \begin{pmatrix}
@@ -78,23 +100,6 @@ $$\vec{AB} = \begin{pmatrix}
 \centering
 \includegraphics[width = 0.7\textwidth]{figs/matrix-matrix-mult.png}
 \end{figure}
-
-\subsection{Aplicaciones de la Multiplicación Matriz-Vector}
-\subsubsection{Álgebra Lineal y Matemáticas Puras}
-\textbf{Sistemas de Ecuaciones Lineales}: Resolver sistemas de ecuaciones de la forma \(Ax = b\).
-\textbf{Transformaciones Lineales}: Representar y aplicar transformaciones lineales como rotaciones, escalamientos y reflexiones.
-
-\subsubsection{Computación y Algoritmos}
-\textbf{Algoritmos de Optimización}: Implementar métodos de optimización como gradiente descendente.
-\textbf{Análisis de Gráficos}: Procesar datos en grafos y redes, como algoritmos de PageRank.
-\textbf{Compresión de Datos}: Utilizar en algoritmos de compresión de datos y análisis de componentes principales (PCA).
-
-\subsubsection{Machine Learning e Inteligencia Artificial}
-\textbf{Regresión Lineal}: Resolver problemas de regresión lineal para ajustar modelos a datos.
-\textbf{Redes Neuronales}: Calcular activaciones y actualizar pesos en redes neuronales.
-
-\subsubsection{Bioinformática}
-\textbf{Análisis de Datos Genómicos}: Procesar y analizar grandes volúmenes de datos genómicos y de secuenciación.
 
 \subsection{Propiedades de la multiplicación de matrices}
 \paragraph{No conmutatividad:} En general, la multiplicación de matrices no es conmutativa, es decir, $\vec{A} \times \vec{B} \neq \vec{B} \times \vec{A}$. Por ejemplo:
