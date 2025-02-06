@@ -1,49 +1,81 @@
 %05/02 - Raúl Guantes
 \chapter{Sistemas dinámicos no lineales}
 \section{Crecimiento logístico}
-El crecimiento de las poblaciones está limitado por los recursos que están disponibles. Para ello, se debe añadir un parámetro nuevo, denominado como $k$, que indica la cantidad de recursos. Suponemos que la población tiene una tasa de crecimiento $r$ positiva. Además, contamos con $N(t)$, que es el número de células a un tiempo t. 
-
-Suponiendo que hay una ecuación diferencial que dice cómo cambia la población con el tiempo en función de la variable y los parámetros r y k:
+El crecimiento de las poblaciones biológicas está limitado por la disponibilidad de recursos. Para modelar este fenómeno, se introduce un nuevo parámetro $k$, que representa la capacidad de carga del entorno, es decir, la cantidad máxima de individuos que el entorno puede sostener (la cantidad de recursos disponibles para toda la población). Además, se considera:
+\begin{itemize}
+\item $r$: la \textbf{tasa de crecimiento} de una población (positiva)
+\item $N(t)$: el número de células en el tiempo $t$
+\end{itemize}
+La dinámica de la población se describe mediante una ecuación diferencial que depende de $N$, $r$ y $k$:
 $$\frac{dN}{dt} = f(N; r, k)$$
-Suponiendo que los recursos son ilimitados, $r N$. No obstante, si los recursos son limitados, entonces el tamaño depende de los recursos. Si la población es mayor que la disponibilidad de los recursos, la población debe disminuir y habrá células que mueran. SI el tamaño de la población es pequeño, hay recursos suficientes y la población crece. En otras palabras, la derivada es positiva o negariva según si la población crece o disminuye respectivamente. 
-$$r N (1 - \frac{N}{k}$$
-Esto se conoce como la ecuación de crecimiento logística. Esta ecuuación es no lineal porque N termina estando al cuadrado. 
 
+\subsection{Ecuación de crecimiento logístico}
+Si los recursos son ilimitados, la población crece exponencialmente:
+$$\frac{dN}{dt} = rN$$
+
+Sin embargo, cuando los recursos son limitados, el crecimiento se ve afectado por la disponibilidad de recursos. Si la población supera la capacidad de carga ($N > k$), la población disminuye debido a la falta de recursos. Por el contrario, si la población es pequeña ($N < k$), hay suficientes recursos para que la población crezca. Esto se modela mediante la \textbf{ecuación de crecimiento logístico}:
+$$\frac{dN}{dt} = rN(1-\frac{N}{k})$$
+Esta ecuación es \textbf{no lineal} debido al término $N^2$. Se puede obtener la derivada para ver si la población crece (derivada positiva) o disminuye (derivada negativa).
+
+\subsection{Solución de la ecuación logística}
+La solución analítica de la ecuación logística es:
 $$N(t) = \frac{N(0) k}{N(0) + (k - N(0))e^{-rt}}$$
-A tiempo infinito, la población tiende al valor de k, quedando en el equilibrio.
-En estado de equilibrio, la derivada en función del tiempo da 0. 
+Cuando $t \rightarrow \infty$, la población tiende a la capacidad de carga $k$, alcanzando un \textbf{estado de equilibrio}:
+$N(t) \rightarrow k$
+
+\subsection{Puntos de equilibrio y estabilidad}
+En un sistema dinámico, los \textbf{puntos de equilibrio} son aquellos en los que la derivada temporal es cero ($dN/dt = 0$). Para la ecuación logística, los puntos de equilibrio son:
 $$0 = r N (1 - \frac{N}{K}) \begin{cases} 
 N^1_{eq} = K \rightarrow \text{Estable} \\
 N^2_{eq} = 0 \rightarrow \text{Inestable}
 \end{cases}
 $$
 
-Para entender el comportamiento a tiempos largos (en equilibrio), hay que calcular puntos de equilibrio y la estabilidad. Si tenemos un sistema biológico de verdad, al medir a tiempos largos, siempre va a estar en un estado de equilibrio estable, al ser robustos a fluctuaciones. La estabilidad se puede deducir sin resolver la ecuación diferencial mediante dos formas: la forma gráfica y la forma matemática. 
+\begin{itemize}
+\item $N_{eq} = k$ es un punto de equilibrio estable, ya que la población tiende a $k$ a largo plazo.
+\item $N_{eq} = 0$ es un punto de equilibrio inestable, ya que cualquier pequeña perturbación hará que la población crezca hacia $k$.
+\end{itemize}
 
-\subsection{Cálculo de estabilidad de forma gráfica}
-Con una sola variable, se pinta el denominado \textbf{plano de fases}. En el eje x está la variable, y en el y la derivada de la variable con respecto al tiempo. 
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.9\textwidth]{figs/estabilidad-dinamica.png}
+\end{figure}
+
+\subsection{Análisis de estabilidad}
+Para entender el comportamiento a largo plazo de un sistema dinámico, es necesario calcular los puntos de equilibrio y determinar su estabilidad. 
+Un sistema biológico de verdad, al medir a tiempos largos, siempre va a estar en un estado de equilibrio estable, al ser robustos a fluctuaciones. La estabilidad se puede deducir sin resolver la ecuación diferencial mediante dos formas: la forma gráfica y la forma matemática. 
+
+\subsubsection{Método gráfico: Plano de fases}
+En sistemas con una sola variable, se utiliza el plano de fases, donde:
+\begin{itemize}
+\item El eje x representa la variable $N$.
+\item El eje y representa la derivada $dN/dt$
+\end{itemize}
+Para la ecuación logística:
 $$\frac{dN}{dt} = f(N) = rN - \frac{rN^2}{K}$$ 
-Los puntos de corte son en 0 y en k, quedando una parábola invertida. Para calcular el máximo hay que poner la derivada en 0.
-$$\frac{df}{dN} = 0 = r - \frac{2rN}{k} \rightarrow N = \rightarrow N = \frac{rk}{2r} = \frac{k}{2}$$
+Esta función es una parábola invertida con puntos de corte en $N = 0$ y $N = k$. El máximo de la parábola se encuentra en:
+$$\frac{df}{dN} = 0 \rightarrow r - \frac{2rN}{k} = 0 \rightarrow N = \frac{k}{2}$$
 
-El punto de equilibrio en k es estable, porque N siempre va a converger a ese punto, ya que en un lado la función es positiva y en el otro lado negativa.
+El punto $N = k$ es \textbf{estable} porque, a su izquierda, $dN/dt > 0$ (la población crece), y a su derecha, $dN/dt < 0$ (la población decrece).
 
-\subsection{Cálculo de estabilidad de forma matemática o por linealización}
-La ventaja de este método es que se puede aplicar al número de variables que se quiera. Esta estabilidad se obtiene por linealización. 
-Se busca analizar la función en un valor de equilibrio con una pequeña perturbación. 
+\subsubsection{Método matemático: Linealización}
+Este método es más general y puede aplicarse a sistemas con múltiples variables. Consiste en linealizar la función $f(N)$ alrededor de un punto de equilibrio $N_{eq}$ utilizando una \textbf{aproximación de Taylor}.
+\begin{enumerate}
+\item \textbf{Perturbación alrededor del equilibrio}
 $$N = N_{eq} + \Delta N$$
-Al derivar:
-$$\frac{d(N_{eq} + \Delta N)}{dt} = f(N_{eq} + \Delta N$$
-$$(\frac{dN_{eq}}{dt} = 0) + \frac{d \Delta N}{dt}$$
 
-$f(N)$ se aproxima por un polinomio según la serie de Taylor. En otras palabras, se aproxima:
-$$f(N) \approx a + bN + cN^2 + dN^3 + \ldots$$ 
-Vamos a usar eso para realizar una aproximación alrededor de un punto $N_0$. Para aproximar en una línea recta, debe pasar por ese punto y su pendiente debe ser la pendiente de la función, es decir, la derivada de la función y la variable.
-$$a = f(N_0); b = \frac{df}{dN}; f = a + bN$$
+\item \textbf{Derivada temporal}
+$$\frac{dN}{dt} = \frac{d(N_{eq} + \Delta N}{dt} = f(N_{eq} + \Delta N)$$
 
-$$f(N) \approx f(N_0) + \frac{df(N_0)}{dN} (N-N_0) + \frac{1}{2} \frac{d^2f(N_0)}{dN^2} (N-N_0)^2 + \ldots \frac{1}{n!} \frac{d^n(N_0)}{dN^n}(N-N_0)^n$$
-Esta aproximación de Taylor se utiliza para aproximar la función $f(N_{eq} + \Delta N$ alrededor del punto $N_{eq}$. 
-$$\frac{d \Delta N}{dt} = f(N_{eq} + \frac{df(N_{eq})}{dN} (N-N_{eq}) \rightarrow \frac{\Delta N}{dt} = f'(N_{eq} \Delta N$$
+\item \textbf{Aproximación de Taylor} $f(N) \approx a + bN + cN^2 + dN^3 + \ldots$
+$$f(N_{eq} + \Delta N) \approx f(N_{eq}) + \frac{df(N_{eq}}{dN} \Delta N$$
+Como $f(N_{eq}) = 0$ (punto de equilibrio), se simplifica a:
+$$\frac{d \Delta N}{dt} \approx f'(N_{eq}) \Delta N$$
 
-Si $f'(N_{eq}) > 0$, el punto de equilibrio es inestable, ya que aumentaría en el tiempo ($\Delta N(t) = \Delta N(0) \cdot e^{f'(N_{eq}) t}$). Si $f'(N_{eq}) < 0$, entonces el punto de equilibrio es estable.
-
+\item \textbf{Solución de la ecuación linealizada}
+$$\Delta N(t) = \Delta N(0) \cdot e^{f'(N_{eq})t}$$
+\begin{itemize}
+\item Si $f'(N_{eq}) > 0$, el punto de equilibrio es \textbf{inestable}, ya que la perturbación crece con el tiempo.
+\item Si $f'(N_{eq}) < 0$, el punto de equilibrio es \textbf{estable}, ya que la perturbación decrece con el tiempo.
+\end{itemize}
+\end{enumerate}
