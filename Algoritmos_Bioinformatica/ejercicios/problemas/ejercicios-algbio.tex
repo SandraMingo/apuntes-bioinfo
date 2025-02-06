@@ -73,4 +73,18 @@ Identify a proper key operation for \texttt{bin\_search}. How many key compariso
 La operación clave es la comparación \texttt{key == l\_ints}. En el mejor de los casos, solo se ejecuta una vez, pero en el peor de los casos, 3 veces.
 \end{problemS}
 
+\begin{problemS}
+In general, how many unsuccessful searches will be performed at most on a table [1, 2, 3, ..., 2**n-1]? And successful ones?
+
+Para una lista de números n, se deben evaluar $n/2^k$ elementos, siendo k el número de comparaciones que se han realizado (el número de pasos). Como queremos que la cantidad de pasos o comparaciones sea la menor posible, intentamos igualar $n/2^k < 1$. Matemáticamente:
+$$ n/2^k < 1 \rightarrow n = 2^k \rightarrow \log n = k \rightarrow O(\log n)$$
+\end{problemS}
+
+\begin{problemS} \textbf{Fibonacci numbers and rabbit biology}
+Suppose that bunnies become adults in a month and that a pair of adult rabbits, regardless of sex, produce a pair of bunnies a month. If two young shipwrecked rabbits arrive on a deserted island, how many pairs of rabbits willl there be on the island after N months? For example, after two months there would be two pairs, one of bunnies and one of adult rabbits. 
+
+$$f_n = f_{n-1} + f_{n-2}$$
+\end{problemS}
+
+
 \end{document}
