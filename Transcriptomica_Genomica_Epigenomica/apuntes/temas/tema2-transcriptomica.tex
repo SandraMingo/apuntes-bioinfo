@@ -29,13 +29,13 @@ Hay dos tipos de alineamientos: local y global. En el caso del local, se busca q
 
 La cobertura en un segmento se mide como el número de reads que mapean a ese fragmento del genoma y la longitud de cada lectura dividido por la longitud del fragmento. Para poder hacer el mapeado se necesita la referencia en fasta, las reads en fastq y una referencia indexada. Esto es distinto de los alineadores tradicionales como BLAST. El objetivo es mapear las lecturas a las características. En transcriptómica, el alineamiento se realiza al mismo tiempo que la cuantificación. 
 
-Lo importante es la indexación del genoma de referencia para ahorrar tiempo de computación. El genoma se corta en trozos para que sea más fácil realizar las búsquedas. Esto se puede hacer por ejemplo con BWA. 
+Lo importante es la indexación del genoma de referencia para ahorrar tiempo de computación. El genoma se corta en trozos para que sea más fácil realizar las búsquedas. Esto se puede hacer por ejemplo con BWA y alineadores Bowtie que utilizan la transformación de Burrows-Wheeler al ser más rápidos.
 
-Aunque se hable de expresión génica, los genes no se expresan, son los tránscritos. Con estas técnicas es muy complicado hilar tan fino, por lo que se cuantifican los reads al gen y contar. A la hora de alinear, si se intenta alinear reads al genoma de referencia, las reads salen del tránscrito, por lo que puede ocurrir que una parte de un read caiga en un exón y la otra parte en el otro. Esto se puede visualizar con el visor IGV. Las lecturas partidas se conocen como exon junctions. Por ello, se puede mapear al genoma permitiendo esa característica. Otra opción es alinear directamente al transcriptoma, pero es más grande que el genoma (puede haber 100.000 tránscritos definidos vs 20.000 - 30.000 genes) y puede que haya lecturas que no se puedan mapear a un tránscrito concreto. 
+Aunque se hable de expresión génica, los genes no se expresan, son los tránscritos. Con estas técnicas es muy complicado hilar tan fino, por lo que se cuantifican los reads al gen y contar. A la hora de alinear, si se intenta alinear reads al genoma de referencia, las reads salen del tránscrito, por lo que puede ocurrir que una parte de un read caiga en un exón y la otra parte en el otro. Esto se puede visualizar con el visor IGV. Las lecturas partidas se conocen como \textbf{exon junctions}. Por ello, se puede mapear al genoma permitiendo esa característica. Otra opción es alinear directamente al transcriptoma, pero es más grande que el genoma (puede haber 100.000 tránscritos definidos vs 20.000 - 30.000 genes) y puede que haya lecturas que no se puedan mapear a un tránscrito concreto, si no que puedan mapear a varios tránscritos con el mismo exon.
 
 \begin{figure}[h]
 \centering
-\includegraphics[width = 0.7\textwidth]{figs/Imagen1.png}
+\includegraphics[width = 0.5\textwidth]{figs/Imagen1.png}
 \end{figure}
 
 \subsection{Galaxy}
@@ -47,12 +47,57 @@ Galaxy se conecta a las bases de datos mediante API, por lo que se puede poner e
 
 Nos vamos a descargar la información de los nombres de las muestras (los metadatos). Desde GEO, hay un acceso a SRA Run Selector donde tenemos disponibles esos datos. Hay dos tablas disponibles: metadata y lista de las accesiones con los IDs de las muestras. Los metadatos se necesita posteriormente para saber qué muestras son WT y cuáles KO, pero por ahora solo necesitamos los IDs para subir a Galaxy. El siguiente paso es decirle a Galaxy que, utilizando esos identificadores, se descarguen los FastQ. Para ello, en Get Data hay una opción de Faster Download and Extract Reads in FastQ format from NCBI SRA. Para esa herramienta se selecciona la opción de "List of SRA accessions, one per line" y se ejecuta.
 
-Una vez con los datos, vemos que en Pair-end tenemos 0 datos y en Single-end 6, indicando que las muestras son single-end (aunque esto ya lo sabíamos porque venía en SRA Run Selector). El siguiente paso es ir a FastQC con los datos de single-end. La salida es un fichero txt con los números y un html con las imágenes.
+Una vez con los datos, vemos que en Pair-end tenemos 0 datos y en Single-end 6, indicando que las muestras son single-end (aunque esto ya lo sabíamos porque venía en SRA Run Selector). El siguiente paso es ir a FastQC con los datos de single-end. La salida es un fichero txt con los números y un html con las imágenes. Tras analizarlo brevemente, vemos que no hay ningún problema con las muestras, pudiendo continuar con el análisis.
 
 En Ensembl nos vamos a la página de FTP Downloads donde se encuentran todas las referencias de la última versión del genoma. Para reproducir unos resultados, hay que utilizar la referencia de la fecha de publicación de los datos que se estén utilizando, pero en nuestro caso podemos utilizar la última versión generada. Como no queremos descargar el Fasta a nuestro ordenador, vamos al FastA y buscamos el fichero de primary assembly. Con click derecho, podemos copiar el enlace y en Galaxy, en Upload, se puede utilizar la función Paste/Fetch data y pegar ahí la dirección. También subimos el GTF de los cromosomas.
 
-%\section{Expresión diferencial}
-%
+%07/02 - Fátima
+El siguiente paso es buscar la herramienta Trim-Galore con los datos single-end dejando todas las opciones como las predeterminadas. Con esta herramienta queremos quitar los adaptadores, y en caso de tener muestras dañadas, podríamos también eliminar esa parte. 
+
+\section{Expresión diferencial}
+\subsection{Visualización con IGV}
+Para subir un fichero a IGV, nos vamos a File y Load from File. Hay que tener en la misma carpeta el fichero BAM con el fichero BAI, es decir, el fichero indexado. Hay que cargar el BAM. Se muestran tres tracks, siendo uno la cobertura, otro los junctions y el último los duplicados (click derecho y expandir). Previamente hay que seleccionar el genoma correcto; en este caso, el de ratón. 
+
+Podemos irnos al cromosoma 13 y buscar el gen Smn1, con eso saltamos a esa región del genoma. Podemos ver las distintas isoformas del gen y dónde han mapeado las lecturas. En Junctions, vemos que hay lecturas con un arco grande, indicando que la lectura ha mapeado a esos exones que estaban juntos en el tránscrito, pese a que en el genoma estén separados por intrones y otras regiones no codificantes. La cobertura coincide con los exones al tratarse de un RNA-Seq. Además, tiene una cobertura 0-20, indicando que en ese rango hay como máximo 20 reads y como mínimo 0. 
+
+La isoforma superior tiene un exón al principio de la proteína que no tiene ninguna lectura. Esto puede darse por la cobertura baja, indicando que nos estamos perdiendo esa isoforma.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/igv-1.png}
+\end{figure}
+
+\subsection{Redundancia de mapeo}
+Pueden darse redundancias de mapeo, ya que la secuencia del genoma es larga y contiene muchas secuencias repetitivas. Por ello, hay que mirar la calidad de mapeado, ya que una lectura puede mapear en un sitio con 1 mismatch y en otra región con 2. Para reducir la ambigüedad en el mapeado (hay genes pareados, isoformas), se puede utilizar pair-end o secuenciación de reads más largas. 
+
+En NGS, se pueden detectar regiones por enriquecimiento viendo, en base a la cobertura del experimento, las regiones donde hay señal y que indicarán genes o factores de transcripción. El proceso es crosslinking, sonicación, inmunoprecipitación y secuenciación. El resultado de este tipo de experimento es un archivo tipo BED o WIG en el que se obtiene la posición donde se encuentra la señal.
+
+En el conteo por ocurrencias, se cuentan cuántas reads caen en las distintas regiones. Para ello se requiere el GTF que asocia los disitntos exones con los tránscritos o isoformas.
+
+En Galaxy, se puede utilizar un solo programa para alinear las lecturas a la referencia y la cuantificación. Al final, no importa si una read pertenece a una isoforma o a otra si queremos abstraer la cuantificación de una proteína, es decir, obtener la cuantificación absoluta. Para la expresión diferencial, se necesita más cobertura y los métodos son un poco diferentes para poder diferenciar las isoformas. Los tránscritos tienen una estructura de dependencia muy complicada, por lo que la expresión diferencial se suele hacer a nivel de gen.
+
+\subsection{Cálculo de expresión}
+Una vez con las lecturas mapeando a un gen, si queremos tener una medida robusta de la expresión, hay que tener en cuenta la longitud del gen y el tamaño de la librería. Una librería con una secuenciación mayor, la expresión va a parecer mayor que en una secuenciación con un tamaño menor de librería. Además, un tránscrito más corto va a tener menos reads que caigan en él por mera probabilidad, por lo que hay que normalizar por el tamaño del gen. Para ello, primero se obtienen los counts (la cobertura) y se utilizan los RPKMs:
+$$RPKM: 10^9 \cdot \frac{\text{Reads mapped to the transcript}}{\text{Total reads} \cdot \text{Transcript length}}$$
+Esta fórmula se modificó a la siguiente para normalizar todo a la vez:
+$$TPM = 10^6 \cdot \frac{\text{reads mapped to transcript / transcript length}}{\sum \text{reads mapped to transcript/transcript length}}$$
+
+Para las reads que mapean a varias isoformas o a varios genes del genoma, se utilizan los programas RSEM, Salmon o Sailfish. Estos métodos son procesos iterativos. Se aprovechan de la información de todos los reads para mejorar la probabilidad de qué read pertenece a qué sitio. Teniendo tres isoformas que coinciden en el primer exón, se ven las reads que caen en las partes distintas de los tránscritos para inferir las reads de la parte común de los tránscritos. La probabilidad se va cambiando y ajustando según cambian las probabilidades. Estos métodos probabilísticos hacen una estimación de los counts. Estos algoritmos cuantifican la expresión por isoforma, ya que están hechos para lidiar con el multimapping. La columna IsoPct indica el porcentaje de expresión de esa isoforma sobre toda la expresión del gen completo. Cuando se ve un proceso de splicing alternativo, la isoforma mayoritaria es la primera, y en otra condición puede darse que todas las isoformas estén igual de expresadas o que se convierta en la menos expresada.
+
+El gen SMN1 de ratón es esencial, no puede haber ninguna mutación al ser inviable. De hecho, en humanos, una mutación en este gen causa SMA (spinal muscular atrophy). Esto se debe a que tenemos otro gen, SMN2, que solo se diferencia del 1 en una base y puede ayudar a compensar. Aunque las reads sean prácticamente idénticas, RSEM es capaz de asignarlas a una forma u otra.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/smn12.png}
+\end{figure}
+
+\subsection{Galaxy}
+Volviendo a la práctica, nos vamos a Ensembl y BioMart. Seleccionamos el genoma de ratón, seleccionamos como atributos solo Gene stable ID y transcript stable ID (quitamos los version) y exportamos los resultados como tsv. En Galaxy subimos ese fichero (Gene2Transcript) y utilizamos la herramienta "Sort Column Order by heading" para poner la columna 2 como identificador. 
+
+El siguiente paso es construir la referencia del tránscrito (el fasta del transcriptoma) a partir del GTF que habíamos subido previamente con la herramienta gffread. Debería coger automática el fichero gtf, y en caso contrario lo seleccionamos manualmente. En el apartado de Reference Genome, debemos poner "From your history" para poder indicar el fasta. Además, en "select fasta outputs", seleccionamos la opción de "fasta file with spliced exons for each GFF transcript". También hay que activar "full GFF attribute preservation", y en Feature File Output poner GTF.
+
+A continuación utilizamos salmon\_qual utilizando el fichero exons.fa que se acaba de generar.
+
 %\section{Análisis funcional}
 %
 %\chapter{CHIP-SEQ}
