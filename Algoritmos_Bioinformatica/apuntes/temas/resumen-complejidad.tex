@@ -1,0 +1,41 @@
+\chapter{Resumen complejidad algorítmica}
+\begin{table}[h]
+\centering
+\begin{tabular}{l l }
+\multicolumn{2}{c}{O: Peor caso} \\ \hline
+$O(1)$ & \texttt{def constante(arr): return arr[0]} \\ 
+$O(n)$ & \texttt{for x in arr: print(x)} \\ 
+$O(n^k)$ & \texttt{for i in range(n):} \\ 
+ & \texttt{\ \ for j in range(n): print(arr[i], arr[j])} \\ 
+$O(\log n)$ & \texttt{while n > 1: n //= 2} \\ 
+$O(\log \log n)$ & \texttt{while n > 2: n = log2(n)}  \\ 
+$O(n \log n)$ & \texttt{merge\_sort(arr)} \\ 
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l l }
+\multicolumn{2}{c}{o: Límite superior no ajustado} \\ \hline
+$o(1)$ & No aplica (es constante) \\ 
+$o(n)$ & \texttt{for i in range(sqrt(n)): print(i)}\\ 
+$o(n^k)$ & \texttt{for i in range(n):} \\ 
+ & \texttt{\ \ for j in range(log(n)): print(i, j)} \\ 
+$o(\log n)$ & \texttt{while n > 1: n = sqrt(n)}  \\ 
+$o(\log \log n)$ & \texttt{while n > 2: n = log2(log2(n))}  \\ 
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l l }
+ \multicolumn{2}{c}{$\Theta$: Límite ajustado} \\ \hline
+$\Theta(1)$ & \texttt{def constante(arr): return arr[0]} \\ 
+$\Theta(n)$ & \texttt{for x in arr: print(x)} \\ 
+$\Theta(n^k)$ & \texttt{for i in range(n):} \\ 
+& \texttt{\ \ for j in range(n): print(arr[i], arr[j])} \\ 
+$\Theta (\log n)$ & \texttt{while n > 1: n //= 2} \\ 
+$\Theta (\log \log n)$ & \texttt{while n > 2: n = log2(n)} \\ 
+$\Theta(n \log n)$ & \texttt{merge\_sort(arr)} \\ 
+\end{tabular}
+\end{table}
