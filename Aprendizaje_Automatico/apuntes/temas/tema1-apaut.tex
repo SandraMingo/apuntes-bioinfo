@@ -293,50 +293,80 @@ $$\vec{x} \in \mathbb{R}^n \rightarrow \vec{z} \in \mathbb{R}^k$$
 
 %10/02 - Aythami
 \subsubsection{Algoritmo de PCA}
-La recta z es una combinación lineal de las variables x1 y x2 (sumas y multiplicaciones por escalares). 
+\begin{enumerate}
+\item \textbf{Preprocesado de datos}
+
+Antes de aplicar PCA, es común normalizar los datos para que todas las variables tengan la misma escala. Esto se hace restando la media y dividiendo por la desviación estándar:
 $$\vec{z}_1 = a\vec{x}_1 + b\vec{x}_2$$
-El problema es el rango de las dos variables; quizás una está en el rango de las unidades, y la otra en los miles. Para llevar los datos a un rango común, se puede restar la media a la distribución, de forma que las dos distribuciones estén centradas en 0. Ahora, el rango de varianza sigue siendo muy diferente, por lo que se divide por la desviación estándar. A esto se conoce como pre-procesado o normalización basada en media/varianza. 
-$$x_j^{(i)} = \frac{x_j^{(i)} - \mu_j}{\delta_j}$$
-Esto no es un paso necesario de PCA si las variables no son tan distantes y son perfectamente combinables. 
 
-Siendo $\vec{x}$ la matriz, M es el número de datos o de filas, y N el número de características. Se calcula la matriz de covarianza de $\vec{x}$ que se obtiene mediante una fórmula matemática o mediante operaciones con matrices. Se obtiene la correlación que existe entre las distintas variables de la matriz en las distintas celdas y entre la propia variable en la diagonal principal. La matriz de covarianza no depende de M, indicando que hay que tener en cuenta la robutez estadística.
-$$\vec{x} \in \mathbb{R}^{M \times N} \rightarrow \Sigma \in \mathbb{R}^{n \times n}$$
+Nota: Este paso no es estrictamente necesario si las variables ya están en escalas comparables.
 
-A la matriz de covarianza hay que computar los autovalores. Los autovectores están relacionados con las direcciones en los que se mueven los datos dentro de la matriz. La matriz tiene datos, los cuales se mueven en unas direcciones, es decir, la distribución en las variables. Además, cada variable es ortogonal (perpendicular). Los autovalores son la cantidad de información que se distribuye en esa dirección. No va a ser 100\%. Los autovalores están relacionados con la varianza que hay en la dimensión. Autovector U = direcciones en las que se distribuyen los datos. Autovalor lambda = cantidad de información que se distribuye en la dirección. 
-$$\lambda = \begin{bmatrix}
+\item \textbf{Matriz de covarianza}
+
+Dada una matriz de datos $\vec{x} \in \mathbb{R}^{M \times N}$ donde $M$ es el número de muestras y $N$ el número de características, se calcula la matriz de covarianza $\Sigma \in \mathbb{R}^{n \times n}$.
+$$\Sigma = \frac{1}{M}\vec{x}^T \vec{x}$$
+
+La matriz de covarianza mide la correlación entre las variables.
+La diagonal principal contiene las varianzas de cada variable.
+
+\item \textbf{Autovalores y autovectores}
+
+Los \textbf{autovectores} $\breve{U}$ representan las direcciones en las que los datos varían más (direcciones de máxima varianza). Tiene la dimensión: $\breve{U} \in \mathbb{R}^{N \times N}$
+
+Los \textbf{autovalores} $\lambda$ indican la cantidad de varianza capturada en cada dirección. Tiene la dimensión: $\lambda \in \mathbb{R}^{N \times 1}$.
+
+La matriz de autovectores $\breve{U}$ y el vector de autovalores $\lambda$ se obtienen resolviendo:
+$$\Sigma \breve{U} = \lambda \breve{U}$$
+
+%Autovector U = direcciones en las que se distribuyen los datos. Autovalor lambda = cantidad de información que se distribuye en la dirección. 
+%Autovalores hay tantos como dimensiones que tiene el problema (número de variables), mientras que los autovectores tienen una dimensión n x n. Existe el mismo número de autovectores como autovalores, pero los autovectores están compuestos por dos números. 
+
+\item \textbf{Ordenación y selección de componentes}
+
+Los autovalores se ordenan de mayor a menor, y los autovectores se reordenan en consecuencia.
+Para reducir a $k$ dimensiones, se seleccionan los $k$ autovectores asociados a los $k$ autovalores más grandes.
+
+\item \textbf{Proyección de los datos}
+Los datos originales $\vec{x}$ se proyectan en el nuevo espacio de $k$ dimensiones multiplicando por la matriz de autovectores seleccionados:
+$$\vec{z} = \breve{U}^T_k \vec{x}$$
+
+La matriz de autovectores seleccionados es $\breve{U}_k \in \mathbb{R}^{N \times k}$, mientras que los datos proyectados en el espacio reducido son $\vec{z} \in \mathbb{R}^{k \times 1}$.
+\end{enumerate}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/resumen-PCA.png}
+\end{figure}
+
+\paragraph{Ejemplo práctico} Supongamos que queremos reducir datos de 2D a 1D:
+$$\vec{x} = \begin{bmatrix}
+x_1 \\ x_2
+\end{bmatrix}
+\rightarrow
+\lambda = \begin{bmatrix}
 \lambda_1 \\ ... \\ \lambda_n
 \end{bmatrix} \in \mathbb{R}^{n \times 1}$$
 
-$$\vec{U} = \begin{pmatrix}
-\vec{u}^{(i)} & ... & \vec{u}^{(n)}
-\end{pmatrix} \in \mathbb{R}^{n \times n} $$
-
-En PCA se busca el punto de vista, transformando los datos, para minimizar el error de proyección y resaltar patrones. 
-
-Autovalores hay tantos como dimensiones que tiene el problema (número de variables), mientras que los autovectores tienen una dimensión n x n. Existe el mismo número de autovectores como autovalores, pero los autovectores están compuestos por dos números. 
-
-Los autovalores se ordenan de mayor a menor, generando un vector lambda prima ordenado. Se ordena la matriz de transición U en base al orden de lambda prima. 
-
-Para reducir dimensionalidad, se descartan autovectores. En caso de tener dos, desechamos el segundo y nos quedamos solo con el primero. 
-$$U' = \begin{bmatrix}
+Si el autovector es
+$$U = \begin{bmatrix}
 -1 & 2 \\ 
 3 & 0
 \end{bmatrix}$$
-U es de dimensión n x n, por lo que va a ser siempre cuadrado, pero no podemos conocer el valor de M. Para proyectar a una dimensión, nos debemos quedar con
-$$\breve{U} = \begin{bmatrix}
+Se debe seleccionar solo
+$$\vec{U} = \begin{pmatrix}
+\vec{u}^{(i)} & ... & \vec{u}^{(n)}
+\end{pmatrix} \in \mathbb{R}^{n \times n} 
+\rightarrow
+\breve{U} = \begin{bmatrix}
 -1 \\ 3
 \end{bmatrix}$$
 
-$$z = \breve{U}^T x$$
-$$\breve{U} \in \mathbb{R}^{n \times k}$$
-$$x \in \mathbb{R}^{n \times 1}$$
-Al transponer, se queda en dimensiones $k \times n$, coincidiendo con la primera dimensión de la otra variable. El resultado de la multiplicación matricial es un vector de dimensiones $k \times 1$. 
-Siguiendo con el ejemplo:
-$$z = \begin{bmatrix}
+Así, la proyección queda de la siguiente forma:
+$$z = \breve{U}_1^T \vec{x} =  \begin{bmatrix}
 -1 & 3
 \end{bmatrix} \begin{bmatrix}
 x_1 \\ x_2
-\end{bmatrix}$$
+\end{bmatrix} = -x_1 + 3 x_2$$
 
 En caso de no reducir dimensiones:
 $$z = \begin{bmatrix}
@@ -349,11 +379,6 @@ x_1 \\ x_2
 \end{bmatrix} \sim \begin{bmatrix}
 z_1 \\ z_2
 \end{bmatrix}$$
-
-\begin{figure}[h]
-\centering
-\includegraphics[width = 0.8\textwidth]{figs/resumen-PCA.png}
-\end{figure}
 
 \subsubsection{Escoger el número de componentes principales}
 Se suele escoger la varianza explicada. Los autovalores dan un valor relacionado con la cantidad de información en cada autovector. Al pasar de dos dimensiones a una, la varianza explicada con la variable 1 es $\lambda_1 / \lambda_1 + \lambda_2$.
