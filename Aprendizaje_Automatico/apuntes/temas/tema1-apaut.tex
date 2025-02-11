@@ -243,5 +243,25 @@ x_1 \\ x_2
 z_1 \\ z_2
 \end{bmatrix}$$
 
+%11/02 - Aythami
 \subsubsection{Escoger el número de componentes principales}
-Se suele escoger la varianza explicada. Los autovalores dan un valor relacionado con la cantidad de información en cada autovector. Al pasar de dos dimensiones a una, la varianza explicada con la variable 1 es $\lambda_1 / \lambda_1 + \lambda_2$.
+La varianza en cada componente de PCA está definida por los autovalores $\lambda$. La varianza explicada de un componente $i$ se explica mediante la siguiente fórmula:
+$$i = \frac{\lambda_i}{\sum^n_{i=1} \lambda_i}$$
+
+Normalmente se escoge que $k$ sea el valor más pequeño posible de forma que:
+$$\frac{\sum^k_{j=1} \lambda_j}{\sum^n_{i=1} \lambda_i} \geq \tau$$
+Si $\tau = 0.99$, entonces el 99\% de la varianza está retenida.
+
+Esto se suele representar con una curva de varianza explicada sobre el número de componentes (el gráfico está indexado con Python, por lo que 1 componente se representa con un 0). Los primeros componentes sí se analizan de forma individual al explicar bastante varianza, pero llega un punto en el que se busca el número de componentes que expliquen el x\% de la varianza (por ejemplo, el 95\%).
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/explained-var.png}
+\end{figure} 
+
+\subsection{Otros métodos de reducción de dimensionalidad}
+\begin{itemize}
+\item \textbf{Multidimensional Scaling (MDS)}: define un espacio de baja dimensión que preserva la distancia entre casos en el espacio original de alta dimensión.
+\item \textbf{Discriminant Analysis (LDA)}: calcular una función que maximice la capacidad de discriminación entre 2 o más grupos. Es una especie de PCA supervisado. 
+\item \textbf{Manifold Learning (p.ej. Isomap)}: descubrir representaciones de baja dimensión en variedades lisas localmente euclidianas. Hay estructuras de datos en las que se deben cumplir una serie de leyes. En el espacio de representación, puede haber una distribución de datos que impida ir de un punto a otro de forma directa, sin pasar por la estructura definida (por ejemplo, una espiral).
+\item \textbf{t-SNE}: reduce la dimensionalidad preservando la similitud local, se ha construido heurísticamente y se utiliza habitualmente para visualizar representaciones.
+\end{itemize}
