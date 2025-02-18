@@ -43,7 +43,7 @@ K-means es uno de los algoritmos más utilizados en clustering. Su objetivo es d
 
 \begin{figure}[h]
 \centering
-\includegraphics[width = 0.8\textwidth]{figs/kmeans-algorithm.png}
+\includegraphics[width = 0.7\textwidth]{figs/kmeans-algorithm.png}
 \end{figure}
 
 \subsection{Inicialización aleatoria y óptimos locales}
@@ -60,4 +60,36 @@ En algunos casos, los clústeres pueden superponerse, lo que da lugar a clúster
 
 Cuando no hay tanta separación entre los datos, se pueden dar soluciones dispares. Esto se puede resolver mediante la repetición y medir el rendimiento de las distintas ejecuciones para ver qué solución es la mejor. Se calcula la distancia de cada punto a su centroide y la solución que minimice esa distancia es la que obtiene los centroides más óptimos. 
 
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.6\textwidth]{figs/kmeans-centroids.png}
+\end{figure}
 
+%18/02 - Aythami
+\subsection{Función de coste}
+K-means no garantiza encontrar el mínimo global de la función de coste, ya que el resultado depende de la inicialización. La función de coste (o función de distorsión) se define como $J$ y tiene el siguiente aspecto:
+$$J(c^{(1)}, \ldots, c^{(m)}, \mu_1, \ldots \mu_k) = \frac{1}{m} \Sigma^m_{i = 1} ||\vec{x}^{(i)} - \mu_{c^{(i)}} ||^2$$
+donde:
+\begin{itemize}
+\item $c^{(i)}$ es el índice del clúster al que se ha asignado $\vec{x}^{(i)}$
+\item $\mu_k$ es el centroide del clúster $k$ ($\mu_k \in \mathbb{R}^n$)
+\item $\mu_{c^{(i)}}$ es el centroide del clúster al que se ha asignado $\vec{x}^{(i)}$. Es una matriz de $m$ elementos.
+\end{itemize}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/kmeans-cost.png}
+\end{figure}
+
+Como se ha descrito antes, esto se repite durante varios ciclos para escoger aquel clustering que dé el menor coste.
+
+\subsection{Escoger el número de centroides}
+Si el objetivo único es minimizar el coste, la forma de obtener $J = 0$ sería poniendo para cada punto un clúster, pero esto no agrupa los datos según patrones. Por ello, es importante escoger $k$. Si conocemos nuestros datos, podemos saber qué número de $k$ puede ser el óptimo. Otra opción es con el método del codo: se ejecuta el algoritmo de K-means varias veces cambiando $k$ y se ve cuándo la función de coste se ve significativamente reducida. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.6\textwidth]{figs/kmeans-k.png}
+\end{figure}
+
+\section{Bonus track: otros algoritmos}
+El algoritmo Gaussian Mixture Models (GMM) permite adaptar los clústers a los datos. De esa forma, en lugar de ser clústeres redondos, se ajustan a la distribución que presenten, pudiendo adoptar otras formas. 
