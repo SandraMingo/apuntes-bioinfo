@@ -1,0 +1,131 @@
+---
+title: "Bacterial composition determined by 16S MetaBarcoding"
+subtitle: "2. Taxonomic assignation and alignments"
+author: "Miguel Redondo"
+date: "September 2023"
+output: 
+  html_document: 
+    toc: yes
+---
+
+## Alignment
+
+DECIPHER library provides us several funtions to determine phylogenetic relationships and get the taxonomic assignation for the ASVs. Let's try first the aligment.
+
+### Aligning ASVs
+
+As first step we get the ASVs sequences from rep-seqs.fna and run the alignment with AlignSeqs
+
+```{r aligningsequences}
+nproc<-4
+seqs <- readDNAStringSet("./rep-seqs.fna")
+alignment <- AlignSeqs(DNAStringSet(seqs), anchor=NA, processors=nproc)
+writeFasta(alignment, "asvalignment.fasta")
+```
+
+## Phylogenetic trees building
+
+We will use FastTree2 to build the phylogenetic tree. We will use the alignment file **asvalignment.fasta** to build the tree. \### Using Fasttree2 from system
+
+We need to install Fasttree2 (`mamba install fasttree`) before running the following chunk
+
+```{r fasttree}
+FastTree<-"/home/condapython/anaconda3/bin/FastTree"
+fasttree_args<- "-gtr -nt asvalignment.fasta > asv.tre"
+system2(FastTree, 
+          args = fasttree_args)  
+```
+
+## Taxonomic assignation using DADA2
+
+### Taxonomic assignation with SILVA
+
+There are several databases already formatted to be used with DADA2 using its *assignTaxonomy* function that can be downloaded from <https://benjjneb.github.io/dada2/training.html>. One of the most used nowadays is Silva version 138.1, though its last update was in 2021. We could continue our protocol using the next chunk.
+
+1.  We cannot use the DNAString object with the sequences that we loaded above (**seqs**), we will read again the fasta file containing the ASVs sequences using the DADA2 specific function *getSequences* and storing them into **repseqs**.
+2.  We will assign the taxonomy to the Genus level using *assignTaxonomy* function obtaining a large matrix called **taxaSILVA**.
+3.  We will use that matrix to increase the resolution of the taxonomic assignation up to species level using *addSpecies* function. As result we will get a dataframe called **taxaSILVA.plus**
+4.  As not all the ASVs can be resolved up to the species level we will change the values in the dataframe to substitute *NA* values by the last level with an assignation, adding the prefix "Uncl\_"
+5.  As a last step we will change the row names (at this moment the string is the ASV nucleotide sequence) encoding the using the *md5* function.
+
+::: {#warning}
+As we don't have enough time nor computing power in our VM. Please don't run the following chunk.
+:::
+
+```{r SILVA, eval=FALSE}
+repseqs<-getSequences("./rep-seqs.fna")
+taxaSILVA <- assignTaxonomy(repseqs, "silva_nr99_v138.1_train_set.fa.gz", multithread=TRUE)
+unname(head(taxaSILVA))
+
+taxaSILVA.plus <- addSpecies(taxaSILVA, "silva_species_assignment_v138.1.fa.gz", verbose=TRUE)
+colnames(taxaSILVA.plus) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus","Species")
+unname(head(taxaSILVA.plus))
+taxaSILVA.plus<- as.data.frame(taxaSILVA.plus) %>% mutate (
+  Kingdom= if_else(is.na(Kingdom), "Unclassified", Kingdom),
+  Phylum=if_else(is.na(Phylum), paste("Uncl_", Kingdom,""), Phylum),
+  Class= if_else(is.na(Class), 
+                 if_else(grepl("Uncl_", Phylum), Phylum, paste("Uncl_", Phylum,"")), 
+                  Class),
+  Order= if_else(is.na(Order), 
+                 if_else(grepl("Uncl_", Class), Class, paste("Uncl_", Class,"")), 
+                  Order),
+  Family= if_else(is.na(Family), 
+                 if_else(grepl("Uncl_", Order), Order, paste("Uncl_", Order,"")), 
+                  Family),
+  Genus= if_else(is.na(Genus), 
+                 if_else(grepl("Uncl_", Family), Family, paste("Uncl_", Family,"")), 
+                  Genus),
+  Species= if_else(is.na(Species), 
+                 if_else(grepl("Uncl_", Genus), Genus, paste("Uncl_", Genus,"")), 
+                  paste(Genus,Species, sep=" "))
+  
+)
+row.names(taxaSILVA.plus)<-md5(row.names(taxaSILVA.plus))
+
+```
+
+Instead of using SILVA database we are going to use a deprecated but smaller database called _Greengenes_ that is still available in the DADA2 package. We will use the same steps as above to get the taxonomic assignation, but we are not going to use _addSpecies_ function as it is not worthy. If you look at the name of the file _gg_13_8_train_set_97.fa.gz_ you will realize that the resolution of the assignation is up to 97% of similarity, so we are not going to get the species level assignation.
+
+```{r Greengenes}
+repseqs<-getSequences("./rep-seqs.fna")
+taxaGG <- assignTaxonomy(repseqs, "gg_13_8_train_set_97.fa.gz", multithread=TRUE)
+```
+
+Greengenes database starts all its values by k_, f_, c_, o_, g_ and s_ for the taxonomic levels. We are going to remove those characters to make the dataframe more readable.
+```{r cleaninglabels}
+taxaGG<-as.data.frame(taxaGG) %>% mutate(
+  Kingdom=substr(Kingdom, 4, nchar(Kingdom)),
+  Phylum=substr(Phylum, 4, nchar(Phylum)),
+  Class=substr(Class, 4, nchar(Class)),
+  Order=substr(Order, 4, nchar(Order)),
+  Family=substr(Family, 4, nchar(Family)),
+  Genus=substr(Genus, 4, nchar(Genus)),
+  Species=substr(Species, 4, nchar(Species))
+)
+```
+
+We are going to substitute the *NA* values by the last level with an assignation, adding the prefix "Uncl\_". As a last step we will change the row names (at this moment the string is the ASV nucleotide sequence) encoding the using the *md5* function.
+
+```{r cleaningNA}
+taxaGG<- as.data.frame(taxaGG) %>% mutate (
+  Kingdom= if_else(is.na(Kingdom), "Unclassified", Kingdom),
+  Phylum=if_else(is.na(Phylum), paste("Uncl_", Kingdom,""), Phylum),
+  Class= if_else(is.na(Class), 
+                 if_else(grepl("Uncl_", Phylum), Phylum, paste("Uncl_", Phylum,"")), 
+                  Class),
+  Order= if_else(is.na(Order), 
+                 if_else(grepl("Uncl_", Class), Class, paste("Uncl_", Class,"")), 
+                  Order),
+  Family= if_else(is.na(Family), 
+                 if_else(grepl("Uncl_", Order), Order, paste("Uncl_", Order,"")), 
+                  Family),
+  Genus= if_else(is.na(Genus), 
+                 if_else(grepl("Uncl_", Family), Family, paste("Uncl_", Family,"")), 
+                  Genus),
+  Species= if_else(is.na(Species), 
+                 if_else(grepl("Uncl_", Genus), Genus, paste("Uncl_", Genus,"")), 
+                  paste(Genus,Species, sep=" "))
+  
+)
+row.names(taxaGG)<-md5(row.names(taxaGG))
+```
