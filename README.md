@@ -1,5 +1,7 @@
 # Apuntes Bioinformática y Biología Computacional
-Apuntes de las asignaturas del Máster de Bioinformática y Biología Computacional de la Universidad Autónoma de Madrid (plan de estudios 2024/25). 
+Apuntes de las asignaturas del Máster de Bioinformática y Biología Computacional de la Universidad Autónoma de Madrid (plan de estudios 2024/25). Estos documentos están libremente accesibles para una mayor colaboración. Puedes completarlos con información adicional de clase o fuentes externas. Si los utilizas y te resultan útiles, considera apoyar este proyecto [aquí (Ko-fi)](https://ko-fi.com/sandramingo), significaría mucho para mí:)
+
+<a href='https://ko-fi.com/sandramingo' target='_blank'><img height='30' style='border:0px;height:46px;' src='https://cdn.prod.website-files.com/5c14e387dab576fe667689cf/670f5a0171bfb928b21a7e00_support_me_on_kofi_beige-p-500.png' border='0' alt='Buy Me a Coffee at ko-fi.com' />
 
 ## LaTeX
 Los apuntes están tomados en [LaTeX](https://es.wikipedia.org/wiki/LaTeX), un procesador de textos basado en comandos. Aunque esto pueda parecer algo confuso al principio (sobre todo viniendo de procesadores [WYSIWYG](https://es.wikipedia.org/wiki/WYSIWYG) como Microsoft Word o Google Docs), tiene la ventaja de poder centrarse en el contenido sin preocupaciones del formato. 
