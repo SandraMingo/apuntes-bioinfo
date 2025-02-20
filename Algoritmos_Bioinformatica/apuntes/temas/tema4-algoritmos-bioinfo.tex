@@ -1,0 +1,50 @@
+%20/02 - Ana González Marcos
+\chapter{Aplicación de algoritmos a problemas bioinformáticos}
+La búsqueda de motivos se realiza mediante búsqueda exhaustiva, algoritmos codiciosos o algoritmos aleatorios. Los algoritmos de programación dinámica se emplean para los alineamientos. Un motivo es una secuencia específica y corta que aparecen frecuentemente en una región del ADN o secuencia proteica. Representa una región conservada en secuencias que suelen tener significado biológico. 
+
+\section{Búsqueda exhaustiva}
+La búsqueda exhaustiva es la única búsqueda "de verdad" que da una solución determinista exacta. También se conoce como búsqueda por fuerza bruta. El algoritmo examina todas las posibles alternativas para encontrar una solución óptima. El tiempo de cómputo es muy alto, pese a que requiera de poco esfuerzo en su diseño. Como las secuencias biológicas son muy largas, este tipo de búsquedas es inviable. 
+En el patrón se busca encontrar un consenso que se puede representar gráficamente en logos. 
+
+Una posible aplicación es la búsqueda de un patrón de x nucleótidos (x-mer) sin mutaciones. También se pueden incorporar un par de mutaciones y generar un consenso. Con esto se calcula el perfil y se ve cuántos nucleótidos caen en cada posición. Se busca el perfil que, aun con mutaciones, da un motivo consenso. 
+
+El consenso es un motivo ancestro del cual surgen los motivos mutados. Para calcular la medida que indique lo buen consenso que es un motivo, se tiene en cuenta la homología, es decir, la similitud debida a un ancestro común. La distancia entre un motivo real y la secuencia de consenso suele ser menor que la de dos motivos reales. Necesitamos introducir una función de puntuación para comparar diferentes conjeturas (consenso) y elegir la «mejor». 
+$$Score(s, DNA) = \sum^l_{i = 1} \max_{k \in A T G C} count(k, i)$$
+
+Se busca a lo largo de todas las cadenas, desde la primera posición el tamaño del l-mer. En definitiva, el algoritmo es:
+\begin{lstlisting}
+BruteForceMotifSearch(DNA, t, n, l)
+bestScore = 0
+for each s=(s1, s2, ..., st) from (1, 1 ... 1) to (n-l + 1, ..., n-l + 1)
+	if Score(s, DNA) > bestScore
+		bestScore = score(s, DNA)
+		bestMotif = (s1, s2, ... st)
+return bestMotif
+\end{lstlisting}
+
+Como esta búsqueda es exhaustiva, para $(n - l + 1)$ posiciones en t secuencias, se buscan $(n - l + 1)^t$ sets de posiciones iniciales. Para cada posición inicial, la función de puntuación hace $l$ operaciones, de forma que la complejidad es:
+$$l \cdot (n - l + 1)^t \rightarrow O(l \cdot n^t)$$
+De esta forma, hay veces en las que no es posible hacer este cálculo.
+
+\subsection{Median String}
+El median string es la alternativa a la búsqueda exhaustiva. En este caso se busca en las secuencias un patrón. No se utiliza la puntuación de antes, si no que utiliza la distancia de Hamming. La distancia de Hamming entre dos mer se define como el número de nucleótidos distintos entre ellos. 
+$$d_H(AAAAAA, ACAAAC) = 2$$
+$$d_H(v, s) = \sum^t_{i = 1} d_H(v, s_i)$$
+Antes se buscaba la puntuación máxima, pero ahora buscamos la distancia mínima. 
+
+\begin{lstlisting}
+MedianStringSearch(DNA, t, n, l)
+bestWord = AAAAA...A
+bestDistance = infinity
+for each l-mer v from AAA...A to TTT...T
+	if TotalDistance(v, DNA) < bestDistance:
+		bestDistance = TotalDistance(v, DNA)
+		bestWord = v
+return bestWord
+\end{lstlisting}
+
+La búsqueda de motivos es un problema de maximización, mientras que la cadena mediana es un problema de minimización. Sin embargo, el problema de la Búsqueda de Motivos y el de la Cadena Mediana son computacionalmente equivalentes. Hay que demostrar que minimizar TotalDistance es equivalente a maximizar la puntuación.
+
+Con este algoritmo, la complejidad es de $4^l$. El coste es considerablemente más bajo que en la búsqueda exhaustiva, ya que el tamaño del mer es más pequeño que el tamaño de la secuencia. Por tanto, reformular un problema puede ayudar a disminuir la complejidad computacional. 
+
+%\section{Algoritmo codicioso}
