@@ -79,12 +79,89 @@ En la cuantificación de proteínas, es crucial utilizar estándares internos pa
 
 \begin{figure}[h]
 \centering
-\includegraphics[width = 0.6\textwidth]{figs/internal-standard.png}
+\includegraphics[width = 0.8\textwidth]{figs/internal-standard.png}
 \end{figure}
 
 %Cuando la muestra es compleja, los péptidos pueden competir causando colución. La intensidad va a disminuir al haber menos iones que se cuantificarán. La cuantificación de una muestra compleja será por tanto menor que el mismo péptido en una muestra poco compleja. Por esto, se establecen estándares internos: péptides con cualidades similares marcados. Se conoce la cantidad a priori del péptido asociado. Así, da igual si la complejidad es mucha o poca, ya que se establece la relación entre el péptido asociado y el péptido buscado. Lo que se calcula es el ratio del pico, es decir, el área del péptido buscado con el área del estándar interno. 
 
-%\section{Proteómica "Top-Down"}
+%21/02 - José Manuel Rodríguez
+\section{Proteómica "Top-Down"}
+En este caso, tenemos la proteína intacta y se calcula la masa con el espectrómetro. Se usan los mismos tipos de espectrómetros: cromatografía líquida y espectrómetro de masas. Químicamente, la muestra biológica no se desnaturaliza ni se digiere, si no que se sigue un protocolo de lisis para romper las membranas celulares. Dependiendo de las muestras y sus condiciones, las proteínas mantendrán su estructura o si están haciendo ligando, se mantendrán las relaciones. Si para esas condiciones de muestra hay alguna modificación post-traduccional, va a ser más fácil de identificar con esta técnica de Top-Down. 
 
-\section{FragPipe}
-FragPipe es un software que engloba varios programas. El buscador es MSFragger, pero cuenta también con otras herramientas como Philosopher, PTM-Shepher, etc. Lo descargamos de GitHub y descargamos las licencias de MSFragger, IonQuant y diaTracer. 
+Las proteínas intactas se pasan a un HPLC. Se realiza la ionización por electrospray y con el tiempo de retención y las intensidades, se obtiene la masa carga de toda la proteína (MS1). Posteriormente se fracciona en determinados puntos dentro de la proteína. Es más fácil obtener la estructura de la proteína. El MS2 permite ver la estructura de fragmentos de la proteína. 
+
+En el caso del Bottom-Up, tenemos toda la proteína y se hace una digestión tríptica. Los péptidos se ionizan, y esos fragmentos ionizados son los que detectará el MS. En Top-Down, la proteína intacta se ioniza. Al fragmentar para el MS2, hay trozos y fragmentos de los iones con una conformación de la proteína más larga, siendo así más fácil ver la estructura completa. 
+
+Comparando las dos técnicas en proteómica:
+\begin{table}[h]
+\centering
+\begin{tabular}{p{4cm}|p{5cm}p{5cm}}
+Aspecto & Top-Down & Bottom-Up \\ \hline
+Tamaño de las proteínas & Adecuado para proteínas pequeñas y medianas & Adecuado para todo tamaño, especialmente proteínas grandes \\
+Equipos & Instrumentos de alta resolución & Instrumentos más accesibles \\
+Sensibilidad & Menor, difícil para proteínas en baja abundancia & Mayor sensibilidad \\
+Complejidad computacional & Alta, espectros más difíciles de interpretar & Menor, espectros de péptidos más sencillos \\
+Cobertura & Cobertura completa de la proteína & Cobertura parcial (depende de la digestión) \\
+Manejo de mezclas complejas & Difícil para mezclas de muchas proteínas & Más fácil, adecuado para muestras complejas \\
+Detección de PTMs & Precisa, localización directa en la proteína intacta & Puede perder algunas PTMs, pero identifica modificaciones en péptidos \\
+Preparación de muestras & Más compleja, requiere proteínas intactas & Más sencilla, con digestión enzimática
+\end{tabular}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.9\textwidth]{figs/topdown-vs-bottomup.png}
+\end{figure}
+
+\chapter{Identificación de péptidos mediante espectrometría de masas}
+Las máquinas actuales generan millones de espectros MS/MS en muy poco tiempo. No se pueden interpretar manualmente, siendo necesario usar herramientas computacionales. 
+Las estrategias más utilizadas para identificar péptidos mediante MS/MS son:
+\begin{itemize}
+\item \textbf{Secuenciación \textit{de novo}}: Consiste en obtener la secuencia del péptido directamente a partir del espectro.
+Se usa en casos donde el genoma del organismo no está (o sólo parcialmente) secuenciado. La
+secuencia se infiere directamente del espectro sin ayuda de una base de datos de referencia.
+También se usa para identificar o caracterizar modificaciones postraduccionales.
+
+\item \textbf{Búsqueda contra bases de datos}: Se identifica el péptido en la base de datos a partir del espectro MS/MS. Para ello se hace una "correlación" entre el espectro MS/MS obtenido experimentalmente y los espectros teóricos generados a partir de las secuencias de los péptidos en la base de datos.
+
+Los motores de búsqueda se encargan de asignar a cada espectro obtenido experimentalmente un péptido, que es el mejor candidato de una lista de los posibles péptidos en la base de datos, de acuerdo a cierta \textbf{puntuación}, que mide el \textbf{grado de similitud entre el espectro empírico y el teórico}.
+A cada una de estas \textbf{parejas péptido-espectro} se les denomina \textbf{PSM} (Peptide-Spectrum Match, Asignación Péptido-Espectro). 
+
+Denominaremos \textbf{puntuaciones simples} a aquellos algoritmos que generan una puntuación para cada PSM que es independiente de la puntuación asignada al resto de PSMs en el mismo experimento.
+Los algoritmos que asignan una puntuación a cada PSM considerando el comportamiento del resto de las PSM generan puntuaciones que denominaremos \textbf{complejas}.
+\end{itemize}
+
+\section{Algoritmos de identificación de péptidos - Puntuaciones simples}
+Hay varios algoritmos para poder obtener esta puntuación:
+\begin{itemize}
+\item \textbf{Algoritmos empíricos de puntuación}
+\begin{itemize}
+\item SEQUEST
+\item Reginamiento de las puntuaciones SEQUEST
+\end{itemize}
+\item \textbf{Algoritmos basados en la probabilidad del emparejado}
+\begin{itemize}
+\item Mascot
+\item Andromeda
+\end{itemize}
+\item \textbf{Algoritmos basados en la probabilidad del candidato entre el resto de los candidatos}
+\begin{itemize}
+\item p-value y e-value
+\item X!Tandem
+\item MSFragger
+\end{itemize}
+\end{itemize}
+
+\subsection{Algoritmos empíricos de puntuación}
+SEQUEST mide el grado de similitud entre el espectro adquirido y el espectro teórico. Todos los péptidos tienen una suma de masas que concuerdan con el espectro y un rango de posible error. Tras obtener la lista de los fragmentos que coinciden con la suma de masas, se crea un espectro teórico y se compara uno y otro. En caso de SEQUEST, es ver que los picos de fragmentos coincidan con ellos. El score da la suma de cada fragmento con un margen de error y ver si coincide. Con esto se selecciona el fragmento con mayor similitud y nos quedamos con él. 
+
+A partir de esto, aparecen otras puntuaciones de refinamiento. Un ejemplo es $\Delta C_n$. Este algoritmo indica el valor de la diferencia entre las puntuaciones ordenadas. SI el segundo candidato en puntuación es muy bajo (hay una gran diferencia), nos podemos fiar más del primer candidato por el score obtenido. Puede suceder que el valor de $\Delta C_n$ sea alto, pero la puntuación base sea baja. O al revés, que haya muy poca diferencia entre puntuaciones, pero éstas sean muy altas. 
+
+Otro refinamiento de SEQUEST es $cXcorr$. Éste refinamiento depende de la masa: a mayor masa, más aminoácidos, habiendo más fragmentos que emparejar y un valor más elevado de Xcorr. También depende de la carga, ya que a igual m/z, los péptidos con más carga tienen más aminoácidos, por lo que el valor de Xcorr también tiende a ser más alto. Por tanto, Xcorr da prioridad a los péptidos de mayor masa y de mayor carga. Una forma de corregir este efecto es con cXcorr, que se hace independiente de la longitud del péptido.
+
+\subsection{Probabilidad en el emparejado}
+\paragraph{Mascot}
+Mascot puntúa el emparejamiento entre una secuencia y un espectro MS/MS calculando la probabilidad de que el emparejamiento sea un evento aleatorio. El algoritmo no se ha publicado. Utiliza la puntuación Ion Score (IS) que se define como $IS = -10 \cdot \log P$, donde $P$ es la probabilidad de que la coincidencia observada entre el espetro teórico y el experimental sea un evento aleatorio. El IS refleja la calidad del emparejamiento. Cuanto más bajo sea P, mayor será el puntaje; es decir, una puntuación alta es indicativo de un emparejamiento más fiable entre el espectro experimental y la secuencia teórica. Se trata de un software comercial de uso gratuito para búsquedas pequeñas.
+
+\paragraph{Andromeda}
+Andromeda es un motor de búsqueda de péptidos que utiliza un concepto semejante a Mascot. El algoritmo ha sido publicado. Se basa en el cálculo de la probabilidad binomial de tener un número de fragmentos en el espectro que coincidan al azar. Andromeda se ofrece como “software” libre que puede funcionar de forma independiente o integrada dentro del paquete MaxQuant.
