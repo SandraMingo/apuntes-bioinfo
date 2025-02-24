@@ -23,22 +23,67 @@ $$L:D_{train} \rightarrow h$$
 \item El predictor debe ser capaz de generalizar, es decir, funcionar bien con datos no vistos durante el entrenamiento.
 \end{itemize}
 
-%%%%
-Hay un espacio dividido por dos características. No se busca la recta que separa los dos espacios de características, pero es importarte al ser el punto en el que los datos tienen una u otra etiqueta. Otro problema típico de aprendizaje supervisado es la regresión, como puede ser por ejemplo la predicción del tamaño del tumor. Los datos ya están etiquetados, pero se busca para semanas no etiquetadas. Aun así, para una misma semana, puede haber distintas tasas de crecimiento. En este caso sí se busca encontrar la recta. Puede haber varias soluciones independientes.
+\subsection{Tipos de problemas en aprendizaje supervisado}
+\paragraph{Clasificación}
+En un problema de clasificación, hay un espacio que se divide en las distintas etiquetas que adquieren los datos. No se trata de buscar la línea divisoria entre los distintos elementos, si no la caracterización de los espacios en los que se encuentran. Esa línea divisoria, o frontera de decisión, es importante para dicha caracterización. La salida es discreta, ya que se trata de etiquetas categóricas. Puede ser binaria (dos clases) o multiclase, pero nunca un dato podrá estar entre dos etiquetas. Además, las etiquetas pueden seguir un orden (etiqueta 1 < etiqueta 2 < etiqueta 3) o no.
 
-La clasificación tiene una salida discreta, mientras que en la regresión la salida es continua. El número máximo de clases a partir de que un problema pasa de clasificación a regresión depende de la naturaleza del problema. Si existe una relación entre muestras consecutivas, se espera que una distancia entre muestras esté correlacionada o haya consecuencialidad. 
+\paragraph{Regresión}
+Un ejemplo es la predicción del tamaño de un tumor en función del tiempo que lleva desarrollándose mediante la descripción de la tasa de crecimiento. En este caso, los datos son el tiempo (distinto número de semanas) y las etiquetas el tamaño del tumor, y se busca describir el tamaño para datos nuevos, como pueden ser semanas no descritas. Aun así, para una misma semana, puede haber distintas tasas de crecimiento dependiendo de la persona. En este caso sí se busca encontrar la recta. Puede haber varias soluciones independientes, y en este caso la salida es continua (un valor numérico).
 
-El vector de x es D-dimensional. En regresión, y es una variable continua y real. En clasificación, y existe en un conjunto finito de posibilidades, pudiendo haber problemas multiclase o multietiqueta, pero no hay nada entre las distintas salidas, y éstas son independientes entre sí. Pueden tener o no un orden.
+El número máximo de clases a partir de que un problema pasa de clasificación a regresión depende de la naturaleza del problema. Si el problema es de naturaleza continua, entonces la aproximación será mediante regresión, mientras que si el problema es discreto, entonces utilizaremos la clasificación. Si existe una relación entre muestras consecutivas, se espera que una distancia entre muestras esté correlacionada o haya consecuencialidad. 
 
-X e Y son variables aleatorias con una distribución conjunta. Hay una probabilidad o patrón que permita predecir Y a partir de X. El predictor es h, el cual permite pasar de x a Y. La función de pérdida L va a ser el que mida la distancia entre la salida del modelo y la salida deseada. Es una función que mide la distancia entre h e Y. Idealmente, queremos que L sea lo menor posible. Las pérdidas esperadas incorporan a la función de pérdida la esperanza, es decir, estimarlo para toda la población. X son todos los posibles valores del problema. Los datos de entrenamiento van a ser una subregión o ejemplo finito de esa región. Entrenamos en base a lo que se conoce, esperando que al enfrentarnos a datos no vistos, el rendimiento sea bueno. Por ello se habla de estimación, ya que no queremos replicar el entrenamiento. Debe funcionar con los datos de entrenamiento, pero funcionar bien con el set de entrenamiento no implica que funcione bien con datos nuevos. La función de pérdida, en la mayoría de casos, no es muy compleja. Tiene un indicador en el que se ve si h(x) es igual o diferente que y, añadiendo 1 cuando no haya igualdad, sumando así los errores. Un sistema que acierta mucho tendrá un indicador I cercano a 0, mientras que un sistema que falle mucho tendrá un I alto. El error es la esperanza o estimador de I. Esto se puede hacer en un problema de clasificación, pero es más complicado en uno de regresión; ahí no se suma 0 o 1, si no que se tiene en cuenta la distancia entre el valor real y la predicción. Se tiene en cuenta el MSE (error cuadrático medio) y MAE (error absoluto medio). Al elevar al cuadrado el error de cada muestra, se pierde el sentido físico biológico (por ejemplo, tasa de crecimiento), pero exageran o magnifican las desviaciones. 
+En resumen, en problemas de clasificación, el espacio de características se divide en regiones según las etiquetas. Por ejemplo, en un problema binario, se busca una frontera de decisión que separe las dos clases. En regresión, se busca una función (como una recta) que ajuste los datos.
 
-Se hacen algoritmos de aprendizaje L que a partir de unos datos se aprende una distribución h. h no solo depende de x, si no de los parámetros $\Theta$ de aprendizaje. Hay un conjunto de datos de entrenamiento con etiquetas y la pérdida esperada, que es un estimador para las pérdidas de muchos datos. Introducimos $\Theta$, y dependiendo de $\Theta$ tenemos unas pérdidas u otras. Se diseña un algoritmo variando $\Theta$ y se busca disminuir L. La penalización de complejidad pretende limitar la introducción de parámetros, cuyo número es infinito, para limitar la búsqueda de parámetros y permitir que el algoritmo sea generalizable a datos nuevos. 
-El entrenamiento resume todo lo anterior. Busca las pérdidas entre h e y mediante la siguiente fórmula matemática. 
+\subsection{Función de pérdida}
+Hasta ahora, seguíamos la siguiente notación:
+\begin{itemize}
+\item $x$, $y$: son variables aleatorias con una distribución conjunta, es decir, hay un patrón que permite predecir una variable en función de la otra.
+\item Predictor $h$: permite obtener $y$ a partir de $x$.
+\end{itemize}
+
+La \textbf{función de pérdida} $L$ mide la discrepancia entre la predicción $h(x)$ y la etiqueta real $y$. El objetivo es minimizar esta pérdida. Existen dos tipos comunes de funciones de pérdida:
+\begin{enumerate}
+\item Clasificación
+\begin{itemize}
+\item Pérdida 0-1: 
+$$L(h(x),y) = \mathbb{I}(h(x) \neq y)$$
+
+donde $\mathbb{I}$ es una función indicadora que vale 1 si la predicción es incorrecta y 0 si es correcta. Así, el error se calcula como la suma de las predicciones incorrectas. Un sistema que acierte mucho tendrá un indicador $\mathbb{I}$ cercano a 0, mientras que un sistema que falle mucho tendrá un $\mathbb{I}$ alto que habrá que normalizar por los intentos realizados.
+\end{itemize}
+
+\item Regresión
+\begin{itemize}
+\item Error cuadrático medio (MSE):
+$$MSE = \mathbb{E}[|h(\vec{X}) - Y|^2]$$
+
+\item Error absoluto medio (MAE):
+$$MAE = \mathbb{E}[|h(\vec{X}) - Y|]$$
+
+\item El MSE magnifica los errores grandes debido al cuadrado, mientras que el MAE es más robusto y mantiene el sentido físico-biológico de la variable.
+\end{itemize}
+\end{enumerate}
+
+\subsection{Pérdida esperada y generalización}
+La pérdida esperada es un estimador que mide el rendimiento del modelo en toda la población, no solo en los datos de entrenamiento. Esto se debe a que los datos de entrenamiento se definen en una subregión o espacio finito de la región de todos los posibles valores. Se busca que el entrenamiento tenga un rendimiento bueno con datos conocidos y desconocidos. Se define como:
+$$Error = \mathbb{E}[\mathbb{I}(h(\vec{X}) \neq Y)]$$
+
+El objetivo es minimizar la pérdida esperada, lo que implica que el modelo generalice bien a datos nuevos.
+
+\subsection{Entrenamiento y optimización}
+El entrenamiento consiste en ajustar los \textbf{parámetros} $\Theta$ del modelo para minimizar la pérdida en los datos de entrenamiento:
 $$L_{train}(\Theta) = \frac{1}{N_{train}} \sum^{N_{train}}_{n=1} L(h(\vec{x}^{train}_n; \Theta), y^{train}_n)$$
+\begin{itemize}
+\item $\Theta$: parámetros del modelo (por ejemplo, coeficientes en regresión lineal).
+\item $L_{train}$: pérdida promedio en el conjunto de entrenamiento.
+\end{itemize}
 
-En general, la pérdida de entrenamiento será menor a la pérdida general. Esto se debe a que se optimiza Theta con respecto a L de entrenamiento, por lo que será mejor para los datos utilizados que para datos nuevos. Esto significa que, de por sí, es un proceso sesgado. 
+Sin embargo, minimizar $L_{train}$ no garantiza un buen rendimiento en datos nuevos. Esto se debe al \textbf{sobreajuste} (overfitting), donde el modelo memoriza los datos de entrenamiento pero no generaliza bien. 
 
-Lo que se busca entonces es tener un subconjunto para poder evaluar el rendimiento del modelo en ese subconjunto. A esto se le conoce como datos de test. Toda la ecuación es igual, pero sin tocar Theta. Se debe optimizar Theta con los datos de entrenamiento, y con los datos de prueba solo se evalúa. 
+Para evitar el sobreajuste, se introduce una \textbf{penalización de complejidad} en la función de pérdida. Esto limita el número de parámetros o la magnitud de los mismos, favoreciendo modelos más simples y generalizables. Ejemplos comunes incluyen la regularización L1 (Lasso) y L2 (Ridge).
+
+En general, la pérdida de entrenamiento será menor a la pérdida general. Esto se debe a que se optimiza $\Theta$ con respecto a $L$ de entrenamiento, por lo que será mejor para los datos utilizados que para datos nuevos. Esto significa que, de por sí, es un proceso sesgado. 
+
+Lo que se busca entonces es tener un subconjunto para poder evaluar el rendimiento del modelo en ese subconjunto. A esto se le conoce como \textbf{datos de test}. Toda la ecuación es igual, pero sin tocar $\Theta$. Se debe optimizar $\Theta$ con los datos de entrenamiento, y con los datos de prueba solo se evalúa. 
 
 %\section{Análisis discriminante}
 
