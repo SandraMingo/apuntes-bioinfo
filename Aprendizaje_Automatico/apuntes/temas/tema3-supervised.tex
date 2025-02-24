@@ -1,0 +1,45 @@
+%24/02 - Aythami Morales 
+\chapter{Aprendizaje supervisado}
+\section{Introducción}
+El aprendizaje automático se divide en dos grandes categorías: aprendizaje supervisado y aprendizaje no supervisado. En el aprendizaje supervisado, el objetivo es aprender una \textbf{función de hipótesis} desconocida que permita predecir una salida $y$ a partir de una entrada $x$. Este enfoque se conoce como sistema \textbf{data-driven}, ya que el modelo aprende patrones a partir de datos etiquetados.
+
+\subsection{Datos etiquetados}
+En el aprendizaje supervisado, cada dato tiene una etiqueta asociada, lo que se representa como pares $(x^{(i)}, y^{(i)})$. Partimos de un \textbf{conjunto de datos de entrenamiento}:
+$$D_{train} = \{ (\vec{x}_n, y_n)\}^{N_{train}}_{n=1}$$
+siendo:
+\begin{itemize}
+\item $N_{train}$: número de muestras de entrenamiento.
+\item $\vec{x}_n$: vector de atributos (inputs, características, variables independientes).
+\item $y_n$: etiqueta o valor objetivo.
+\end{itemize}
+
+El objetivo es \textbf{inducir o aprender} a partir de los datos de entrenamiento un \textbf{predictor} $h$ que permita predecir $y$ para nuevos datos. La clave no es memorizar los datos de entrenamiento, sino \textbf{generalizar} para hacer predicciones precisas en situaciones similares pero no idénticas (capacidad de generalización).
+
+\subsection{Función de hipótesis y predictor}
+El algoritmo de aprendizaje $L$ toma los datos de entrenamiento y busca una función $h$ que sirva como predictor:
+$$L:D_{train} \rightarrow h$$
+\begin{itemize}
+\item $h$: función de hipótesis que mapea entradas $x$ a salidas $y$.
+\item El predictor debe ser capaz de generalizar, es decir, funcionar bien con datos no vistos durante el entrenamiento.
+\end{itemize}
+
+%%%%
+Hay un espacio dividido por dos características. No se busca la recta que separa los dos espacios de características, pero es importarte al ser el punto en el que los datos tienen una u otra etiqueta. Otro problema típico de aprendizaje supervisado es la regresión, como puede ser por ejemplo la predicción del tamaño del tumor. Los datos ya están etiquetados, pero se busca para semanas no etiquetadas. Aun así, para una misma semana, puede haber distintas tasas de crecimiento. En este caso sí se busca encontrar la recta. Puede haber varias soluciones independientes.
+
+La clasificación tiene una salida discreta, mientras que en la regresión la salida es continua. El número máximo de clases a partir de que un problema pasa de clasificación a regresión depende de la naturaleza del problema. Si existe una relación entre muestras consecutivas, se espera que una distancia entre muestras esté correlacionada o haya consecuencialidad. 
+
+El vector de x es D-dimensional. En regresión, y es una variable continua y real. En clasificación, y existe en un conjunto finito de posibilidades, pudiendo haber problemas multiclase o multietiqueta, pero no hay nada entre las distintas salidas, y éstas son independientes entre sí. Pueden tener o no un orden.
+
+X e Y son variables aleatorias con una distribución conjunta. Hay una probabilidad o patrón que permita predecir Y a partir de X. El predictor es h, el cual permite pasar de x a Y. La función de pérdida L va a ser el que mida la distancia entre la salida del modelo y la salida deseada. Es una función que mide la distancia entre h e Y. Idealmente, queremos que L sea lo menor posible. Las pérdidas esperadas incorporan a la función de pérdida la esperanza, es decir, estimarlo para toda la población. X son todos los posibles valores del problema. Los datos de entrenamiento van a ser una subregión o ejemplo finito de esa región. Entrenamos en base a lo que se conoce, esperando que al enfrentarnos a datos no vistos, el rendimiento sea bueno. Por ello se habla de estimación, ya que no queremos replicar el entrenamiento. Debe funcionar con los datos de entrenamiento, pero funcionar bien con el set de entrenamiento no implica que funcione bien con datos nuevos. La función de pérdida, en la mayoría de casos, no es muy compleja. Tiene un indicador en el que se ve si h(x) es igual o diferente que y, añadiendo 1 cuando no haya igualdad, sumando así los errores. Un sistema que acierta mucho tendrá un indicador I cercano a 0, mientras que un sistema que falle mucho tendrá un I alto. El error es la esperanza o estimador de I. Esto se puede hacer en un problema de clasificación, pero es más complicado en uno de regresión; ahí no se suma 0 o 1, si no que se tiene en cuenta la distancia entre el valor real y la predicción. Se tiene en cuenta el MSE (error cuadrático medio) y MAE (error absoluto medio). Al elevar al cuadrado el error de cada muestra, se pierde el sentido físico biológico (por ejemplo, tasa de crecimiento), pero exageran o magnifican las desviaciones. 
+
+Se hacen algoritmos de aprendizaje L que a partir de unos datos se aprende una distribución h. h no solo depende de x, si no de los parámetros $\Theta$ de aprendizaje. Hay un conjunto de datos de entrenamiento con etiquetas y la pérdida esperada, que es un estimador para las pérdidas de muchos datos. Introducimos $\Theta$, y dependiendo de $\Theta$ tenemos unas pérdidas u otras. Se diseña un algoritmo variando $\Theta$ y se busca disminuir L. La penalización de complejidad pretende limitar la introducción de parámetros, cuyo número es infinito, para limitar la búsqueda de parámetros y permitir que el algoritmo sea generalizable a datos nuevos. 
+El entrenamiento resume todo lo anterior. Busca las pérdidas entre h e y mediante la siguiente fórmula matemática. 
+$$L_{train}(\Theta) = \frac{1}{N_{train}} \sum^{N_{train}}_{n=1} L(h(\vec{x}^{train}_n; \Theta), y^{train}_n)$$
+
+En general, la pérdida de entrenamiento será menor a la pérdida general. Esto se debe a que se optimiza Theta con respecto a L de entrenamiento, por lo que será mejor para los datos utilizados que para datos nuevos. Esto significa que, de por sí, es un proceso sesgado. 
+
+Lo que se busca entonces es tener un subconjunto para poder evaluar el rendimiento del modelo en ese subconjunto. A esto se le conoce como datos de test. Toda la ecuación es igual, pero sin tocar Theta. Se debe optimizar Theta con los datos de entrenamiento, y con los datos de prueba solo se evalúa. 
+
+%\section{Análisis discriminante}
+
+%\section{Árboles de clasificación y vecinos cercanos}
