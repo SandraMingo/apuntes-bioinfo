@@ -238,9 +238,15 @@ sum(out[,2])
 
 **Considerations for your own data**: The standard filtering parameters are starting points, not set in stone. If you want to speed up downstream computation, consider tightening maxEE. If too few reads are passing the filter, consider relaxing maxEE, perhaps especially on the reverse reads (eg. maxEE=c(2,5)), and reducing the truncLen to remove low quality tails. Remember though, when choosing truncLen for paired-end reads you must maintain overlap after truncation in order to merge them later.
 
+Las decisiones tomadas para cortar las secuencias son bastante arbitrarias. Se podría crear un algoritmo para tomar decisiones más coherentes mediante un análisis estadístico. La recomendación es fijarnos en el valor de calidad de un Phred26 para ver en qué momento decae la calidad de las lecturas. Se procura analizar el mismo set de muestras del mismo pool o ronda de secuenciación. Normalmente, todo esto se podría analizar a la vez, pero como hay muchas variabilidades técnicas, podemos encontrar ese problema. 
+
+Nos han quedado 1.700.000 lecturas. ¿Son suficientes para caracterizar la población? El amplicón tiene un tamaño mayor que el solapamiento entre forward y reverse. El paso final es reconstruir todo el amplicón con esas secuencias, por lo que hay que mantener 20 nucleótidos. Si perdemos demasiadas lecturas, se puede modificar el parámetro de truncLen y expected error. 
+
 ## Dereplication and denoising
 
 Once we have a nice pool of reads, DADA2 protocol is going to analyse them to identify the unique sequences and to correct the errors. This process is called dereplication and denoising. The output of this process is a table with the number of reads for each unique sequence. This table is called *sequence table* and it is the input for the next step: chimera detection.
+
+Este paso es crucial. A partir de este proceso tendremos la población in silico que representa la población biológica. Como tenemos que hacer un filtrado del ruido técnico, el primer paso es utilizar la función de learnErrors. Va a analizar las lecutras forward, alinearlas entre sí y en función del score del alineamiento calcular la probabilidad de cambio de un nucleótido en una posición dada y si es por un error de secuenciación o por una mutación puntual. Este proceso se corre por un lado para la lectura forward y por otra para la reverse. Esto se debe a que hay un mayor rango de errores en las lecturas reverse, como se vio en el gráfico del FastQC. El siguiente paso está basado en Machine Learning. En este caso, el set de entrenamiento no está validado. Si los cambios aplican al modelo, se acepta el modelo subyacente de DADA o se generan modificaciones. Si se hace con todos los datos, se sobreajustaría y sería un gran gasto computacional.
 
 ### Learn the Error Rates
 
@@ -250,16 +256,22 @@ The DADA2 algorithm makes use of a parametric error model (err) and every amplic
 *IMPORTANT DO NOT RUN THE TWO FOLLOWING CHUNKS* As we are using a not very powerful VM and class time is limited, we are going to load the error models from the previous execution. Instead of running next chunks we are going to load the models that have been saved in the file *dadaobjects.Rdata*
 :::
 
-```{r errForward, cache = TRUE, eval=FALSE}
+```{r errForward, cache = TRUE, eval=TRUE}
+#Modelo para las lecturas forward
 errF <- learnErrors(filtFs,multithread=TRUE, nbases=130000000) #half of total bases
+#Coge como input los archivos filtrados
+#Multithread TRUE no sirve para Windows, habría que cambiarlo
+#nbases es una decisión que hay que tomar para ver cuántos nucleótidos se van a analizar. Se recomienda la mitad o un cuarto de los nucleótidos en la población muestral, depende de las ganas que tengamos a esperar. Cuanto más pequeño sea el modelo, menor diversidad y menor fiabilidad. 
+#Hay un parámetro que indica si coge las lecturas al azar. Esto sería interesante para no coger solo lecturas de los primeros archivos, si no de todos.
 ```
 
 ```{r errReverse, cache = TRUE, eval=FALSE}
+#Modelo para las lecturas reverse
 errR <- learnErrors(filtRs, multithread=TRUE, nbases=130000000)
 ```
 
 ```{r load_dada_results, cache = TRUE}
-load("dadaobjects.Rdata")
+load("dadaobjects.RData")
 ```
 
 ### Plot Error models
@@ -276,10 +288,13 @@ plotErrors(errR, nominalQ=TRUE)
 
 We can see in both plots that the estimated error rates (black line) are a good fit to the observed rates (points), and the error rates drop with increased quality as expected. Everything looks reasonable and we proceed with confidence.
 
+En este caso, se deberían subir el número de bases y lecturas a evaluar. Esto se debe a que los puntos no se ajustan del todo a las líneas rojas. No se aprecia el valle visto en Novaseq. Para automatizar, se haría un bloque de código para estimar las bases en todas las lecturas y aquellas que se deben pasar por learn errors para llegar a la mitad (o 25%) en filtFS/filtRS. Podemos ver en algunos casos que la recta al final se curva un poco hacia arriba. Esto no debería suceder y se debe a un mal ajuste.
+
 ::: {#novaseq style="color: yellow"}
 Depending on the sequencing platfform used the error models we can find anomalies. For instance Novaseq system does not return a continuous scale for Phred quality values. See example below:
 
 ![Novaseq error model](novaseq.png){fig-align="left"}
+Esto es una matriz en la que se muestran todos los posibles cambios de transiciones y transversiones del ADN. Se representa el score del consenso para cada cambio y la frecuencia de error en base logarítmica. A mayor consenso, menor error. Los cambios entre  sí misma no tiene apenas errores, que  es lo esperable. Para los otros casos, hay una recta y unos puntos que siguen más o menos este patrón. Esto es un caso de algo que no se recomienda. Illumina tiene múltiples máquinas para la secuenciación. La última es Novaseq, pero su problema es que hace un binning de las calidades. Esto se debe a que, en un punto, hay una alteración en la calidad y hay un valle. Al aplicar estos errores, se pierden casi todas las lecturas.
 :::
 
 ### Sample Inference
@@ -287,14 +302,14 @@ Depending on the sequencing platfform used the error models we can find anomalie
 We are now ready to apply the [core sample inference algorithm](https://www.nature.com/articles/nmeth.3869#methods) to the filtered and trimmed sequence data.
 
 ::: {#dadashortcut style="color: yellow"}
-*IMPORTANT DO NOT RUN THE TWO FOLLOWING CHUNKS* As we are using a not very powerful VM and class time is limited, we are going to use the objects that were loaded with _dadaobjects.Rdata_ file.
+*IMPORTANT DO NOT RUN THE TWO FOLLOWING CHUNKS* As we are using a not very powerful VM and class time is limited, we are going to use the objects that were loaded with _dadaobjects.RData_ file.
 :::
 
 ```{r dadaF, warning=FALSE, cache=TRUE, eval=FALSE}
 dadaFs <- dada(filtFs, err=errF, multithread=TRUE)
 ```
 
-```{r dadaR, warning=FALSE, cache=TRUE, eval=False}
+```{r dadaR, warning=FALSE, cache=TRUE, eval=FALSE}
 dadaRs <- dada(filtRs, err=errR, multithread=TRUE)
 ```
 
@@ -303,6 +318,7 @@ Inspecting the returned dada-class object:
 ```{r dadaview, warning=FALSE, cache=TRUE}
 print("Forward Reads")
 dadaFs
+#en la muestra 7265228 se han encontrado 3366 secuencias con mutaciones o lecturas distintas. Podríamos decir que se trata de SVs, pero todavía no vamos a decirlo porque se debería validar con las lecturas reversas.
 print("Reverse Reads")
 dadaRs
 ```
@@ -311,18 +327,22 @@ dadaRs
 
 We now merge the forward and reverse reads together to obtain the full denoised sequences. Merging is performed by aligning the denoised forward reads with the reverse-complement of the corresponding denoised reverse reads, and then constructing the merged "contig" sequences. By default, merged sequences are only output if the forward and reverse reads overlap by at least **20** bases, and are identical to each other in the overlap region (but these conditions can be changed via function arguments).
 
+Ahora tenemos las lecturas forward y reverse y queremos solaparlas para obtener los SV. Esto se consigue con mergePairs, que toma como input los variantes que ha detectado en forward y reverse y las lecturas filtradas. Solapará y contará las veces que aparece el solapamiento en cada archivo. Así se obteienen las secuencias de cada SV y su abundancia.
+
 ```{r merging, message=FALSE, warning=FALSE, cache=TRUE}
 mergers <- mergePairs(dadaFs, filtFs, dadaRs, filtRs, verbose=TRUE)
 # Inspect the merger data.frame from the first sample
 head(mergers[[1]][,2:9])
 ```
 
+El resultado es una tabla con la abundancia, los mismatches, indels, etc.
+
 The mergers object is a list of data.frames from each sample. Each data.frame contains the merged \$sequence, its \$abundance, and the indices of the \$forward and \$reverse sequence variants that were merged. Paired reads that did not exactly overlap were removed by mergePairs, further reducing spurious output.
 
 ::: {#additionalinfo style="color: yellow"}
 **Considerations for your own data**: Most of your reads should successfully merge. If that is not the case upstream parameters may need to be revisited: Did you trim away the overlap between your reads?
 
-**Extensions**: Non-overlapping reads are supported, but not recommended, with mergePairs(..., justConcatenate=TRUE).Check for ITS.
+**Extensions**: Non-overlapping reads are supported, but not recommended, with mergePairs(..., justConcatenate=TRUE). Check for ITS. No todos los análisis tienen amplicones tan definidos. Algunos ITS tienen una extensión y longitud muy variable, siendo más grande que la información que nos da una librería de Illumina. Por ello, no merece la pena forzarles a que solapen. Se puede utilizar entonces mergePairs para concatenar las secuencias.
 :::
 
 ## Construct Sequence Table
@@ -332,6 +352,7 @@ We can now construct an amplicon sequence variant table (ASV) table, a higher-re
 ```{r seqtable , warning = FALSE, cache = TRUE}
 seqtab <- makeSequenceTable(mergers)
 dim(seqtab)
+head(colnames(seqtab)) #como nombre de columna está una secuencia nucleotídica de la ASV. Antiguamente, se ponía OTU1, OTU2, OTU3, etc. Al correr dos experimentos, la secuencia de OTU1 de un análisis no tiene por qué coincidir con la del otro, por lo que, con la secuencia, no es necesario nombrarlas. Dependiendo de la librería puede merecer o no la pena poner la secuencia, ya que la secuencia puede ser muy larga para poder visualizarse bien. Esto se podría codificar con un hash como MD5.
 ```
 
 ```{r inspecttable, warning = FALSE, cache = TRUE}
@@ -339,7 +360,9 @@ dim(seqtab)
 table(nchar(getSequences(seqtab)))
 ```
 
-The sequence table is a matrix with rows corresponding to (and named by) the samples, and columns corresponding to (and named by) the sequence variants. This table contains aroun 16000 ASVs, but not all the lengths of our merged sequences all fall within the expected range for this V3-V4 amplicon (445 nts) minus primers removed with cutadapt (38 nts). We are going to keep those from 393 to 433.
+The sequence table is a matrix with rows corresponding to (and named by) the samples, and columns corresponding to (and named by) the sequence variants. This table contains around 16000 ASVs, but not all the lengths of our merged sequences all fall within the expected range for this V3-V4 amplicon (445 nts) minus primers removed with cutadapt (38 nts). We are going to keep those from 393 to 433.
+
+Como nombre de columna hay un número, y después está el valor (la abundancia). Alrededor de 394 empieza a crecer el valor de la abundancia, hasta 432. Técnicamente, podríamos quitar los ASV de aquellos que tengan un tamaño que no sea real tras haber cortado las secuencias. Puede haber algún amplicón raro con un tamaño grande, pero solo hay una ASV con ese tamaño. Por tanto, hay que filtrar por tamaño. Esto no se recomienda hacer porque posteriormente vamos a filtrar por abundancia y prevalencia. 
 
 ```{r filteringseq, warning = FALSE, cache = TRUE}
 seqtab<- seqtab[,nchar(colnames(seqtab)) %in% 393:432]
@@ -347,9 +370,15 @@ seqtab<- seqtab[,nchar(colnames(seqtab)) %in% 393:432]
 table(nchar(getSequences(seqtab)))               
 ```
 
+La tabla anterior se ha reducido bastante. De esta forma, el siguiente paso es más ágil.
+
 ## Remove chimeras
 
 The core dada method corrects substitution and indel errors, but chimeras remain. Fortunately, the accuracy of sequence variants after denoising makes identifying chimeric ASVs simpler than when dealing with fuzzy OTUs. Chimeric sequences are identified if they can be exactly reconstructed by combining a left-segment and a right-segment from two more abundant "parent" sequences.
+
+Las quimeras eran artefactos que surgen en ciclos inacabados de PCR. Dependiendo del ciclo en el que aparezca este error, su efecto es  mayor o menor. Se espera que cadaa molécula en la PCR se duplique. Si la eficiencia es de 1, eso ocurre, si es inferior, no todas las moléculas se replican. Normalmente, siempre hay  alguna que no se replique, pero los valores estándares están sobre el 90%.
+
+Antiguammente había uuna base de datos de secuencias de 16S que se utilizaba como comparador para definir las quimeras (si eran una mezcla de dos entradas en esta base de datos). En este caso, comparamos solo con los individuos de nuestra  población mediante el consenso.
 
 ```{r chimeras, warning=FALSE, cache=TRUE }
 seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus", multithread=TRUE, verbose=TRUE)
@@ -361,9 +390,11 @@ sum(seqtab.nochim)/sum(seqtab)*100
 
 **WARNING**: Check filtering step if number of sequences drops drastically.
 
+Teníamos quimeras, pero nos quedamos con el 94.9% de las secuencias.
+
 ## Track reads through the pipeline
 
-As a final check of the progress, we'll look at the number of reads that made through each step in the pipeline:
+As a final check of the progress, we'll look at the number of reads that made through each step in the pipeline (o cuántas vamos perdiendo). Así tenemos una idea de en qué punto hemos perdido información para volver a empezar. El profesor  prefiere verlo todo al final y ver toda  la evolución, no anticiparse y obligarse a repetir. Otro criterio puede ser hacerlo tras cada paso, ya que son largos.
 
 ```{r pipeline_summary, warning=FALSE, cache=TRUE}
 getN <- function(x) sum(getUniques(x))
@@ -376,6 +407,10 @@ track$conservedperc<-round(with(track, nonchim/input*100),2)
 print(track)
 ```
 
+Este código crea un dataframe con la primera muestra (de forma representativa). Se añade una últimaa columna del porcentaje de lecturas conservadas no quiméricas. Vemos que para todas las  muestras, los porcentajes de secuencias  conservadas se mantiene.
+
+Se pueden hacer subOTUs a partir de estos para ver la homología.
+
 ## Removing low abundance ASVs
 
 DADA is quite restrictive when estimating ASVs, however there is a chance that low abundant sequences are kept, being some of them due to artifacts or an underrepresented part of the community that can add noise to diversity study. According to the literature it's recommended to remove those ASVs with a number of sequences below the one per mil of the average number of sequences per sample. Let's have a look to track\$nonchim distribution
@@ -386,9 +421,11 @@ summary(track$nonchim)
 
 ```
 
+Aquí se quieren quiitar las ASV de baja abundancia y prevalencia. Normalmente, la bubliografía recomienda que, asumiendo una calidad de 30 media, hay un error cada mil nucleótidos. Teniendo una media de 75574 secuencias, suponemos 75 secuencias erróneas. La resoolución de las relaciones taxonómicas no varía, pero la calidadd sí aumenta tras eliminar las secuencias con baja  abundancia y prevalencia. 
+
 So with summary(track\$nonchim)\[\['Mean'\]\]' we get the average and with round(summary(track\$nonchim)\[\['Mean'\]\]/1000,0) we will get our threshold value.
 
-Besides the abundance threshold we can add a value for presence threshold, that is, number of samples where the ASV is present. As we are working with triplicates we can chose a value of three for threshold.
+Besides the abundance threshold we can add a value for presence threshold, that is, number of samples where the ASV is present. As we are working with triplicates we can chose a value of three for threshold. Teniendo réplicas, se esperaría que un ASV aparezca en al menos dos muestras. Aunn así, como hay muestras triplicadas, se puede poner un valor de 3. Se agruparían las muestras por las réplicas y se  filtraría. Hay librerías que lo hacen con los metadatos, no sería necesario crear una función para eso.
 
 So now we can write a function for filtering
 
@@ -421,6 +458,7 @@ subset_columns_by_sum_and_rows <- function(df_name, threshold, min_rows_with_val
 Now we can filter with our parameters
 
 ```{r low_abundance_filtering}
+#raretons
 seqtab.nochimfiltered<- subset_columns_by_sum_and_rows(seqtab.nochim, 
                                                        threshold=round(summary(track$nonchim)[['Mean']]/1000,0),
                                                        min_rows_with_value=3)
