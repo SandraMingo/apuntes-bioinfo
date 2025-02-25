@@ -70,20 +70,214 @@ $$Error = \mathbb{E}[\mathbb{I}(h(\vec{X}) \neq Y)]$$
 El objetivo es minimizar la pérdida esperada, lo que implica que el modelo generalice bien a datos nuevos.
 
 \subsection{Entrenamiento y optimización}
-El entrenamiento consiste en ajustar los \textbf{parámetros} $\Theta$ del modelo para minimizar la pérdida en los datos de entrenamiento:
+El entrenamiento consiste en ajustar los \textbf{parámetros} $\Theta$ del modelo para minimizar la pérdida en los datos de entrenamiento. La pérdida promedio en el conjunto de entrenamiento se define como:
 $$L_{train}(\Theta) = \frac{1}{N_{train}} \sum^{N_{train}}_{n=1} L(h(\vec{x}^{train}_n; \Theta), y^{train}_n)$$
 \begin{itemize}
 \item $\Theta$: parámetros del modelo (por ejemplo, coeficientes en regresión lineal).
 \item $L_{train}$: pérdida promedio en el conjunto de entrenamiento.
 \end{itemize}
 
-Sin embargo, minimizar $L_{train}$ no garantiza un buen rendimiento en datos nuevos. Esto se debe al \textbf{sobreajuste} (overfitting), donde el modelo memoriza los datos de entrenamiento pero no generaliza bien. 
+Sin embargo, minimizar $L_{train}$ no garantiza un buen rendimiento en datos nuevos. Esto se debe al \textbf{sobreajuste} (overfitting), donde el modelo memoriza los datos de entrenamiento pero no generaliza bien a datos no vistos.
 
-Para evitar el sobreajuste, se introduce una \textbf{penalización de complejidad} en la función de pérdida. Esto limita el número de parámetros o la magnitud de los mismos, favoreciendo modelos más simples y generalizables. Ejemplos comunes incluyen la regularización L1 (Lasso) y L2 (Ridge).
+Para evitar el sobreajuste, se introduce una \textbf{penalización de complejidad} en la función de pérdida. Esto limita el número de parámetros o la magnitud de los mismos, favoreciendo modelos más simples y generalizables. Ejemplos comunes incluyen la regularización L1 (Lasso) y L2 (Ridge) que penalizan la suma absoluta o cuadrática de los parámetros respectivamente.
 
-En general, la pérdida de entrenamiento será menor a la pérdida general. Esto se debe a que se optimiza $\Theta$ con respecto a $L$ de entrenamiento, por lo que será mejor para los datos utilizados que para datos nuevos. Esto significa que, de por sí, es un proceso sesgado. 
+\subsubsection{Sesgos en el entrenamiento}
+La pérdida de entrenamiento suele ser menor que la pérdida en datos nuevos, ya que el modelo se optimiza específicamente para los datos de entrenamiento. Esto introduce un \textbf{sesgo} en el proceso de entrenamiento. Para evaluar el rendimiento del modelo en datos no vistos, se utiliza un \textbf{conjunto de test}:
 
-Lo que se busca entonces es tener un subconjunto para poder evaluar el rendimiento del modelo en ese subconjunto. A esto se le conoce como \textbf{datos de test}. Toda la ecuación es igual, pero sin tocar $\Theta$. Se debe optimizar $\Theta$ con los datos de entrenamiento, y con los datos de prueba solo se evalúa. 
+Los datos de test no se usan para ajustar $\Theta$, solo para evaluar el rendimiento. La pérdida en el conjunto de test se calcula de manera similar a $L_{train}$, pero sin modificar $\Theta$.
+
+%25/02 - Aythami
+\paragraph{Underfitting}
+El tipo de predictor considerado tiene \textbf{poca capacidad expresiva} o pocos grados de libertad. En consecuencia, no es capaz de capturar las dependencias entre los atributos y la variable a predecir. La pérdida esperada del predictor es demasiado elevada. Esto suele ocurrir en modelos rígidos, como pueden ser los modelos lineales.
+
+\paragraph{Overfitting}
+El tipo de predictor considerado es \textbf{demasiado flexible} (demasiados grados de libertad) y aprende patrones espurios que no son relevantes para la predicción (por ejemplo, fluctuaciones de muestreo, ruido, valores atípicos, etc.). La estimación de entrenamiento de la pérdida esperada es demasiado optimista y subestima la pérdida esperada real. Esto puede ocurrir en modelos flexibles, como pueden ser las redes neuronales.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/under-overfitting.png}
+\end{figure}
+
+\subsection{Compensación entre sesgo y varianza}
+Se tiene un sesgo bajo en modelos flexibles que se ajustan bien a los datos de entrenamiento, pero pueden tener alta varianza (sobreajuste). El sesgo alto se suele dar en modelos rígidos que no se ajustan bien a los datos, pero tienen baja varianza (underfitting). Por ello, se describe la compensación. A medida que aumenta la complejidad del modelo, el error de entrenamiento disminuye, pero el error de test puede aumentar después de un punto óptimo debido al sobreajuste.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/tradeoff.png}
+\caption{En el eje x está la complejidad del modelo, o el orden del polinomio. En el eje y está la predicción del error. Se empieza con un error alto, y se va adaptando, mediante modelos más complejos, para disminuir el error. No obstante, llega un momento en el que, aunque el error de entrenamiento siga bajando con modelos cada vez más complejos, el error de test vuelve a aumentar, indicando un modelo sobreajustado.}
+\end{figure}
+
+\subsection{Arquitectura, parámetros}
+\begin{itemize}
+\item \textbf{Arquitectura, configuración}: Especificación de la forma funcional del predictor (por ejemplo, número y tipo de capas ocultas y neuronas en una red neuronal, elección del núcleo en una SVM, etc.). En el caso de la regresión polinomial, es el polinomio.
+\item \textbf{Parámetros del modelo} $\Theta$: Valores necesarios para especificar el sistema de predicción (por ejemplo, pesos sinápticos en una red neuronal, vectores de soporte en una SVM, etc.). Se determinan entrenando el modelo con datos etiquetados.
+\item \textbf{Configuración del algoritmo de aprendizaje}: Función a optimizar (por ejemplo, verosimilitud, probabilidad posterior, error cuadrático medio, etc.). Términos de regularización
+\end{itemize}
+
+Hay distintos tipos de modelos predictivos: vecinos cercanos, árboles de decisión, redes neuronales, Support Vector Machine.
+
+\subsection{Preprocesado de datos}
+El preprocesado es crucial para preparar los datos antes de entrenar un modelo. Incluye:
+\begin{enumerate}
+\item \textbf{Selección de características}: identificar las características más relevantes
+\item \textbf{Manejo de valores atípicos (outliers)}: detectar y tratar datos anómalos
+\item \textbf{Manejo de datos faltantes}: imputar o eliminar valores faltantes
+\item \textbf{Normalización}: centrar y escalar los datos para que tengan media 0 y desviación estándar 1. La normalización basada en la media y desviación estándar es más robusta que usar valores mínimos y máximos.
+\end{enumerate}
+
+El preprocesado se puede realizar programáticamente con el módulo de scikit-learn.
+
+\subsection{Medición del rendimiento}
+\subsubsection{Error de clasificación}
+El error de clasificación se estima como la proporción de veces que el modelo predice incorrectamente las etiquetas. Es una métrica básica para evaluar la efectividad del modelo.
+
+\subsubsection{Matriz de confusión}
+La matriz de confusión es una herramienta fundamental para evaluar el rendimiento en problemas de clasificación. Muestra las combinaciones entre las etiquetas reales y las predichas. En clasificación binaria, se divide en:
+\begin{itemize}
+\item \textbf{True Positive (TP)}: correctamente clasificados como positivos.
+\item \textbf{True Negative (TN)}: correctamente clasificados como negativos.
+\item \textbf{False Positive (FP)}: incorrectamente clasificados como positivos.
+\item \textbf{False Negative (FN)}: incorrectamente clasificados como negativos.
+\end{itemize}
+
+En problemas con más de dos clases, la matriz de confusión se extiende, y la diagonal principal indica las predicciones correctas, mientras que las demás celdas muestran los errores. Esto es útil para identificar qué clases se confunden con mayor frecuencia.
+
+\subsubsection{Métricas de rendimiento}
+A partir de la matriz de confusión, se derivan varias métricas para evaluar el rendimiento del modelo:
+\begin{itemize}
+\item \textbf{Accuracy (exactitud)}: mide la efectividad general del modelo.
+$$Accuracy = \frac{TP + TN}{TP + TN + FP + FN}$$
+
+\item \textbf{Error}: estimación de la proporción de clasificación incorrectas.
+$$Error = 1 - Accuracy = \frac{FP + FN}{TP + TN + FP + FN}$$
+
+\item \textbf{Sensitividad (Recall)}: ratio de positivos correctamente identificados.
+$$Sensitividad = \frac{TP}{TP + FN}$$
+
+\item \textbf{Especifidad}: ratio de negativos correctamente identificados.
+$$Especificidad = \frac{TN}{TN + FP}$$
+
+\item \textbf{Precisión}: ratio de predicciones positivas que son correctas.
+$$Precision = \frac{TP}{TP + FP}$$
+\end{itemize}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/medidas.png}
+\caption{En la literatura se habla de Non Target Comparison en lugar de Negativos por la connotación. Normalmente hay un cierto solape entre las distribuciones target y non-target, produciendo así un error. El umbral de decisión se coloca dependiendo del error que se quiera priorizar (o si no se quiere priorizar ninguno).}
+\end{figure}
+
+\subsubsection{Curva ROC y AUC}
+La curva ROC es una gráfica la tasa de verdaderos positivos (TPR; sensitividad) frente a la tasa de falsos positivos (FPR) para diferentes umbrales de decisión. La matriz de confusión solo tiene sentido cuando ya están las etiquetas y se ha definido un umbral, pero esto no es necesario para la curva ROC. 
+
+El AUC (Área bajo la curva) mide el rendimiento general del clasificador. Un AUC cercano a 1 indica un buen rendimiento, mientras que un AUC cercano a 0.5 sugiere un rendimiento aleatorio.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/roc.png}
+\end{figure}
+
+La curva ROC es útil para decidir el umbral de decisión óptimo, especialmente cuando se quiere priorizar la minimización de falsos negativos o falsos positivos.
+
+\subsubsection{Métricas para regresión}
+En problemas de regresión, las métricas comunes incluyen:
+\begin{itemize}
+\item \textbf{Error cuadrático medio (MSE)}:
+$$MSE = \mathbb{E}[(h(\vec{X}; \Theta) - Y)^2] \approx \frac{1}{N} \sum^N_{n = 1}(h(\vec{x}_n;\Theta) - y_n)^2$$
+
+\item \textbf{Error absoluto medio (MAE)}:
+$$NMSE = \frac{MSE}{Var}$$
+$$Var = \frac{1}{N} \sum^N_{n = 1} (y_n - \bar{y})^2$$
+
+\item \textbf{Error cuadrático medio normalizado (NMSE)}:
+$$MAE = \mathbb{E}[|h(\vec{X};\Theta) - Y|] \approx \frac{1}{N} \sum^N_{n = 1} |h(\vec{x}_n; \Theta) - y_n|$$
+\end{itemize}
+
+\subsection{Protocolos experimentales}
+En general, tenemos un conjunto de datos que debemos dividir nosotros en dos conjuntos, uno de train y uno de test. 
+
+\paragraph{Holdout}
+Se divide el conjunto de datos en dos partes: una para entrenamiento (por ejemplo, 70\%) y otra para test (30\%). Problema: La partición puede no ser representativa si los datos no están bien distribuidos.
+
+\paragraph{K-Fold Cross Validation}
+El conjunto de datos se divide en $K$ subconjuntos (folds). El modelo se entrena $K$ veces, utilizando 
+$K-1$ folds para entrenamiento y 1 fold para validación. El rendimiento final es el promedio de las $K$ iteraciones. Ventaja: Reduce la dependencia de una partición específica y proporciona una estimación más robusta del rendimiento.
+
+\paragraph{Leave-One-Out}
+ Caso extremo de K-Fold, donde $K=N$ (número de muestras). En cada iteración, se deja una muestra fuera para validación y se entrena con las $N-1$ restantes. Ventaja: Útil cuando el conjunto de datos es muy pequeño. Desventaja: Computacionalmente costoso y puede estar sesgado si hay outliers.
+
+%25/02 - Daniel Hernández-Lobato
+\section{Teoría de decisión}
+En un problema de aprendizaje automático, trabajamos con datos observados (atributos) y etiquetas de clase. Por ejemplo:
+\begin{itemize}
+\item \textbf{Atributos}: una radiografía de un paciente.
+\item \textbf{Etiquetas de clase}: si el paciente está sano o enfermo.
+\end{itemize}
+
+El objetivo es realizar \textbf{predicciones}: dado un nuevo paciente, asignarle una etiqueta (enfermo o sano) basándose en sus atributos. Para ello, asumimos que los datos observados se generan a partir de una \textbf{distribución de probabilidad conjunta} sobre los atributos y las etiquetas de clase. Una vez observados los atributos, utilizamos esta distribución para tomar decisiones sobre la asignación de etiquetas.
+
+A partir de los datos observados, \textbf{inferimos} la distribución de probabilidad conjunta. Utilizamos la distribución inferida para asignar etiquetas a nuevos datos.
+
+\subsection{Probabilidad condicional y regla de Bayes}
+Para asignar una etiqueta a un nuevo dato, nos interesa la probabilidad condicional de la etiqueta dado los atributos observados, $p(C|x)$, donde:
+\begin{itemize}
+\item $C$: etiqueta de clase (por ejemplo, enfermo o sano).
+\item $x$: atributos observados (por ejemplo, radiografía).
+\end{itemize}
+
+La \textbf{regla de Bayes} permite calcular esta probabilidad condicional:
+$$p(C|x) = \frac{p(x|C) \cdot p(C)}{p(x)}$$
+donde
+\begin{itemize}
+\item $p(x|C)$: probabilidad de observar los atributos $x$ dada la clase $C$ (verosimilitud).
+\item $p(C)$: probabilidad a priori de la clase $C$ (por ejemplo, la fracción de la población que está enferma).
+\item $p(x)$: probabilidad marginal de los atributos $x$ (constante de normalización).
+\end{itemize}
+
+Entre las reglas de probabilidad hay dos fundamentales:
+\begin{itemize}
+\item \textbf{Regla del producto}: la probabilidad conjunta de $x$ y $C$ es el producto de la verosimilitud y la probabilidad a priori.
+$$p(x, C) = p(x|C) \cdot p(C)$$
+
+\item \textbf{Regla de la suma}: la probabilidad marginal de $x$ se obtiene sumando (marginalizando) sobre todas las clases.
+$$p(x) = p(x, C_1) + p(x, C_2)$$
+\end{itemize}
+
+\subsubsection{Ejemplo de probabilidades condicionales}
+Consideremos un ejemplo con dos atributos: color de ojos y color de pelo. La siguiente tabla muestra las frecuencias observadas:
+\begin{table}[h]
+\centering
+\begin{tabular}{ll|ll|}
+\cline{3-4}
+                                            &        & \multicolumn{2}{l|}{Pelo}         \\ \cline{3-4} 
+                                            &        & \multicolumn{1}{l|}{Rojo} & Rubio \\ \hline
+\multicolumn{1}{|l|}{\multirow{2}{*}{Ojos}} & Marrón & \multicolumn{1}{l|}{5}    & 10    \\ \cline{2-4} 
+\multicolumn{1}{|l|}{}                      & Azul   & \multicolumn{1}{l|}{10}   & 20    \\ \hline
+\end{tabular}
+\end{table}
+
+A partir de esta tabla, podemos calcular varias probabilidades
+\begin{itemize}
+\item Probabilidad marginal:
+$$p(\text{ojos marrones}) = \frac{15}{45}$$
+
+\item Probabilidad conjunta:
+$$p(\text{ojos marrones, pelo rubio}) = \frac{10}{45}$$
+
+\item Probabilidad condicional:
+$$p(\text{ojos marrones}|\text{pelo rubio}) = \frac{10}{30}$$
+\end{itemize}
+
+\subsubsection{Probabilidad posterior para dos clases}
+En un problema con dos clases ($C_1$ y $C_2$) se cumple que:
+$$p(C_1|x) + p(C_2|x) = 1$$
+Esto se debe a que, según la regla de Bayes:
+$$p(C_1|x) = \frac{p(x|C_1) p(C_1}{p(x)}$$
+$$p(C_2|x) = \frac{p(x|C_2) p(C_2}{p(x)}$$
+Sumando ambas probabilidades:
+$$p(C_1|x) + p(C_2|x) = \frac{p(x|C_1) \cdot p(C_1) + p(x|C_2) \cdot p(C_2)}{p(x)} = \frac{p(x)}{p(x)} = 1$$
+
+
 
 %\section{Análisis discriminante}
 
