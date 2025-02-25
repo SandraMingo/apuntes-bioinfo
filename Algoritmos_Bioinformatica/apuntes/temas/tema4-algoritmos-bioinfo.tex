@@ -47,4 +47,75 @@ La búsqueda de motivos es un problema de maximización, mientras que la cadena 
 
 Con este algoritmo, la complejidad es de $4^l$. El coste es considerablemente más bajo que en la búsqueda exhaustiva, ya que el tamaño del mer es más pequeño que el tamaño de la secuencia. Por tanto, reformular un problema puede ayudar a disminuir la complejidad computacional. 
 
-%\section{Algoritmo codicioso}
+%25/02 - Ana
+\section{Algoritmo codicioso}
+Un algoritmo codicioso es un algoritmo que siempre toma la mejor solución inmediata, o local, mientras encuentra una respuesta.
+Los algoritmos codiciosos:
+\begin{itemize}
+\item a menudo devuelven resultados subóptimos, pero tardan poco en hacerlo.
+\item seleccionan la alternativa «más atractiva» en cada iteración.
+\item suelen ser heurísticas rápidas que cambian precisión por velocidad para encontrar una solución aproximada/subóptima.
+\end{itemize}
+
+En este caso, se utiliza la entropía como medida. Es una medida probabilística que se suele definir como $\int -p \log (p)$. Está la entropía sobre todos los nucleótidos se correspondería a $- \sum p \cdot \log_2(p)$. Esto se utiliza para calcular los logos. Motif logo es un diagrama para visualizar la conservación de motivos que consiste en una pila de letras en cada posición. La altura total de cada columna se basa en el contenido informativo de la columna, que se define como $2 - H_i(p_A, p_C, p_G, p_T)$. Cuanto menor es la entropía, mayor es el contenido de información, lo que significa que las columnas altas del logotipo del motivo están muy conservadas. 
+
+La probabilidad del l-mer es la probabilidad de que un l-mer a fuese creado por el perfil P:
+$$p(a|P) = \Pi^l_{k=1} P_{a_{i,k}}$$ 
+donde $P_{a_{i,k}}$ es la probabilidad de la letra $a_i$ en la posición $k$, distribuida independientemente e idénticamente. 
+
+\begin{lstlisting}
+GreedyMotifSearch(DNA, k, t)
+BestMotifs = primer k-mer de cada string de ADN
+for each k-mer Motif in the first string in DNA do
+	Motif1 = Motif
+	for i = 2 to t do
+		form Profile from Motif1, ..., Motif i-1
+		Motif i = profile-most probable k-mer in the ith string in DNA
+	Motifs = Motif i, ..., Motif t
+	if Score(Motif) > Score (BestMotif) then
+		BestMotifs = Motifs
+return BestMotifs
+\end{lstlisting}
+
+Primero, se inicializa una matriz de motivos con los primeros -lmers de cada secuencia de ADN. Después se va comparando el l-mer de la primera secuencia con la siguiente secuencia, calculando el mejor motivo, el cual se añade a una nueva lista. Así se recorren las distintas secuencias. Tras obtener la lista de los motivos (uno por cada secuencia), se obtiene el consenso. Éste se puntúa y se compara con la puntuación de la matriz inicializada, quedándonos con la matriz que tenga una puntuación mayor. A continuación se mueve el primer l-mer un nucleótido y repetir todo este proceso.
+
+Para evitar obtener resultados de 0, se utiliza la regla de sucesión de Laplace, sumando 1 a todos los valores de contaje para computar las probabilidades mediante pseudo-counts. De esta forma, se obtiene la matriz del perfil. 
+
+En cuanto al tiempo del cómputo, como tenemos una matriz $t \times n$ de ADN y una longitud del patrón $l$, el tiempo de ejecución es $O(n^2 \cdot l \cdot t)$, lo cual es mejor que el algoritmo de fuerza bruta. No obstante, es restrictivo, por lo que podemos no encontrar los mejores motivos. Cambiando el orden de las secuencias, el resultado va a ser distinto, afectando significativamente el rumbo que tomará el análisis. 
+
+\section{Algoritmos randomizados}
+Los algoritmos aleatorios toman decisiones aleatorias en lugar de deterministas. Estos algoritmos se utilizan en situaciones en las que no se conoce ningún algoritmo polinómico correcto. Seleccionan aleatoriamente posibles ubicaciones y encuentran una forma de cambiar codiciosamente esas ubicaciones hasta que hayamos convergido al motivo oculto.
+
+\begin{lstlisting}
+RandomizedMotifSearch(DNA, l, t)
+Randomly select l-mers Motifs = (Motif1, ... Motift) in each string from DNA
+BestMotifs = Motifs
+while forever
+	Profile = PROFILE(Motifs)
+	Motifs = MOTIF(Profile, DNA)
+	if Score(Motifs) > Score(BestMotifs)
+		BestMotifs = Motifs
+	else
+		return BestMotifs
+\end{lstlisting}
+
+Este algoritmo se detiene tras un número de iteraciones que le demos, o cuando el perfil apenas se modifique tras más iteraciones. El algoritmo se ejecuta muchas veces, cada una de ellas con nuevos l-mers inicializados, y con la colección de los motivos con mayor puntuación se obtiene el consenso. 
+
+\subsection{Gibbs Sampling}
+RandomizedMotifSearch puede cambiar todas las cadenas $t$ en Motifs en una única iteración. Puede sondear imprudentemente, y algunos motivos correctos pueden ser descartados en la siguiente iteración.
+
+GibbsSampler es un algoritmo iterativo más cauteloso que descarta un único $l$-mers del conjunto actual de motivos en cada iteración y decide conservarlo o sustituirlo por uno nuevo. Los pasos son:
+\begin{enumerate}
+\item Elegir aleatoriamente las posiciones iniciales de l-mers para cada secuencia.
+\item Elegir al azar una de las secuencias $t$
+\item Crear un perfil $P$ (consenso) a partir de las otras secuencias ($t - 1$)
+\item Para cada posición de la secuencia eliminada, se calcula la probabilidad de que el $l$-mer que comienza en esa posición haya sido generado por $P$.
+\item Elegir al azar una nueva posición inicial para la secuencia eliminada basándose en las probabilidades calculadas en el paso anterior.
+\end{enumerate}
+
+Este proceso se itera hasta dar con la solución, es decir, que la puntuación no mejore más. 
+GibbsSampler funciona bien en muchos casos. Dado que GibbsSampler explora sólo un pequeño subconjunto de soluciones, puede «atascarse» en un óptimo local. Al igual que RandomizedMotifSearch, debe ejecutarse varias veces con la esperanza de que una de estas ejecuciones produzca los motivos con mejor puntuación.
+
+Estos algoritmos aleatorizados funcionan porque el ADN no es del todo aleatorio, conteniendo motivos reguladores que permiten un control preciso sobre la expresión genética. Estos motivos resultan en un perfil esperado sesgado.
+
+%\section{Algoritmo divide-y-vencerás}
