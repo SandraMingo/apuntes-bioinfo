@@ -40,6 +40,7 @@
 FragPipe es un software que engloba varios programas. El buscador es MSFragger, pero cuenta también con otras herramientas como Philosopher, PTM-Shepher, etc. Lo descargamos de GitHub y descargamos las licencias de MSFragger, IonQuant y diaTracer. 
 
 \section{Práctica TMT: Evaluation of NCl-7 Cell Line Panel as a Reference Material for Clinical Proteomics}
+\subsection{Con un único TMT}
 En este experimento había 7 líneas celulares y se querían ver las fosforilaciones de las líneas cancerígenas en comparación con el Wild-Type. Se hizo una digestión TMT, marcando los péptidos para saber si la muestra es KO o WT. Se hizo un LC-MS y se buscó contra la base de datos RefSeq. De esta forma se tienen en cuenta las modificaciones fijas y variables. Se cargometilan las cisteínas, quedando marcadas. Estas modificaciones se deben poner en la búsqueda. 
 
 En FragPipe, en la pestaña de Workflow, seleccionamos el workflow de TMT10. Luego pulsamos el botón de "Add files" y cargamos el fichero "01\_CPTAC\_TMTS1-NCI7\_P\_JHUZ\_20170509\_LUMOS.mzML". 
@@ -82,8 +83,74 @@ Entre los resultados, está psm.tsv. Lo abrimos y vemos que hay distintas column
 \item Hyperscore: puntuación de similitud entre los espectros observados y teóricso; los valores más altos indican una mayor similitud.
 \item Nextscore: puntuación de similitud (hyperscore) de la segunda posición más alta para el espectro
 \item PeptideProphet Probability: puntuación de confianza determinada por PeptideProphet, los valores más altos indican mayor confianza.
-\item Number of missed cleavages: número de sitios potenciales de escisión
-\item \ldots
+\item Number of missed cleavages: número de sitios potenciales de escisión enzimática dentro de la secuencia identificada
+\item Protein Start: posición inicial del péptido identificado dentro de la secuencia proteica.
+\item Protein End: posición final del péptido identificado dentro de la secuencia de la proteína.
+\item Assigned Modifications: Modificaciones variables (enumeradas por masa en Da) con residuo modificado y ubicación dentro del péptido
+\item Is Unique: si la secuencia identificada corresponde a una única proteína identificada (FALSE si es compartida por varias proteínas identificadas en el experimento)
+\item Protein ID: identificador de la proteína (número de acceso primario) de la proteína seleccionada
+\item Gene: nombre del gen de la proteína seleccionada
+\item Protein Description: descripción de la proteína seleccionada
+\item Columnas para los canales TMT/iTRAQ si se utilizan, donde cada una contiene las abundancias relativas de iones informadores para ese PSM.
+\end{itemize}
+
+%26/02 - José Manuel Rodríguez
+La salida se compone de tres archivos:
+\begin{itemize}
+\item psm.tsv, contienen los resultados de la búsqueda filtrados por FDR, donde cada fila contiene una coincidencia péptido-espectro (PSM). Se generará un archivo psm.tsv distinto para cada experimento.
+\item peptide.tsv, contienen los resultados de la búsqueda filtrados por FDR, donde cada fila es una secuencia peptídica identificada. Se generará un archivo peptide.tsv distinto para cada experimento. Las columnas son:
+\begin{itemize}
+\item Peptide Length: número de residuos en la secuencia peptídica
+\item Charges: estado(s) de carga del ion péptido
+\item Probability: puntuación de confianza determinada por PeptideProphet, los valores más altos indican mayor confianza.
+\item Spectral Count: número de PSM correspondientes
+\item Intensity: intensidad sumada de los 3 iones más abundantes para el péptido
+\end{itemize}
+\item protein.tsv, contienen resultados de proteínas filtrados por FDR, donde cada fila es un grupo
+de proteínas identificado. Se generará un archivo protein.tsv separado para cada experimento. Las columnas son:
+\begin{itemize}
+\item Percent Coverage: porcentaje de la secuencia de la proteína observado a partir de los péptidos identificados
+\item Organism: especie de la proteína identificada
+\item Protein Existence: tipo de evidencia que respalda la proteína
+\item Protein Probability: puntuación de confianza determinada por ProteinProphet
+\item Top Peptide Probability: mejor probabilidad del péptido entre los péptidos de soporte
+\end{itemize}
+\end{itemize}
+
+Los resultados de TMT-Integrator estarán en una nueva carpeta, tmt-reports. Estos resultados contienen valores normalizados transformados por el log2, con archivos separados tanto para abundancias (intensidades) como para ratios en cada nivel (gen, proteína, péptido, etc.)
+
+\subsection{Con un único TMT: validando la PTM (fosforilación en STY)}
+Utilizamos el mismo fichero que en la primera parte: En FragPipe, en la pestaña de Workflow, seleccionamos el workflow de TMT10. Luego pulsamos el botón de "Add files" y cargamos el fichero "01\_CPTAC\_TMTS1-NCI7\_P\_JHUZ\_20170509\_LUMOS.mzML". 
+
+En MSFragger, vemos que la calibración y optimización este deshabilitada (None), que haya -20 y 20 PPM y 0.06 Da. Entre las modificaciones variables, activamos STY. 
+
+En la pestaña de Validation, incluimos un programa para detectar mejor las modificaciones variables. En este caso, es Run PTMProphet en el apartado de PTM Site Localization. Dentro de la sección de PTM Prophet, en Cmd line opts, pegamos lo siguiente: \texttt{--keepold --static --fragppmtol 15 --em 1 --nions b --mods STY:79.966331,M:15.9949 --minprob 0.5}.
+
+En la pestaña Quant (Isobaric), hay que poner \texttt{S(79.9663),T(79.9663),Y(79.9663)} en Mod tags de PTMs. También se recomienda bajar la Min site probability a -0.75.
+
+Con esto, en Run cambiamos la carpeta de resultados para que no se nos sobreescriba y lo ejecutamos. 
+
+Si hubiéramos incluido la modificación variable de fosforilación en la serina, tirosina y treonina, el número de proteínas identificadas hubiera aumentado de 193 a 2,776 proteínas. Sin embargo, el tiempo de cómputo, ha aumentado (con un solo mzML).
+
+Si se realizó una cuantificación específica de PTM, se generarán informes de “multi-site” y “single-site” para la modificación especificada. En los resultados de “single-site”, los péptidos identificados con múltiples modificaciones especificadas se convierten a una forma de sitio único.
+PTM-Prophet proporciona la localización de la modificaciones (actualmente compatible solo con flujos de trabajo enriquecidos en fosfopéptidos).
+
+\section{Práctica Label-Free Quantification (LFQ): Proteomics separates adult-type diffuse high-grade gliomas in metabolic subgroups independent of 1p/19q codeletion and across IDH mutual status}
+En este paper, se llegaron a usar 42 muestras en diferentes gliomas cerebrales. Había genes WT y unos con SNP. Se quería ver si había fosforilaciones u otras metilaciones. Para comprobar esto, utilizaron diferentes réplicas. No vamos a usar las 42 muestras, si no 6, 3 mutantes y 3 wild type. 
+Los autores hacen un corte de FDR del 1\%.
+
+En este caso, como es otra técnica y otro tipo de espectometría usada, en Workflow limpiamos los ficheros (botón clear files). La metodología de workflow a usar es LFQ-MBR (matched between ranks) y lo cargamos (load workflow). A la hora de cargar los ficheros, pulsamos add files, vamos a la carpeta y seleccionamos todos. En las columnas, vamos a etiquetar a qué condición pertenece cada fichero mzML y si son réplicas per se. Por un lado establecemos que todos son réplicas biológicas pulsando Set bioreplicates Consecutive. Para la condición o experimento asociado, ponemos IDHwt para aquellos wildtype e IDHmut para los mutantes. El mismo programa ha detectado que los datos son DDA.
+
+En MSFragger, seleccionamos la calibración None y mantenemos los valores por defecto de tolerancia. También mantenemos la digestión proteica de tripsina. De las modificaciones fijas lo dejamos como está, y de las modificaciones variables solo mantenemos la carbometilación, por lo que hay que desclickar STY. 
+
+En la pestaña Quant (MS1), se utilizará IonQuant. Se deja todo por defecto, pero hay que dejar seguro que la opción Match between runs esté habilitada. Además, MaxLFQ también debe estar habilitada. Ahora ya podemos darle a Run.
+
+Una vez finalizado el análisis, los resultados de identificación con los valores de cuantificación estarán en la carpeta de resultados. Si se establecieron múltiples experimentos durante el paso de entrada de archivos en la pestaña “Workflow”, estos resultados de identificación estarán en una carpeta separada para cada experimento. Los ficheros de salida son:
+\begin{itemize}
+\item combined\_ion.tsv, contienen iones filtrados por FDR de todos los grupos experimentales, donde cada fila representa una secuencia de péptido con una carga y un estado de modificación específicos.
+\item combined\_modified\_peptide.tsv, contienen péptidos modificados filtrados por FDR de todos los grupos experimentales, donde cada fila corresponde a una secuencia de péptido que incluye modificaciones.
+\item combined\_peptide.tsv, contienen péptidos filtrados por FDR de todos los grupos experimentales, donde cada fila representa una secuencia de péptido (sin modificaciones).
+\item combined\_protein.tsv, contienen proteínas filtradas por FDR de todos los grupos experimentales, donde cada fila corresponde a un grupo de proteínas.
 \end{itemize}
 
 \end{document}
