@@ -165,3 +165,150 @@ Mascot puntúa el emparejamiento entre una secuencia y un espectro MS/MS calcula
 
 \paragraph{Andromeda}
 Andromeda es un motor de búsqueda de péptidos que utiliza un concepto semejante a Mascot. El algoritmo ha sido publicado. Se basa en el cálculo de la probabilidad binomial de tener un número de fragmentos en el espectro que coincidan al azar. Andromeda se ofrece como “software” libre que puede funcionar de forma independiente o integrada dentro del paquete MaxQuant.
+
+%26/02 - José Manuel
+\subsection{Probabilidad del candidato}
+\subsubsection{p-value y función de densidad de probabilidad (FDP)}
+Para calcular el p-valor (p-value) se tienen en cuenta las puntuaciones obtenidas por todos los candidatos de la base de datos contra los que se compara un determinado espectro MS/MS.
+El p-value de una puntuación x se define como la probabilidad de que el espectro encuentre una PSM de puntuación igual o mejor que x. Esta probabilidad se puede obtener a partir de la Función de Densidad de Probabilidad (FDP o Probability Density Distribution). Para generar la FDP se ordenan las puntuaciones de menor a mayor (1), se construye un histograma y se ajusta a una función empírica (2), se normaliza la función para que el área sea la unidad (3) y se calcula el área por encima de la puntuación (s) dada. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.9\textwidth]{figs/fdp.png}
+\end{figure}
+
+\subsubsection{Valor esperado (e-value)}
+Supongamos que obtenemos una PSM con p-value = 0.001 después de buscar contra N = 1000 secuencias candidatas. ¿Se puede considerar este resultado significativo?
+La probabilidad de obtener una o más coincidencias con una probabilidad p o menor cuando el evento se repite N veces es igual a la probabilidad de no tener N coincidencias con (1 - p), es decir:
+$$p(\text{one or more matches with p or lower}) = 1 - (1 - p)^N \sim Np$$
+
+Como se indica en la fórmula, cuando p es un valor pequeño, esta probabilidad se aproxima al producto de N y p. En el caso comentado, Np = 1000x0.001 = 1 y, por lo tanto, la coincidencia no es significativa. En otras palabras, esperaríamos que al menos una secuencia puntuaría con p = 0.001 por puro azar.
+
+El valor esperado (e-value o expectation value) se define como el producto de N por p, y mide el número esperado de coincidencias con un valor p que se obtendría cuando el espectro MS/MS se busca contra N candidatos.
+
+$$e = N \cdot p$$
+
+El e-value es una forma compacta de calcular la probabilidad real de forma aproximada, y da una idea más realista de la significatividad de una PSM.
+
+\subsubsection{X!Tandem}
+X!Tandem es un motor de búsqueda que usa una puntuación llamada hyperscore (HS).
+$$HS = (\sum^n_{i = 0} I_i P_i) N_b!N_y!$$
+La puntuación HS tiene en cuenta la intensidad de los fragmentos que coinciden entre el espectro observado y el teórico, y el número de iones “b” e iones “y” asignados. Además, X!Tandem calcula el p-value asociado al HS para determinar si una identificación es correcta o no.
+
+\subsubsection{MSFragger}
+MSFragger es un motor de búsqueda ultrarrápido que cuya puntuación y modelado probabilístico son muy parecidos a X!Tandem. La búsqueda ultrarrápida se consigue construyendo un theoretical fragment index a partir de todas las secuencias de las bases de datos. Cada fragmento en el espectro observado se compara con todos los fragmentos de la misma masa de todos los candidatos en un solo paso.
+
+MSFragger es adecuado para cualquier análisis de proteómica de shotgun, para búsquedas sin restricciones de enzimas, búsquedas de bases de datos “abiertas”, y para la identificación de péptidos modificados glicopéptidos. MSFragger es suficientemente rápido para ser usado incluso en un ordenador portátil.
+
+\subsubsection{Mejor método}
+Se han publicado muchas comparativas entre los diferentes motores de búsqueda, pero la situación no está clara. Algunos algoritmos funcionan mejor para ciertos péptidos, mientras que otros funcionan mejor para diferentes conjuntos de péptidos. La principal preocupación no es cuál debería usarse, sino cómo interpretar correctamente los resultados. Por lo tanto, si nos encontramos cómodos con un método de identificación de péptidos MS/MS (conocido), lo mejor es seguir usándolo. Lo importante es asegurarse de que la \textbf{validación de las identificaciones} está hecha correctamente. 
+
+\section{Algoritmos de identificación de péptidos - Puntuaciones complejas y validación estadística}
+\subsection{Validación mediante Posterior Error Probability (PEP)}
+\subsubsection{PeptideProphet - Función Discriminatoria}
+PeptideProphet fue en su momento un nuevo concepto de algoritmo que tiene en cuenta todos los factores que pueden influir en un buscador a la hora de decidir si una identificación es correcta. Utiliza una \textbf{función discriminatoria F} que se construye como combinación lineal de todos los factores (Xcorr, $\Delta$Cn, Ln SpRank, etc.):
+$$F(x_1, x_2, \ldots, x_s) = c_0 + c_1x_1 + c_2x_2 + c_3x_3 + \ldots + c_sx_s$$
+Se aplicó originalmente a las puntuaciones de Sequest, pero el concepto es de aplicabilidad universal y se ha usado con otros motores de búsqueda (Mascot, Andromeda, X!Tandem, etc). 
+
+La función F primero se aplica a un conjunto de datos de entrenamiento (una población de espectros MS/MS bien caracterizados), con los que se optimizan los coeficientes lineales que mejor discriminan entre identificaciones correctas e incorrectas mediante un algoritmo iterativo. De esta manera se obtienen distribuciones de F separadas para las identificaciones de péptidos correctas (positivas) e incorrectas (negativas).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.9\textwidth]{figs/peptideprophet.png}
+\end{figure}
+
+\subsubsection{Cálculo bayesiano de PEP}
+Las funciones F se normalizan para convertirlas en funciones de densidad de probabilidad (PDF), de manera que la distribución de todos los péptidos se expresa como una superimposición de la de los ciertos y la de los falsos. A cada puntuación “s” se le asigna un valor PEP(s), que se define como la probabilidad de obtener un péptido falso (negativo ó N) cuando se obtiene esa puntuación “s” ("N dado s"), es decir la probabilidad bayesiana P(N/s). P(N/s) se calcula como el cociente entre la PDF de la distribución de negativos (f) y la de la distribución total (t).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/bayesiano.png}
+\end{figure}
+
+\subsection{Validación mediante conceptos estadísticos globales}
+\subsubsection{Tabla de contingencia}
+Las tablas de contingencia se utilizan en estadística para valorar de qué manera un parámetro (en este caso la puntuación) permite discernir entre dos condiciones dadas (en este caso entre asignaciones verdaderas y falsas). En el caso ideal hay un umbral por encima del cual todas son verdaderas o todas son falsas. Idealmente, hay una separación perfecta, pero en la realidad, la separación entre ciertos y falsos es incompleta.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/contingencia.png}
+\end{figure}
+
+\subsubsection{Tasa de Falsos Positivos (FPR, False Positive Rate)}
+La tasa de falsos positivos es la proporción de asignaciones consideradas correctas entre el total de asignaciones incorrectas.
+$$FPR = 1 - especificidad = \frac{FP}{TN + FP}$$
+
+La FPR equivale al p-value de la distribución global de puntuaciones.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/fpr.png}
+\end{figure}
+
+\subsubsection{Tasa de Falsos Descubrimientos (FDR, False Discovery Rate)}
+La tasa de falsos descubrimientos es la proporción de asignaciones consideradas incorrectas entre el total de asignaciones consideradas (por encima del umbral).
+$$FDR = \frac{FP}{TP + FP}$$
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/fdr.png}
+\end{figure}
+
+Muy importante: la FDR es el método idóneo para corregir la FPR (ó p-value) cuando se realizan test múltiples (cuando se identifican muchos péptidos al mismo tiempo en experimentos a gran escala).
+
+\subsubsection{Errores tipo I y errores tipo II}
+\begin{itemize}
+\item \textbf{Error de tipo I}, es el error que se comete cuando el investigador rechaza la hipótesis nula siendo ésta verdadera. Se evalúa calculando la probabilidad de encontrar un resultado falso positivo.
+\item \textbf{Error de tipo II}, es el error que se comete cuando no se rechaza la hipótesis nula siendo falsa. Se evalúa calculando la probabilidad de encontrar un resultado falso negativo.
+\end{itemize}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/error-types.png}
+\end{figure}
+
+\subsection{Estrategia Target-Decoy para el cálculo de la FDR}
+\subsubsection{Uso de bases de datos señuelo o decoy}
+Este es un método muy robusto y ampliamente aceptado. Se busca sobre las bases de datos de objetivo y señuelo. Se utilizan los resultados de la base de datos señuelo para estimar el número de falsos positivos en un umbral de puntaje dado.
+
+La base de datos señuelo ("decoy") es una base de datos idéntica a la objetivo ("target") pero invirtiendo el orden de las secuencias de aminoácidos de cada proteína (C-terminal se convierte en N-terminal y viceversa), o invirtiendo las secuencias de aminoácidos de cada péptido, manteniendo los extremos básicos N-terminales (pseudoreversión).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.6\textwidth]{figs/decoydb.png}
+\end{figure}
+
+Las bases de datos aleatorias no se comportan de manera idéntica y sobreestiman las tasas de error (la repetición de dominios y/o motivos en la base de datos de objetivo reduce el número total de secuencias únicas).
+
+\subsubsection{Bases de datos separadas vs bases de datos concatenadas}
+En las \textbf{bases de datos separadas}, la búsqueda se realiza contra las bases de datos objetivo y señuelo de forma separada. Para cada puntuación se calcula:
+\begin{itemize}
+\item D: número de péptidos identificados en la base de datos señuelo (falsos)
+\item T: número de péptidos identificados en la base de datos objetivo (total = ciertos + falsos)
+\end{itemize}
+La FDR se calcula de la siguiente manera: $FDR = D / T$.
+
+En las \textbf{bases de datos concatenadas}, la búsqueda se realiza contra una base de datos compuesta por la base de datos señuelo, unida a la base de datos objetivo. En este caso, el número de falsos identificados en cada puntuación equivale al doble de D, y el total equivale a D + T, por lo que $FDR = 2 * D / (D + T)$
+
+El primer método tiende a sobreestimar el número de falsos positivos, porque los espectros MS/MS de alta calidad (que corresponde a asignaciones correctas) tienes a dar puntuaciones altas en la base de datos. El segundo método evita este efecto al permitir que las secuencias objetivo y señuelo compitan por los mejores espectros, pero la FDR se calcula en una población "inflada" (contiene D). En la actualidad se prefiere el uso de bases de datos concatenadas y la FDR se calcula como $FDR = D / T$.
+
+\subsubsection{Uso de Decoys en el modelo bayesiano: adaptación de PeptideProphet}
+El enfoque de modelado probabilístico de PeptideProphet y la estrategia target-decoy se pueden combinar dentro de un solo marco semi-supervisado. Se utiliza un algoritmo de maximización de expectativas (EM) semi-supervisado para construir un clasificador bayesiano para la identificación de péptidos usando como falsos las puntuaciones “decoy” y como ciertos las puntuaciones “target”. Ello permite calcular la FDR además de la PEP.
+
+\subsection{Percolator y Aprendizaje Automático}
+Percolator utiliza un método de aprendizaje semi-supervisado automático iterativo, que se entrena para optimizar la separación entre asignaciones “target” y “decoy”.
+Conceptualmente equivale a Peptide-Prophet (con la estrategia target-decoy), pero en vez de usar una función discriminatoria incluye los parámetros de la búsqueda utilizando algoritmos tipo machine-learning.
+Entrena un algoritmo de aprendizaje automático, Máquinas de vectores de soporte (SVM), para discriminar entre PSM positivas y negativas.
+Percolator calcula directamente la FDR usando la estrategia target-decoy.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.6\textwidth]{figs/percolator-pseudocode.png}
+\end{figure}
+
+\subsection{Comparativa entre PEP y FDR}
+PEP y FDR son parámetros que se basan en la misma distribución de ciertos (target) y falsos (decoy). PEP mide la proporción “local” de falsos en la puntuación “s” (valor en la curva). FDR mide la proporción de falsos que tienen una puntuación igual o mayor que “s” (área de la curva). Por ello PEP se puede interpretar como la FDR “local” en la puntuación “s”. PEP es más adecuada para valorar la identificación de una PSM aislada. FDR es la que debe usarse en experimentos a gran escala cuando queremos identificar muchas PSM al mismo tiempo.
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/pep-fdr.png}
+\end{figure}
