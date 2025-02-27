@@ -118,4 +118,95 @@ GibbsSampler funciona bien en muchos casos. Dado que GibbsSampler explora sólo 
 
 Estos algoritmos aleatorizados funcionan porque el ADN no es del todo aleatorio, conteniendo motivos reguladores que permiten un control preciso sobre la expresión genética. Estos motivos resultan en un perfil esperado sesgado.
 
-%\section{Algoritmo divide-y-vencerás}
+%27/02
+\section{Algoritmo divide-y-vencerás}
+En estos algoritmos, el problema se divide en subproblemas, conquistándolos de forma recursiva. Si los subproblemas son lo suficientemente pequeños, se resuelven de forma bruta. Las soluciones de los subproblemas se deben combinar en una solución para el problema original, siendo esto lo complicado. Un algoritmo de divide y vencerás hace más trabajo del necesario, resolviendo repetidamente los subproblemas comunes. 
+
+\section{Programación dinámica}
+La programación dinámica se basa en la premisa de calcular primero las soluciones a subproblemas más pequeños y utilizarlas después para resolver problemas sucesivamente más grandes hasta obtener la respuesta. La programación dinámica se utiliza cuando se podría recurrir a la recursividad, pero sería ineficaz porque resolvería repetidamente los mismos subproblemas. Se toma un problema que podría resolverse recursivamente de arriba abajo y, en su lugar, se resuelve iterativamente de abajo arriba. Los resultados intermedios se almacenan en una tabla para su uso posterior; de lo contrario, se acabarían calculando repetidamente, lo que constituye un algoritmo ineficaz.
+
+Por ejemplo, la programación dinámica se utiliza para ver la similitud entre genes. El alineamiento de secuencias es esencial para filogenia, análisis genómico, predicción de genes, estructura proteica, estructura de ARN secundario, búsqueda en bases de datos, etc. Si los alineamientos son erróneos, todos los resultados basados en los alineamientos están mal.
+
+En el alineamiento de secuencias se distingue el alineamiento por pares, donde se alinean dos secuencias, del alineamiento múltiple, donde se utilizan más de dos secuencias. 
+
+\subsection{Problema de la subsecuencia común más larga}
+Los biólogos que encuentran una nueva secuencia genética suelen querer saber con qué otras secuencias es más parecida. Encontrar una subsecuencia es una forma de calcular el grado de similitud entre dos secuencias: cuanto más larga es la subsecuencia, más similares son. Los caracteres de una subsecuencia, a diferencia de los de una subcadena, no tienen por qué ser contiguos.
+
+\subsection{Matriz de sustitución}
+El problema del ADN es que puede mutar: mutación puntual de un nucleótido, inserción o deleción. Encontrar la similitud del ADN es importante, ya que secuencias similares pueden tener funciones similares. Uno de los algoritmos más ampliamente utilizados es BLAST. 
+
+La matriz de puntuación de sustitución es una matriz bidimensional con valores de puntuación que describen la probabilidad de que un aminoácido o nucleótido haya sido reemplazado durante la evolución de la secuencia. Se pueden penalizar la apertura de huecos y la mutación puntual, creando una matriz ponderada. Se da una puntuación positiva a los pares de caracteres idénticos o similares y una puntuación negativa a los diferentes. Esta puntuación se basa en las frecuencias observadas de tales ocurrencias en alineaciones de ADN/proteínas relacionadas evolutivamente.
+
+El parámetro más crítico en la comparación de secuencias es la elección de una matriz de puntuación/sustitución. Para una evolución reciente, se suele utilizar una matriz de identidad, ya que se espera que las secuencias no hayan divergido mucho. Para una evolución antigua, la matriz converge a un modelo aleatorio. En bioinformática hay varias matrices: PAM, BLOSUM, Gonnet, JTT.
+
+\subsection{Matrices de puntuación}
+\paragraph{PAM}
+PAM viene de Point Accepted Mutation. Contiene la probabilidad derivada empíricamente de que se acepte una sustitución, basada en proteínas estrechamente relacionadas. Los números PAM más altos corresponden a una mayor distancia evolutiva. Cuando dos secuencias tienen una diferencia de 1 PAM, significa que una secuencia se puede transformar en la otra con una media de mutaciones puntuales de un 1\% (una mutación por cada 100 aminoácidos).
+
+\paragraph{BLOSUM}
+BLOSUM viene de Blocks Substitution Matrix. Es otra matriz derivada empíricamente, basada en proteínas relacionadas a mayor distancia. Los números BLOSUM más bajos corresponden a una mayor distancia evolutiva.
+
+La comparación entre PAM y BLOSUM, a un nivel comparable de sustituciones, indica que los dos tipos de matrices producen resultados similares
+
+\subsection{Needleman-Wunsch - alineamiento global}
+Este método realiza un alineamiento global entre dos secuencias. Se inicializa en 0, y se rellena la matriz con el valor máximo entre la mutación puntual o el hueco (ya sea en una secuencia o en la otra) mediante la matriz de puntuación. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/needleman-wunsch.png}
+\end{figure}
+
+Una vez calculada la matriz F, la esquina inferior derecha de la matriz es la puntuación máxima de cualquier alineación. Para calcular qué alineación da realmente esta puntuación, se puede empezar por la celda inferior derecha y comparar el valor con las tres fuentes posibles (Opción1, Opción2 y Opción3) para ver de cuál procede.
+\begin{itemize}
+\item Si es la opción 1, entonces las dos secuencias están alineadas.
+\item Si es la opción 2, entonces la primera secuencia está alineada con un hueco.
+\item Si es la opción 3, entonces la segunda secuencia está alineada con un hueco.
+\end{itemize}
+
+El alineamiento global suele utilizarse para alinear secuencias que tienen aproximadamente la misma longitud y que ya se sabe que están relacionadas.
+
+\subsection{Smith-Waterman - alineamiento local}
+En este caso, se busca la mejor puntuación de los alineamientos de regiones de secuencias. De esta forma, se encuentran segmentos conservados, en lugar de alinear la secuencia completa. La diferencia con Needleman-Wunsch es la posibilidad de coger 0 como posibilidad a la hora de rellenar la matriz.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/smith-waterman.png}
+\end{figure}
+
+Tanto el algoritmo de Needleman-Wunsch como el de Smith-Waterman utilizan los conceptos de matriz de sustitución/puntuación, función de penalización por hueco y proceso de rastreo. 
+
+\begin{table}[h]
+\begin{mdframed}[backgroundcolor=black!10]
+\textbf{Ejercicio:} encuentra el mejor alineamiento local entre TCAGTTGCC y AGGTTG con +1 para match, -2 para mistmatch y -2 para gap.
+
+\begin{tabular}{c c c c c c c c c c c}
+&&T&C&A&G&T&T&G&C&C\\
+&0&0&0&0&0&0&0&0&0&0\\
+A &0 &0&0&1&0&0&0&0&0&0\\
+G &0 &0&0&0&2&0&0&0&0&0\\ 
+G &0 &0&0&0&3&1&0&2&0&0\\ 
+T &0 &1&0&0&1&4&1&3&1&0\\ 
+T &0 &2&0&0&0&5&5&6&2&0\\ 
+G &0 &0&0&0&2&1&3&6&5&3\\ 
+\end{tabular}
+
+Por tanto, la parte común es GTTG.
+
+\textbf{Ejercicio:} lo mismo que antes, pero para el mejor alineamiento global.
+\begin{tabular}{c c c c c c c c c c c}
+&&T&C&A&G&T&T&G&C&C\\
+&0&-2&-4&-6&-8&-10&-12&-14&-16&-18\\
+A &-2 &-2&-4&-3&-5&-7&-9&-11&-13&-15\\
+G &-4 &-4&-6&-5&-2&-4&-6&-8&-10&-12\\ 
+G &-6 &-6&-8&-7&-4&-3&-5&-5&-7&-9\\ 
+T &-8 &-4&-6&-7&-5&-2&-2&-4&-6&-8\\ 
+T &-10 &-6&-6&-8&-6&-3&-1&-3&-5&-7\\ 
+G &-12&-8&-8&-8&-5&-5&-3&0&-2&-4\\ 
+\end{tabular}
+Por tanto, el resultado es:\\
+TCAGTTGCC\\
+AG-GTTG
+\end{mdframed}
+\end{table}
+
+%\section{Búsqueda en bases de datos}
