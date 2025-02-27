@@ -56,14 +56,17 @@ def bin_search(key, l_ints):
 
 Expand the pseudocode into a correct recursive Python function.
 \begin{lstlisting}
-def bin_search(key, l_ints):
+def bin_search(key, l_ints, offset = 0):
+	if key not in l_ints:
+		return None
+
 	m = len(l_ints)//2
 	if key == l_ints[m]:
-		return m
+		return offset + m #posición en la lista original
 	elif key < l_ints[m]:
-		bin_search(key, l_ints[:m])
+		return bin_search(key, l_ints[:m], offset)
 	else:
-		bin_search(key, l_ints[m + 1:])
+		return bin_search(key, l_ints[m + 1:], offset + m + 1)
 \end{lstlisting}
 \end{problemS}
 
