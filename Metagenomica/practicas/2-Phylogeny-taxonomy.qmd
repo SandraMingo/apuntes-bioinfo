@@ -1,12 +1,34 @@
 ---
 title: "Bacterial composition determined by 16S MetaBarcoding"
 subtitle: "2. Taxonomic assignation and alignments"
-author: "Miguel Redondo"
-date: "September 2023"
+author: "Sandra Mingo"
+date: "March 2025"
 output: 
   html_document: 
     toc: yes
 ---
+
+```{r loading_libraries , message=FALSE, cache=TRUE }
+#Recomendable poner un título a cada bloque de código
+library(dada2) #librería con la que se determinan SV
+library (ggplot2)
+library(plotly) #librería que genera una máscara encima de cualquier objeto ggplot para que el gráfico sea interactivo
+library(DECIPHER) #analizar disparidad entre secuencias
+library(ShortRead) #interpretación archivos fasta
+library(Biostrings)
+library(readr) #parte de tidyverse para la interpretación de dataframes
+library("phyloseq") #integración de datos y hacer todos los gráficos
+library("DESeq2") #permite ver qué bacterias son las enriquecidas en una muestra con respecto a otra; calcular diversidad
+library("tibble")
+library("dplyr")
+library("tidyr")
+library(openssl) #for the codification of ASVs nucleotide sequence into a shorter string (ASVs names)
+library("vegan") #hacer estudios de diversidad
+library("microbiome") #estudios de diversidad
+library("hrbrthemes") #scales in plots of ggplot
+library("RColorBrewer") #paletas de colores de degradados
+library("data.table")#conversiones en dataframes que no son posibles en dplyr
+```
 
 ## Alignment
 
@@ -18,9 +40,11 @@ As first step we get the ASVs sequences from rep-seqs.fna and run the alignment 
 
 ```{r aligningsequences}
 nproc<-4
-seqs <- readDNAStringSet("./rep-seqs.fna")
+seqs <- readDNAStringSet("./rep-seqs.fna") #función de DECIPHER
+#genera la variable seqs que contiene las secuencias con las ASVs 
 alignment <- AlignSeqs(DNAStringSet(seqs), anchor=NA, processors=nproc)
-writeFasta(alignment, "asvalignment.fasta")
+#se hace el alineamiento con 4 procesos. Convierte las secuenicas en DNAStringSet
+writeFasta(alignment, "asvalignment.fasta") #se guarda el resultado en otro archivo fasta por si interesa usarlo después
 ```
 
 ## Phylogenetic trees building
@@ -30,13 +54,17 @@ We will use FastTree2 to build the phylogenetic tree. We will use the alignment 
 We need to install Fasttree2 (`mamba install fasttree`) before running the following chunk
 
 ```{r fasttree}
-FastTree<-"/home/condapython/anaconda3/bin/FastTree"
+FastTree<-"/home/sandra/miniconda3/bin/FastTree"
 fasttree_args<- "-gtr -nt asvalignment.fasta > asv.tre"
 system2(FastTree, 
           args = fasttree_args)  
 ```
 
 ## Taxonomic assignation using DADA2
+
+Antiguamente se clasificaban los microorganismos en base a Gram, 16S, etc. Después llegó la genómica, y los científicos se dieron cuenta que había clados enteros que había que reorganizar en cuanto a su genómica. La tinción de Gram es genérica, y la morfología es limitada. Una misma bacteria, dependiendo de las circunstancias ambientales, puede cambiar de forma. Así, hubo una gran reorganización de gran parte de los clados, estando algunas bases de datos desfasadas. Nosotros vamos a usar la verssión 138.1 de la base de datos de Silva, aunque su última actualización fue en 2021. 
+
+¿Por qué hayy que curar los datos? Cada vez que se añadan datos a una base de datos, hay que revisar los clados. Para determinadas secuencias puede ocurrir que no se llegue a nivel de especie, quedándose en género, orden o incluso reino. La fiabilidad de los resultados depende de la labor de revisión de los miembros de las bases de datos. 
 
 ### Taxonomic assignation with SILVA
 
@@ -53,13 +81,18 @@ As we don't have enough time nor computing power in our VM. Please don't run the
 :::
 
 ```{r SILVA, eval=FALSE}
-repseqs<-getSequences("./rep-seqs.fna")
+repseqs<-getSequences("./rep-seqs.fna") #se necesita compatibilidad con DADA
 taxaSILVA <- assignTaxonomy(repseqs, "silva_nr99_v138.1_train_set.fa.gz", multithread=TRUE)
+
+#Si una secuencia se encuentra con un  99% de homología con dos taxones distintos, habría que usar otros métodos, viendo las posiciones donde se dan las disparidades, ya que hay posiciones con más peso que otras. 
+
 unname(head(taxaSILVA))
 
+#depuración de asignación taxonómica (por trabajo computacional)
 taxaSILVA.plus <- addSpecies(taxaSILVA, "silva_species_assignment_v138.1.fa.gz", verbose=TRUE)
-colnames(taxaSILVA.plus) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus","Species")
+colnames(taxaSILVA.plus) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus","Species") #nombres de las columnas son los 7 niveles taxonómicos clásicos. Dependiendo de la base de datos se puede llegar a 13 por la resolución. En bacterias suele ser 7, con hongos o nemátodos esto aumenta.
 unname(head(taxaSILVA.plus))
+
 taxaSILVA.plus<- as.data.frame(taxaSILVA.plus) %>% mutate (
   Kingdom= if_else(is.na(Kingdom), "Unclassified", Kingdom),
   Phylum=if_else(is.na(Phylum), paste("Uncl_", Kingdom,""), Phylum),
@@ -80,6 +113,8 @@ taxaSILVA.plus<- as.data.frame(taxaSILVA.plus) %>% mutate (
                   paste(Genus,Species, sep=" "))
   
 )
+#Esta función  hace que haya contenido en todas las celdas. Así, si no se ha encontrado, se incluye Unclassified, pero no hay Missing Data, relleando con el  ítem superior establecido
+
 row.names(taxaSILVA.plus)<-md5(row.names(taxaSILVA.plus))
 
 ```
@@ -87,11 +122,12 @@ row.names(taxaSILVA.plus)<-md5(row.names(taxaSILVA.plus))
 Instead of using SILVA database we are going to use a deprecated but smaller database called _Greengenes_ that is still available in the DADA2 package. We will use the same steps as above to get the taxonomic assignation, but we are not going to use _addSpecies_ function as it is not worthy. If you look at the name of the file _gg_13_8_train_set_97.fa.gz_ you will realize that the resolution of the assignation is up to 97% of similarity, so we are not going to get the species level assignation.
 
 ```{r Greengenes}
+#Alternativa al chunk anterior al tardar menos computacionalmente.
 repseqs<-getSequences("./rep-seqs.fna")
 taxaGG <- assignTaxonomy(repseqs, "gg_13_8_train_set_97.fa.gz", multithread=TRUE)
 ```
 
-Greengenes database starts all its values by k_, f_, c_, o_, g_ and s_ for the taxonomic levels. We are going to remove those characters to make the dataframe more readable.
+Greengenes database starts all its values by k_, f_, c_, o_, g_ and s_ for the taxonomic levels. We are going to remove those characters to make the dataframe more readable. Nos quedamos a partir del cuatro caracter para eliminar la letra del nivel  y las dos barras bajas.
 ```{r cleaninglabels}
 taxaGG<-as.data.frame(taxaGG) %>% mutate(
   Kingdom=substr(Kingdom, 4, nchar(Kingdom)),

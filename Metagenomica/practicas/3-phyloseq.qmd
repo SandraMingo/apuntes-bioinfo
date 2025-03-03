@@ -1,0 +1,441 @@
+---
+title: "Synthetic Community biopiles field experiment"
+subtitle: "3. Phyloseq Analysis"
+author: "Sandra Mingo"
+date: "March 2025"
+output: 
+  html_document: 
+    toc: yes
+---
+
+## Phyloseq Introduction
+
+Phyloseq is a package for the analysis of microbiome data. It is a powerful tool to manage and analyze the data from the 16S rRNA gene sequencing. It is based on the *phyloseq* object, which is a list of data frames and matrices that contains all the information of the experiment. The *phyloseq* object is composed by:
+
+1.  OTU table: a matrix with the abundancies of each ASV in each sample
+2.  Taxonomy table: a matrix with the taxonomic assignation of each ASV
+3.  Phylogenetic tree: a tree with the phylogenetic relationships among ASVs
+4.  Sample data: a data frame with the metadata of the experiment
+5.  (OPTIONAL): ASVs nucleotide sequence
+
+### Loading libraries
+
+```{r loading_libraries , message=FALSE, cache=TRUE }
+#Recomendable poner un título a cada bloque de código
+library(dada2) #librería con la que se determinan SV
+library (ggplot2)
+library(plotly) #librería que genera una máscara encima de cualquier objeto ggplot para que el gráfico sea interactivo
+library(DECIPHER) #analizar disparidad entre secuencias
+library(ShortRead) #interpretación archivos fasta
+library(Biostrings)
+library(readr) #parte de tidyverse para la interpretación de dataframes
+library("phyloseq") #integración de datos y hacer todos los gráficos
+library("DESeq2") #permite ver qué bacterias son las enriquecidas en una muestra con respecto a otra; calcular diversidad
+library("tibble")
+library("dplyr")
+library("tidyr")
+library(openssl) #for the codification of ASVs nucleotide sequence into a shorter string (ASVs names)
+library("vegan") #hacer estudios de diversidad
+library("microbiome") #estudios de diversidad
+library("hrbrthemes") #scales in plots of ggplot
+library("RColorBrewer") #paletas de colores de degradados
+library("data.table")#conversiones en dataframes que no son posibles en dplyr
+```
+
+### Modifying metadata
+
+If you have a look at the metadata table, you will see that we don't have a column grouping the samples by soil and plant. This variable could be useful to study the differences between soil source and plant communities. We can add this column to the metadata table using the paste function.
+
+```{r modifying metadata}
+metadata<-read_tsv("metadata", show_col_types = FALSE)
+metadata$SoilPlant<-paste(metadata$Source, metadata$Plant, sep = "_")
+```
+
+### Creating phyloseq object
+
+Now we have all necessary objects, asvs and their abundancies, taxonomic assignation, phylogenetic tree and obviously our experiment metadata (by hand), we can go on running the protocol
+
+```{r creating phyloseq}
+seqs <- readDNAStringSet("./rep-seqs.fna")
+TAX<- tax_table(as.matrix(taxaGG)) #asignación taxonómica
+asvtree<-read_tree("asv.tre") #árbol filogenético
+OTU<-otu_table(t(seqtab.nochimmd5), taxa_are_rows = TRUE) #tabla de abundancias
+
+OTUFilt<- otu_table(t(seqtab.nochimfilteredmd5), taxa_are_rows = TRUE)
+
+physeq <- phyloseq(OTU, TAX, phy_tree(asvtree),
+                sample_data(metadata %>% as.data.frame() %>% column_to_rownames("#SampleID")))
+physeq
+#Obtenemos una descripción del objeto physeq. Es una clase que contiene una tabla OTU de 12049 taxones en 16 muestras. sample data son 16 muestras definidas por 24 variables de muestra (las columnas de metadatos). el árbol es de 12278 ASVs distribuidos en 12276 nodos. Solo hemos metido información de un árbol
+
+physeqfilt <- phyloseq(OTUFilt, TAX, phy_tree(asvtree),
+                sample_data(metadata %>% as.data.frame() %>% column_to_rownames("#SampleID")))
+physeqfilt
+#el árbol se reorganiza para llegar a los 2916 nodos. El método de máxima verosimilitud se ha creado a partir de los 3000 ASVs, rehaciendo el árbol. Esto está mal, habría que haber calculado un árbol aparte.
+```
+
+### Summarizing phyloseq objects
+
+```{r summary phyloseq, cache=TRUE}
+summarize_phyloseq(physeq)
+
+```
+
+phyloseq también tiene funciones para filtrar la tabla. En programación, hay muchas formas de hacer las cosas. Queda a nuestro criterio si filtramos la tabla o la dejamos cruda y la filtramos ahora.
+
+```{r summary phyloseq filtered, cache=TRUE}
+summarize_phyloseq(physeqfilt)
+```
+
+As expected physeqfilt lacks singletons though ASVs number is lower than physeq object. From now on we are going to work with phseqfilt object. I advise you to check physeq-filtering file that includes another protocol to filter according to abundancies and prevalence the data included in physeq object.
+
+### Filtering phyloseq objects by taxa level
+
+As we are going to study bacteria soil communities, we must remove those ASVs assigned to mitochondria and chloroplasts. We can do it with the function `subset_taxa` from *phyloseq* package. We are going to compare what happens when using physeq and physeqfilt objects.
+
+Estamos hablando de muestras de rizosfera, por lo que podemos tener en las muestras parte de la raíz con mitocondrias y cloroplastos. Estos fueron antiguas bacterias que se incorporaron a las células eucariotas para la respiración celular y la fotosíntesis. Esto no nos interesa porque queremos solo las bacterias. Por ello, generamos un nuevo objeto de phyloseq que no tenga los orgánulos. Al comparar con los valores anteriores, vemos que no ha cambiado nada, significando que no teníamos restos de mitocondria ni cloroplasto. También podríamos haber puesto un límite en el filo Proteobacteria.
+
+```{r filtering phyloseq, cache=TRUE}
+physeqbac<-subset_taxa(physeq, Kingdom!="Mitochondria" | Kingdom!="Chloroplast")
+physeqbac
+
+physeqbacfilt<-subset_taxa(physeqfilt, Kingdom!="Mitochondria" | Kingdom!="Chloroplast")
+physeqbacfilt
+
+```
+
+Let's have a look at the summary for both objects.
+
+```{r summary phyloseq bac, cache=TRUE}}
+summarize_phyloseq(physeqbac)
+```
+
+```{r summary phyloseq bac filtered, cache=TRUE}}
+summarize_phyloseq(physeqbacfilt)
+
+```
+
+### Rarefaction curves
+
+Antes de las representacioones, hay que ver si los ASV que tenemos son representativos de toda la población. Para esto, se utilizan las curvas de rarefacción. Si la curva no se llega a estabilizar, tenemos lecturas insuficientes para describir la diversidad. Si la curva llega a una asíntota, tenemos suficientes lecturas para describir (la mayoría de) la diversidad. Podemos tener un caso intermedio, en el que se tumbe un poco, pero no llegue a una asíntota. En este caso, tenemos suficientes lecturas para describir algo de la diversidad. Si nuestras curvas son así, podemos volver a repetir el experimento. Nos interesa llegar al máximo para ver la saturación (importante asegurarnos de que todas las muestras tienen la misma profundidad), por lo que habría que coger la muestra de 100.000  y no la de 26.000.
+
+When studying diversity, it is important to know if we have enough reads to cover the diversity of the sample. Rarefaction curves are a good tool to check that. We can use the function `rarecurve` from *vegan* package to plot the rarefaction curves. We are going to compare the behaviour of the rarefaction curves using physeqbacfilt.
+
+First of all we have a look at the average number of sequences per sample, i.e. around 65000 sequences. When rarefying we can choose how many steps we want to use, that is the number of sequences for each point. If we use a low value we will get a high resolution curve, but it will take a long time to compute. The higher the value, the faster the computation, but the resolution will be lower. In this case we are going to use a value of 500, that means that
+
+```{r rarefaction curve, cache=TRUE}
+rarefactioncurve<-rarecurve(as.data.frame(t(otu_table(physeqbacfilt))), step=500, cex=0.5, tidy=TRUE)
+#step=500 indica se muestrea 500 veces, sacando el número de muestras que permita 500 muestreos.
+plotrarefaction <- ggplot(rarefactioncurve, aes(Sample, Species)) + 
+  geom_line(aes(color=Site)) +
+  xlab("Coverage") + ylab("ASV number")
+ggplotly(plotrarefaction)
+```
+
+As we can appreciate, rarefaction curves reach the asymptotic so we are covering the diversity for all samples.
+
+El número de pasos da la resolución. Si lo limitamos, las curvas no serán tan perfectas, cogiendo puntos discretos.
+
+## Taxonomy plot
+
+Let's check the behaviour of taxonomic assignation with both physeq objects
+
+### Aggregating taxa with low abundancy and prevalence
+
+Not all the ASVs have a total resolution for the taxonomic assignation. We can use the function `aggregate_rare` from *microbiome* package to agregate the values to a taxonomic level. Let's try with *Order* and with a detection threshold of 0.1% and a prevalence among samples of 5% (below that levels are characterized as "Other").
+
+microbiome añade funcione a phyloseq. Permite agregar los clados en función de su abundancia. Si hay  algún clado de tipo familia que represente <5% del total, se  puede agrupar en"otros". También se puede eespecificar para una determinada prevalencia (si no llegan al 25% de prevalencia, se meten en "Otros".)
+
+```{r agreggate_taxa, cache=TRUE}
+#transform function convert values to frequency
+physeq.agg<- aggregate_rare(physeqbacfilt %>% 
+                              transform(transform="compositional"), 
+                              level="Family", detection =0.005, prevalence=0.25)
+```
+
+Now let's plot the Taxonomic composition
+
+```{r taxonomyplot, cache=TRUE, fig.width=36, fig.height=36}
+#escoger colores  con RColorBrewerr
+getPalette <- colorRampPalette(brewer.pal(8, "Set2")) 
+PhylaPalette <- getPalette(length(taxa(physeq.agg)))
+#gradiente del número de familias detectadas (lass raras son 1 solo color))
+
+
+taxcompplot<-  plot_composition(physeq.agg, average_by="SoilPlant", x_label="Sample", group_by="Source")+
+scale_y_percent() +
+  scale_fill_manual(values = PhylaPalette) 
+ggplotly(taxcompplot)
+```
+
+We can sort the the samples as we desire.
+
+```{r taxonomyplotsorted, cache=TRUE, fig.width=36, fig.height=36}
+taxcompplot$data <- taxcompplot$data %>% arrange(Abundance) %>% mutate(Sample = factor(Sample, levels=
+                                                                                                 c("Agr_Fresh", "Agr_Bulk",
+                                                                                                   "Agr_SOJ", "Agr_DRT",
+                                                                                                   "For_Fresh", "For_Bulk",
+                                                                                                   "For_SOJ", "For_DRT")
+                                                                                               ))
+
+ggplotly(taxcompplot)
+```
+
+En los suelos silvestres se han enriquecido las Burkholderiaceae en los suelos con soja. 
+
+We can also try to move "Other" to the bottom of the plot.
+
+```{r taxonomyplotother, cache=TRUE, fig.width=36, fig.height=36}
+
+taxcompplot$data$Tax <- factor(taxcompplot$data$Tax, levels = c(levels(taxcompplot$data$Tax)[levels(taxcompplot$data$Tax)!="Other"], "Other"))
+
+ggplotly(taxcompplot)
+```
+
+El 34% de las muestras están en "Other", por lo que quizás se podría utilizar unos criterios más relajados. Donde está la prevalencia en el chunk agreggate_taxa, se puede poner 2/16 para ver los duplicados.
+
+El impacto parece mayor en el suelo forestal que en el agrícola. El problema de GreenGenes es que algunos nombres son inclasificables (temporales) que a la larga se depuran y hay que revisar, como por ejemplo iii1-15. La más reciente es la versión 2 de GreenGenes, o también se podría utilizar Silva.
+
+## Diversity analysis
+
+One of the big advantages of having obtained the ASVs is not that we can assign each one a taxonomic level, but that we can study the diversity of the samples. That is, we can study both:
+
+1.  Alpha diversity: the diversity within a sample. We can use different indexes to measure the alpha diversity, such as the number of observed ASVs, the Chao1 index, the Shannon index, the Simpson index, etc. Mide si la muestra es muy diversa internamente, siendo el más utilizado el de Shannon. Cuanto mayor sea el número, mayor es la diversidad; a mayor cantidad de individuos en proporciones totales, mayor índice de Shannon.
+2.  Beta diversity: the diversity between samples. We can use different indexes to measure the beta diversity, such as the Bray-Curtis index, the Jaccard index, the Unifrac index, etc.
+
+Nevertheless, our samples coverage is quite heteregeneous. And species richness increases with sample size, and differences in richness actually may be caused by differences in sample size. To solve this problem, we may try to rarefy species richness to the same number of individuals.
+
+::: {#rarefaction}
+Depending on the coverage and quality of our samples, this step may be omitted, as it may introduce a bias in our results depending on the difference in sequence depth. To avoid this problem, it is advisable to obtain a similar number of sequences for all samples per study.
+:::
+
+We can use the function `rarefy_even_depth` from *phyloseq* package to rarefy the samples to the same number of sequences. We are going to rarefy the samples to the minimum number of sequences in the samples, and we are going to remove the OTUs that are not present in the rarefied samples.
+
+Rarefacción es fijar un número, igualando todas las muestras a ese número. De ahí la curva de rarefacción. Si bajamos demasiado el número, quizás alguna muestra pierde la asíntota. La rarefacción genera un conjunto de muestras del que se han tomado al azar las muestras, como el bootstrapping. Por ello, primero se debe fijar la semilla.
+
+```{r rarefaction}
+set.seed(1000)
+physeqbacrare<- rarefy_even_depth(physeqbacfilt, sample.size=min(sample_sums(physeqbacfilt)), trimOTUs=TRUE) 
+physeqbacrare
+
+```
+
+Aquí no se ve, pero se habrán reducido el número de muestras.
+
+We can have a look to the rarefaction curves.
+
+```{r rarefied rarefaction curve}
+rarefactioncurverare<-rarecurve(as.data.frame(t(otu_table(physeqbacrare))), step=500, cex=0.5, tidy=TRUE)
+plotrarefactionrare <- ggplot(rarefactioncurverare, aes(Sample, Species)) + 
+  geom_line(aes(color=Site)) +
+  xlab("Coverage") + ylab("ASV number")
+ggplotly(plotrarefactionrare)
+```
+
+As we can observe in the plot now all the samples have the same coverage but samples as SRR7265360 have not reached the asymptotic. Por ello, se podría haber eliminado la muestra más pequeña. Por esto es importante asegurarnos de que las muestras tienen el mismo tamaño de cobertura.
+
+For the following test we are going to use both the filtered and the rarefied phyloseq objects.
+
+### Alpha diversity
+
+We can use the function `plot_richness` from *phyloseq* package to estimate the richness of the samples. We are going to compare the behaviour of the richness using physeqbacfilt. We can use the following indexes:
+
+1.  Observed: the number of observed ASVs.
+
+2.  Chao1: usually used for small samples and is particularly useful in data biased towards species of low abundance.
+
+3.   Shannon: a measure of the diversity of the community. $H'= -\sum_{i=1}^{S} p_i \ln p_i$ where $p_i$ is the proportion of the $i$-th species.
+
+4.  Simpson: a measure of the diversity of the community. $D=1-\sum_{i=1}^{S} p_i^2$ where $p_i$ is the proportion of the $i$-th species.
+
+Aquí se calculan distintos índices de diversidad.
+```{r richness, cache=TRUE}
+
+# Select alpha-diversity measures
+divIdx = c("Observed", "Chao1", "Shannon", "Simpson")
+
+
+alphaplot<-plot_richness(physeqbacfilt, x = "SoilPlant", measures = divIdx, color = "SoilPlant", nrow = 1) + 
+    geom_point(size = 0.8) + theme_bw() + 
+    theme(legend.position = "none", 
+          axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) + 
+    labs(x = "Group", y = "Alpha Diversity Measure")
+alphaplot
+```
+
+The same for rarefied samples.
+
+```{r richness rarefied, cache=TRUE}
+alphaplotrare<-plot_richness(physeqbacrare, x = "SoilPlant", measures = divIdx, color = "SoilPlant", nrow = 1) + 
+    geom_point(size = 0.8) + theme_bw() + 
+    theme(legend.position = "none", 
+          axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) + 
+    labs(x = "Group", y = "Alpha Diversity Measure")
+alphaplotrare
+```
+
+There are almost no differences between the filtered and the rarefied samples. This is a good sign, as it means that the rarefaction has not introduced a bias in our results. No hay ningún impacto sustancial. Habría que hacer estadísticos para ver si las medias son significativas.
+
+We can focus on Shannon index, which is a measure of the diversity of the community but in this case we are going to make a box and whisker plot (_geom_boxplot_).
+
+```{r shannon index, cache=TRUE}
+shannonplot<-plot_richness(physeqbacrare, x = "SoilPlant", measures = "shannon", color = "SoilPlant", nrow = 1) + 
+    geom_boxplot() + theme_bw() + 
+    theme(legend.position = "none", 
+          axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) + 
+    labs(x = "Group", y = "Shannon Index")
+shannonplot$data<- shannonplot$data %>% arrange (value) %>%
+  mutate (SoilPlant = factor(SoilPlant, levels=c("Agr_Fresh", "Agr_Bulk", 
+                                                  "Agr_SOJ", "Agr_DRT", 
+                                                  "For_Fresh", "For_Bulk",
+                                                  "For_SOJ", "For_DRT")))
+shannonplot
+```
+
+Parece que las muestras DRT, sin importar el suelo, causan una disminución de la diversidad. 
+
+We have not enough time to perform a statistical test to compare the Shannon index between the different groups. I will add the code to perform a Kruskal-Wallis test to compare the Shannon index between the different groups in an additional file in Moodle.
+
+### Beta diversity
+
+For the study of beta diversity, there are several methods to compare the differences/distances between the samples. The most used ones take into account the **presence/absence of the ASVs (Jaccard) or the abundance of the OTUs (Bray Curtis)**. But we can also use the **unweighted and weighted UniFrac distances**, which take into account the phylogenetic relationships between the ASVs.
+
+Those distances can be plotted using ordination plots such as Principal Coordinates Analysis (PCoA), in which each axes represents a linear combination of the original distances explaining a certain amount of the variance. We can also use NMDS (Non-Metric Multidimensional Scaling) to plot the distances but in this case the axes have the same weight. This last method is non-metric, because it does not use the raw dissimilarity values, but converts them into the ranks and use these ranks in the calculation. 
+
+We are going to use the PCoA (Principal Coordinates Analysis) to compare the differences between the samples. Cada eje tiene un peso que represente la explicación de la variabilidad.
+
+We can use the function `plot_ordination` from *phyloseq* package to plot the beta diversity. We are going to compare the behavior of the beta diversity using physeqbacfilt.
+
+```{r beta diversity, cache=TRUE}
+
+set.seed(123456)
+ordinationbray<-ordinate(physeqbacfilt, method="PCoA", distance="bray")
+ordinationWUF<-ordinate(physeqbacfilt, method="PCoA", distance="wunifrac")
+ordinationNMDSbray<-ordinate(physeqbacfilt, method="NMDS", distance="bray") 
+#en NMDS, todos los ejes explican la misma porción de la varianza, a diferencia de PCoA
+ordinationNMDSWUF<-ordinate(physeqbacfilt, method="NMDS", distance="wunifrac") #weighted unifrac
+
+plotordinationbray<-plot_ordination(physeqbacfilt, ordinationbray, color="SoilPlant", shape = "Source") + 
+  geom_point(size=2) + stat_ellipse(aes(group = Source), type = "t") +
+  theme_bw() + labs(title = "Non rarefied Bray Curtis PCoA") 
+
+plotordinationWUD<-plot_ordination(physeqbacfilt, ordinationWUF, color="SoilPlant", shape = "Source") + 
+  geom_point(size=2) + stat_ellipse(aes(group = Source), type = "t") +
+  theme_bw() + labs(title = "Non rarefied Weighted Unifrac PCoA") 
+
+plotordinationbrayNMDS<-plot_ordination(physeqbacfilt, ordinationNMDSbray, color="SoilPlant", shape = "Source") + 
+  geom_point(size=2) + 
+  theme_bw() + labs(title = "Non rarefied Bray Curtis NMDS") 
+
+plotordinationWUDNMDS<-plot_ordination(physeqbacfilt, ordinationNMDSWUF, color="SoilPlant", shape = "Source") + 
+  geom_point(size=2) + 
+  theme_bw() + labs(title = "Non rarefied Weighted Unifrac NMDS") 
+  
+plotordinationbray
+plotordinationWUD
+plotordinationbrayNMDS
+plotordinationWUDNMDS
+
+```
+Claramente hay dos poblaciones que se separan en el eje 1. Después, las poblaciones se separan en el eje 2. El primer motor de separación de las muestras es el origen: cada suelo tiene su propia población, y al planta modifica las poblaciones preexistentes. 
+
+Now let's do the same for the rarefied samples.
+
+```{r beta diversity rarefied, cache=TRUE}
+ordinationbrayrare<-ordinate(physeqbacrare, method="PCoA", distance="bray")
+ordinationWUFrare<-ordinate(physeqbacrare, method="PCoA", distance="wunifrac")
+ordinationNMDSbrayrare<-ordinate(physeqbacrare, method="NMDS", distance="bray")
+ordinationNMDSWUFrare<-ordinate(physeqbacrare, method="NMDS", distance="wunifrac")
+
+plotordinationbrayrare<-plot_ordination(physeqbacrare, ordinationbrayrare, color="SoilPlant", shape = "Source") + 
+  geom_point(size=2) + stat_ellipse(aes(group = Source), type = "t") +
+  theme_bw() + labs(title = "Rarefied Bray Curtis PCoA")
+plotordinationWUDrare<-plot_ordination(physeqbacrare, ordinationWUFrare, color="SoilPlant", shape = "Source") + 
+  geom_point(size=2) + stat_ellipse(aes(group = Source), type = "t") +
+  theme_bw() + labs(title = "Rarefied Weighted Unifrac PCoA")
+plotordinationbrayNMDSrare<-plot_ordination(physeqbacrare, ordinationNMDSbrayrare, color="SoilPlant", shape = "Source") +
+  geom_point(size=2) + 
+  theme_bw() + labs(title = "Rarefied Bray Curtis NMDS")
+plotordinationWUDNMDSrare<-plot_ordination(physeqbacrare, ordinationNMDSWUFrare, color="SoilPlant", shape = "Source") +
+  geom_point(size=2) + 
+  theme_bw() + labs(title = "Rarefied Weighted Unifrac NMDS")
+
+plotordinationbrayrare
+plotordinationWUDrare
+plotordinationbrayNMDSrare
+plotordinationWUDNMDSrare
+```
+
+
+Bray Curtis and Weighted Unifrac distances can be analised using PERMANOVA to test the differences between the groups. We can use the function `adonis2` from the *vegan* package to perform the PERMANOVA test. We are going to compare the differences between the groups using the Bray Curtis and Weighted Unifrac distances. This part of the code is going to be added to the additional file in Moodle.
+
+La beta diversidad se mide estadísticamente con Permanova, que es la permutación del ANOVA. Se calcula la distancia entre las permutaciones, generando así una normalidad. No hay que hacer estudios paramétricos o no paramétricos. 
+
+## Enrichment analysis
+
+We can use the function `DESeq2` from the *DESeq2* package to perform the differential abundance analysis. This function uses a negative binomial distribution to model the counts of the ASVs and then uses a generalized linear model to test the differences between the groups. We are going to use the function `DESeq2` to compare the differences between the groups using the rarefied data.
+
+As this kind of comparison is just analysyng samples two by two, we are going to select those that come from agricultural soils (Source="Agr") and that have been kept in a pot (env_feature="Pot"). In other words, we will compare Bulk and SOJ samples from agricultural soils and store them in the object physeqagrsoj:
+
+```{r subsetAgr}
+physeqagrsoj<-subset_samples(physeqbacrare, Source=="Agr" & env_feature=="Pot")
+physeqagrsoj
+
+```
+
+Since we are going to work with relative abundances, we are going to eliminate those ASVs that have less than five sequences distributed in the samples and that are present in at least half of the samples. We define the filter in the filtersamp object and apply it with the prune_taxa function to clean the physeqagrsoj object. 
+
+```{r filterabundance}
+filtersamp<-genefilter_sample(physeqagrsoj, filterfun_sample(function(x) x > 5), A=0.5*nsamples(physeqagrsoj))
+physeqagrsoj <- prune_taxa(filtersamp, physeqagrsoj)
+physeqagrsoj
+```
+Now we are in terms to begin differential analysis on our data using DESeq2. To do this, first we obtain our DESeq2 object (agrsojdds) in which we indicate that our comparison is going to be regarding the metadata "Plant" and then we perform the analysis using the Wald test.
+
+```{r DESeq}
+agrsojdds <- phyloseq_to_deseq2(physeqagrsoj, ~ Plant)
+agrsojdds <- DESeq(agrsojdds, test="Wald", fitType="parametric")
+
+```
+
+This type of differential analysis is represented as the log2 ratio between two conditions. With the function results in combination with contrasts we have that result. NOTE: constrat needs three parameters, the name of the variable that we are going to analyze, in our case Plant (that can be Bulk or SOJ9, the name of the factor that will be in the numerator (in our case SOJ) and finally the factor that will be in the denominator (Bulk). Therefore: 
+
+```{r results}
+resagrsoj <- results(agrsojdds, cooksCutoff = FALSE, contrast=c("Plant", "SOJ", "Bulk"))
+head(resagrsoj)
+
+```
+As we can see, we have significant and non-significant values, we are going to generate an object in which we store the significant data:
+```{r significant}
+alpha <- 0.01
+agrsojtab <- resagrsoj[which(resagrsoj$padj < alpha &(resagrsoj$log2FoldChange >=1 | resagrsoj$log2FoldChange<=-1)), ]
+head(agrsojtab)
+
+```
+But this table lacks information about the taxonomic assignment for each ASV so we are going to add it:
+```{r significantplustax}
+agrsojtab = cbind(as(agrsojtab, "data.frame"), as(tax_table(physeqagrsoj)[rownames(agrsojtab), ], "matrix"))
+head(agrsojtab)
+```
+Finally, we generated the chart in which we show the Families and Phylos that have a differential abundance (values bigger than 1 are enriched in Soja plants):
+```{r plotgr}
+theme_set(theme_bw())
+scale_fill_discrete <- function(palname = "Set1", ...) {
+    scale_fill_brewer(palette = palname, ...)
+}
+# Phylum order
+
+x = tapply(agrsojtab$log2FoldChange, agrsojtab$Phylum, function(x) max(x))
+x = sort(x, TRUE)
+agrsojtab$Phylum = factor(as.character(agrsojtab$Phylum), levels=names(x))
+# Family order
+x = tapply(agrsojtab$log2FoldChange, agrsojtab$Family, function(x) max(x))
+x = sort(x, TRUE)
+agrsojtab$Family = factor(as.character(agrsojtab$Family), levels=names(x))
+enrichplot<-ggplot(agrsojtab, aes(x=log2FoldChange, y=Family, color=Phylum)) + geom_point(size=2) +
+  theme(axis.text.x = element_text(angle=90, hjust = 0, vjust=0.5)) +
+  geom_vline(aes(xintercept=-1), linetype="dashed", color = "#ff0000", size=1,show.legend=F) +
+      geom_vline(aes(xintercept=1), linetype="dashed", colour = "#00ff00", size=1, show.legend = F) +
+      theme(legend.text =element_text(face="italic"), axis.text.y=element_text(face="bold.italic",size=12))
+enrichplot
+```
