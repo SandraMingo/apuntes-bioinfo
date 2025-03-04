@@ -277,7 +277,95 @@ $$p(C_2|x) = \frac{p(x|C_2) p(C_2}{p(x)}$$
 Sumando ambas probabilidades:
 $$p(C_1|x) + p(C_2|x) = \frac{p(x|C_1) \cdot p(C_1) + p(x|C_2) \cdot p(C_2)}{p(x)} = \frac{p(x)}{p(x)} = 1$$
 
+\subsubsection{Ejercicios teorema de Bayes}
+Estamos trabajando para una empresa que ha desarrollado una nueva prueba para detectar una enfermedad. La prueba se caracteriza por tener una alta probabilidad de dar positivo en personas enfermas. Sin embargo, a veces puede fallar como se indica en la siguiente tabla:
 
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|l|l|l|}
+    \hline
+        Test output & Is the person sick? & Probability \\ \hline
+        + & Sick & 0.9 \\ \hline
+        - & Sick & 0.1 \\ \hline
+        + & Healthy & 0.05 \\ \hline
+        - & Healthy & 0.95 \\ \hline
+    \end{tabular}
+\end{table}
+
+Sean las dos etiquetas de clase $\mathcal{C}_0 \equiv \text{Healty}$ y $\mathcal{C}_1 \equiv \text{Sick}$ y $x$ el resultado de la prueba, es decir, las variables observadas. Por lo tanto, la tabla anterior proporciona todos los valores potenciales para las distribuciones condicionales de clase $p(x|\mathcal{C}_k)$.
+
+\paragraph{Escenario 1} 
+Supongamos que tenemos la misma probabilidad a priori de que una persona esté enferma o sana, es decir, $p(\mathcal{C}_1)=p(\mathcal{C}_0)=0,5$. 
+
+\textit{Utiliza el teorema de Bayes para calcular la fracción de personas que están realmente enfermas a partir del número total de personas que son positivas según la prueba. Es decir, se pide calcular $p(\mathcal{C}_1|x=+)$.}
+$$p(sick|+) = \frac{p(+|sick) \cdot p(sick)}{p(+)} =$$
+$$ \frac{p(+|sick) p(sick)}{p(+, sick) + p(+, healthy)} = \frac{p(+, sick) p(sick)}{p(+|sick)p(sick) + p(+|healthy) p(healthy)}$$
+
+Ahora rellenamos con los datos del enunciado y la tabla
+$$\frac{0.9 \cdot 0.5}{0.9 \cdot 0.5 + 0.05 \cdot 0.5} = 0.95$$
+
+\textit{Según los resultados obtenidos, ¿es muy buena la prueba desarrollada? ¿Por qué?}
+Parece un buen test, ya que si es positivo, con un 95\% de probabilidad la persona realmente está enferma.
+
+\paragraph{Escenario 2}
+Supongamos ahora que la enfermedad es muy rara y que sólo afecta al 1\% de la población. Es decir, $p(\mathcal{C}_1)=0,01$. 
+
+\textit{Utilice el teorema de Bayes para calcular la fracción de personas que están realmente enfermas a partir del número total de personas que son positivas según la prueba. Es decir, se le pide que calcule $p(\mathcal{C}_1|x=\text{+})$.}
+
+$$p(sick|+) = \frac{p(+|sick) \cdot p(sick)}{p(+)} = $$
+$$\frac{p(+|sick) p(sick)}{p(+, sick) + p(+, healthy)} = \frac{p(+, sick) p(sick)}{p(+|sick)p(sick) + p(+|healthy) p(healthy)}$$
+
+Ahora rellenamos con los datos del enunciado y la tabla:
+$$\frac{0.9 \cdot 0.01}{0.9 \cdot 0.01 + 0.05 \cdot 0.99} = 0.15$$
+
+\textit{Según los resultados obtenidos, ¿es muy buena la prueba desarrollada? ¿Por qué? ¿Qué es lo que falla en la prueba en este escenario?}
+
+Este test es malo, ya que con un test positivo, la probabilidad de estar enfermo es bastante baja. El problema está en los falsos positivos. Para mejorar el test, hay que reducir la probabilidad de los falsos positivos.
+
+\textit{Calcula cuál es la tasa de falsos positivos necesaria, es decir, $p(x=\text{+}|\mathcal{C}_0)$, de la prueba para que al menos el 90\% de las personas que den positivo en la prueba estén realmente enfermas.}
+
+Ahora queremos calcular $p(+ | healthy)$:
+Sabemos que 
+$$p(sick|+) = \frac{p(+|sick) \cdot p(sick)}{p(+)} = 0.9$$
+y que:
+$$p(+) = p(+, sick) + p(+, healthy)$$
+
+Esto es igual a :
+$$p(+) = p(+|sick) p(sick) + p(+|healthy) p(healthy)$$
+
+Sustituyendo en función de la tabla del enunciado:
+$$p(+) = 0.9 \cdot 0.01 + p(+|healthy) \cdot 0.99$$
+
+Insertando esto en la primera fórmula:
+$$0.9 = \frac{ p(+|healthy) \cdot p(sick)}{p(+)} = \frac{0.9 \cdot 0.01}{0.9 \cdot 0.01 +  p(+|healthy) \cdot 0.99}$$
+
+Se puede pasar la parte de abajo de la fracción al otro lado:
+$$0.9 \cdot 0.9 \cdot 0.01 + 0.9 \cdot p(+|healthy) \cdot 0.99 = 0.9 \cdot 0.01$$
+
+Simplificando
+$$0.9 \cdot p(+|healthy) \cdot 0.99 = 0.9 \cdot 0.01 - 0.9 \cdot 0.9 \cdot 0.01 $$
+$$ p(+|healthy) = \frac{0.9 \cdot 0.01 - 0.9 \cdot 0.9 \cdot 0.01}{0.9 \cdot 0.99} = 10^{-3}$$
+ 
+\paragraph{Escenario 3}
+\textit{Supongamos ahora que disponemos de $T$ pruebas independientes para diagnosticar la enfermedad, pero que tienen las mismas características que las descritas en la tabla anterior. Como las pruebas son independientes, tenemos que }
+$$ p(x_1=\text{+},x_2=\text{+},\ldots, x_T = \text{+}|\mathcal{C}_k)=\prod_{i=1}^T p(x_i=\text{+}|\mathcal{C}_k)$$
+\textit{¿En cuántas de estas pruebas tiene que dar positivo una persona para que al menos el 90\% de las personas diagnosticadas como positivas estén realmente enfermas?}
+$$p(sick | x_1 = +, ..., x_T = +) = 0.9$$
+
+Se busca $T$. Tenemos la siguiente pista: $log(a^b) = b \cdot log(a)$ y $log(ab) = log(a) + log(b)$
+$$p(sick | x_1 = +, ..., x_T = +) = p(+ | sick)^T = 0.9^T$$
+$$p(sick | x_1 = +, ..., x_T = +) = 0.9 $$
+$$0.9 = \frac{p(x_1 = +, ..., x_T = + | sick) \cdot p(sick)}{p(x_1 = +, ..., x_T = + | sick) \cdot p(sick) + p(x_1 = +, ..., x_T = + | healthy) \cdot p(healthy)}$$
+$$p(healthy | x_1 = +, ..., x_T = +) = p(+ | healthy)^T = 0.05^T$$
+$$0.9 = \frac{0.9^T \cdot 0.01}{0.9^T \cdot 0.01 + 0.05^T \cdot 0.99}$$
+$$0.9 \cdot 0.9^T \cdot 0.01 + 0.9 \cdot 0.05^T \cdot 0.99 = 0.9^T \cdot 0.01$$
+$$0.9 \cdot 0.05^T \cdot 0.99 = 0.9^T \cdot 0.01 - 0.9 \cdot 0.9^T \cdot 0.01$$
+$$0.9 \cdot 0.05^T \cdot 0.99 = 0.9^T[0.01 - 0.9 \cdot 0.01]$$
+
+Aplicando los logaritmos:
+$$log 0.9 + T \cdot log 0.05 + log 0.99 = T \cdot log 0.9 + log(0.01 - 0.9 \cdot 0.01)$$
+$$T log 0.05 - T log 0.9 = log(0.01 - 0.9 \cdot 0.01) - log 0.9 - log 0.99$$
+$$T(log 0.05 - log 0.9) = \frac{log(0.01 - 0.9 \cdot 0.01) - log 0.9 - log 0.99}{log 0.05  log 0.9} = 2.3$$
 
 %\section{Análisis discriminante}
 
