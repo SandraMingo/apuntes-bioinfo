@@ -367,6 +367,158 @@ $$log 0.9 + T \cdot log 0.05 + log 0.99 = T \cdot log 0.9 + log(0.01 - 0.9 \cdot
 $$T log 0.05 - T log 0.9 = log(0.01 - 0.9 \cdot 0.01) - log 0.9 - log 0.99$$
 $$T(log 0.05 - log 0.9) = \frac{log(0.01 - 0.9 \cdot 0.01) - log 0.9 - log 0.99}{log 0.05  log 0.9} = 2.3$$
 
+%04/03 - Daniel 
+\subsection{Minimizar el porcentaje de errores de clasificación}
+Una regla de clasificación dividirá el espacio de entrada (de atributos x) en regiones $\mathcal{R}_k$. Todos los $\vec{x} \in \mathcal{R}_k$ se asignan a $\mathcal{C}_k$. Los límites se denominan superficies de decisión o fronteras de clasificación. La probabilidad de error es:
+\begin{align*}
+p(mistake) &= p(\vec{x} \in \mathcal{R}_1, \mathcal{C}_2) + p(\vec{x} \in \mathcal{R}_2, \mathcal{C}_1) \\
+& = \int_{\mathcal{R}_1} p(\vec{x}, \mathcal{C}_2) d\vec{x} + \int_{\mathcal{R}_2} p(\vec{x}, \mathcal{C}_1) d \vec{x}
+\end{align*}
+Si el ejemplo cae en la región 1, pero pertenece a la clase 2, se produce un error de clasificación. Lo mismo al contrario: si un dato cae en la región 2 y realmente viene de la clase 1, también se produce un error de clasificación. El error que se comete es el área debajo de las funciones de arriba. Para minimizar la probabilidad de error, hay que construir la siguiente regla de predicción:
+$$\pi(\vec{x}) = \begin{cases}
+\mathcal{C}_1 if p(\vec{x}, \mathcal{C}_1) \geq p(\vec{x}, \mathcal{C}_2) \\
+\mathcal{C}_2 if p(\vec{x}, \mathcal{C}_2) \geq p(\vec{x}, \mathcal{C}_1) 
+\end{cases}
+$$
+Esta regla es justo la que predice la clase que tiene la mayor probabilidad posterior $p(\mathcal{C}_k | \vec{x})$.
+
+Para minimizar el error de predicción y conseguir el clasificador con menor error, se debe predecir la etiqueta de clase con mayor probabilidad posterior. A este clasificador se le conoce como \textbf{clasificador de Bayes} al utilizar el teorema de Bayes.
+
+El problema es que las probabilidades posteriores no se conocen, y se deben inferir de los datos. Se deben utilizar distintos métodos para estimar estas probabilidades posteriores.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/missclassification.png}
+\caption{Imaginamos que tenemos un problema de clasificación de una dimensión. Tenemos dos clases: la positiva y la negativa. Queremos especificar un clasificador para resolver el problema. Definimos las regiones $\mathcal{R}_1$ y $\mathcal{R}_2$ para las clases $\mathcal{C}_1$ y $\mathcal{C}_2$ respectivamente. Para un dato que se observe en la región 1, pero pertenezca a la clase 2, se debe calcular el área debajo de la curva representado en rojo y verde. Si x cae en la región 2 y realmente viene de la clase 1, el error se calcula como el área azul. El clasificador no es óptimo, ya que la frontera de clasificación no es muy correcta. Si se cambiase al punto marcado con las líneas discontinuas, el error se vería minimizado. Con el cambio de frontera, si x viene de la clase 2 y cae en la región 1, el error sería el área verde que se sale de la frontera. Si x cae en la región 2 y pertenece a la clase 1, el error es el área verde de la derecha sumado al área azul. Generalmente, el clasificador óptimo se encuentra cuando las probabilidades posteriores de clase tomen el mismo valor. En la línea discontinua se cortan las dos curvas de distribución de ambas clases. Las probabilidades posteriores de clase es igual a la probabilidad conjunta dividida por una constante. Si las probabilidades conjuntas toman el mismo valor, las probabilidades posteriores también son iguales. En ese punto donde las probabilidades posteriores valen 0.5 se encuentra la frontera de clasificación.}
+\end{figure}
+
+Consideramos que tenemos un problema de clasificación en cuyo eje x se encuentra el espacio posible de los datos. Hay dos distribuciones posibles: $p(\mathcal{C}_1|x)$ y $p(\mathcal{C}_2|x)$. Tenemos tres puntos: A, B y C. ¿Dónde tendríamos que poner la frontera de clasificación? Respuesta: es donde se cortan las probabilidades posteriores, que en este caso es el punto B.
+%%FIXME: añadir gráfico
+
+\subsection{Minimizar la pérdida esperada}
+A veces, tomar decisiones equivocadas puede tener costes asimétricos.
+\begin{itemize}
+\item Paciente que no tiene cáncer al que se le diagnostica cáncer: estrés
+\item Paciente con cáncer diagnosticado que no tiene cáncer: muerte prematura
+\end{itemize}
+Estas cuestiones pueden formalizarse mediante una matriz de pérdidas L:
+$$L_{kj} \equiv \text{Cost of assigning } \mathcal{C}_j \text{ to } \vec{x} \text{ with true class } \mathcal{C}_k$$
+$$\vec{L} = \begin{pmatrix}
+0 & 1 \\ 10 & 0
+\end{pmatrix}$$
+
+Las filas contienen la clase verdadera, y las columnas representan la clase etiquetada. La diagonal tiene 0, ya que es donde estaríamos acertando (se predice la etiqueta de clase correcta). Como en ese caso no se comete ningún error, se pone 0, y los elementos fuera de la diagonal indican los errores que se cometen. En este caso, tiene más peso que a un paciente con cáncer se le etiquete como no cáncer.
+
+Nuestro objetivo es minimizar la pérdida esperada:
+$$\mathbb{E}[loss] = \sum_k \sum_j L_{kj} p(\vec{x} \in \mathcal{R}_j, \mathcal{C}_k) = \sum_k \sum_j L_{kj} \int_{\mathcal{R}_j} p(\vec{x}, \mathcal{C}_k) d \vec{x}$$
+
+Debemos elegir $\mathcal{R}_j$ para minimizar $\sum_k L_{kj} p(\vec{x}, \mathcal{C}_k)$. La regla de decisión es asignar $\vec{x}$ a $\mathcal{C}_j$ para el que $\sum_k L_{kj} p(\mathcal{C}_k | \vec{x})$ sea el mínimo.
+
+Si tenemos acceso a las probabilidades posteriores, podemos tomar decisiones de manera óptima y tener en cuenta posibles asimetrías de los errores. Si tuviéramos el mismo peso para los errores, la frontera de clasificación esperada sería la calculada anteriormente (0.5).
+
+\subsection{Opción de rechazo}
+A veces es mejor evitar las decisiones sobre los casos difíciles, es decir, regiones en las que la mayor $p(\mathcal{C}_k | \vec{x})$ es significativamente menor que 1. En el caso de las radiografías, dejamos que un humano clasifique los casos más ambiguos. 
+
+Se introduce un umbral $\theta$ y se rechazan todos aquellos datos $\vec{x}$ para los cuales $max (p(\mathcal{C}_k | \vec{x}) < \theta$. Si $\theta = 1$, todos los ejemplos se rechazan. Si $\theta < 1/K$, ningún ejemplo se rechaza.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/rechazo.png}
+\caption{La región de rechazo se encuentra alrededor de la frontera de decisión.}
+\end{figure}
+
+\subsection{Inferencia y decisión}
+Hay dos procesos diferentes:
+\begin{itemize}
+\item Inferencia: utiliza datos de entrenamiento para estimar las probabilidades posteriores de clase, es decir, modelar $p(\mathcal{C}_k | \vec{x})$
+\item Decisión: utilizar las probabilidades posteriores para hacer asignaciones óptimas de clase
+\end{itemize}
+
+Generalmente, los distintos clasificadores son distintos mecanismos para estimar las probabilidades posteriores. Hay tres tipos de clasificadores en función de su complejidad. Por orden descendente, son:
+\begin{itemize}
+\item Modelos generativos: coge los ejemplos de cada clase y estima las distribuciones condicionales (de la clase positiva y de la clase negativa). Una vez estimadas, y sabiendo la probabilidad a priori de cada clase en base a los datos de entrenamiento, se utiliza la regla de Bayes para clasificar los datos nuevos.
+El problema es que $\vec{x}$ puede ser muy dimensional (sobre todo en biología y salud, como muchos genes u otros atributos) y es posible que necesitemos muchos datos para determinar las densidades con una precisión razonable. Esto se debe a la maldición de la dimensionalidad. Conforme haya más dimensiones, el espacio está cada vez más vacío, por lo que es más difícil estimar la densidad. Permite generar nuevos datos. No obstante, estima p(x), lo que resulta útil para detectar valores atípicos. Es caro si sólo queremos decisiones de clasificación.
+
+\item Modelos discriminativos: se estima directamente las probabilidades posteriores de clase. Tiene un enfoque mucho más sencillo que el anterior al no tener que estimar una probabilidad posterior en múltiples dimensiones. Las densidades condicionales de clase pueden contener mucha estructura que tiene poco efecto en las probabilidades posteriores.
+
+\item Discriminantes: se estima una función que mapea $\vec{x}$ al espacio de etiquetas. Su enfoque es aún más sencillo, combinando el paso de inferencia y decisión en uno solo. La pega es que ya no tenemos acceso a $p(\mathcal{C}_k|\vec{x})$, por lo que la minimización de la función de pérdida y la opción de rechazo no son posibles.
+\end{itemize}
+
+Las densidades condicionales de clase complicadas pueden dar lugar a probabilidades posteriores de clase simples.
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.9\textwidth]{figs/inference-decision.png}
+\caption{Suponemos que tenemos una dimensión con una clase positiva y una clase negativa. La distribución es complicada al tener dos modas. Si esto se utiliza en la regla de Bayes, se pueden calcular las probabilidades posteriores, las cuales tienen menos complejidad que las densidades. Generalmente, las probabilidades posteriores son funciones relativamente sencillas y más fáciles de calcular que las distribuciones condicionales.}
+\end{figure}
+
+\subsection{Modelos generativos}
+Cuando un clasificador era un modelo generativo, se estiman las probabilidades a priori. La clave del uso de modelos generativos para la clasificación es especificar una forma adecuada para las densidades condicionales de clase. Elegiremos una distribución con parámetros $\theta$. La tarea consiste en estimar el mejor valor de $\theta$ a partir de los datos observados.
+
+Supongamos que $x \in [1, 2, 3, \ldots, 100]$ y consideramos dos posibles distribuciones:
+$$\theta_{two} \equiv \text{distribución uniforme entre las potencias de dos}$$
+$$\theta_{even} \equiv \text{distribución uniforme entre los números pares}$$
+
+Observamos los valores de x en $\mathcal{D} = [16, 8, 2, 64]$. Estos números son pares y también se pueden generar por potencias de dos. ¿Qué distribución se elegiría? La de potencias de dos, ya que es más probable que esa sea la distribución verdadera.
+
+\subsubsection{Principio de máxima verosimilitud}
+Los datos se han generado independientemente. La observación de los datos para cada distribución es:
+$$p(\mathcal{D}|\theta_{two}) = \prod_{i=1}^N p(x_i | \theta_{two}) = (1/6)^N = 7.7 \cdot 10^{-4}$$
+$$p(\mathcal{D}|\theta_{even}) = \prod_{i=1}^N p(x_i | \theta_{even}) = (1/50)^N = 1.6 \cdot 10^{-7}$$
+
+La probabilidad es mayor en la distribución de las potencias de dos. 
+El principio de máxima verosimilitud elige el modelo que maximice la probabilidad de los datos observados.
+
+\begin{align*}
+\hat{\theta}_{ML} &= arg max_{\theta}  \hspace{1cm} p(\mathcal{D} | \theta) = \prod^N_{i=1} p(\vec{x}_i|\theta) \\
+&= arg max_{\theta} \hspace{1cm} p(\mathcal{D} | \theta) = \sum^N_{i=1} p(\vec{x}_i|\theta)
+\end{align*}
+
+Para estimar los parámetros, se utiliza la máxima verosimilitud, eligiendo la media y varianza para ello. Los valores de los parámetros que maximizan la probabilidad de los datos es mediante los estimadores de máxima verosimilitud, que es la media empírica y la varianza empírica.
+
+Estos estimadores son asintóticamente insesgados. Convergen a los valores reales a medida que tenemos más y más datos.
+
+Ejemplo: suponemos que los datos observados han surgido de una distribución gaussiana de la cual no conocemos la media ni la varianza. Hemos observado los datos de x1 a xn. Se puede escribir la probabilidad de los datos observados dado la media y la varianza: 
+$$p(\mathcal{D} | \mu, \sigma^2) = \prod^N_{i = 1} p(x_i | \mu, \sigma^2)$$
+Esto se puede convertir en:
+\begin{align*}
+\log p(\mathcal{D} | \mu, \sigma^2) &= \sum^N_{i = 1} p(x_i | \mu, \sigma^2) \\
+&= \sum^N_{i = 1} -0.5 \log 2 \pi \sigma^2 - \frac{1}{2 \cdot \sigma^2} (x_i - \mu)^2
+\end{align*}
+$$\log p(D|\mu) = \sum^N_{i = 1} - \frac{1}{2 \sigma^2} \frac{(x_i - \mu)^2}{\sigma^2} + cte$$
+\begin{align*}
+\frac{\delta \log p(D|\mu)}{\delta \mu} &= \sum^N_{i=1} \frac{-2(x_i - \mu)}{2 \sigma^2} \cdot -1 + 0 = 0 \\
+&= \sigma^N_{i=1} \frac{x_i  \mu}{\sigma^2} = 0 \\
+&= \sum^N_{i=1} (x_i) - \mu) = 0 \\
+&= \sum^N_{i=1}(x_i) - N \mu = 0 \\
+&= \sum^N_{i = 1} x_i = N \mu \\
+\end{align*}
+$$\mu = \frac{1}{N} \sum^N_{i=1} x_i$$
+
+En múltiples dimensiones, en lugar de tener una varianza, hay una matriz de covarianzas. Esto se puede ver mejor en el notebook de MaximumLikelihoodGaussian (carpeta ejercicios).
+
+\paragraph{Sobreajuste}
+El principio de máxima verosimilitud puede llevar a un \textbf{sobreajuste severo} cuando hay pocos datos. El sobreajuste $p(x|\hat{\theta}_{ML}$ captura propiedades de los datos que no generaliza bien. Esto se traduce en que la probabilidad para los datos de entrenamiento es muy alta, pero para datos nuevos muy baja. Por ejemplo, si en una distribución gausiana solo tenemos un valor observado, el estimador de la media que maximiza la probabilidad es el mismo. La media se pondría donde está la observación, y la varianza sería 0, ya que la diferencia entre la media y nuestro dato es 0. Esto se traduce en que la gaussiana es muy picuda y se centra en el dato observado. Si la varianza es 0, la probabilidad de los datos observados es infinita (siendo esto lo mejor que hay). Esto parece muy bueno según el principio de máxima verosimilitud. No obstante, para un dato nuevo, la densidad de probabilidad de un dato nuevo, diferente al dato observado, sería 0. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.9\textwidth]{figs/overfitting-ml.png}
+\end{figure}
+
+\subsubsection{Ejercicios}
+\begin{enumerate}
+\item Un problema de clasificación binaria tiene probabilidades condicionales de clase:
+$$p(\mathcal{C}_1 | x) = \frac{1}{1 + exp(-w x)} \hspace{2cm} p(\mathcal{C}_2 | x) = \frac{1}{1 + exp(w x)} $$
+siendo $w$ algún parámetro que puede valer cualquier número excepto 0. El objetivo está en encontrar la frontera de decisión óptima.
+
+$$\frac{1}{1 + exp(-w x)} = \frac{1}{1 + exp(w x)} \hspace{1cm} | \text{invertir fracción} $$
+$$1 + exp(-w x) = 1 + exp(w x) \hspace{1cm} | -1$$
+$$exp(-w x) = exp(w x) \hspace{1cm} | \log$$
+$$-w x = w x $$
+$$w x + wx = 0$$
+$$2wx = 0$$
+$$x = 0$$
+
+\end{enumerate}
 %\section{Análisis discriminante}
 
 %\section{Árboles de clasificación y vecinos cercanos}
