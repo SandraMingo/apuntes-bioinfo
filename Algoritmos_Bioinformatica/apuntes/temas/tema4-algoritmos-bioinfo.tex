@@ -209,4 +209,102 @@ AG-GTTG
 \end{mdframed}
 \end{table}
 
-%\section{Búsqueda en bases de datos}
+%04/03 - Ana
+\section{Búsqueda en bases de datos}
+El tiempo de búsqueda en grandes bases de datos es una consideración importante, y se hace necesario equilibrar la velocidad y la sensibilidad de la búsqueda. Los métodos exhaustivos, como Needleman-Wunsch y Smith-Waterman, suelen garantizar una respuesta óptima, pero tardan demasiado en comparar una secuencia con una base de datos. En un intento de ganar velocidad con una pérdida aceptable de sensibilidad, se han derivado métodos aproximados a partir de estos algoritmos.
+
+\subsection{Métodos heurísticos}
+Los métodos heurísticos para buscar en una base de datos son:
+\begin{itemize}
+\item FastA: Primer algoritmo rápido de búsqueda de secuencias para comparar una secuencia de consulta con una base de datos
+\item BLAST: Es una mejora de FastA en cuanto a velocidad de búsqueda, facilidad de uso, rigor estadístico y sensibilidad.
+\end{itemize}
+
+Tanto FASTA como BLAST buscan similitud local entre secuencias.
+
+\subsubsection{FastA}
+FastA es un algoritmo de varios pasos para el alineamiento de secuencias. Primero se buscan regiones de dos secuencias que parezcan prometedoras, es decir, que tengan algún grado de similitud. Después se computa el alineamiento local usando programación dinámica en estas regiones. Si simplemente se comparan dos secuencias cualesquiera para ver si son homólogas, Smith-Waterman sería el método a elegir. Las características de FastA son:
+\begin{itemize}
+\item Alineamiento local: intenta encontrar parches de similitud regional, en lugar de tratar de encontrar el mejor alineamiento entre toda la secuencia query y las secuencias de la base de datos. 
+\item Alineamiento con gaps: los alineamientos generados pueden contener huecos.
+\item Rapidez: es un método heurístico, pudiendo perder coincidencias. Así, no hay garantía de encontrar el mejor alineamiento. Utiliza una estrategia que sacrifica la sensibilidad completa para ganar velocidad.
+\end{itemize}
+
+La programación dinámica calcula la puntuación en un montón de zonas inútiles para encontrar secuencias subóptimas. Se buscan secuencias cortas en las que haya matches. Normalmente, en el ADN se busca con una longitud de 6 nucleótidos y para proteínas 2 aminoácidos. 
+Los pasos del algoritmo son:
+\begin{enumerate}
+\item Identificar k-meros comunes entre las secuencias I y J.
+
+Los k-meros comunes se representan en un dot matrix. Cada elemento tiene un punto si el k-mero que inicia en esa posición coincide entre ambas secuencias.
+\begin{figure}[h]
+\centering
+\includegraphics[width = \textwidth]{figs/dotmatrix.png}
+\end{figure}
+
+\item Puntuar la diagonal con los matches de los k-meros, identificando las 10 mejores diagonales.
+
+Sobre el ejemplo, la matriz dot serían los puntos. Se coge como referencia la diagonal principal. Sobre ella, se realizan los desplazamientos positivos (hacia abajo) y negativos (hacia arriba). Los matches que se encuentran son los puntos que caen en las celdas de la diagonal. 
+\begin{figure}[h]
+\centering
+\includegraphics[width = \textwidth]{figs/diagonal-sums.png}
+\end{figure}
+
+\item Volver a puntuar regiones iniciales con una matriz de sustitución (PAM o BLOSUM).
+
+Cada diagonal de puntuación alta elegida en el paso anterior se vuelve a puntuar según una matriz de puntuación (es decir, PAM). Esto se hace para encontrar subregiones con identidades más cortas que k. Los extremos de la diagonal que no coinciden se recortan. El parámetro más crítico en la comparación de secuencias es la elección de una matriz de puntuación.
+
+\item Unir las regiones utilizando gaps, penalizándolos
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.3\textwidth]{figs/join-segments.png}
+\end{figure}
+
+\item Utilizar programación dinámica para encontrar un alineamiento final.
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.3\textwidth]{figs/final-fasta.png}
+\end{figure}
+\end{enumerate}
+
+\paragraph{Evaluar la significancia del alineamiento}
+Cuando se detecta similitud entre secuencias, hay dos posibilidades: que se deba al azar o debido a la evolución de un ancestro común (y por tanto una función similar). Por ello, se busca obtener una medida universal para inferir homología. ¿Qué diferencia hay entre el resultado de una coincidencia aleatoria y el de una coincidencia entre secuencias no relacionadas? Dado un conjunto de secuencias no relacionadas con la consulta (o un conjunto de secuencias aleatorias), ¿cuál es la probabilidad de encontrar una coincidencia con la misma puntuación de alineación por azar?
+En una típica búsqueda actual en bases de datos, una proteína de longitud 250 podría ser comparada con una base de datos de proteínas de 50.000.000 de residuos totales.
+
+Hay distintas medidas para ver la significancia estadística:
+\begin{itemize}
+\item \textbf{p-valor:} la probabilidad de que al menos una secuencia produzca la misma puntuación por azar. $P_{value} (S) = P(x \geq S)$, siendo S la puntuación y x la secuencia.
+
+\item \textbf{E-valor:} número esperado de secuencias que producirán la misma o mejor puntuación por azar. Es la corrección de los p-valores para pruebas múltiples: $E_{value}(S) = P_{value} \cdot length.database \cdot length.query$
+
+El valor E disminuye exponencialmente a medida que aumenta la puntuación (S) que se asigna a una coincidencia entre dos secuencias. Esto se debe a que, como la secuencia es más larga, hay más probabilidad de que se den matches. El valor E depende del tamaño de la base de datos (N) y del sistema de puntuación utilizado (es decir, PAM150, BLOSUM62). El valor E (asociado a una puntuación S) es el número de alineamientos distintos, con una puntuación equivalente o mejor que S, que se espera que se produzcan en una búsqueda en una base de datos por azar. Cuanto menor sea el valor E, más significativa será la puntuación. Como norma general:
+\begin{itemize}
+\item $Escore < 10^{-6}$: estadísticamente significativo
+\item $10^{-6} < Escore < 10^{-3}$: se debe revisar.
+\item $10^{-3} < Escore$: no significativo.
+\end{itemize}
+
+$$E = k \cdot m \cdot N |cdot e^{-\lambda S}$$
+siendo:
+\begin{itemize}
+\item m: tamaño de la secuencia query
+\item N: tamaño de la base de datos
+\item k: constante estadística
+\item $\lambda$: constante para ajustar la matriz de puntuación
+\item S: puntuación de un high-scoring segment pair
+\end{itemize}
+
+\item \textbf{z-score:} mide cuántas desviaciones estándar hay por encima de la media de la distribución de la puntuación.
+$$Z_{score} = \frac{S - \mu_S}{\sigma_S}$$
+
+Se generan alineamientos aleatorios y se calcula su puntuación. Con eso, se calcula la media y la desviación estándar de las puntuaciones aleatorias, de forma que después se pueda calcular la desviación de la puntuación actual con la media de las puntuaciones aleatorias. La probabilidad de un z-score se denomina como e-valor.
+\end{itemize}
+
+\paragraph{Ejemplo: Retinoblastoma (RBP) vs $\beta$-lactoglobulina}
+La segunda secuencia se aleatoriza 100 veces, permutando aleatoriamente («Barajando») las posiciones que ocupan los aminoácidos (manteniendo por tanto la longitud de la secuencia y la composición de aminoácidos). Cada secuencia aleatoria se alinea con la primera y se obtienen 100 puntuaciones «aleatorias». Es de esperar que la puntuación real sea mucho mayor que las 100 puntuaciones «aleatorias».
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.5\textwidth]{figs/shuffling.png}
+\includegraphics[width = 0.6\textwidth]{figs/alignment-ex.png}
+\end{figure}
+
+%\subsubsection{BLAST}
