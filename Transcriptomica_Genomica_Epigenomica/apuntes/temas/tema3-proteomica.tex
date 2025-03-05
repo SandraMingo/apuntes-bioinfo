@@ -312,3 +312,121 @@ PEP y FDR son parámetros que se basan en la misma distribución de ciertos (tar
 \centering
 \includegraphics[width = 0.8\textwidth]{figs/pep-fdr.png}
 \end{figure}
+
+%05/03 - José Manuel
+\chapter{Cuantificación de proteínas}
+La cuantificación de proteínas consiste en cuantificar en distintas muestras o situaciones (caso-control, a distintos tiempos, etc). Las mediciones que hay en espectometría de masas se distinguen en dos enfoques: la cuantificación sin marcaje (label-free) y con marcaje. Dentro de las cuantificaciones label-free hay una relacionada con la cuantificación de los espectros MS2 o mediante picos. Las muestras de cada caso se analizan por separado. En el caso del marcaje, al tener más posibles muestras a analizar, se analizan todas de forma conjunta. De esta forma, se reduce el error entre diferentes tandas, que es el error sistemático del propio espectrómetro. 
+
+Las diferencias entre marcaje y label-free son las siguientes:
+\begin{table}[h]
+\centering
+\begin{tabular}{p{2.5cm}|p{6cm}p{6cm}}
+Características & Label-Free & Marcaje \\ \hline
+Uso de etiquetas & No utiliza etiquetas ni marcadores químicos & Utiliza etiquetas químicas o isotópicas. \\
+Multiplexación & No permite multiplexación directa; se analizan las muestras por separado & Permite analizar múltiples muestras simultáneamente mediante etiquetas únicas. \\
+Sensibilidad y precisión & Puede ser menos sensible y preciso, especialmente en muestras complejas & Mayor sensibilidad y precisión en la cuantificación \\
+Flexibilidad & Mayor flexibilidad, no requiere preparación previa con etiquetas & Menor flexibilidad debido al proceso de marcado. \\
+Tiempo de procesamiento & Más rápido, ya que no incluye pasos de marcado & Más lento debido a la preparación y marcado de muestras \\
+Costo & Más económico, ya que no requiere reactivos de marcaje & Más costoso debido al uso de reactivos específicos para el marcaje. \\
+Aplicaciones principales & Estudios exploratorios, análisis de grandes cohortes, biomarcadores emergentes & Análisis comparativo detallado, estudios cuantitativos precisos. \\
+Complejidad del análisis & Más simple en términos de preparación de muestras & Más complejo debido a la necesidad de etiquetar y calibrar. \\
+Ejemplos de técnicas & Espectrometría de masas label-free (DDA, DIA) & SILAC, iTRAQ, TMT.
+\end{tabular}
+\end{table}
+
+\section{Cuantificación con label-free}
+Las muestras pasan por el espectrómetro de forma separada. Hay dos MS1 por cada muestra (caso y control) con su tiempo de retención, intensidad y masa por carga. A la hora de obtener la cuantificación, se cuenta cada uno de los espectros de fragmentación. Por la cuantifiación de espectros se puede llegar a saber la cantidad de proteína que hay para las distintas muestras. Estos espectros identifican luego a un péptido, y el péptido a una proteína. 
+
+Para una cuantificación por integración de picos, se tienen en cuenta el área bajo la curva del pico de fragmentación del MS1. Ese área con respecto a la intensidad da lugar a la cuantificación del péptido en cuestión.
+Para una proteína, se suman las intensidades de los péptidos que definen a esa proteína.
+
+\subsection{Estrategia Match-Between-Runs}
+En función de la dilución, hay péptidos que pueden no ser identificados. La estrategia MBR asigna péptidos no identificados en una muestra desde otra muestra. Se ordenan los péptidos en los tiempos de retención (donde se espera que el péptido sea identificado). Esto se hace para todas las muestras. Luego se ajustan los tiempos de retención entre las muestras. De esta forma, se identifican péptidos en una muestra que falta en otra, migrando así los datos. Esta estrategia hay que cogerla con pinzas al coger falsos positivos de una muestra a otra. Por ello, solo se recomienda hacer en casos con muestras muy parecidas o donde deben aparecer las mismas proteínas. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/mbr.png}
+\end{figure}
+
+\section{Cuantificación con marcaje}
+\subsection{Cuantificación con SILAC}
+Este método está pensado para células. Tenemos los cultivos de células, y cada célula se marca con isótopos más pesados. Así, se incrementa la masa carga de las proteínas. Se mezclan los cultivos y se digiere para generar los péptidos. Al tener las muestras con y sin marcaje juntas, los espectros se diferenciarán en la masa carga. Se ve la abundancia entre cada uno de los péptidos encontrados, comparando la intensidad asociada a cada señal. 
+
+\subsection{Cuantificación con marcaje iTRAQ/TMT}
+Con iTRAQ se pueden tener hasta 4 muestras debido a los reactivos a utilizar, mientras que para TMT podemos tener hasta 18 muestras. Los reactivos son específicos para ellos. La particularidad de este marcaje consiste en digerir los péptidos y añadir unos reactivos específicos para cada uno de los canales o de las muestras. Lo novedoso es que la composición química de los reactivos hace que los péptidos tenga la misma masa para cada una de las muestras, apareciendo así con un único pico de intensidad para MS1. El pico más alto (el péptido más intenso) se vuelve a fragmentar para generar el MS2. En el MS/MS hay una región reportera que representa la cantidad del péptido en cada muestra. Para la cuantificación del péptido se mide la intensidad del ion del marcaje. Como los distintos marcajes pesan lo mismo en los péptidos o proteínas, se pueden comparar directamente los picos de intensidad al representar la diferencia en la cuantificación de las distintas muestras. 
+
+\subsection{Cuantificación con péptidos sintéticos}
+Los péptidos sintéticos se pueden utilizar como estándar interno para comparar la cuantificación de las distintas muestras. 
+
+\chapter{Identificación de proteínas mediante espectrometría de masas}
+Las proteínas se identifican a partir de sus péptidos. Una proteína puede ser identificada por uno o más péptidos. A la hora de valorar las identificaciones a nivel de proteína surgen diversos problemas para los que se han propuesto varias soluciones.
+\begin{itemize}
+\item \textbf{Redundancia peptídica:} grupos de proteínas.
+\item \textbf{Cálculo de la FDR a nivel de proteína usando la estrategia target-decoy:} el cálculo de la FDR de proteína se puede calcular a partir de sus péptidos o a partir de la puntuación de la proteína.
+\end{itemize}
+
+\section{Redundancia peptídica}
+Los espectros MS/MS identifican un péptido, pero la secuencia del péptido puede pertenecer a más de una proteína posible. Se dice que los péptidos compartidos entre varias proteínas están "degenerados", y presentan un desafío ya que no puede saberse cuál de las proteínas a las que pertenece está siendo identificada. Esto suele ocurrir con mayor frecuencia en proteínas homólogas, variantes de empalme (alternative splicing) o debido a entradas redundantes en la base de datos de secuencias de proteínas. Los péptidos redundantes son más frecuentes en las búsquedas que utilizan bases de datos grandes.
+
+Los principales enfoques para solucionar la redundancia peptídica son:
+\begin{itemize}
+\item \textbf{Péptidos proteotípicos:} se basa en usar solo péptidos cuya secuencia sea exclusiva de una única proteína.
+\item \textbf{Occam's razor}: se basa en el principio de la "navaja de Occam", que sostiene que la mejor explicación de un fenómeno es la explicación más sencilla. Se busca la combinación mínima de proteínas que explique los péptidos observados.
+\item \textbf{Grupos proteicos}: En vez de identificar proteínas individuales se identifican "grupos de proteínas" que comparten péptidos, evitando así la eliminación de proteínas válidas pero sin inflar el recuento de proteínas. Existen varias herramientas (PeptideClassifier, IsoformResolver, PAnalyzer) que difieren en la forma de clasificar y agrupar.
+\item \textbf{Modelos de probabilidad a nivel de proteína (ProteinProphet)}: El modelo calcula la probabilidad de cada proteína a partir de las PEP de sus péptidos. Los péptidos se reparten entre las proteínas de acuerdo a la probabilidad de cada una, y se vuelve a calcular la probabilidad de cada proteína. El algoritmo itera hasta que los péptidos quedan "repartidos" entre las proteínas por un factor de peso. Por tanto este modelo asume que cada péptido puede pertenecer a más de una proteína.
+\end{itemize}
+
+\subsection{Agrupación de péptidos en proteínas: Grupos de proteínas}
+De acuerdo a los péptidos compartidos, las proteínas pueden clasificarse de muchas maneras. Las diferentes entradas de la base de datos de secuencias podrían contarse como identificaciones de proteínas separadas cuando, de hecho, todas comparten el mismo conjunto de péptidos y, por lo tanto, son indistinguibles. En la mayoría de los casos, estas redundancias no solo inflan el número total de proteínas informadas como identificadas, sino que también pueden conducir a una interpretación biológica incorrecta de los datos.
+
+El problema se complica aún más cuando no se realiza un análisis estadístico para determinar la validez de las identificaciones de péptidos y proteínas. Por lo tanto, existe la necesidad de desarrollar una nomenclatura común y un conjunto de pautas para asignar péptidos a proteínas y para interpretar los conjuntos de datos de identificación de proteínas resultantes.
+
+\subsection{Agrupamiento de proteínas en PAnalyzer}
+Considera tres tipos de péptidos:
+\begin{itemize}
+\item \textbf{Únicos:} asignables a una única proteína
+\item \textbf{Discriminantes:} compartidos por proteínas sin péptidos únicos
+\item \textbf{No discriminantes:} compartidos por proteínas con péptidos únicos o discriminantes
+\end{itemize}
+
+En función de estos péptidos agrupa las proteínas según cuatro tipos de evidencia:
+\begin{itemize}
+\item \textbf{Concluyentes:} proteínas con algún péptido único.
+\item \textbf{Indistinguibles:} proteínas con péptidos discriminantes sólo compartidos por ellas y que también comparten el resto de péptidos.
+\item \textbf{Grupo ambiguo:} proteínas que comparten péptidos discriminantes (y no son indistinguibles).
+\item \textbf{No concluyentes:} proteína que sólo tiene péptidos no discriminantes.
+\end{itemize}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/panalyzer.png}
+\end{figure}
+
+Las \textbf{proteínas indistinguibles} mayoritariamente se corresponden con isoformas y su grupo con el gen correspondiente. En este caso se podría dar evidencia concluyente a nivel de gen pero no a nivel de isoforma. En los \textbf{grupos ambiguos} algunas proteínas tienen que estar presentes, pero no sabemos cuáles. La explicación más sencilla (Occam) no tiene por qué ser la real. Las \textbf{proteínas no concluyentes} no tienen por qué estar presentes para explicar los péptidos observados, no deberían "contar".
+
+El algoritmo empleado por PAnalyzer comienza marcando los péptidos únicos y sus correspondientes proteínas como concluyentes. Los péptidos compartidos presentes en proteínas concluyentes serán no discriminantes. El resto de péptidos se recorren formando grupos de proteínas temporales para decidir cuáles son discriminantes y cuáles no. Una vez marcados todos los péptidos se forman los grupos de proteínas definitivos.
+
+\section{Cálculo de la FDR de proteína a partir de sus péptidos}
+\subsection{Cálculo de la FDR a nivel de proteína usando la estrategia target-decoy}
+Igual que los péptidos, la identificación de proteínas puede validarse calculando la FDR a nivel de proteína a partir de la estrategia target-decoy. Cada proteína puede identificarse mediante varios péptidos. La estrategia más sencilla para calcular la FDR a nivel de proteína consiste en llevar a cabo la identificación a nivel de péptido:
+\begin{itemize}
+\item Se calcula la FDR a nivel de péptido usando la estrategia target-decoy
+\item Se seleccionan los péptidos target identificados correctamente a la FDR considerada
+\item Se seleccionan también los péptidos decoy por encima del umbral de puntuación
+\item Los péptidos target se usan para identificar proteínas target
+\item Los péptidos decoy se usan para identificar proteínas decoy
+\item Se calcula la FDR a nivel de proteína de la misma manera que a nivel de péptido
+\end{itemize}
+
+$$FDRprot = \frac{\text{Número de proteínas Decoy}}{\text{Número de proteínas Target}}$$
+
+Esta estrategia tiene el problema del hinchamiento de la FDR a nivel de proteína (aún así sigue siendo muy usada hoy en día), que es filtrar los péptidos target y decoy usando la FDR a nivel de péptido, a partir de ellos identificar proteínas target y decoy y a partir de ellas calcular la FDR a nivel de proteína.
+
+\subsection{Hinchamiento de la FDR a nivel de proteína}
+Las identificaciones de péptidos target tienden a concentrarse en las proteínas presentes en la muestra (proteínas reales), mientras que las identificaciones de péptidos decoy se distribuyen aleatoriamente entre las proteínas de la base de datos. Por tanto, la proporción entre el número de péptidos y el número de proteínas es mayor para los péptidos "Target" que para los péptidos "Decoy". Por lo tanto, la FDR a nivel de proteína es siempre mayor que a nivel de péptido. El problema se agudiza en experimentos donde se identifican números altos de proteínas. Este problema se denomina hinchamiento de la FDR a nivel de proteína (protein FDR buildup problem). Para resolver este problema existen varias soluciones:
+\begin{itemize}
+\item Bajar la FDR a nivel de péptido hasta conseguir una FDR aceptable a nivel de proteína. Este método es muy fiable, aunque disminuye mucho la sensibilidad de identificación. Se utiliza en experimentos donde la fiabilidad de la identificación es muy importante
+\item La estrategia MAYU
+\item Utilizar puntuaciones a nivel de proteína
+\end{itemize}
+
