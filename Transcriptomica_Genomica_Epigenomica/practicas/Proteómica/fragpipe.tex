@@ -153,4 +153,94 @@ Una vez finalizado el análisis, los resultados de identificación con los valor
 \item combined\_protein.tsv, contienen proteínas filtradas por FDR de todos los grupos experimentales, donde cada fila corresponde a un grupo de proteínas.
 \end{itemize}
 
+\section{Análisis y visualización usando FragPipe-Analyst con TMT: Integrated Proteogenomic Characterization of Clear Cell Renal Cell Carcinoma}
+Para esta práctica usaremos los resultados de proteómica cuantitativa generados por FragPipe con TMT.
+FragPipe-Analyst es una aplicación web interactiva y fácil de usar desarrollada para realizar análisis de expresión diferencial con «un solo clic» y para visualizar conjuntos de datos proteómicos cuantitativos analizados mediante la plataforma computacional FragPipe. Es compatible con los flujos de trabajo de cuantificación LFQ-MBR, TMT y DIA de FragPipe. La página es \href{https://fragpipe-analyst.org/}{https://fragpipe-analyst.org/}.
+
+Se utilizaron células renales cancerígenas y se realizó un análisis exploratorio de distintas ómicas. Se sacaron datos con TMT10 DDA y DIA. Los ficheros de entrada son dos ficheros tsv con la abundancia de las proteínas y la anotación del experimento. En FragPipe-Analyst seleccionamos el tipo de dato, que para TMT es proteína o gen. Se debe subir el resultado de FragPipe a nivel de proteínas generado por TMT-Integrator, que es un fichero TSV. Se generan dos conjuntos de resultados de cuantificación de etiquetado isobárico: 
+\begin{itemize}
+\item Los archivos que contienen "ratio" en el nombre, reportan la relación o proporción con respecto al canal de referencia, si se ha especificado, o con respecto a la abundancia promedio (enfoque de referencia virtual). 
+\item Los archivos que contienen “abundance” reportan las intensidades brutas, la abundancia de iones; es decir, el conteo de iones para cada canal de TMT en una muestra.
+\end{itemize}
+Hay ratios y abundancias para: gene, protein, peptide, multi-site y single-site. El TMT-Integrator no solo calcula las intensidades y ratios, sino que también aplica normalización al nivel indicado para corregir variaciones sistemáticas y mejorar la comparabilidad entre muestras. Existen dos métodos principales de
+normalización: Median Centering (Centrado en la Mediana) o Global Normalization (Normalización Global). 
+
+[abundance/ratio]protein[normalization].tsv contiene información de cuantificación isobárica resumida desde las tablas psm.tsv al nivel de proteínas por TMT-Integrator.
+\begin{itemize}
+\item Index, nombre de la proteína (encabezado de la secuencia FASTA).
+\item NumberPSM, coincidencias totales de espectro-péptido que se asignan al gen y se utilizan en la cuantificación.
+\item ProteinID, identificador de proteína.
+\item MaxPepProb, la mayor probabilidad de PeptideProphet de los PSMs que se asignan a la proteína y se utilizan en la cuantificación.
+\item ReferenceIntensity, se utiliza la abundancia del canal de referencia real si se ha proporcionado una, de lo contrario, es la abundancia promedio de los canales. Los valores están escalados en log2, utilizando la intensidad mínima global de referencia para imputar los valores faltantes. 
+\item  [nombre de muestra/canal], abundancia/ratio normalizada y transformada en log2 para el canal de ion reportero dado, resumida al nivel de proteínas.
+\end{itemize}
+
+El archivo experimental\_annotation.tsv debe contener las siguientes columnas: plex, channel, sample, replicate, condition, sample name. Es generado automáticamente por FragPipe (pero es recomendable revisarlo y anotar las columnas de réplica y condición, antes de usarlo).
+
+\subsection{Parámetros del FragPipe-Analyst}
+\subsubsection{Imputación de valores faltantes ("missing")}
+En FragPipe-Analyst se proporcionan múltiples opciones de imputación de valores "missing":
+\begin{itemize}
+\item \textbf{Perseus-style:} Método se basa en el procedimiento de imputación implementado en el software Perseus, desarrollado por el equipo de MaxQuant. Los valores faltantes se reemplazan por números aleatorios generados a partir de una distribución normal con un desplazamiento de 1.8 desviaciones estándar hacia abajo y un ancho de 0.3 en cada muestra.
+\item \textbf{knn (k-nearest neighbors):} Los valores faltantes se reemplazan mediante una técnica de promediado con los vecinos más cercanos (nearest neighbors).
+\item \textbf{MLE (Maximum Likelihood Estimation):} Método basado en máxima verosimilitud utilizando el algoritmo Expectation-Maximization (EM).
+\item \textbf{min}: Los valores faltantes se reemplazan por el valor más pequeño que no esté ausente en los datos.
+\item \textbf{zero}: Los valores faltantes se reemplazan por 0
+\end{itemize}
+
+Por defecto, el método “Perseus-style” se aplica a datos de LFQ (Label-Free Quantification) tanto
+en DDA como en DIA. En el caso de datos TMT (Tandem Mass Tag), no se realiza imputación.
+
+\subsubsection{Normalización}
+En FragPipe-Analyst se proporcionan múltiples opciones para normalizar:
+\begin{itemize}
+\item \textbf{Normalización de estabilización de varianza (Variance-Stabilizing Normalization, VSN):} Está disponible solo para datos LFQ obtenidos mediante DDA y DIA. 
+\item \textbf{Centrado en la mediana (Median Centered Normalization):} Los valores de cuantificación de cada muestra son ajustados restando la mediana de cada muestra individual
+\end{itemize}
+
+Por defecto, los datos de entrada no son normalizados, ya que se asume que ya han sido
+normalizados por las herramientas de cuantificación de FragPipe
+
+\subsubsection{Análisis de expresión diferencial}
+Internamente, usa el paquete limma de Bioconductor para realizar el análisis DE en cada proteína. El ajuste por múltiples pruebas (cálculo del p-value ajustado) se realiza con las opciones especificadas por el usuario (por defecto con "BH"). Los tipos de tasa de descubrimientos falsos (FDR) son mtodo de Benjamin Hochberg (BH) y basado en área local y de cola (por fdrtools). También se tienen en cuenta los umbrales definidos por el usuario para filtrar las proteínas diferencialmente expresadas de manera significativa.
+
+\subsection{Resultados de FragPipe-Analyst}
+\subsubsection{Tabla de resultados}
+La tabla contiene el nombre de genes, ID de proteínas, logarítmico del cambio (para cada comparación por pares), p-valores ajustados aplicando correcciones FDR, p-valores, valores booleanos para significancia y la intensidad media de la proteína transformada logarítmicamente en cada muestra.
+
+\subsubsection{Gráficos de resultados}
+El \textbf{Volcano plot} es la representación gráfica entre el logaritmo del cambio (eje x) frente al -log10 del p-valor ajustado (eje y). Las proteínas candidatas interesantes se ubican en los cuadrantes superiores izquierdo y derecho. El usuario puede mostrar o no los nombres de proteínas o usar el "p-value ajustado" como el eje y. El usuario puede resaltar proteínas de su interés (coloreadas) seleccionando la fila desde la "Results Table". El gráfico se puede descargar utilizando el botón "Save Highlighted Plot".
+
+El \textbf{"heatmap"} ofrece una visión general de todas las proteínas significativas/diferencialmente expresadas (filas) en todas las muestras (columnas). Esta visualización permite identificar tendencias generales. El usuario también tiene la opción de descargar información de proteínas de grupos individuales.
+
+En cuanto al \textbf{"Feature plot"}, al seleccionar una proteína/gen de la "Results Table", se mostrará un gráfico de caja o un gráfico de violín que compara la abundancia de esas proteínas entre las condiciones.
+
+\subsubsection{Gráficos de control de calidad}
+El \textbf{Análisis de Componentes Principales (PCA)} es una técnica utilizada para resaltar la variación y descubrir patrones fuertes en un conjunto de datos. PC1, que es una combinación lineal de todas las características (eje x), y explica la mayor parte de la variación de los datos, seguido por el resto de los PCs.
+
+El \textbf{sample correlation plot} es un gráfico que muestra una matriz de correlación como un mapa de calor para visualizar los coeficientes de correlación de Pearson entre las diferentes muestras.
+
+\textbf{Sample CVs plots} es un gráfico que representa la distribución del coeficiente de variación a nivel de proteínas para cada condición. Cada gráfico contiene una línea vertical que representa el porcentaje de CV mediano dentro de esa condición.
+
+\textbf{Feature Numbers} es un gráfico de barras que representa el número de proteínas identificadas y cuantificadas en cada TMT.
+
+\textbf{Missing values Heatmap} sirve para explorar el patrón de valores missing en los datos, indicando si los valores están ausentes o no. Solo se visualizan las proteínas con al menos un valor perdido.
+
+El \textbf{density plot} muestra la distribución de las abundancias de proteínas en los datos originales, en los datos filtrados y en el conjunto de proteínas en las que se realizó la imputación.
+
+\subsubsection{Análisis de enriquecimiento}
+\textbf{Pathway enrichment} selecciona la bases de datos de rutas metabólicas: Hallmark, KEGG, WikiPathways y Reactome, junto con la dirección de regulación (regulado al alza o regulado a la baja). La lista de genes diferencialmente expresados (DE) se compara con conjuntos de genes conocidos para identificar posibles rutas metabólicas involucradas. Se realiza una prueba hipergeométrica para evaluar el enriquecimiento de los genes en las rutas seleccionadas.
+
+\textbf{Gene Ontology} utiliza el mismo algoritmo que en la parte de rutas metabólicas. Las opciones de bases de datos de GO son: Función Molecular/Componente Celular/Proceso Biológico; y la dirección.
+
+\subsubsection{Descarga de datos}
+Se pueden descargar distintas tablas en diversos formatos:
+\begin{itemize}
+\item \textbf{Matriz de datos sin imputar:} Intensidades originales de las proteínas antes de la imputación en cada muestra.
+\item \textbf{Matriz de datos imputados:} Intensidades de proteínas después de aplicar el método de imputación seleccionado.
+\item \textbf{Resultados completos:} Tabla combinada con todos los datos anteriores, es decir, con y sin información de imputación, junto con los cambios de pliegue y p-values.
+\end{itemize}
+
+Además, se puede descargar un informe en PDF con algunas estadísticas y gráficos.
+
 \end{document}
