@@ -307,4 +307,52 @@ La segunda secuencia se aleatoriza 100 veces, permutando aleatoriamente («Baraj
 \includegraphics[width = 0.6\textwidth]{figs/alignment-ex.png}
 \end{figure}
 
-%\subsubsection{BLAST}
+%06/03 - Ana
+\subsubsection{BLAST}
+El programa Basic Local Alignment Search Tool (BLAST) se utiliza ampliamente para alinear secuencias. El concepto básico es que:
+\begin{itemize}
+\item cuanto mayor sea el número de segmentos similares entre dos secuencias, y
+\item cuanto mayor sea la longitud de los segmentos similares, menos diferentes son las secuencias y, por tanto, más relacionadas genéticamente (homólogas) es probable que estén
+\end{itemize}
+
+BLAST no garantiza el alineamiento óptimo al ser un método heurístico. Tiene un preprocesamiento en el que se crea una tabla de búsqueda de todos los k-meros. Los pasos son:
+\begin{enumerate}
+\item \textbf{Identificar semillas:} encuentra todos los substrings de longitud k en la secuencia de búsqueda que también está en la base de datos mediante la tabla de búsqueda.
+\item \textbf{Extensión de semilla:} cada semilla se extiende hacia ambos lados hasta que la puntuación de alineamiento caiga por debajo de un umbral. Hay dos formas de extensión: sin huecos (solo se extiende con match o missmatch) o con huecos (se permite extender con match, missmatch o un número limitado de gaps).
+\item \textbf{Registrar} todos los alineamientos locales que superen un determinado umbral estadístico. 
+\item \textbf{Clasificar y ordenar} todos los alineamientos locales en orden ascendente del E-valor.
+\end{enumerate}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/blast.png}
+\end{figure}
+
+Si se tratara simplemente de comparar dos secuencias cualesquiera para ver si son homólogas, Smith-Waterman sería el método a elegir. FASTA y BLAST se utilizan en búsquedas de homólogos en grandes bases de datos: «Tengo una proteína/secuencia y quiero preguntar si está relacionada con algo de lo que se sepa algo». BLAST y FASTA son tan rápidos en parte porque empiezan buscando «palabras» cortas que coincidan exactamente y construyen un alineamiento más largo a partir de estas palabras. Como contrapartida a la ventaja de la velocidad, es posible que se pasen por alto algunas homologías.
+
+\subsection{Alineamiento múltiple de secuencias (MSA)}
+Hemos visto cómo comparar una secuencia con otra (alineamiento de pares) y con muchas otras en una base de datos (muchos pares de secuencia, es decir, BLAST). Ahora veremos cómo comparar múltiples secuencias simultáneamente, no de dos en dos. El alineamiento múltiple ilustra las relaciones entre dos o más secuencias.
+
+Un alineamiento múltiple es una colección de tres o más secuencias de aminoácidos o nucleótidos parcial o completamente alineadas. El objetivo del análisis de secuencias múltiples es colocar en la misma columna las posiciones homólogas de secuencias homólogas.
+
+\subsubsection{Alineamiento múltiple como generalización del alineamiento por pares}
+En cuanto a la alineación por pares, el objetivo es encontrar el alineamiento que maximice alguna función de puntuación. Un alineamiento de este tipo se puntúa mediante la puntuación de la suma de pares (SP) o mediante la puntuación basada en la entropía (mínima).
+
+\paragraph{Puntuación de suma de pares (SP)}
+Considera todos los pares de letras de cada columna y suma las puntuaciones utilizando las matrices PAM o BLOSUM como matrices de puntuación. Esto no es un sistema de puntuación perfecto, ya que no hay ninguna justificación teórica biológica para la puntuación. 
+
+\paragraph{Puntuación basada en entropía}
+La entropía se calcula como el sumatorio negativo de la probabilidad de las letras con el logaritmo en base 2 de la probabilidad. Como la entropía es el desorden, la mejor puntuación sería la entropía más baja.
+
+Estas puntuaciones se basan en las posiciones del alineamiento, y posteriormente se puede sumar la puntuación de todas las columnas para sacar la puntuación del alineamiento completo. 
+
+Hay distintos tipos de alineamiento múltiple de secuencia:
+\begin{itemize}
+\item Programación dinámica: se puede aplicar al alineamiento de cualquier número de secuencias. Computa un alineamiento óptimo para una función de puntuación. No obstante, tiene un tiempo de computación grande de $O(n^k)$, siendo n la longitud de la secuencia y k el número de secuencias que se quieren alinear.
+\item Métodos heurísticos:
+\begin{itemize}
+\item Métodos progresivos: CLUSTAL W, T-Coffee
+\item Métodos iterativos: Muscle, MAFFT
+\item Modelos ocultos de Markov: CLUSTAL Omega
+\end{itemize}
+\end{itemize}
