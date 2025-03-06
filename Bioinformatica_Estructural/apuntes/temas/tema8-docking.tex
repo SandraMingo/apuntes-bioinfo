@@ -1,74 +1,114 @@
 %05/03 - Myriam
 \part{Docking y dinámica molecular}
 \chapter{Docking molecular}
-Las áreas en las que se desarrolla el docking es el descubrimiento de fármacos y la química de productos naturales. Está el área de la quimioinformática, virtual screening y las técnicas QSAR que permiten predecir las propiedades físicas y químicas de moléculas. 
+El docking molecular es una técnica computacional con aplicaciones clave en el descubrimiento de fármacos y la química de productos naturales. Esta técnica se complementa con áreas como la quimioinformática, el cribado virtual (virtual screening) y los métodos QSAR (Quantitative Structure-Activity Relationship), que permiten predecir propiedades físicas y químicas de moléculas.
 
-Hay cuatro bloques donde se aplica la modelización moléculas en el desarrollo de fármacos:
+El docking molecular se aplica en cuatro bloques principales dentro del desarrollo de fármacos:
 \begin{itemize}
-\item Combinatorial Chemistry HTS: no se tiene conocimiento de la estructura de la proteína ni del ligando. Se crean bibliotecas y modelos 3D de la proteína.
-\item Diseño de novo: se conoce la estructura de la proteína, pero no del ligando. Conocer la cavidad en la que se ensamble el ligando permite conocer los aminoácidos del bolsillo de interacción y diseñar así ligandos.
-\item Diseño basado en la estructura del receptor: se concoe tanto la estructura de la proteína como de los ligandos. Se pretende conocer la interacción entre ambos.
-\item Similitud de farmacóforo: se conoce la estructura de los ligandos, pero no de la proteína. El farmacóforo es el modelo que se compara con ligandos similares, enfrentándolo con bases de datos preexistentes.
+\item \textbf{Química Combinatoria y High-Throughput Screening (HTS):} no se conoce la estructura de la proteína ni del ligando. Se generan bibliotecas de compuestos y modelos 3D de la proteína para identificar posibles ligandos.
+
+\item \textbf{Diseño \textit{de novo}}: se conoce la estructura de la proteína, pero no la del ligando. Se estudia la cavidad de unión para identificar los aminoácidos clave y diseñar ligandos específicos. 
+
+\item \textbf{Diseño basado en la estructura del receptor}: se conocen tanto la estructura de la proteína como la de los ligandos. El objetivo es estudiar la interacción entre ambos para optimizar la unión.
+
+\item \textbf{Similitud del farmacóforo}: se conoce la estructura de los ligandos, pero no la de la proteína. Se utiliza un modelo de farmacóforo (patrón de características moleculares) para comparar con ligandos similares en bases de datos preexistentes.
 \end{itemize}
 
-Las técnicas experimentales principales para obtener la estructura de las proteínas son purificación de proteínas, cristalografía y resonancia magnética nuclear. Muchas proteínas están vinculadas a determinadas enfermedades. La idea es diseñar un fármaco que, al inhibir una proteína, se desencadena otra acción que puede ser beneficiosa para el tratamiento de la patología. 
+Para realizar docking molecular, es crucial conocer la estructura de las proteínas. Las técnicas experimentales más utilizadas son:
+\begin{itemize}
+\item \textbf{Purificación de proteínas}: Aislamiento de la proteína de interés.
+\item \textbf{Cristalografía de rayos X}: Determina la estructura atómica de la proteína en estado cristalino.
+\item \textbf{Resonancia Magnética Nuclear (RMN):} Útil para proteínas en solución.
+\end{itemize}
 
-\section{Screening and repositioning}
-Lo principal es intentar crear una quimioteca de compuestos que se enfrenta a las proteínas de interés. Hay muchas formas de lograrlo, siendo una de ellas las predicciones ADMET. A día de hoy hay muchas herramientas ADMET para ver compuestos y si interesan o no para el estudio concreto. Poco a poco se crean bases de datos de interés para enfrentar a los receptores. El siguiente bloque es el docking molecular y la dinámica molecular, y por último los métodos de Poison-Bodman. El docking da una idea más global, pero este método hace una medición muy exacta de todas las interacciones de las proteínas con los ligandos. Esto se pasa a un programa de visualización y se sacan los compuestos que son idóneos para el tratamiento, pasando así a los experimentos in vitro.
+Muchas proteínas están asociadas a enfermedades, por lo que el diseño de fármacos que las inhiban o modulen puede ser clave para el tratamiento de patologías.
+
+\section{Screening y reposicionamiento de fármacos}
+El \textbf{cribado virtual} (virtual screening) es una estrategia fundamental en el descubrimiento de fármacos. Consiste en crear una \textbf{quimioteca} (colección de compuestos químicos) que se evalúa frente a proteínas de interés. Las herramientas \textbf{ADMET} (Absorción, Distribución, Metabolismo, Excreción y Toxicidad) permiten predecir si un compuesto es adecuado para estudios posteriores.
+El proceso general incluye:
+\begin{enumerate}
+\item \textbf{Cribado virtual:} identificación de compuestos candidatos.
+\item \textbf{Docking molecular:} estudio de la interacción entre los compuestos y la proteína.
+\item \textbf{Dinámica molecular:} simulación del comportamiento del complejo proteína-ligando en el tiempo.
+\item \textbf{Métodos de Poisson-Boltzmann:} análisis detallado de las interacciones electrostáticas.
+\end{enumerate}
+Finalmente, los compuestos más prometedores se validan experimentalmente mediante ensayos \textit{in vitro}.
 
 \section{Docking molecular}
-El docking es una técnica computaconal que permite conocer la interacción entre una proteína de interés y un ligando. Por ejemplo, en enfermedades neurodegenerativas, una proteína importante es Orai1. Se debe saber si hay un ligando que permita activar la función de la proteína y generar una respuesta biológica. Antes de gastar un dinero en un fármaco que pueda no funcionar, primero se mira computacionalmente si se puede producir actividad en cuanto a interacción. Se conocen las conformaciones del ligando en la cavidad proteica. Hay que conocer previamente el sitio de interacción de la proteína y dónde se quiere ensamblar el ligando. La herramienta quizás permite descubrir otros sitios de interacción que no se conocían. 
+El docking molecular es una técnica computacional que predice la interacción entre una proteína y un ligando. Por ejemplo, en enfermedades neurodegenerativas, se estudian proteínas como Orai1 para identificar ligandos que modulen su actividad.
 
+Se debe saber si hay un ligando que permita activar la función de la proteína y generar una respuesta biológica. Antes de gastar un dinero en un fármaco que puede no funcionar, primero se mira computacionalmente si se puede producir actividad en cuanto a interacción. Se conocen las conformaciones del ligando en la cavidad proteica, sabiendo previamente el sitio de interacción de la proteína y dónde se quiere ensamblar el ligando. La herramienta quizás permite descubrir otros sitios de interacción que no se conocían. 
+
+\subsection{Tipos de docking}
 Hay dos tipos de interacción o acoplamiento:
 \begin{itemize}
-\item \textbf{Métodos basados en ligando:} se conoce la estructura del ligando, pero no se sabe a qué proteína se puede unir. Para ello, se enfrenta y se ve con qué proteína interacciona. Esto es importante en el high-throughput screening.
-\item \textbf{Métodos basados en estructuras}: estos se usan principalmente para identificar las interacciones ligando-receptor, ya que se conoce la estructura de la proteína
+\item \textbf{Métodos basados en ligando:} se conoce la estructura del ligando, pero no se sabe a qué proteína se puede unir. Para ello, se enfrenta y se ve con qué proteína interacciona. Se utiliza en cribado de alto rendimiento (high-throughput screening).
+\item \textbf{Métodos basados en estructuras}: estos se usan principalmente para identificar las interacciones ligando-receptor, ya que se conoce la estructura de la proteína.
 \end{itemize}
 
-El docking se basa en el modelo primario de acoplamiento de llave-cerradura. Se establecía que la proteína y el ligando eran entes rígidos e interesaba conocer la interacción. No obstante, las técnicas permitieron desarrollar el modelo de ajuste inducido, en el cual se veía que las estructuras eran más flexibles y dinámicas, cambiando de conformación para adaptarse al sustrato. 
+El docking puede considerar dos modelos. El primero es el \textbf{modelo de llave-cerradura de Fisher}, el cual considera la proteína y el ligando como estructuras rígidas. Al no poder cambiar su estructura, el objetivo es únicamente conocer si hay interacción entre ambos. El \textbf{modelo de ajuste inducido} tiene en cuenta la flexibilidad de ambas moléculas, permitiendo cambios conformacionales.
 
-\subsection{Docking rígido}
-Aunque el modelo de Fisher sea un modelo anticuado, hay dockings donde se ponen la proteína y el ligando rígidos para ver si hay interacción entre ambos. El receptor rota y se traslada al ligando, pero no hay movimiento durante el cálculo. Permite simplificar ensayos para descartar rápidamente un compuesto.
-
-\subsection{Docking semiflexible}
-El ligando es flexible, pero la proteína no. La proteína se traslada y rota, pero se añaden los ángulos diedros. Uno de los softwares que permiten esto es Autodock. Este docking es bastante exhaustivo y permite concoer la conformación ideal del ligando. Es el que más se usa al poder usarse a nivel de usuario.
-
-\subsection{Docking flexible}
-Tanto la proteína como el ligando son flexibles. La precisión es muy buena, pero el tiempo de cálculo es muy amplio y es necesario ejecutarlo en un clúster. Al seleccionar la zona de interacción, estos residuos son los que se definen como flexibles, no es toda la proteína. 
+Finalmente, el docking se puede dividir en tres tipos según la flexibilidad:
+\begin{itemize}
+\item \textbf{Docking rígido:} tanto la proteína como el ligando se consideran rígidos, siguiendo el modelo de Fisher. Esto es útil para descartar compuestos rápidamente en caso de no haber interacción. El receptor rota y se traslada al ligando, pero no hay movimiento dentro de las estructuras durante el cálculo.
+\item \textbf{Docking semiflexible:} el ligando es flexible, pero la proteína es rígida. Herramientas como AutoDock permiten este tipo de análisis. Este docking es bastante exhaustivo y permite conocer la conformación ideal del ligando. Es el que más se usa al poder usarse a nivel de usuario.
+\item \textbf{Docking flexible:} tanto la proteína como el ligando son flexibles. La precisión es muy buena, pero el tiempo de cálculo es muy amplio y es necesario ejecutarlo en un clúster. Al seleccionar la zona de interacción, estos residuos son los que se definen como flexibles, no es toda la proteína. 
+\end{itemize}
 
 \subsection{Información estructural del sitio activo}
-Hay dos tipos de enfoque del docking molecular: acoplamiento a ciegas donde no se sabe si el ligando interacciona con la proteína. Programas como DiscoveryStudio calcula las cavidades que pueden ser de interés para poder hacer un estudio más centrado, ya que si se toma toda la proteína de golpe, los cálculos pueden saturarse por el gran tamaño. El acoplamiento específico se conoce el sitio y se centra en la cavidad el ligando. 
+Hay dos tipos de enfoque del docking molecular: 
+\begin{itemize}
+\item \textbf{Acoplamiento a ciegas:} no se conoce el sitio de unión o si hay interacción entre el ligando y la proteína. Programas como Discovery Studio identifican cavidades potenciales para realizar estudios más focalizados.
+\item \textbf{Acoplamiento específico:} se conoce el sitio de unión y se centra el estudio en esa región.
+\end{itemize}
 
 \section{Metodologías del docking}
-Están los métodos sistemáticos y estocásticos. Autodock trabaja con los sistemáticos, pero con las nuevas versiones se está moviendo al estocástico. En el método sistemático, se explora la conformación del ligando, moviéndola hasta que encaja en la proteína. El movimiento se hace en todos los ángulos de rotación, siendo así menos específico. El método estocástico es al revés: las conformaciones se mueven de forma aleatoria para encontrar mínimos locales y globales. La metodología de estos softwares se suelen usar con espacios explorables grandes, mientras que los sistemáticos son más exhaustivos y es mejor utilizar con estructuras pequeñas. 
+Existen dos enfoques principales en docking: los métodos sistemáticos y los estocásticos. Autodock emplea principalmente métodos sistemáticos, aunque en sus versiones más recientes ha incorporado enfoques estocásticos.
 
-La formación de un complejo viene por la unión de proteína con ligando. Es un proceso termodinámico que tiende a un equilibrio, es decir, se consigue una energía de unión libre estable, muy baja. EL ligando ha conseguido estar a gusto en la cavidad proteica cuando se consigue esto. Para calcular las diferentes energías de unión se utilizan distintos algoritmos matemáticos.
+En los \textbf{métodos sistemáticos}, se exploran todas las conformaciones posibles del ligando, ajustándolo hasta que encaje en la proteína. Este proceso involucra la rotación en todos los ángulos posibles, lo que lo hace menos eficiente para sistemas grandes. Por otro lado, los \textbf{métodos estocásticos} funcionan de manera opuesta: generan conformaciones aleatorias del ligando en la proteína para encontrar mínimos locales y globales de energía. Estos métodos son más adecuados para espacios explorables grandes, mientras que los sistemáticos resultan más exhaustivos y se recomiendan para estructuras pequeñas.
+
+La formación de un complejo proteína-ligando es un proceso termodinámico que tiende hacia un equilibrio, alcanzando una energía de unión libre estable y baja. Cuando esto ocurre, el ligando se encuentra en una configuración energéticamente favorable dentro de la cavidad proteica. Para estimar estas energías de unión, se emplean diversos algoritmos matemáticos.
 
 \subsection{Algoritmo de búsqueda}
-En el algoritmo de búsqueda exhaustiva, el programa busca todas las conformaciones posibles de ligando (que puede ser otra proteína) y proteína y busca los rotámeros ideales.
+Los algoritmos de búsqueda utilizados en docking incluyen:
 
-Algoritmo por fragmentación: corta el ligando en distintos fragmentos y los va insertando en la cavidad proteica. Cuando uno está a gusto, añade el siguiente. Así, se van añadiendo a cachos hasta encontrar la estructura ideal.
+\begin{itemize}
+\item \textbf{Búsqueda exhaustiva}: Explora todas las conformaciones posibles del ligando (que puede ser otra proteína) y la proteína receptora, evaluando los rotámeros más favorables.
 
-El algoritmo de Montecarlo (MC) es un método estocástico que cambia aleatoriamente los grados de liebrtad del sistema. La proteína y el ligando se van a unir, y el programa establece la energía de interacción. Si encuentra una interacción con una energía de afinidad mejor, el programa para. Si la siguiente no es muy buena, el programa vuelve a iniciar el cálculo. 
+\item \textbf{Algoritmo por fragmentación}: Divide el ligando en fragmentos e inserta cada uno en la cavidad proteica de manera secuencial. Cada fragmento se optimiza antes de añadir el siguiente, construyendo progresivamente la estructura final.
 
-El algoritmo genético está basado en principios de evolución y selección natural para explorar el espacio. Los grados de libertad del ligando van a ser genes, y la conformación final son cromosomas. El programa "muta un gen", lo que equivale a cambiar la conformación. Si la mutación que se obtiene es positiva, el gen sobrevive, mientras que si es negativa, se deshecha. Todo esto es de forma metafórica; realmente no se evalúan genes.
+\item \textbf{Monte Carlo (MC)}: Es un método estocástico que modifica aleatoriamente los grados de libertad del sistema. Evalúa la energía de interacción entre el ligando y la proteína, y si se encuentra una configuración con menor energía, se acepta. Si la energía no mejora, el programa reinicia el proceso.
+
+\item \textbf{Algoritmo genético}: Basado en principios de evolución y selección natural, trata los grados de libertad del ligando como genes y las conformaciones finales como cromosomas. El algoritmo introduce mutaciones (cambios de conformación) y selecciona aquellas que mejoran la afinidad de unión, descartando las menos favorables.
+\end{itemize}
 
 A modo de resumen hasta ahora: tenemos la proteína y el ligando y se forma el complejo. Hay que elegir el programa más adecuado para lo que se quiere encontrar. Una vez que tenemos el cálculo hecho, hay que buscar la función de puntuación que calcula la energía de afinidad obtenida.
 
 \section{Puntuación}
-Docking genera millones de estructuras, por lo que es importante puntuarlas. El propio programa debe estimar las conformaciones correctas e incorrectas. Las funciones de puntuación no calculan la energía de afinidad, si no que es un dato estimado. Estas funciones están basadas en:
+El docking genera millones de estructuras potenciales, por lo que es crucial clasificarlas según su calidad. Para ello, los programas emplean funciones de \textbf{puntuación}, que estiman, pero no calculan directamente, la energía de afinidad. Estas funciones pueden basarse en:
 \begin{itemize}
-\item \textbf{Campos de fuerza}: Calculan las interacciones entre los átomos del ligando y del receptor utilizando un conjunto de parámetros que describen las interacciones atómicas.
-interacciones de Van der Waals y electrostáticas.
-\item \textbf{Datos empíricos}: Se basan en datos experimentales (observaciones empíricas) y en parámetros ajustados estadísticamente para reflejar las interacciones entre el ligando y la proteína.
-Se añaden enlace de hidrógeno, solvatación, hidrofobicidad y otros.
-\item \textbf{Conocimiento}: Se apoyan en datos experimentales o literatura científica para desarrollar modelos de puntuación.
-Asumen que los contactos estadísticamente más explorados se correlacionan con interacciones más favorables
+\item \textbf{Campos de fuerza}: Evalúan las interacciones entre los átomos del ligando y el receptor utilizando parámetros predefinidos para describir interacciones de Van der Waals y electrostáticas.
+
+\item \textbf{Datos empíricos}: Se basan en observaciones experimentales y en parámetros ajustados estadísticamente, incorporando factores como enlaces de hidrógeno, solvatación e hidrofobicidad.
+
+\item \textbf{Conocimiento estructural}: Utilizan datos experimentales y literatura científica para modelar interacciones, asumiendo que los contactos más frecuentes corresponden a interacciones más favorables.
 \end{itemize}
 
-Bases de datos para los fármacos son PubChem, ChEMBL, Drugbank y SINC. El programa de Schrödinger es muy completo, y hace un docking en el que se conoce el sitio de interacción (no puede ser ciego). También permite hacer dinámica molecular. Otro programa es MOE, el cual permite hacer estudios QSAR.
+\section{Bases de datos y software}
+Las principales bases de datos para la búsqueda de fármacos incluyen PubChem, ChEMBL, DrugBank y SINC.
 
-Bases de datos de proteínas principales son PDB y AlphaFold. Para modelar las proteínas se puede utilizar I-TASSER, Swiss-Model y AlphaFold. 
+Entre los programas de docking destacan:
+\begin{itemize}
+\item \textbf{Schrödinger}: Realiza docking dirigido a un sitio de unión conocido (no ciego) y permite análisis adicionales como dinámica molecular.
+\item \textbf{MOE}: Permite realizar estudios QSAR (Quantitative Structure-Activity Relationship).
+\end{itemize}
+
+Las principales bases de datos de proteínas son PDB y AlphaFold. Para modelado de proteínas, se pueden utilizar:
+\begin{itemize}
+\item \textbf{I-TASSER}
+\item \textbf{Swiss-Model}
+\item \textbf{AlphaFold}
+\end{itemize}
 
 \begin{table}[h]
 \centering
@@ -83,7 +123,12 @@ Acceso a GPUs y predicciones muy precisas & AlphaFold
 \end{table}
 
 \section{Esquema general de trabajo}
-Se trabaja con ficheros pdb del receptor y ligando. Se convierten en ficheros pdbqt que contiene coordenadas, cargas parciales y tipos de átomos. Esto se puede ajustar al tamaño y posición del grid, es decir, la parte de la proteína que nos interesa para el docking.
+El proceso de docking comienza con los archivos PDB del receptor y el ligando. Estos se convierten en archivos PDBQT, que incluyen coordenadas, cargas parciales y tipos de átomos. Posteriormente, se ajusta la región de interés dentro de la proteína mediante la definición de un grid, delimitando el área donde se realizará el docking.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/docking-pipeline.png}
+\end{figure}
 
 \section{Práctica}
 El ligando es el fichero jnj.pdb, y la proteína es P2X7-SWISSMODEL.pdb. Con esto localizado, vamos al programa Avogadro. Al descargar un ligando o fármaco, no es real, es plano. Por ello, Avogadro permite minimizar la estructura a una más real. 
