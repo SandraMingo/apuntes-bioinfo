@@ -208,7 +208,7 @@ Los bucles de retroalimentación se dan cuando hay una interacción de X a Y y d
 Se distinguen los feedforward loops (FFL) coherentes, donde una interacción y otra tienen el mismo efecto, de los FFL incoherentes donde hay efectos contrarios.
 
 \subsection{Motivo de red más simple: autorregulación}
-El motivo de red más simple es el de un gen autoregulado, ya sea de forma positiva o negativa. En E. coli, hay 400 nodos y 500 enlaces. Por azar, esperaríamos que hubiese 1,2 autorfegulaciones (500/400). Como se trata de una distribución independiente de Poisson, realmente es de $1.2 \pm \sqrt{1.2}$. De forma experimental, se encontraron 40 autorregulaciones negativas, siendo esto mucho mayor de lo esperado.
+El motivo de red más simple es el de un gen autoregulado, ya sea de forma positiva o negativa. En \textit{E. coli}, hay 400 nodos y 500 enlaces. Por azar, esperaríamos que hubiese 1,2 autorfegulaciones (500/400). Como se trata de una distribución independiente de Poisson, realmente es de $1.2 \pm \sqrt{1.2}$. De forma experimental, se encontraron 40 autorregulaciones negativas, siendo esto mucho mayor de lo esperado.
 
 Suponemos que hay un gen que produce la proteína Y a partir de una señal con velocidad $\alpha$ y se degrada en $\delta$. 
 $$\frac{dY}{dt} = \alpha - \delta Y$$
@@ -219,4 +219,147 @@ el tiempo de respuesta se calcularía de la siguiente forma:
 $$Y(t-T_{resp}): \frac{\alpha}{2 \delta} = \frac{\alpha}{\delta} (1 - e^{-\delta T_{resp})}$$
 teniendo que despejar $T_{resp}$.
 
-%\section{Regulación combinatorial y motivos de redes de retroalimentación}
+%06/03 - Raúl Guantes
+El tiempo de respuesta de un gen es el tiempo necesario para llegar a la mitad de la respuesta total:
+$$T_{1/2} = \frac{\ln 2}{\delta}$$
+Si la proteína es estable y sólo se degrada por dilución, entonces $T_{1/2} = T_{div}$. Esto es un proceso muy lento. Para poder aumentar su velocidad, se podría aumentar $\delta$, teniendo que aumentar por consiguiente también $\alpha$. 
+
+\subsubsection{Autorregulación negativa}
+Considerando un gen con autorregulación negativa, cambia en el tiempo con el término
+$$\frac{dY}{dt} = f(Y) - \delta Y$$
+siendo $f(Y)$ la tasa de producción y $\delta Y$ la tasa de degradación. Como es una autorregulación negativa, $f(Y)$ tendrá la forma de una sigmoidal negativa (por ejemplo, $f(Y) = \frac{1}{1 + (Y/k)^2}$. El valor de equilibrio se dará cuando $f(Y) = \delta Y$. La gráfica que define esto se denomina como gráfica del balance de tasas o rate balance plot:
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.6\textwidth]{figs/rate-balance-plot.png}
+\end{figure}
+
+Al calcular la derivada, se vería que ese punto de equilibrio sería estable, el cual depende del umbral de represión $Y/k$ que biológicamente depende de la afinidad de la proteína por el promotor. El tiempo de respuesta depende de la magnitud de la derivada; cuanto mayor sea en valor absoluto, mayor velocidad de cambio.
+
+Para un modelo sin regulación (producción constante):
+$$\frac{dY}{dt} = \alpha - \delta Y$$
+Para comparar los tiempos de respuesta, se debe comparar el valor absoluto de la derivada.
+\begin{itemize}
+\item $Y < Y_{eq}$: la tasa de cambio de la autorregulación negativa es más grande que la tasa de cambio de la regulación simple.
+\item $Y > Y_{eq}$: el valor absoluto de la tasa de cambio de la autorregulación negativa es mayor que el valor absoluto de la tasa de cambio de la regulación simple. 
+\end{itemize}
+
+La autorregulación negativa acelera el tiempo de respuesta.
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/nar.png}
+\end{figure}
+
+\subsubsection{Autorregulación positiva}
+Para una autorregulación positiva, la proteína se describe con la misma función:
+$$\frac{dY}{dt} = f(Y) - \delta Y$$
+Ahora, $f(Y)$ es creciente con forma de función de Hills, mientras que la tasa de degradación sigue con una forma de recta. El punto en el que se cortan es el punto de equilibrio, el cual es estable. En este caso, el valor absoluto de la derivada del modelo sin regulación es mayor que el valor de la derivada del modelo con autorregulación positiva. Por tanto, la autorregulación positiva aumenta el tiempo de respuesta (es más lento). 
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/par.png}
+\end{figure}
+
+Tanto la producción como el ciclo celular tienen fluctuaciones, por lo que necesita genes que respondan más rápido y más lentamente. Si $\delta$ cambia, la función de degradación cambia, teniendo mayor o menor pendiente. Cuando hay producción constante, el valor de equilibrio se mueve, mientras que la tasa de producción con autorregulación negativa apenas se ve modificada. Por tanto, la autorregulación negativa produce resistencia frente a fluctuaciones en producción $\alpha$ o en tiempos de división $\delta$. 
+
+Si la función de autorregulación más suave ($f(Y) = \frac{(Y/k)^n}{1 + (Y/k)^n}$), entonces habrá más puntos de equilibrio. El punto de equilibrio en 0 es estable, al igual que aquel en el que la producción de proteína se satura. Entre ellos, debe haber un punto de equilibrio inestable, el cual separa las condiciones iniciales. Por tanto, tenemos un modelo de biestabilidad con dos estados posibles: $Y_{eq} = 0, Y_{eq}^{max}$. Todo esto se produce si $f(Y)$ es cooperativo. 
+
+Poniendo un ejemplo concreto, suponemos que $n = 2$ y que $k = 1$. Por tanto, el modelo que tenemos es:
+$$\frac{dY}{dt} = s + \frac{Y^2}{1 + Y^2} - \delta Y$$
+siendo $s$ las señales bioquímicas. 
+
+Si no hay señales bioquímicas ($s=0$), los puntos de equilibrio se deben calcular de la siguiente forma:
+$$Y \frac{Y}{1 + Y^2} = \delta Y \begin{cases}
+Y^1_{eq} = 0 \\
+\frac{Y}{1 + Y^2} = \delta
+\end{cases}
+$$
+$$\delta Y^2_{eq} + \delta - Y_{eq} = 0$$
+$$Y_{eq} = \frac{1 \pm \sqrt{1 - 4 \delta^2}}{2}$$
+$$1 - 4 \delta^2 > 0 $$
+$$4 \delta^2 < 1$$
+$$\delta < 1/2$$
+
+Por tanto, hay tres puntos de equilibrio, los cuales causan la bifurcación silla-nodo. 
+
+Añadiendo un inductor ($s$), la recta de degradación se desplaza hacia los lados desde el origen. Para un $\delta = 0.55$ y $s=0$, no hay producción. No obstante, cuando $s = 0.2$, la producción basal aumenta la producción de la proteína, viéndose amplificada por la autorregulación positiva. Esto se conoce como \textbf{interruptor genético}.  
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = \textwidth]{figs/genetic-switch.png}
+\end{figure}
+
+Si pintamos los puntos de equilibrio en valor del parámetro $s$, vemos que se produce una región de histéresis. 
+
+Cuando hay interacciones mutuas con una variable y dos autorregulaciones positivas o negativas, hay más estados posibles: que se expresen los dos, ninguno o solo uno de ellos. En la activación mutua, si ambos son 0, no hay activación. Si con una señal se produce un poco de x, aumenta, activando y, llegando un momento en el que los dos pasan a estar expresados de forma máxima ($(0,0) \rightarrow (1,1)$). Si después se quita la señal, los estados siguen aumentados, no disminuyen debido a la histéresis. Un estímulo transitorio se convierte así en una respuesta permanente, a lo que se llama memoria celular. En una inhibición mutua, si un gen está expresado, el otro se reprime: $(0,1) \rightarrow (1,0)$
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.6\textwidth]{figs/cellular-memory.png}
+\end{figure}
+
+Si se combinan las retroalimentaciones positivas y negativas, se pueden dar los cuatro estados: $(0,0), (0,1), (1,0), (1,1)$. Esto se ha demostrado útil en la diferenciación de células madre.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/stem-differentiation.png}
+\end{figure}
+
+Se puede representar un paisaje epigenético que describe los valles y colinas con los distintos destinos celulares. Las redes de regulación celulares dan lugar a que se enciendan o apaguen distintos genes en distintos estados. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/waddington.png}
+\end{figure}
+
+\subsection{Feedback negativo y oscilaciones}
+Hay muchos procesos fisiológicos y de señalización celular regulados por ritmos periódicos y oscilaciones. Los ritmos circadianos son comunes a muchos organismos, tanto mamíferos como bacterias o levaduras. La información está codificada en la frecuencia y el número de pulsos, como puede ser la activación de genes selectivos por factores de transcripción, señalización de calcio, respuesta a estrés, etc. En todos los ejemplos se han identificado proteínas o reguladores que interaccionan con las proteínas fundamentales de las respuestas mediante un feedback negativo. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/feedback-negativo.png}
+\end{figure}
+
+Suponiendo que tenemos dos proteínas que interaccionan mediante un feedback negativo: una favorece a otra, la cual inhibe a la primera. Los mecanismos por los que un modelo dinámico oscila de forma robusta son los ciclos límite. Todos los ejemplos que tienen oscilaciones son debidos a los ciclos límite. Las condiciones para que haya un ciclo límite es la existencia de un punto inestable en el centro, el cual se denomina como espiral inestable. El tipo de bifurcación en el que una espiral estable pasa a inestable se conoce como bifurcación de Hopf, la cual implica la creación de un ciclo límite. Las espirales son autovalores complejos de la matriz jacobiana. Para un sistema de dos variables, hay una función $f(y)$ y una función $g(x)$, siendo la matriz jacobiana la matriz con las derivadas de las funciones en el punto de equilibrio. Los autovalores se pueden oner como la traza de las dos variables. Para tener bifurcación Hopf, el determinante debe ser positivo y la parte real debe pasar por 0, lo que equivale a que la traza pase por 0. 
+
+Suponemos dos genes con interacciones mutuas. La producción de x depende de y. Suponemos que el término de degradación es $\delta x,y$.
+$$\frac{dx}{dt} = f(y) - \delta x$$
+$$\frac{dy}{dt} = g(x) - \delta y$$
+
+La matriz jacobiana sería de la siguiente forma:
+$$\vec{J} = \begin{pmatrix}
+- \delta & \frac{\sigma f}{\sigma y} \\
+\frac{\sigma g}{\sigma x} & - \delta
+\end{pmatrix} \rightarrow \begin{pmatrix}
+\text{Efecto de X sobre X} & \text{Efecto de Y sobre X} \\
+\text{Efecto de X sobre Y} & \text{Efecto de Y sobre Y}
+\end{pmatrix}$$
+Así, la traza siempre va a ser negativa ($-2 \delta$). La matriz debe tener la siguiente estructura:
+$$\vec{J} = \begin{pmatrix}
++ & + \\
+- & -
+\end{pmatrix}$$
+o
+$$\vec{J} = \begin{pmatrix}
++ & - \\
++ & -
+\end{pmatrix}$$
+
+Los elementos de las dos diagonales deben tener signos distintos para que pueda aparecer un ciclo límite. Para conseguir un signo positivo en la diagonal es mediante la autorregulación positiva de x o de y. El jacobiano representa el efecto de cada una de las variables sobre ellas mismas (en la diagonal) o sobre la otra (no diagonal).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/feedback-jacobiano.png}
+\end{figure}
+
+Sin feedback negativo, no habría determinante positivo y, por tanto, ciclo límite. Se necesita feedback negativo, pero con autorregulación positiva. El signo positivo de la diagonal implica una autorregulación positiva, mientras que el signo negativo no implica autorregulación negativa, si no que hay degradación y no hay autorregulación. 
+
+Por lo tanto, para que existan oscilaciones en redes de dos componentes, en principio son necesarias tanto la retroalimentación negativa como la autorregulación positiva (un ejemplo es el oscilador del ciclo celular). En el caso del modelo Lotka-Volterra, la autorregulación positiva sería la tasa de crecimiento por reproducción, mientras que la retroalimentación negativa es la interacción presa-predador. 
+
+El feedback positivo no es estrictamente necesario, ya que el feedback negativo produce un desfase temporal entre las interacciones que ya produce las oscilaciones. El motivo de retroalimentación negativa más simple, la autorregulación negativa, puede mostrar oscilaciones si se introduce explícitamente un retraso en la transcripción y traducción del gen.
+
+El retraso en el módulo combinado de retroalimentación negativa con autorregulación positiva viene dado por el bucle de retroalimentación positiva que ralentiza las respuestas.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/autoinhibition-delay.png}
+\end{figure}
+
+Los osciladores con retroalimentaciones negativas y positivas entrelazadas aparecen con más frecuencia en los sistemas biológicos debido al principio de robustez: El periodo y la amplitud de las oscilaciones no deben variar tanto con el ruido molecular. El oscilador con retroalimentación positiva es mucho más robusto frente a las fluctuaciones naturales en la abundancia de los componentes. 
