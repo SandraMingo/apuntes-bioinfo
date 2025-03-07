@@ -386,14 +386,18 @@ Para minimizar el error de predicción y conseguir el clasificador con menor err
 
 El problema es que las probabilidades posteriores no se conocen, y se deben inferir de los datos. Se deben utilizar distintos métodos para estimar estas probabilidades posteriores.
 
+Consideramos que tenemos un problema de clasificación en cuyo eje x se encuentra el espacio posible de los datos. Hay dos distribuciones posibles: $p(\mathcal{C}_1|x)$ y $p(\mathcal{C}_2|x)$. Tenemos tres puntos: A, B y C. ¿Dónde tendríamos que poner la frontera de clasificación? Respuesta: es donde se cortan las probabilidades posteriores, que en este caso es el punto B.
+
 \begin{figure}[h]
 \centering
-\includegraphics[width = 0.8\textwidth]{figs/missclassification.png}
-\caption{Imaginamos que tenemos un problema de clasificación de una dimensión. Tenemos dos clases: la positiva y la negativa. Queremos especificar un clasificador para resolver el problema. Definimos las regiones $\mathcal{R}_1$ y $\mathcal{R}_2$ para las clases $\mathcal{C}_1$ y $\mathcal{C}_2$ respectivamente. Para un dato que se observe en la región 1, pero pertenezca a la clase 2, se debe calcular el área debajo de la curva representado en rojo y verde. Si x cae en la región 2 y realmente viene de la clase 1, el error se calcula como el área azul. El clasificador no es óptimo, ya que la frontera de clasificación no es muy correcta. Si se cambiase al punto marcado con las líneas discontinuas, el error se vería minimizado. Con el cambio de frontera, si x viene de la clase 2 y cae en la región 1, el error sería el área verde que se sale de la frontera. Si x cae en la región 2 y pertenece a la clase 1, el error es el área verde de la derecha sumado al área azul. Generalmente, el clasificador óptimo se encuentra cuando las probabilidades posteriores de clase tomen el mismo valor. En la línea discontinua se cortan las dos curvas de distribución de ambas clases. Las probabilidades posteriores de clase es igual a la probabilidad conjunta dividida por una constante. Si las probabilidades conjuntas toman el mismo valor, las probabilidades posteriores también son iguales. En ese punto donde las probabilidades posteriores valen 0.5 se encuentra la frontera de clasificación.}
+\includegraphics[width = 0.6\textwidth]{figs/example-distributions.jpg}
 \end{figure}
 
-Consideramos que tenemos un problema de clasificación en cuyo eje x se encuentra el espacio posible de los datos. Hay dos distribuciones posibles: $p(\mathcal{C}_1|x)$ y $p(\mathcal{C}_2|x)$. Tenemos tres puntos: A, B y C. ¿Dónde tendríamos que poner la frontera de clasificación? Respuesta: es donde se cortan las probabilidades posteriores, que en este caso es el punto B.
-%%FIXME: añadir gráfico
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/missclassification.png}
+\caption{Imaginamos que tenemos un problema de clasificación de una dimensión. Tenemos dos clases: la positiva y la negativa. Queremos especificar un clasificador para resolver el problema. Definimos las regiones $\mathcal{R}_1$ y $\mathcal{R}_2$ para las clases $\mathcal{C}_1$ y $\mathcal{C}_2$ respectivamente. Para un dato que se observe en la región 1, pero pertenezca a la clase 2, se debe calcular el área debajo de la curva representado en rojo y verde. Si x cae en la región 2 y realmente viene de la clase 1, el error se calcula como el área azul. El clasificador no es óptimo, ya que la frontera de clasificación no es muy correcta. Si se cambiase al punto marcado con las líneas discontinuas, el error se vería minimizado. Con el cambio de frontera, si x viene de la clase 2 y cae en la región 1, el error sería el área verde que se sale de la frontera. Si x cae en la región 2 y pertenece a la clase 1, el error es el área verde de la derecha sumado al área azul. Generalmente, el clasificador óptimo se encuentra cuando las probabilidades posteriores de clase tomen el mismo valor. En la línea discontinua se cortan las dos curvas de distribución de ambas clases. Las probabilidades posteriores de clase es igual a la probabilidad conjunta dividida por una constante. Si las probabilidades conjuntas toman el mismo valor, las probabilidades posteriores también son iguales. En ese punto donde las probabilidades posteriores valen 0.5 se encuentra la frontera de clasificación.}
+\end{figure}
 
 \subsection{Minimizar la pérdida esperada}
 A veces, tomar decisiones equivocadas puede tener costes asimétricos.
