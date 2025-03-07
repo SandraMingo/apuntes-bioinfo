@@ -1,3 +1,0 @@
-flag	value
---psm	psm.tsv
---specdir	C:\Users\Sandra\Desktop\bioinfo\transcriptomica\datos-proteomica

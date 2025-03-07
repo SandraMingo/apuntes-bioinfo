@@ -465,3 +465,87 @@ Para la detección de las modificaciones posttraduccionales hay distintas técni
 \centering
 \includegraphics[width = 0.8\textwidth]{figs/ms-ptm.png}
 \end{figure}
+
+\chapter{Metabolómica}
+\section{Introducción a la metabolómica}
+Los metabolitos son moléculas pequeñas presentes en fluidos biológicos, compartimentos celulares o tejidos. Se dividen en cinco categorías:
+\begin{enumerate}
+\item  Compuestos endógenos reales: Originados por reacciones enzimáticas bajo el control del genoma del huésped.
+\item Factores esenciales transformados por el metabolismo: Como aminoácidos esenciales, vitaminas y cofactores.
+\item Metabolitos derivados del co-metabolismo: Productos de la interacción entre el huésped y microorganismos (por ejemplo, la modificación de ácidos biliares por la microbiota intestinal).
+\item Moléculas externas convertidas en compuestos endógenos.
+\item Xenobióticos: Sustancias externas que influyen en el metabolismo del huésped, ya sea como productos o mediante interferencia.
+\end{enumerate}
+
+La metabolómica es el estudio del conjunto completo de metabolitos presentes en una célula o tejido bajo un conjunto específico de condiciones (conocido como metaboloma), generando un perfil bioquímico. Este perfil describe la bioquímica que define diferentes estados fisiológicos, incluyendo estados patológicos, que una célula o tejido puede adoptar.
+
+Los objetivos de la metabolómica son identificar, caracterizar y cuantificar todas las moléculas biológicas que están involucradas en la estructura, función y dinámica de una célula, tejido u organismo.
+\begin{enumerate}
+\item Detección de cambios en el perfil metabólico de una enfermedad o condición
+\item Comprender le mecanismo patológico/fisiológico en la base de una condición particular
+\item Nueva estratificación de pacientes
+\item Evaluar nuevas respuestas al tratamiento
+\item Identificación de biomarcadores potenciales
+\item Desarrollo de nuevas herramientas pronósticas y diagnósticas
+\end{enumerate}
+
+Hay tres estrategias fundamentales:
+\begin{itemize}
+\item Targeted analysis: tenemos un solo metabolito de interés
+\item Profiling analysis: nos centramos en metabolitos específicos según su estructura química y/o actividad biológica
+\item Un-targeted: sin sesgo, cribado global por clasificación de muestra
+\end{itemize}
+
+\section{Flujo de trabajo}
+\subsection{Diseño experimental}
+Buen conjunto de muestras correctamente clasificadas para evitar resultados impulsados por la variabilidad. Los grupos deben ser representativos del problema en estudio. Estudio en humanos: los participantes deben coincidir en edad, sexo, comorbilidades y IMC (BMI); los controles y la enfermedad deben definirse mediante pruebas de diagnóstico adecuadas. Estudio en animales o in vitro: modelo biológico representativo del problema en investigación. El diseño debe ser adecuado de acuerdo con las técnicas y el equipo disponibles. Aprobación del comité de ética. El muestreo debe ser realizado directamente por personal especializado utilizando protocolos estandarizados.
+
+\subsection{Colección de muestras}
+Los \textbf{tejidos} contienen información relacionada con alteraciones específicas \textit{in situ}: los cambios bioquímicos y la regulación upstream aparecen primero en el tejido y luego en los biofluidos.
+Los \textbf{fluidos no endógenos} se obtienen mediante diversos procedimientos y son más adecuados para revelar mecanismos celulares cuando no se pueden utilizar tejidos.
+Los \textbf{biofluidos} reflejan tanto cambios sistémicos como localizados.
+Las \textbf{muestras \textit{in vitro}} pueden reproducir alteraciones \textit{in situ}.
+
+\subsection{Tratamiento de muestras}
+\begin{enumerate}
+\item  \textbf{Descongelar la muestra en un baño de agua y hielo}. Esto es crucial para preservar la integridad de los metabolitos y evitar cambios químicos durante el proceso.
+\item \textbf{Detención rápida de reacciones y extracción}: La muestra se somete a un proceso de "quenching" para detener rápidamente cualquier actividad metabólica o enzimática y, luego, se realiza la extracción de los metabolitos presentes.
+\item \textbf{Secado}: Los componentes extraídos se someten a un proceso de secado (liofilización o deshidratación), para eliminar cualquier rastro de solvente y conservar los metabolitos en un estado seco.
+\item \textbf{Re-suspender en un solvente adecuado}: Finalmente, la muestra seca se re-suspende en un solvente adecuado para su análisis posterior.
+\end{enumerate}
+
+\subsection{Análisis de las muestras}
+Las muestras se pueden analizar por espectrometría de masas, al igual que en proteómica. 
+
+\subsection{Tratamiento de datos}
+Toda la información obtenida de los datos es difícil de cuantificar por Missing Values, mucho ruido y muchas variables. Los datos se preprocesan para ajustar determinados picos de masas por si ha habido pequeñas descalibraciones entre muestras.
+Transformar los datos sin procesar en una matriz que contenga la lista de las características observadas con sus áreas de pico o intensidades relativas para cada muestra en un experimento determinado.
+Los metabolitos se extraen y se agrupan caracterizaciones con las mismas ionizaciones y masa para reducir las caracterizaciones de los metabolitos.
+
+A partir de los datos crudos se limpia la matriz:
+\begin{itemize}
+\item Filtrar por frecuencia: reducir el conjunto de datos en función de la diferencia biológica dentro de las muestras
+\item Filtrar por variabilidad: eliminar resultados irrelevantes y no reproducibles, cuando la variabilidad analítica es mayor que la variación biológica.
+\item Reemplazo de valores ausentes: los datos no disponibles para el análisis se pueden deber por una señal no presente o por debajo del límite de detección o por un error de software durante la extracción de características.
+\item Corregir la heterocedasticidad reduciendo el impacto de posibles valores atípicos y convirtiendo los datos en una distribución más normal tipo Gaussiana.
+\item Normalización para minimizar el error sistemático en los datos debido a la variación en las concentraciones de metabolitos, la sensibilidad y el rendimiento del instrumento, haciendo que los espectros sean comparables entre diferentes análisis.
+\item Escalado: importancia de ajustar las variables del modelo dividiendo cada una de ellas por un factor de escala diferente.
+\end{itemize}
+
+\subsection{Análisis estadístico}
+Se clasifican las muestras para establecer correlaciones entre variables, identificar variables significativas y ayudar a evaluar la calidad de todo el experimento. En el univariate data analysis se prueba la significancia estadística de compuestos individuales entre diferentes grupos de muestras. Para el multivariate data analysis, son estrategias útiles para modelar datos complejos para reducir y resumir la gran cantidad de variables en unas pocas variables latentes que expliquen la correlación existente simultáneamente entre ellas.
+
+\subsection{Identificación de metabolitos}
+No existe un código genético subyacente del cuals e pueda deducir la composición química.
+Solo cuando tenemos metabolitos rigurosamente identificados, podemos involucrarnos completamente en la descripción de las vías metabólicas e integrar el metabolismo con otros niveles de la jerarquía biológica
+
+\subsection{Hipótesis}
+Los metabolitos son el resultado de procesos bioquímicos, como las cascadas de señalización. A través de ellos podemos reconocer vías alteradas y obtener una visión general de todos los cambios metabólicos que ocurren en una enfermedad. Pueden estar conectados con proteínas, transcritos y datos ambientales, lo que lleva a la revelación de biomarcadores en diferentes niveles.
+
+\subsection{Validación}
+La validación es fundamental para probar los hallazgos estadísticos. La efectividad de los biomarcadores candidatos como herramientas diagnósticas o pronósticas debe ser evaluada en una población amplia. Se requieren estudios clínicos para confirmar el posible uso de estas moléculas en un procedimiento rutinario. El mecanismo potencial debe ser confirmado en ratones knockout, donde las vías involucradas son estimuladas a propósito o inhibidas por modificaciones genéticas.
+
+Entre los desafíos se encuentran las inconsistencias en los biomarcadores identificados entre experimentos similares, la necesidad de equipos interdisciplinarios y un biobanco de gran población.
+
+\section{Metabolómica dirigida}
+Para la metabolómica dirigida, se extraen los metabolitos con protocolos adaptados según la naturaleza del biomarcador candidato. Los métodos dirigidos de LC-MSMS son específicos, sensibles y rápidos para analizar un gran número de muestras. En cuanto a la cuantificación, se utilizan MS para obtener la concentración de metabolitos. Se utiliza un estándar interno marcado con isótopos estables, compuestos donde varios átomos del analito son reemplazados por sus respectivos isótopos estables. Al tener las mismas o similares propiedades físicas y químicas que el analito, pueden añadirse con una concentración conocida a las muestras antes de la extracción de metabolitos. 
