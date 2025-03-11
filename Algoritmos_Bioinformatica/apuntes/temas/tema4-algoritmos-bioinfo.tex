@@ -346,13 +346,20 @@ La entropía se calcula como el sumatorio negativo de la probabilidad de las let
 
 Estas puntuaciones se basan en las posiciones del alineamiento, y posteriormente se puede sumar la puntuación de todas las columnas para sacar la puntuación del alineamiento completo. 
 
+%11/03 - Ana
 Hay distintos tipos de alineamiento múltiple de secuencia:
 \begin{itemize}
 \item Programación dinámica: se puede aplicar al alineamiento de cualquier número de secuencias. Computa un alineamiento óptimo para una función de puntuación. No obstante, tiene un tiempo de computación grande de $O(n^k)$, siendo n la longitud de la secuencia y k el número de secuencias que se quieren alinear.
 \item Métodos heurísticos:
 \begin{itemize}
-\item Métodos progresivos: CLUSTAL W, T-Coffee
-\item Métodos iterativos: Muscle, MAFFT
-\item Modelos ocultos de Markov: CLUSTAL Omega
+\item Métodos progresivos: \textbf{CLUSTAL W}, T-Coffee: primero realizan un alineamiento por pares de todas las secuencias mediante programación dinámica. Así, computan una matriz de distancia. La distancia genética está determinada por el número de coincidencias erróneas dividido por el número de coincidencias. Una distancia menor significa por tanto más similitud. A continuación se utilizan las puntuaciones de los alineamientos para producir un árbol filogenético como árbol guía. Las secuencias se alinean secuencialmente, guiadas por el árbol. Por eso, se trata de un alineamiento progresivo. Primero se alinean las dos secuencias más cercanas. Ese alineamiento se considera fijo y no se va a volver a cambiar. Si posteriormente hay que introducir un hueco, se introducirá en el mismo lugar en ambas secuencias, pero su alineamiento relativo no cambia.
+
+La ventaja de Clustal W es la velocidad de cómputo. No obstante, cuenta con varias desventajas: no es una función objetiva, no hay forma de cuantificar si el alineamiento es bueno, y no podemos saber si el alineamiento es correcto. Además, tiene algunos potenciales problemas, como tratarse de un algoritmo codicioso, congelar los subalineamientos y el problema del mínimo local, es decir, si un error se introduce al principio del proceso del alineamiento, es imposible corregirlo después. Finalmente, se trata de un alineamiento arbitrario.
+
+\item Métodos iterativos: \textbf{Muscle}, MAFFT: el primer paso es la construcción de un proyecto de alineamiento progresivo. El objetivo de la primera etapa es producir un alineamiento múltiple, primando la rapidez sobre la precisión: determina la similitud entre pares mediante el recuento de k-mer (no por alineamiento), calcula la matriz de distancia (distancia triangular) construye un árbol utilizando UPGMA y construye un borrador de alineamiento progresivo siguiendo el árbol. La segunda fase consiste en mejorar el alineamiento progresivo. La principal fuente de error en la etapa de borrador progresivo es la medida aproximada de la distancia kmer. Por eso, el programa reestima el árbol utilizando la distancia de Kimura, que es más precisa, pero requiere de un alineamiento. Así, se construye un nuevo árbol con las medidas de distancia de Kimura y compara los árboles nuevo y viejo. Si el árbol ha mejorado, se repite el proceso; si no ha mejorado, el programa termina. El último paso es el refinamiento del MSA. Divide el árbol por la mitad eliminando una arista para hacer perfiles de cada mitad del árbol. Vuelve a alinear los perfiles para aceptar o rechazar el nuevo alineamiento.
+
+\item Modelos ocultos de Markov: \textbf{CLUSTAL Omega}: utiliza un método de alineamiento progresivo iterativo modificado y puede alinear más de 10.000 secuencias con rapidez y precisión. El alineamiento es iterativo porque elimina secuencias del alineamiento y las vuelve a alinear. El realineamiento se repite hasta que la puntuación del alineamiento converja. Clustal Omega es muy útil para encontrar pruebas de función conservada en secuencias de ADN y proteínas. Pero recuerda que la similitud de secuencias no siempre implica una función conservada.
 \end{itemize}
 \end{itemize}
+
+
