@@ -455,7 +455,7 @@ Las densidades condicionales de clase complicadas pueden dar lugar a probabilida
 \caption{Suponemos que tenemos una dimensión con una clase positiva y una clase negativa. La distribución es complicada al tener dos modas. Si esto se utiliza en la regla de Bayes, se pueden calcular las probabilidades posteriores, las cuales tienen menos complejidad que las densidades. Generalmente, las probabilidades posteriores son funciones relativamente sencillas y más fáciles de calcular que las distribuciones condicionales.}
 \end{figure}
 
-\subsection{Modelos generativos}
+\subsection{Máxima verosimilitud}
 Cuando un clasificador era un modelo generativo, se estiman las probabilidades a priori. La clave del uso de modelos generativos para la clasificación es especificar una forma adecuada para las densidades condicionales de clase. Elegiremos una distribución con parámetros $\theta$. La tarea consiste en estimar el mejor valor de $\theta$ a partir de los datos observados.
 
 Supongamos que $x \in [1, 2, 3, \ldots, 100]$ y consideramos dos posibles distribuciones:
@@ -522,7 +522,232 @@ $$w x + wx = 0$$
 $$2wx = 0$$
 $$x = 0$$
 
-\end{enumerate}
-%\section{Análisis discriminante}
+%11/03 - Daniel
+\item Dadas las probabilidades anteriores, sólo queremos tomar decisiones con un 90\% de confianza. Encuentra la región de rechazo correspondiente.
 
-%\section{Árboles de clasificación y vecinos cercanos}
+
+\item La función de masa de probabilidad de una variable aleatoria Bernoulli es:
+$$p(x \mid p) = p^x(1 - p)^{1-x} \text{with} x \in [0, 1]$$
+Halla el estimador de máxima verosimilitud del parámetro $p \in [0,1]$. Pista: maximizar el logaritmo de la probabilidad en lugar de la probabilidad.
+
+$$p(D \mid p) = \prod^N_{i = 1} p(x_i \mid p) = \prod^N_{i = 1} p^{xi} (1 - p)^{1-xi}$$
+$$\log p(D \mid p) = \sum^N_{i = 1} \log p(x_i \mid p) = \sum^N_{i = 1} x_i \log p + (1 - x_i) \log (1 - p)$$
+Queremos obtener el valor máximo. Para ello, derivamos e igualamos la derivada a 0.
+$$\frac{\delta \log p(D \mid p)}{\delta p} = \sum^N_{i = 1} x_i \frac{1}{p}+ (1 - x_i) \frac{1}{1 - p} \cdot (-1) = 0$$
+$$\frac{\delta \log p(D \mid p)}{\delta p} = \sum^N_{i = 1} \frac{N_1}{p} - \frac{N_0}{1 - p} = 0$$
+$$\frac{N_1}{p} = \frac{N_0}{1 - p}$$
+Despejamos de ahí el valor de p:
+$$\frac{p}{N_1} = \frac{1 - p}{N_0} = \frac{1}{N_0} - \frac{p}{N_0}$$
+$$\frac{p}{N_1} + \frac{p}{N_0} = \frac{1}{N_0}$$
+$$p(\frac{1}{N_1} + \frac{1}{N_0}) = \frac{1}{N_0}$$
+$$p = \frac{1}{N_0} \cdot [\frac{1}{N_1 + \frac{1}{N_0}}]^{-1} = \frac{1}{N_0} \cdot [\frac{N_0 + N_1}{N_1N_0}]^{-1} = \frac{1}{N_0} \cdot [\frac{N}{N_1N_0}]^{-1} = \frac{1}{N_1} \frac{N_1N_0}{N} = \frac{N_1}{N}$$
+\end{enumerate}
+
+\subsection{Conocimiento a priori}
+Se puede utilizar una probabilidad a priori para asignar una probabilidad baja a conceptos poco naturales que no se esperan en la práctica y viceversa. La probabilidad a priori es subjetiva y refleja cualquier información adicional que podamos tener sobre el concepto desconocido que intentamos inferir a partir de los datos. Consideremos las distribuciones potenciales:
+\begin{align*}
+\theta_{two} \equiv \text{distribución uniforme entre las potencias de dos} \\
+\theta_{even} \equiv \text{distribución uniforme entre los números pares} \\
+\theta_{odd} \equiv \text{distribución uniforme entre los números impares} \\
+\theta_{prime} \equiv \text{distribución uniforme entre números primos} \\
+\theta_{9} \equiv \text{distribución uniforme entre números terminados en 9} \\
+\theta_{two^{\backslash 32}} \equiv \text{distribución uniforme entre las potencias de dos excepto 32} \\
+\theta_{two}^{\cup 37} \equiv \text{distribución uniforme entre las potencias de dos más 37}
+\end{align*}
+
+Introducimos una a priori uniforme excepto para $\theta_{odd}$ y $\theta_{even}$ que son más
+probables a priori y $\theta_{two^{\backslash 32}}$ y  $theta_{two}^{\cup 37}$, que son menos probables.
+
+\subsection{Conocimiento a posterior}
+La posterior es la probabilidad multiplicada por la anterior, normalizada:
+$$p(\theta \mid \mathcal{D}) = \frac{p(\mathcal{D} \mid \theta)p(\theta)}{p(\mathcal{D})} = \frac{p(\mathcal{D} \mid \theta) p(\theta)}{\sum_{\theta \in \mathcal{H}} p(\mathcal{D}, h)}$$
+
+En la posterior se combinan la verosimilitud y la anterior:
+\begin{itemize}
+\item Probabilidad: favorece los conceptos explicados por los datos.
+\item Prior: los conceptos no naturales reciben una importancia menor.
+\end{itemize}
+
+El prior resume nuestras creencias sobre cada concepto antes de ver los datos y el posterior actualiza esas creencias después de ver los datos. Utilizamos probabilidades para asignar grados de creencia a cada concepto potencial que intentamos aprender de los datos.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/posterior_obs.png}
+\caption{Habiendo observado los valores 16, 8, 2 y 64, según la máxima verosimilitud, aceptaríamos la distribución de números de potencias de dos salvo el 32. Como esa distribución es muy rara, utilizamos el conocimiento prior y multiplicamos eso con la máxima verosimilitud, normalizando. De esa forma, la distribución con la que nos quedamos (la más probable) es la distribución de las potencias de 2.}
+\end{figure}
+
+\subsection{Estimación máxima a posteriori (MAP)}
+Cuando tenemos suficientes datos, la estimación a posteriori $p(\theta \mid \mathcal{D})$ alcanza su punto máximo en un único concepto, la estimación MAP.
+$$p(\theta \mid \mathcal{D}) \rightarrow \delta_{\hat{\theta}_{MAP}} (\theta)$$
+
+\subsubsection{Media de la distribución gaussiana}
+Se considera un conjunto de datos $\mathcal{D} = \{x_1, \dots, x_N\}$ bajo la hipótesis de que los datos siguen una distribución normal:
+$$ x_i \sim \mathcal{N}(\mu, \sigma^2)$$
+
+Además, se asume un conocimiento previo sobre $\mu$, modelado mediante una distribución normal:
+$$p(\mu) = \mathcal{N}(\mu \mid 5, 1)$$
+
+Nuestro objetivo es encontrar la estimación MAP (Máxima A Posteriori) de $\mu$, es decir, el valor de $\mu$ que maximiza la distribución posterior $p(\mu \mid \mathcal{D})$.
+
+La distribución posterior está dada por:
+$$ \log p(\mu \mid \mathcal{D}) = \log p(\mathcal{D} \mid \mu) + \log p(\mu) + \text{constante}$$
+donde:
+\begin{itemize}
+\item $p(\mathcal{D} \mid \mu)$ es la verosimilitud de los datos dada $\mu$.
+\item $p(\mu)$ es la distribución a priori de $\mu$.
+\end{itemize}
+
+La función de verosimilitud para una normal es:
+$$\log p(\mathcal{D} \mid \mu) = \sum_{i=1}^{N} -\frac{(x_i - \mu)^2}{2\sigma^2} + \text{constante}$$
+
+Para la distribución previa:
+$$\log p(\mu) = -\frac{1}{2} (\mu - 5)^2 + \text{constante}$$
+
+Al combinar ambas ecuaciones y maximizar con respecto a $\mu$, se obtiene el estimador MAP:
+$$\hat{\mu}_{MAP} = \hat{\mu}_{ML} \frac{N}{N + \sigma^2} + 5 \frac{\sigma^2}{N + \sigma^2}$$
+
+donde $\hat{\mu}_{ML}$ es el estimador de máxima verosimilitud (ML), que corresponde a la media muestral.
+
+Si $N$ es grande ($N \gg \sigma^2$), la estimación MAP se aproxima a la media muestral $\hat{\mu}_{ML}$. Si $N$ es pequeño ($N \ll \sigma^2$), la estimación MAP está más influenciada por la media de la distribución previa ($5$ en este caso).
+
+Esto muestra cómo la información previa se combina con los datos observados para obtener una mejor estimación del parámetro $\mu$.
+
+\subsubsection{Varianza de la distribución gaussiana}
+Se considera un conjunto de datos $\mathcal{D} = \{x_1, \dots, x_N\}$ bajo la hipótesis de que los datos siguen una distribución normal:
+$$ x_i \sim \mathcal{N}(\mu, \sigma^2)$$
+
+Además, se asume un conocimiento previo sobre la varianza $\sigma^2$, modelado mediante una distribución a priori:
+$$ p(\sigma^2) \propto \frac{\exp(-1/\sigma^2)}{\sigma^2}$$
+
+Nuestro objetivo es encontrar la estimación MAP (Máxima A Posteriori) de $\sigma^2$, dado el estimador de máxima verosimilitud $\hat{\mu}_{ML}$.
+
+La distribución posterior está dada por:
+$$\log p(\sigma^2 \mid \mathcal{D}) = \log p(\mathcal{D} \mid \sigma^2) + \log p(\sigma^2) + \text{constante}$$
+donde:
+\begin{itemize}
+\item $p(\mathcal{D} \mid \sigma^2)$ es la verosimilitud de los datos dada $\sigma^2$.
+\item $p(\sigma^2)$ es la distribución a priori de $\sigma^2$.
+\end{itemize}
+
+La función de verosimilitud para una normal es:
+$$ \log p(\mathcal{D} \mid \sigma^2) = \sum_{i=1}^{N} -\frac{(x_i - \hat{\mu}_{ML})^2}{2\sigma^2} - \frac{N}{2} \log \sigma^2 + \text{constante}$$
+
+Para la distribución previa:
+$$ \log p(\sigma^2) = -\frac{1}{\sigma^2} - \log \sigma^2 + \text{constante}$$
+
+Al combinar ambas ecuaciones y maximizar con respecto a $\sigma^2$, se obtiene el estimador MAP:
+$$\hat{\sigma}^2_{MAP} = \hat{\sigma}^2_{ML} \frac{N}{N+2} + 1 \cdot \frac{2}{N+2}$$
+donde $\hat{\sigma}^2_{ML}$ es el estimador de máxima verosimilitud (ML) de la varianza.
+
+Si $N$ es grande ($N \gg 2$), la estimación MAP se aproxima a la estimación ML $\hat{\sigma}^2_{ML}$. Si $N$ es pequeño, la estimación MAP está más influenciada por la distribución previa, lo que reduce el sobreajuste.
+
+Este resultado muestra cómo la información previa se combina con los datos observados para obtener una mejor estimación del parámetro $\sigma^2$.
+
+\subsection{Aprendizaje bayesiano y distribución predictiva}
+Cuando tenemos un conjunto de datos pequeño, la posterior es amplia, lo que indica que muchos conceptos potenciales son compatibles con los datos observados.
+En ese caso, puede ser mejor considerar $p(\theta \mid \mathcal{D})$ en lugar de $\hat{\theta}_{MAP}$.
+
+La distribución predictiva posterior es:
+$$p(x \mid \mathcal{D}) = \int p(x \mid \theta) p(\theta \mid \mathcal{D}) d\theta$$
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/predictive-distribution.png}
+\end{figure}
+
+\subsubsection{Selección de modelos bayesianos}
+La distribución posterior bayesiana también es útil para realizar la selección de modelos sin tener que recurrir a la validación cruzada. Obtenemos la probabilidad posterior de cada modelo utilizando la regla de Bayes:
+$$p(m \mid \mathcal{D} = \frac{p(\mathcal{D} \mid m) p(m)}{p(\mathcal{D})} = \frac{p(\mathcal{D} \mid m) p(m)}{\sum_{m \in \mathcal{M}} p(m, \mathcal{D})}$$
+
+Si la probabilidad a priori sobre los modelos es uniforme, simplemente elegimos el modelo con la probabilidad marginal más alta:
+$$p(\mathcal{D} \mid m) = \int p(\mathcal{D} \mid \theta) p(\theta \mid m) d\theta$$
+
+Penaliza los modelos demasiado simples o demasiado complejos para los datos.
+
+Las mixturas de gaussianas (GMM, por sus siglas en inglés: Gaussian Mixture Models) son un modelo probabilístico que representa la distribución de datos como una combinación de múltiples distribuciones normales (gaussianas). Se utilizan ampliamente en problemas de agrupamiento (clustering), densidad de probabilidad y reducción de dimensionalidad.
+La idea principal de un GMM es que los datos provienen de una combinación de varias distribuciones normales. Cada muestra es generada por una de las gaussianas, pero no sabemos cuál. En lugar de asignar cada punto a un único cluster como en k-means, GMM asigna probabilidades a cada punto de pertenecer a diferentes clusters.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/gaussian-mixture.png}
+\caption{$m_1$ es muy simple para explicar $\mathcal{D}_0$, $m_3$ es muy complejo, pero $m_2$ es perfecto.}
+\end{figure}
+
+\subsubsection{Ejercicios}
+\begin{enumerate}
+\item Considera dos modelos $m_1$ y $m_2$ con los siguientes valores asociados:
+\begin{align*}
+p(\mathcal{D} \mid m_1) = 0,05 && p(\mathcal{D} \mid m_2) = 0,01  \\
+p(m_1) = 0,1 && p(m_2) = 0,9
+\end{align*}
+¿Cuál es el modelo MAP y cuál el ML?
+
+El modelo $m_1$ es el de máxima verosimilitud, ya que tiene una mayor probabilidad de los datos dado el modelo ($0,05 > 0,01$). En cuanto al modelo MAP, se trata del modelo $m_2$, ya que tiene su prior favorecido ($0,9 > 0,1$).
+\end{enumerate}
+
+\subsection{Resumen}
+\begin{itemize}
+\item La teoría de la decisión permite realizar asignaciones de clase óptimas en presencia de incertidumbre. Sólo requiere probabilidades de clase posteriores.
+\item Estas probabilidades pueden estimarse directamente (modelos discriminativos) u obtenerse mediante la regla de Bayes (modelos generativos).
+\item Las probabilidades estimadas dependerán de varios parámetros. Éstos pueden estimarse utilizando enfoques ML o MAP.
+\item A diferencia del ML, que puede llevar a un sobreajuste cuando los datos son escasos, el enfoque MAP puede ayudar a reducir el sobreajuste introduciendo conocimiento previo.
+\item Un enfoque bayesiano en el que se marginen los parámetros puede ser aún más robusto. Sin embargo, los cálculos suelen ser inviables.
+\end{itemize}
+
+\section{Modelos generativos}
+Los modelos generativos estiman las densidades condicionales de clase $p(x \mid \mathcal{C}_k)$ para luego utilizar el teorema de Bayes para calcular una probabilidad posterior de clase.
+$$p(\mathcal{C}_k \mid \vec{x}) = \frac{p(\vec{x} \mid \mathcal{C}_k) p(\mathcal{C}_k)}{p(\vec{x})}$$
+Esto permite generar nuevos datos muestreando de $p(\vec{x} \mid \mathcal{C}_k)$.
+
+No obstante, esto tiene varios problemas:
+\begin{itemize}
+\item Estimar $p(\mathcal{C}_k)$ es fácil, pero estimar $p(\vec{x} \mid \mathcal{C}_k)$ puede ser complicado.
+\item El vector $\vec{x}$ puede ser multidimensional, aplicando entonces la maldición de la dimensionalidad.
+\item El vector $\vec{x}$ puede tener valores continuos y discretos.
+\item En los casos discretos, no vamos a ver las instancias $C^D$.
+\end{itemize}
+
+El clasificador Naive Bayes ofrece una solución razonable a estos problemas.
+
+\subsection{Clasificador Naive Bayes}
+La clave está en simplificar las densidades condicionales de clase suponiendo independencia.
+$$p(\vec{x} \mid \mathcal{C}_k) \approx \prod^D_{j = 1} p(x_j \mid \theta_{jk})$$
+donde $\theta_{jk}$ son parámetros. 
+
+Los tipos de densidades condicionales de clase en función del tipo de característica son:
+\begin{itemize}
+\item \textbf{De valor real:} distribución gaussiana
+\item \textbf{Binaria}: distribución Bernoulli
+\item \textbf{Categórica:} distribución multinoulli
+\end{itemize}
+
+\subsubsection{Estimación de la prior (probabilidad de clase)}
+La primera parte trata sobre la probabilidad a priori de cada clase $k$:
+$$p(y_i \mid \pi) = \prod^K_{k=1} \pi_k^{I(y_i = k)}$$
+Esto significa que la probabilidad de que una muestra pertenezca a una clase $k$ se modela como un producto de probabilidades $pi_k$, donde solo la clase correcta contribuye (usando la variable indicadora $I(y_i = k)$. Tomando logaritmos:
+$$\log p(\mathcal{D} \mid \pi) = \sum^K_{k = 1} N_k \log \pi_k$$
+siendo $N_k$ el número de muestras en la clase $k$.
+
+La estimación de máxima verosimilitud (MLE) para la probabilidad de la clase es:
+$$\hat{\pi}_k^{ML} = \frac{N_k}{N}$$
+Es decir, la probabilidad estimada de la clase $k$ es simplemente el número de instancias en esa clase dividido por el total de muestras.
+
+\subsubsection{Estimación de probabilidades de los atributos (feature probabilities)}
+Cuando las características son categóricas, el modelo necesita estimar la probabilidad condicional $p(x_j \mid y_k)$, es decir, la probabilidad de observar un valor de un atributo dado que pertenece a la clase $k$.
+
+La función de verosimilitud para los atributos se modela como:
+$$\log p(\mathcal{D}^k_j \mid \mu_{jk}) = \sum^C_{c = 1} N^c_{jk} \log \mu_{jkc}$$
+donde
+\begin{itemize}
+\item $ N^c_{jk}$ es el número de veces que el valor $c$ del atributo $j$ aparece en la clase $k$.
+\item $\mu_{jkc}$ es la probabilidad de que el atributo $j$ tome el valor $c$ en la clase $k$.
+\end{itemize}
+
+La estimación ML para esta probabilidad es:
+$$\hat{\mu}^{ML}_{jkc} = \frac{N^c_{jk}}{N_k}$$
+Esto significa que la probabilidad estimada de un atributo específico es simplemente la frecuencia relativa de ese valor dentro de la clase $k$.
+
+Sólo tenemos que contar las ocurrencias entre las instancias de formación.
+
+
+%\section{Análisis discriminante}
