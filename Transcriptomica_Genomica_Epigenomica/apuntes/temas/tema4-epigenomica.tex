@@ -1,0 +1,117 @@
+%12/03 - Enrique Carrillo
+\part{Regulación Genómica y Epigenómica}
+\chapter{Introducción y regulación genómica}
+\section{Avances impulsados por el Proyecto Genoma Humano}
+El coste del proyecto genoma humano fue equivalente a mandar el hombre a la Luna, por lo que tuvo un gran impacto a nivel global y de humanidad. Cambió la visión de la biología. 
+Entre los avances se encuentran:
+\begin{itemize}
+\item Datos democratizados, públicos, disponibles gratuitamente online a la información.
+\item Mapa genético y físico: alrededor de 21.000 genes y conocemos su localización en el genoma, aún más sus interacciones 3D
+\item Desarrollo de nuevas tecnologías: secuenciación
+\item Identificación genética: conocemos el mapa de posición y rastreamos las consecuencias de las variaciones.
+\item Aplicación de técnicas bioinformáticas y de machine learning
+\end{itemize}
+
+Nota rápida: Margaret Oakley Dayhoff fue la pionera en el campo de la bioinformática. Dedicó su carrera a la aplicación de tecnologías computacionales en biología y medicina, principalmente mediante la creación de bases de datos de proteínas y ácidos nucleicos, así como de herramientas de acceso a historias cortas.
+
+Luego se vivió la revolución de la secuencia del genoma humano. Se desarrollaron muchos proyectos de cáncer, transcriptómica, aumento de las bases de datos, etc. 
+
+\section{Regulación genómica}
+La regulación genómica controla cuándo, dónde y cuánto se expresan los genes.
+
+\subsection{Estructura del ADN y elementos reguladores}
+Siendo muy simplista, el ADN se divide en la hebra simple, que se empaqueta con las histona hasta llegar al cromosoma completamente compactado. La regulación va de esto: cómo se empaqueta y desempaqueta el ADN para que se produzcan distintos sucesos (la transcripción fundamentalmente). 
+
+Los genomas son muy complejos, ya que más de 10x y 30x del ADN es necesario para codificar proteínas. Los genomas se pueden clasificar en regiones codificantes (exones) y regiones no codificantes, entre los que se encuentran intrones, regiones intergénicas, regiones reguladoras (promotores, potenciadores, regiones silenciadoras, insulators, generalmente relacionados con la actividad de los factores de transcripción), pseudogenes (relacionados con genes pero que han perdido actividad debido a un proceso mutacional), regiones repetitivas (regiones satélite, retrotransposones, SINE, LINE, ...) y regiones transcritas no codificantes (miRNA, siRNA, piRNA, lncRNA). Éstos últimos se analizan como si fueran datos transcriptómicos, cuantificándolos. 
+
+Entre los elementos reguladores destacan:
+\begin{itemize}
+\item Promotores: regiones que inician la transcripción mediante TATA box, CAAT box, GC box
+\item Enhancers: aumentan la expresión de genes distantes. Esto es muy complicado de encontrar en la inmensidad del genoma al no estar caracterizados.
+\item Silencers: reprimen la transcripción de genes distantes. También son difíciles de caracterizar computacionalmente. 
+\item Insulators: aíslan regiones para prevenir efectos reguladores no deseados. Estas regiones están asociadas a determinadas proteínas. 
+\end{itemize}
+
+Un gen empieza por un promotor y tiene distintos exones e intrones. El gen termina en una señal de poliadenilación. Las regiones promotoras son segmentos del ADN que precede los sitios de iniciación de los sitios de transcripción (transcription start site). Esta región atrae la ARN polimerasa.
+
+\subsection{Predicción de genes y motivos de ADN}
+Existen regiones del ADN con secuencias que permiten predecir la presencia de genes, como el transcription start site. Ahora mismo ya no es un gran reto porque hay muchas bases de datos sobre esto (por ejemplo, \href{http://epd.vital-it.ch}{EPD}), pero se utiliza mucho en el laboratorio, teniendo que hacer un fine-tuning. 
+
+Los estudios CAGE capturan los inicios de la transcripción de forma experimental. Se marca el inicio del ARN mensajero con un cap para seguirlo y detectarlo. FANTOM es un buen recurso para asignar anotaciones funcionales a los tránscritos. 
+
+\subsection{Detección de enhancers}
+Los enhancers son complicados desde el punto de vista bioinformático al tener varias conformaciones distintas. Además, como pueden estar lejos en el espacio, no conocemos la distancia concreta. Otras veces se necesitan varios factores de transcripción hasta llegar a unirse a la polimerasa en el promotor, y en otras ocasiones se forma un loop. Aquí no hay números, por lo que su estudio es complejo. Pero como esto es lo que más regula la expresión de los genes, es un campo en auge. 
+
+No siempre es 1 enhances - 1 gen, si no que puede haber 1 enhancer para varios genes, afectándolos de formas distintas, aumentando su complejidad. Si sabemos que unas proteínas necesitan un determinado enhancer, con datos de ChIP-Seq sí se podría localizarlos.
+
+Con los silenciadores, el concepto es el mismo, pero con el efecto contrario. 
+
+Por convenio, se buscan promotores en 1 kilobase, pero la decisión está en el bioinformático. No es lo mismo decidir 1 kb que 5 kb, y esta decisión afecta posteriormente al análisis de enriquecimiento. 
+
+\subsection{Motivos de unión a factores de transcripción}
+Los factores de transcripción se unen al promotor para afectar al gen. Estos factores tienen motivos concretos de unión, lo cual facilita el análisis al poder escanear todo el genoma en busca de ese motivo. Pero hay varios problemas:
+\begin{itemize}
+\item Consensos a menudo mal definidos, no siempre son perfectos al poder cambiar alguna base, tener una base más o menos.
+\item Secuencias no conservadas dentro de las especies, y peor aún entre especies, por lo que no vale buscar el motivo en una especie para aplicarlo en otra.
+\item Ejemplos de enhancers conservados funcionalmente pero no conservados en su secuencia, por lo que encontrar motivos de unión puede ser complicado.
+\item La mayoría de los datos de secuencias de TFBS proceden de unas pocas especies: ratón, humano y poco más.
+\item Muy a menudo son experimentos \textit{in vitro}, pero poco a poco está aumentando ChIP-Seq.
+\item 2 sitios de unión completamente diferentes podrían fusionarse en la misma matriz/consenso. 
+\end{itemize}
+
+Una matriz tiene una fila para cada secuencia y una columna para cada posición. Se cuentan así las bases para cada posición, calculando el consenso. Gracias a estas matrices se pueden buscar los motivos en el genoma. Esto se puede representar después con logos, en el que el contenido de información de la columna de una matriz va desde 0 hasta 2. 
+
+Bases de datos a utilizar es TRANSFAC, pero es de pago. No obstante, hay programas que pagan para poder utilizar la base de datos dentro, por lo que es una de las más utilizadas. Esta base de datos tiene un score de calidad:
+\begin{enumerate}
+\item Sitio de unión al factor de transcripción confirmado funcionalmente
+\item Unión de proteína pura (purificada o recombinante)
+\item Actividad de unión caracterizada inmunológicamente de un extracto celular
+\item Actividad de unión caracterizada mediante una secuencia de unión conocida
+\item Unión de proteína de extracto no caracterizada a un elemento de buena fe
+\item Sin calidad asignada
+\end{enumerate}
+
+Otra base de datos es JASPAR. Permite elegir los factores de transcripción y sus matrices, la especie, etc. 
+
+\subsubsection{Ejercicio}
+Nos vamos a Ensembl y nos descargamos la región codificante del gen BRCA2. Una vez en Jaspar, en la búsqueda seleccionamos el genoma humano y seleccionamos todos los factores de transcripción. A la derecha hay varias opciones y debemos seleccionar Scan. Pegamos la secuencia en FASTA y podemos especificar el umbral de puntuación del perfil relativo. 
+
+\subsection{Descubrimiento de patrones}
+Es posible encontrar motivos desconocidos mediante el análisis del genoma completo, clusterizando y realizando análisis. Además, se pueden realizar estadísticas como frecuencia esperada y observada. A veces no es necesario coger el genoma completo. Por ejemplo, para analizar solo enhancers, se puedes coger regiones que ya se han establecido como enhancers. Hay programas que no lo permiten, pero en otras ocasiones se puede especificar o poner una "black list". 
+
+Los factores de transcripción pioneer se unen a determinadas regiones para estirar el ADN y liberar los genes para su transcripción. Estos son difíciles de trabajar, ya que se unen a zonas con nucleosomas, siendo complicado establecer sus motivos de unión. Al recibir un fichero con datos de ChIP-Seq de estos factores de transcripción, es importante conocerlo para adaptar el análisis. 
+
+Otras herramientas útiles son:
+\begin{itemize}
+\item MEME-Suite: tiene muchas herramientas para identificar secuencias, clusterizar, etc.
+\item HOMER Motif Analysis: sirve para motivos de unión, pero también Hi-Seq, análisis funcional, etc.
+\item RSAT: está separado en hongos, procatriotas, plantas, etc.
+\item TRAP
+\end{itemize}
+
+\subsubsection{Ejercicio}
+Desde GEO, nos descargamos los picos del experimento GSE47535 y eliminamos la primera línea. Convertimos el BED en FASTA.
+
+
+\chapter{Epigenética}
+La epigenética se ha definido de muchas maneras a lo largo del tiempo. Primero fue el estudio entre la interacción entre genes y el ambiente. Posteriormente fue el estudio de los mecanismos que controlan la actividad de los genes durante el desarrollo. En el 2009 ya se definió como el estudio de los fenotipos hereditarios resultantes de cambios cromosómicos sin alteraciones en la secuencia del ADN. Ahora se podría definir como el estudio de la organización cromosomal y la regulación de la actividad genómica sin cambio nucleotídico. 
+
+La genética estudia la secuencia primaria del ADN y sus cambios, mientras que la epigenética estudia la modificación química en el ADN y proteínas asociadas sin cambios de secuencia. En un nucleosoma hay 8 histonas, y se buscan cambios químicos en el ADN y las histonas. También puede haber distintas conformaciones de las histonas. Lo más importante son las colas de las histonas, ya que es donde se darán los cambios. 
+
+\section{Mecanismos epigenéticos}
+Hay fundamentalmente cuatro mecanismos epigenéticos:
+\begin{itemize}
+\item Modificación de histonas
+\item Cambios de composición de histonas
+\item Modificaciones de citosina
+\item Interacción de modificadores de cromatina
+\end{itemize}
+
+\subsection{Modificaciones de histonas}
+Hay varias, pero las principales son acetilación, metilación, ubiquitinación, sumoylación y fosforilación. Las modificaciones se han asociado a distintas funciones. Es importante saber con qué tipo de histonas se trabajan y qué residuos de las colas pueden tener esas modificaciones. También hay que saber la anotación: H3K27me3 significa que en la histona 3, en la lisina 27 hay una triple metilación. 
+
+Las modificaciones de las histonas se van a combinar entre ellas, por lo que el análisis se puede complicar. Las modificaciones tienen distintas acciones: escribir cosas, borrar o leer. Algunas modificaciones son compatibles, mientras que otras son incompatibles. En estudios en bulk, las pequeñas diferencias son importantes al poder indicar pequeñas subpoblaciones. Algunas modificaciones de histonas se han relacionado con enhancers unirse con factores de transcripción. 
+
+Muchas de las histonas están ya estudiadas y tienen unos perfiles conocidos. Esto ayuda a la hora de analizar un perfil para saber qué esperamos. Las histonas son mecanismos generales, no específicos, teniendo que salir perfiles iguales. Para histonas activadoras, la densidad es muy superior al background. El problema está con las histonas inhibidoras, ya que la densidad es similar al background. Las señales no son tan grandes, y los peak callers funcionan muy mal en general, teniendo que utilizar log ratio. 
+
+\subsection{Cambios en la composición de histonas}
