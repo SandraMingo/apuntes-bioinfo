@@ -1,0 +1,50 @@
+\section{Modelos matemáticos de sistemas de interacción}
+\subsection{Conceptos de dinámicas químicas}
+Las reacciones químicas son sistemas: reactivos que interaccionan. No se estudia como un sistema si no como una reacción, pero las propiedades son de sistemas, por lo que se puede utilizar la matemática y adaptarla. Por tanto, nos vamos a aprovechar de la cinética química y aprovecharnos. 
+
+Una reacción química es un sistema diverso, ya que los reactivos son distintos. De la química vamos a utilizar la ley de acción de masas, la ley de conservación de masas, el equilibrio químico y la estequiometría. 
+
+\subsection{Cinética química}
+Se utiliza la notación típica de la química: reactivos a la izquierda, flecha y resultado a la derecha. 
+$$A + B \xrightarrow{k_1} C$$
+$$2A + B \xrightarrow{k_2} C$$
+
+Para aumentar la velocidad de reacción, hay que aumentar la concentración de $A$ y $B$, la distancia de ambos reactivos, etc. Esto se resume en la interacción, cambiando $k$. Si añadimos más producto ($C$), no afecta a la reacción, ya que estamos suponiendo que es irreversible.
+
+Para que ocurra una reacción química, las moléculas deben chocar. Ese choque es importante, y cómo se produce. Esto se tiene en cuenta en $k$, que mide cuántas de las colisiones son efectivas. Hay que definir bien a qué nos referimos y qué significa la k. La velocidad de reacción depende de la concentración de los reactivos (proporcional) y con la constante de proporcionalidad k (igualdad). 
+$$\text{speed of reaction 1} \propto A \cdot B = k_1 \cdot A \cdot B$$
+$$\text{speed of reaction 2} \propto A \cdot A \cdot B = k_2 \cdot A \cdot A \cdot B $$
+
+A esto se le llama ecuación diferencial al medir cómo cambia C en unidad de tiempo (velocidad). Una ecuación diferencial mide la velocidad de cambio, siendo fundamentalmente la velocidad de la reacción. 
+
+\subsection{Equilibrio}
+El equilibrio se da cuanto la reacción llega a un estado en el que no cambie. Se alcanza cuando se acaba la reacción irreversible. En reacciones reversibles, la reacción no se acaba nunca, llega a un equilibrio cuando la velocidad de los reactivos y productos es la misma.
+$$2NO_2 \xrightarrow{k_1} N_2O_4$$
+$$N_2O_4 \xrightarrow{k_2} 2NO_2 $$
+$$\text{speed of reaction 1} = k_1 \cdot NO_2^2$$
+$$\text{speed of reaction 2} = k_2 \cdot N_2O_4 $$
+
+Para el equilibrio, se debe igualar:
+$$k_1 \cdot NO_2^2 =k_2 \cdot N_2O_4 \rightarrow \frac{k_1}{k_2} = \frac{[ N_2O_4]_{eq}}{[NO_2]^2_{eq}} $$
+
+Ese valor es constante y la relación es igual, sin importar las condiciones iniciales. A esto se le conoce como \textbf{constante de equilibrio}, y para reacciones químicas suele estar tabulado. 
+
+Otro ejercicio:
+$$Na_2CO_3 + CaCl_2 \xrightarrow{k_1} CaCO_3 + 2 NaCl$$
+$$CaCO_3 + 2 NaCl \xrightarrow{k_2} Na_2CO_3 + CaCl_2$$
+$$\text{speed of reaction 1} = k_1 \cdot Na_2CO_3 \cdot CaCl_2$$
+$$\text{speed of reaction 2} = k_2 \cdot CaCO_3 \cdot [NaCl]^2 $$
+
+$$k_1 \cdot Na_2CO_3 \cdot CaCl_2 =k_2 \cdot CaCO_3 \cdot [NaCl]^2 \rightarrow \frac{k_1}{k_2} = \frac{[CaCO_3]_{eq} \cdot [NaCl]^2_{eq}}{[Na_2CO_3]_{eq} \cdot [CaCl_2]_{eq}} $$
+
+Las dimensiones de la constante de equilibrio en este caso tiene unidades de equilibrio (mol), pero depende de la reacción, concretamente de la cantidad de reactivos y productos. Esto significa que $k_1$ y $k_2$ no son iguales, ya que si no no habría unidades. Cada $k$ tiene unas unidades distintas, por lo que sólo con el valor de distintas $k$, no se podría decir qué reacción es más rápida. En este caso, $k_1 [\frac{1}{t \cdot c}]$ y $k_2 [\frac{1}{t \cdot c^2}]$.
+
+Para cualquier sistema, esto va a ser lo mismo. 
+
+El orden de las reacciones indica cuántos reactivos están involucrados:
+\begin{itemize}
+\item Reacción de orden 0: la reacción no depende de la concentración de nada.
+\item Reacción de orden 1: la reacción depende de la concentración de un reactivo o una especie.
+\item Reacción de orden 2: la reacción depende de la concentración cuadrática de un solo reactivo, o de la concentración de dos reactivos. 
+\end{itemize} 
+

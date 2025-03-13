@@ -1,0 +1,90 @@
+%13/03 - David Míguez
+\section{Sistemas complejos}
+El estudio de los sistemas complejos es fundamental en diversos campos, desde la biología y la ecología hasta la economía y las ciencias sociales. En el contexto de los sistemas vivos, la comprensión de los sistemas complejos permite entender cómo las interacciones y la dinámica configuran la forma y la función en muchos estratos de la biología: desde los genes a los orgánulos, pasando por las células, los tejidos, los organismos e incluso los ecosistemas. El estudio de la Biología desde la perspectiva de los Sistemas Complejos es una disciplina muy interdisciplinar por definición, ya que implica herramientas de la Física y las Matemáticas. Pero, antes de definir qué entendemos por sistema complejo, definamos primero qué entendemos por sistema.
+
+En biología se habla de un sistema porque lo que se estudia no está aislado. Las células, los organismos, las proteínas no funcionan de forma aislada, por lo que se habla de un sistema. La biología de sistemas es un cambio de foco: en lugar de centrarnos en una proteína o un gen, nos centramos en la foto general de cómo funciona una célula, una neurona, etc. 
+
+Un sistema es un grupo de elementos que interaccionan y están interrelacionados o interdependientes para formar un complejo. Un ejemplo de sistema es el sistema solar: los planetas son elementos que interaccionan, por lo que cumple con la definición.
+
+\subsection{Caracterización de sistema}
+Hay muchas formas de caracterizar los sistemas en función de sus propiedades. Como primera aproximación, podemos empezar a caracterizar los sistemas basándonos en su composición como \textbf{diversos} o \textbf{no diversos}.
+
+Un sistema no diverso es aquel en el que todos los elementos son iguales. Por ejemplo, un sistema compuesto por un conjunto de moléculas de agua es no diverso, ya que todas las moléculas son iguales. Esto no significa que sea simple, ya que hay muchos enlaces, fuerzas de van der Waals, etc. Pero en biología de sistemas nos interesan los sistemas diversos, donde los elementos son diferentes. Por ejemplo, un conjunto de proteínas que interactúan en una vía o cascada de señalización es diverso, ya que se compone de muchas unidades de diferentes elementos que son diferentes entre sí. Hay distintas proteínas en localización, número, masa, etc.
+
+\subsection{Sistemas complejos}
+Hay muchas definiciones de sistemas complejos. Son un tipo de sistemas que se comportan de una forma que no puede ser predicha a través de un estudio exhaustivo de las propiedades de sus partes. En otras palabras, los sistemas complejos tienen propiedades emergentes que surgen a partir de sus interacciones. Un ejemplo de un sistema complejo es el cerebro. Hay sincronización entre las neuronas, lo que se puede definir matemáticamente como sistemas no lineales. 
+
+\subsubsection{No todos los sistemas complicados son sistemas complejos}
+En este contexto, no es fácil y sencillo definir qué hace que un sistema sea un Sistema Complejo frente a un Sistema no Complejo. Empecemos por aclarar la diferencia entre Complicado y Complejo. Una máquina puede ser complicada, pero su funcionamiento y propiedades pueden predecirse totalmente por las propiedades de sus partes.
+
+En general, podemos caracterizar un sistema como no complejo si:
+\begin{itemize}
+\item Ha sido diseñado y construido racionalmente para realizar una tarea concreta, no surge espontáneamente.
+\item No es robusto: si falla una pieza, falla el sistema.
+\item No se adapta a los cambios. No es fluido.
+\end{itemize}
+
+\subsection{Características de sistemas complejos}
+\begin{enumerate}
+\item \textbf{Un sistema complejo es no normal}
+
+Decimos que un sistema complejo no es normal en el sentido de que no se ajusta a una distribución normal (gaussiana). Ilustremos este concepto de sistema normal frente a sistema no normal. Tenemos dos dados y sumamos los valores. Eso es un sistema normal con una media y una desviación estándar. Para convertir esto en una distribución no normal, hay que aplicar una regla. Por ejemplo, cada vez que salgan dos números iguales en los dados, no se computa y se vuelven a lanzar. De esta forma, la distribución tendría la misma media, pero colas diferentes. Debido al bucle de realimentación introducido, la distribución deja de ser normal.
+
+\item \textbf{Es difícil de predecir la respuesta}
+
+En los sistemas complejos, a menudo el estado final depende de su estado inicial. Los sistemas lineales, como los típicos estudiados en Mecánica (muelles, bolas en lo alto de una colina...), Termodinámica (un gas que se expande...) y Electromagnetismo (un circuito, un condensador que se descarga...) tienen la propiedad de que la solución final depende de las propiedades del sistema (temperatura, carga, masa...) y de los parámetros del sistema (gravedad, constante dieléctrica...). Por otra parte, la solución de los sistemas complejos también puede depender de dónde se encontraba inicialmente el sistema, lo que introduce una especie de \textbf{memoria}.
+
+Un análogo típico para entender este concepto de memoria o dependencia de las condiciones iniciales es el típico ciclo de histéresis en magnetismo: dentro del bucle, el estado de magnetización depende de si se mueve aumentando o disminuyendo el valor del campo magnético B a lo largo del eje x.
+
+\item \textbf{Los sistemas complejos pueden ser robustos}
+
+Los sistemas complejos pueden tener otra propiedad importante que puede desempeñar un papel en los sistemas biológicos: pueden ser más robustos que los sistemas lineales. En otras palabras, son \textbf{menos sensibles a los cambios del entorno} que los sistemas simples. Esto se debe a un feedback negativo.
+
+Esta propiedad puede ser muy deseada en sistemas biológicos como poblaciones de animales o plantas, o conjuntos de células que tienen que formar un órgano o un individuo. Por ejemplo, es bien sabido que las moscas pueden desarrollarse a diferentes temperaturas, y dado que la velocidad de las reacciones químicas depende de la temperatura, a través de la famosa ecuación de Arrhenius:
+$$k = Ae^{E_a/RT}$$
+
+Basándose en esto, cabría esperar que los embriones de mosca a 40 grados se desarrollaran mucho más rápido que las moscas a 20 grados. Pero no es el caso, una mosca tarda más o menos el mismo tiempo en desarrollarse, independientemente de si se desarrolla a 20 o 40 grados, por lo que debería haber algún tipo de robustez en el sistema para conseguirlo.
+
+Esta propiedad se denomina formalmente adaptación. Podemos ver que para valores bajos de un elemento, la dinámica depende mucho de este parámetro, mientras que para valores altos, el sistema se vuelve casi insensible a los cambios en este parámetro.
+
+\item \textbf{Pueden presentar geometría fractal}
+
+Los \textbf{fractales} son formas geométricas complejas con una dimensión fraccionaria (1,2 por ejemplo, que está entre 1 dimensión y 2 dimensiones). Representan sistemas con propiedades no lineales.
+
+Tenemos una esfera con una línea que la cruza. A medida que la esfera crece, el número de puntos de la recta que contiene aumenta como R (el radio), por lo que la recta es unidimensional. Si tenemos la esfera con un rectángulo, a medida que la esfera aumenta de tamaño, el número de puntos del rectángulo que contiene aumenta como R2, por lo que el cuadrado es bidimensional. Entre la línea y el plano, hay un fractal.
+
+Los fractales suelen tener la propiedad de la autosimilitud: una parte se parece al todo (la estructura tiene el mismo aspecto a cualquier escala). En este tipo de estructuras, al aumentar la bola, aumentará el número de puntos dentro de la bola siguiendo un exponente no entero.
+
+\item \textbf{Propiedades a escala global}
+
+Un sistema complejo, a pesar de estar formado por muchas partes que interactúan, parece comportarse como una sola entidad. El ejemplo típico es la bandada de pájaros.
+
+El premio nobel de Física de 2021 fue concedido a Giorgio Parisi, que también trabajó en la comprensión de la dinámica de estos sistemas que se mueven coordinados sin un líder: Pueden parecer muy alejados de los cristales de espín, pero hay algo en común, lo que comparten, y que es muy interesante, es cómo surgen los comportamientos complejos. Este es un tema recurrente en física y biología, y la mayor parte de la investigación que he realizado es para llegar a esto: cómo pueden surgir comportamientos colectivos complejos a partir de elementos que tienen cada uno un comportamiento simple.
+
+\item \textbf{Pueden presentar puntos críticos}
+
+Una bifurcación es un punto a partir del cual el sistema cambia (de un sistema lineal a biestable, Hopf, horquilla, etc.).
+
+Un punto crítico de una función y = f(x) es un punto (c, f(c)) de la gráfica de f(x) en el que o bien la derivada es 0 o la derivada no está definida. En los sistemas dinámicos no lineales, pueden ser soluciones, de forma que una pequeña perturbación puede provocar la transición de un estado a otro. Estas soluciones se denominan puntos críticos.
+
+\item \textbf{Pueden presentar autoorganización}
+
+La reacción de Beloúsov-Zhabotinski es una reacción oscilante química en el laboratorio. Al mezclar cierto número de reactivos, la reacción ocurre, se gasta y vuelve a ocurrir. Esto ocurre de forma cíclica oscilante debido al feedback positivo (causa biestabilidad) y negativo (que aporta robustez). A partir de este experimento se creó el campo de la física no lineal.
+
+Cuando estas reacciones se ponen en las placas de Petri, se organiza en el espacio, "rompiendo" el segundo principio de la termodinámica en el espacio causando patrones. 
+
+\item \textbf{Pueden presentar propiedades emergentes}
+
+La idea básica de la emergencia es que existen propiedades en los niveles jerárquicos superiores de la naturaleza que no son derivables ni reducibles a las propiedades y leyes de los niveles inferiores. La \textbf{emergencia} es el concepto o enfoque opuesto al \textbf{reduccionismo}, que, por el contrario, sostiene que todo puede explicarse mediante (reducirse a) las leyes básicas de la física. 
+
+Por ejemplo, la información no es ni materia ni energía, aunque necesita materia para encarnarse y energía para comunicarse. Cómo viaja la información dentro de un sistema es clave para entender el sistema. Pero no se puede estudiar cómo se propaga la información observando aisladamente una parte de un sistema. Hay que estudiar las interacciones. Y de las interacciones surgen nuevas propiedades. Uno de los principales impulsores de esta idea es Illa Prigogine (Premio Nobel en 1977).
+
+$$System > \sum_i part_i \rightarrow System = \sum_i part_i + interactions$$
+
+Un sistema es más que la suma de las partes, un sistema es la suma de sus partes y sus interacciones. Muchas veces, las interacciones son más importantes que las partes. Una propiedad emergente muy notable es la vida.
+
+\item \textbf{Pueden presentar caos}
+
+Los sistemas complejos pueden generar una amplificación exponencial de perturbaciones infinitesimales. Es lo que se conoce como efecto mariposa, introducido por Eduard Lorenz, el modelo en el que se basan muchas herramientas de previsión meteorológica.
+El diagrama de fase del atractor de Lorenz es una estructura fractal de dimensión 2,0627160.
+\end{enumerate}
