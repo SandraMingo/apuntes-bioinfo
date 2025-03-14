@@ -1,0 +1,103 @@
+---
+title: "Task1 - Working with functions"
+subtitle: "Redes Biológicas y Biología de Sistemas"
+author:   
+  - Sandra Mingo Ramírez
+format: pdf
+lang: es
+---
+
+1. Write a simple computer program that consists of a single function that takes as input the equilibrium concentration of the reactants of the following reaction, $2NO_2 <-> N_2O_4$ and gives as output the $K_{eq}$ (with the correct units) of the following reaction. 
+Test the function with the following equilibrium concentrations: $[NO_2] = 2; [N_2O_4] = 3$
+
+```{python}
+def equilibrium_constant(NO2, N2O4):
+    '''Calculates the equilibrium constant of the reaction 2NO2 <-> N2O4
+    Parameters:
+    NO2 (int): Concentration of NO2 in Mol
+    N2O4 (int): Concentration of N2O4 in Mol
+
+    Returns:
+    k_eq (float): Equilibrium constant of the reaction
+    units (str): Units of the equilibrium constant
+    '''
+    k_eq = N2O4 / (NO2**2)
+    units = "M^-1"
+    return k_eq, units
+
+NO2 = 2
+N2O4 = 3
+
+k_eq, units = equilibrium_constant(NO2, N2O4)
+print(f'The equilibrium constant is {k_eq} {units}')
+```
+
+2. Modify the previous function to calculate the K_eq with the correct units for the following reaction: $Na_2CO_3 + CaCl_2 <-> CaCO_3 + 2NaCl$ with equilibrium concentrations: $[Na_2CO_3] = 2; [CaCl_2] = 0.5; [CaCO_3] = 2; [NaCl] = 1.2$
+
+```{python}
+def equilibrium_constant2(reactives, products):
+    '''Calculate equilibrium constant of a reaction
+    Parameters:
+    reactives (list): List with the concentration of reactives of the reaction 
+    products (list): List with the concentration of products of the reaction 
+
+    Returns:
+    k_eq (float): Equilibrium constant of the reaction
+    units (str): Units of the equilibrium
+    '''
+    k_eq = products[0] * products[1]**2 / (reactives[0] * reactives[1])
+    units = "M^1"
+    return k_eq, units
+
+reactives= [2, 0.5]
+products = [2, 1.2]
+
+k_eq, units = equilibrium_constant2(reactives, products)
+print(f'The equilibrium constant is {k_eq} {units}')
+```
+
+3. Write a general function for this.
+
+```{python}
+def equilibrium_constant_general(reactives, products):
+    '''Calculate equilibrium constant of a reaction
+    Parameters:
+    reactives (dict): Dictionary with the reactives of the reaction 
+        and their stoichiometry
+    products (dict): Dictionary with the products of the reaction 
+        and their stoichiometry
+
+    Returns:
+    k_eq (float): Equilibrium constant of the reaction
+    units (str): Units of the equilibrium
+    '''
+    k_eq = 1.0  # Initialize equilibrium constant
+    units = ""
+    
+    for species, (concentration, coeff) in products.items():
+        k_eq *= concentration ** coeff
+    
+    for species, (concentration, coeff) in reactives.items():
+        k_eq /= concentration ** coeff
+    
+    # Assuming concentration units are in mol/L
+    reactant_order = sum(coeff for _, coeff in reactives.values())
+    product_order = sum(coeff for _, coeff in products.values())
+    net_order = product_order - reactant_order
+    
+    if net_order > 0:
+        units = f"(mol/L)^{net_order}"
+    elif net_order < 0:
+        units = f"(L/mol)^{-net_order}"
+    else:
+        units = "dimensionless"
+    
+    return k_eq, units
+
+
+reactives = {"Na2CO3": (2, 1), "CaCl2": (0.5, 1)}
+products = {"CaCo3": (2, 1), "NaCl": (1.2, 2)}
+
+k_eq, units = equilibrium_constant_general(reactives, products)
+print(f"Equilibrium constant: {k_eq} {units}")
+```
