@@ -90,7 +90,7 @@ Otras herramientas útiles son:
 \end{itemize}
 
 \subsubsection{Ejercicio}
-Desde GEO, nos descargamos los picos del experimento GSE47535 y eliminamos la primera línea. Convertimos el BED en FASTA.
+Desde GEO, nos descargamos los picos del experimento GSE47535 y eliminamos la primera línea. Convertimos el BED en FASTA y lo analizamos con Meme-Suite. 
 
 
 \chapter{Epigenética}
@@ -114,4 +114,37 @@ Las modificaciones de las histonas se van a combinar entre ellas, por lo que el 
 
 Muchas de las histonas están ya estudiadas y tienen unos perfiles conocidos. Esto ayuda a la hora de analizar un perfil para saber qué esperamos. Las histonas son mecanismos generales, no específicos, teniendo que salir perfiles iguales. Para histonas activadoras, la densidad es muy superior al background. El problema está con las histonas inhibidoras, ya que la densidad es similar al background. Las señales no son tan grandes, y los peak callers funcionan muy mal en general, teniendo que utilizar log ratio. 
 
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.9\textwidth]{figs/histone-modification.png}
+\includegraphics[width = 0.7\textwidth]{figs/1-s2.0-S0968000410000940-gr1.jpg}
+\end{figure}
+
+%14/03 - Enrique Carrillo
+Como cada vez aumenta la capacidad computacional, la cantidad de muestras también aumenta. Hay estudios con 10.000 mapas epigenómicas de 800 muestras. Esto permite ver las modificaciones de histonas en distintos tipos celulares y tejidos. 
+
+Epimap es un repositorio de mapas epigenéticos de 15.000 datasets. 
+
 \subsection{Cambios en la composición de histonas}
+Las histonas se detectan con anticuerpos o ChIP-Seq. Se han estudiado las distintas combinaciones de las histonas que tienen funciones distintas. Para el ChiP-Seq, se utilizan anticuerpos que se unen a la histona. Mediante DNAsas se recorta el ADN y se libera el anticuerpo. En estos experimentos se necesita un control para evaluar los picos. Esto habitualmente se hace igual, pero sin anticuerpo. Las densidades de las secuencias se mapean y se compara cómo de denso es el pico frente al control. 
+
+Las modificaciones de la cromatina coexisten en regiones genómicas. Por ello se han generado distintos modelos:
+\begin{itemize}
+\item Modelo combinatorio: Combinación de modificaciones específicas de las histonas que codifica
+\item Modelo aditivo: La suma de los efectos individuales de las modificaciones de las histonas
+que contribuye a la estabilidad y robustez.
+\end{itemize}
+
+\section{Métodos de segmentación}
+El objetivo es combinar las distintas modificaciones de las histonas para detectar diferentes estados funcionales de la cromatina en todo el genoma. Se quieren revelar elementos funcionales sin tener que mirar la secuencia. De esta forma, se puede aprender \textit{de novo} patrones espaciales y combinatorios de marcas de cromatina. También se utiliza mucho para anotar genes. 
+
+Una herramienta para esto es ChromHMM. Las histonas tienen dos estados: datos conocidos (los picos en el genoma) y los datos no conocidos (estados de cromatina). La herramienta utiliza los modelos ocultos de Markov.
+
+Se crean ventanas del genoma de 200 pares de bases. Con estos fragmentos se calculan enriquecimientos individuales de cada modificación de histona (presencia o ausencia, binario). Se entrena un modelo de Machine Learning con todas las modificaciones de histonas y tipos celulares al mismo tiempo. Algo no resuelto es la cantidad de estados que hay que entrenar, por lo que hay que probar. La recomendación genera es definir los estados como el mínimo número de variables con interpretación biológica. Se intenta anotar con ayuda de datos externos como RefSeq o distancia a TSS, CpG, etc. Una vez con el modelo creado, se utiliza el genoma de las muestras y se segmenta el genoma de las muestras para ver el estado de cada una de las ventanas. Si algunos estados son muy similares, se pueden agrupar a posteriori. 
+
+\subsection{Determinación de Estados de Cromatina a partir de Datos de ChIP-Seq}
+Nos descargamos ChromHMM. Funciona tanto en Linux como en la CMD de Windows. En el directorio con el programa, ponemos \texttt{java -mx1600M -jar ChromHMM.jar LearnModel SAMPLEDATA\_HG18 OUTPUTSAMPLE 10 hg18}, y se debe ejecutar y crear un webpage\_10.html. Ahora nos vamos a descargar los datos. Para la práctica, se nos han facilitado los ficheros ya procesados, pero habría que descargarlos (\texttt{wget wgEncodeBroadHistoneMonocd14ro1746*AlnRep*.bam}), eliminar duplicados (\texttt{samtools rmdup –s <file>.bam <file>\_RM.bam}), convertir bam a bed (\texttt{bamToBed –i <file>\_RM.bam > <file>\_RM.bed}). 
+
+En la carpeta CHROMSIZES creamos un fichero hg19\_chr16.txt y escribimos chr16 90354753 separado por tabulador. Ahora debemos crear file config\_chromHmm\_bin.txt como se indica en el manual:
+\texttt{cell1 mark1 cell1\_mark1.bed cell1\_control.bed} separado por tabuladores.
+
