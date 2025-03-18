@@ -703,7 +703,7 @@ No obstante, esto tiene varios problemas:
 \begin{itemize}
 \item Estimar $p(\mathcal{C}_k)$ es fácil, pero estimar $p(\vec{x} \mid \mathcal{C}_k)$ puede ser complicado.
 \item El vector $\vec{x}$ puede ser multidimensional, aplicando entonces la maldición de la dimensionalidad.
-\item El vector $\vec{x}$ puede tener valores continuos y discretos.
+\item El vector $\vec{x}$ puede tener valores continuos y discretos, y es difícil modelar ambos atributos.
 \item En los casos discretos, no vamos a ver las instancias $C^D$.
 \end{itemize}
 
@@ -716,10 +716,12 @@ donde $\theta_{jk}$ son parámetros.
 
 Los tipos de densidades condicionales de clase en función del tipo de característica son:
 \begin{itemize}
-\item \textbf{De valor real:} distribución gaussiana
-\item \textbf{Binaria}: distribución Bernoulli
-\item \textbf{Categórica:} distribución multinoulli
+\item \textbf{Atributo de valor real:} distribución gaussiana (media y varianza)
+\item \textbf{Atributo binario}: distribución Bernoulli (probabilidad del atributo 1 o 0)
+\item \textbf{Atributo categórico:} distribución Multinoulli
 \end{itemize}
+
+Con K clases y D dimensiones, solo $\mathcal{O}(KD)$ parámetros implican robustez sobre sobreajuste.
 
 \subsubsection{Estimación de la prior (probabilidad de clase)}
 La primera parte trata sobre la probabilidad a priori de cada clase $k$:
@@ -749,5 +751,161 @@ Esto significa que la probabilidad estimada de un atributo específico es simple
 
 Sólo tenemos que contar las ocurrencias entre las instancias de formación.
 
+%18/03 - Daniel Hernández
+\subsubsection{Breast Cancer Dataset}
+Este es un problema binario, ya que las muestras pueden ser positivas (tumor maligno) o negativas (tumor benigno). Hay 3 atributos: área, smoothness y simetría. De los tres, simetría es binaria (distribución de Bernoulli), mientras que las otras dos son categóricas.
 
-%\section{Análisis discriminante}
+Recibimos una muestra con los valores large, medium y yes. Para calcular la probabilidad posterior, utilizamos la regla de Bayes para la clase 1:
+$$p(C_1 \mid x) = \frac{p(x \mid C_1) p(C_1)}{p(x)} \rightarrow \frac{p(x \mid C_1) p(C_1)}{p(x \mid C_0) p(C_0) + p(x \mid C_1) p(C_1)}$$
+
+Como previamente teníamos 5 casos positivos y 9 negativos, las probabilidades prior son:
+$$p(malignant) = 5/14 = 0,36$$
+$$p(benign) = 9/14 = 0,64$$
+
+En nuestro caso tenemos tres atributos, por lo que hay que estimar cada uno de los factores. Para el atributo área, tenemos una distribución categórica con 3 categorías, al igual que para smoothness, mientras que para simetría tenemos una distribución de Bernoulli. Se estiman los parámetros para calcular la probabilidad de los datos. Debemos calcular la probabilidad de que área sea large para las clases positivas y negativas. Para ello, calculamos $p(area = large \mid malignant) = 4/5 = 0,8$. De los 5 casos de tumores benignos, 4 de ellos tienen el atributo large en área. Para la otra clase: $p(area = large \mid benign) = 1/9 = 0,1$. Esto también se hace para los atributos smoothness y simetría:
+ \marginpar[\footnotesize !!! \\ Este ejercicio podría entrar en el examen final: "Utiliza el estimador de Naive Bayes para este ejemplo"]  \
+$$p(smoothness = medium \mid malignant) = 1/5 = 0,2$$
+$$p(smoothness = medium \mid benign) = 5/9 = 0,6$$
+$$p(symmetry = yes \mid malignant) = 1/5 = 0,2$$
+$$p(symmetry = yes \mid benign) = 5/9 = 0,6$$
+
+Multiplicando estos valores por el prior, ya tenemos el numerador para Bayes. Para el denominador hay que poner lo mismo sumado a la probabilidad de la clase contraria:
+$$p(malignant) \cdot p(area = large \mid malignant) \cdot p(smoothness = medium \mid malignant) \cdot (symmetry = yes \mid malignant) = 0,0115$$
+$$p(benign) \cdot p(area = large \mid benign) \cdot p(smoothness = medium \mid benign) \cdot (symmetry = yes \mid benign) = 0,0213$$
+
+$$p(malignant \cdot \vec{x}_new) = \frac{0,0115}{0,0115 + 0,0213} = 0,35$$
+$$p(benign \cdot \vec{x}_new) = \frac{0,0213}{0,0115 + 0,0213} = 0,65$$
+
+Con estos datos, predeciríamos la clase \textbf{benigno} al tener mayor probabilidad posterior. Esto es equivalente a minimizar el error de predicción, por lo que el paciente no está enfermo. 
+
+\subsubsection{Sobreaprendizaje}
+La estimación ML de las probabilidades puede sobreajustarse. Si una característica nunca se activa en ambas clases, la estimación de probabilidad correspondiente será cero. En ese caso, dada una nueva instancia con esa característica activada, la probabilidad de tener esa característica activada será cero para cada clase, por lo que el proceso de decisión colapsará (sin importar los otros atributos, el valor final será 0). Posibles soluciones son:
+\begin{itemize}
+\item Utilizar la estimación MAP en lugar de ML e introducir conocimiento previo para imponer estimaciones de probabilidad diferentes de cero o uno. 
+\item Sea totalmente bayesiano y calcule una distribución predictiva para cada $x_j$ marginalizando $\mu_{jkc}$ (manejable bajo determinadas premisas).
+\end{itemize}
+
+Aunque es barato de entrenar y robusto frente al sobreajuste, puede ser subóptimo si en la práctica no se cumple el supuesto de independencia. Las superficies de decisión pueden ser muy distintas de las óptimas.
+
+\subsection{Redes bayesianas}
+La hipótesis Naive de Bayes tiene varias ventajas: simplifica la estimación de probabilidades cuando \textbf{x} tiene muchas dimensiones, y en caso contrario K valores y D características en \textbf{x} conducen a una tabla de tamaño $K^D$. En la práctica, es poco probable que se cumpla la hipótesis. Para ello está la red bayesiana, un grafo con un nodo por cada dato. De esta forma, describe gráficamente la distribución de probabilidad conjunta especificando supuestos de independencia condicional. En el grafo, se conectan los nodos con flechas que van de los nodos origen a aquellos que dependen de ellos. Así, tenemos una tabla de probabilidad (tantas tablas como variables hay en la red) con los posibles valores que puede tener.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/bayesian-network.png}
+\end{figure}
+
+En este ejemplo, hay que completar 7 valores. Suponiendo que tenemos tres atributos binarios, habría $2^3$ combinaciones de atributos, teniendo así 8 parámetros. Como las probabilidades deben sumar 1, solo es necesario calcular 7 (siendo el último 1 - los demás). Si eliminamos las conexiones (aristas) de la red, la distribución se simplifica. Normalmente será una persona experta en los datos la cual decida qué conexiones eliminar sin impactar en los datos. De esta forma, la probabilidad de un parámetro depende de la probabilidad de su parámetro padre. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/bayesian-network-reduced.png}
+\end{figure}
+
+La red bayesiana de la hipótesis de Naive Bayes asume independencia, por lo que no habría ninguna arista y ningún padre. La idea sería tener algo intermedio: ni todas las aristas ni ninguna. Al quitar todas, se simplifica demasiado.
+
+Un ejemplo para una red bayesiana sería el siguiente:
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/bayesian-network-example.png}
+\end{figure}
+
+Con Naive Bayes tendríamos que estimar 6 valores, con la red bayesiana 15, y sin simplificación 48. Se puede utilizar una red bayesiana para obtener algo intermedio entre la hipótesis de independencia total (naive bayes) y la no simplificación.
+
+\subsubsection{Independencia condicional}
+El proceso de eliminar aristas introduce simplificaciones, las cuales son independencias condicionales. Dos variables son independientes condicionalmente si su distribución factoriza dada otra variable.
+x1 es independiente de x2 dado x3, de forma que: $p(x_1, x_2 \mid x_3) = p(x_1\mid x_3) p(x_2 \mid x_3)$.
+
+Las independencias condicionales de la distribución conjunta pueden leerse a partir del gráfico utilizando la \textbf{separación d}: Sean A, B y C conjuntos de nodos no intersecantes, entonces $A \bot B|C$ si todos los caminos desde cualquier nodo de A a cualquier nodo de B están bloqueados.
+Un camino está bloqueado si contiene un nodo $n$ que o bien:
+\begin{itemize}
+\item las flechas se encuentran cabeza con cola o cola con cola en $n$ y $n \in C$, o
+\item las flechas se encuentran cabeza con cabeza en $n$, y ni $n$, ni ninguno de sus descendientes, está en $C$.
+\end{itemize}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/conditional-independence.png}
+\caption{Queremos llegar desde el nodo A al nodo B. Izquierda: se observa C, por lo que el camino no está bloqueado. No se cumple ninguno de los dos criterios anteriores, por lo que A no es independiente de B dado C, son dependientes. Esto se debe a que el nodo E tiene cabeza-con-cabeza, pero su descendiente se ha observado. Derecha: el camino de A a B está bloqueado, por lo que sí se cumple la condición y A es independiente.}
+\end{figure}
+
+El grafo bayesiano es un filtro en el que se permite el paso de $p(x)$ si y sólo si $p(x)$ satisface la propiedad de factorización dirigida. Podemos utilizar el grafo para filtrar distribuciones en función de si respetan las independencias condicionales implícitas en la separación d. El conjunto de datos final coincide entre ambos (mediante la factorización y mediante la separación).
+
+\subsubsection{Aprendizaje en redes bayesianas}
+Aprender del gráfico es muy difícil en la práctica. A menudo lo proporciona un experto con conocimientos previos sobre el proceso de generación de datos.
+
+El aprendizaje de las tablas de probabilidad se basa en observar todas las variables, al igual que en el modelo Naive de Bayes. El aprendizaje se realiza por estimación de máxima verosimilitud o MAP. También se pueden observar solo algunas variables, pero esto requiere el uso práctico del algoritmo expectation-maximization (EM).
+
+\subsubsection{Ejercicios}
+\begin{itemize}
+\item En un clasificador Naive de Bayes, $D = 5$. Los dos primeros atributos toman valores reales. El tercer atributo toma valores binarios. Los dos últimos atributos toman valores categóricos con 3 y 4 categorías diferentes. Escribe la expresión para $p(x|\mathcal{C}_k )$.
+
+Los primeros dos factores siguen una distribución gaussiana, mientras que el restante toma una distribución de Bernoulli. 
+$$p(x \mid \mathcal{C}_k) = \mathcal{N}(x_1 \mid \mu_{1k}, \sigma_{1k}^2) \mathcal{N}(x_2 \mid \mu_{2k}, \sigma_{2k}^2) p_{3k}^{x3} (1 - p_{3k})^{1-x3} \prod^3_{i = 1} \mu_{4k}^{I(x4=i)}  \prod^4_{i = 1} \mu_{5k}^{I(x5=i)}$$
+
+\item Dada la siguiente red bayesiana, hay que buscar los caminos de x1 a x3 y si están bloqueados por x6. Es decir, hay que ver si se cumple $x_1 \bot x_3|x_6$.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/bayesian-network-exercise.png}
+\end{figure}
+
+Al buscar los caminos, no nos importan los sentidos de las flechas. Los caminos son:
+\begin{itemize}
+\item x1-x5-x3
+\item x1-x5-x7-x4-x3
+\item x1-x4-x7-x5-x3
+\item x1-x4-x3: no aparece x6, pero sí el padre de x6. Este padre tiene cabeza con cabeza, y como x6 está en el condicional, el camino no está bloqueado, y no podemos decir que x1 es independiente de x3 dado x6.
+\end{itemize}
+En el momento en que un camino no esté bloqueado, ya no podemos decir que haya independencia condicional, tienen que estar todos bloqueados.
+\end{itemize}
+
+\subsection{Resumen}
+\begin{itemize}
+\item Los modelos generativos de clasificación estiman $p(x|\mathcal{C}_k )$ y $p(\mathcal{C}_k )$ y utilizan el teorema de Bayes para calcular las probabilidades posteriores de clase.
+\item Estimar $p(x|\mathcal{C}_k )$ puede ser un problema difícil. El clasificador Naive Bayes lo resuelve suponiendo que $p(x|\mathcal{C}_k ) = \prod^D_{j=1} p(xj |\mathcal{C}_k )$.
+\item A menudo, la hipótesis del Naive Bayes no es realista y no se cumple, lo que da lugar a decisiones y resultados de clasificación subóptimos.
+\item Una red bayesiana ofrece una solución intermedia (simplicidad y precisión) cuando se modela $p(x|\mathcal{C}_k )$, o cualquier otra distribución.
+\item Las simplificaciones se obtienen introduciendo independencias condicionales en $p(x)$ mediante la eliminación de aristas en la red.
+\end{itemize}
+
+\section{Análisis discriminante}
+Como hemos dicho antes, es poco probable que en la práctica se cumpla la hipótesis Naive de Bayes .Una red bayesiana permite simplificar este supuesto y conduce a un modelo de probabilidad más flexible cuando se trabaja con atributos categóricos. En el caso de los atributos continuos, una distribución gaussiana multivariante permite tener en cuenta las dependencias entre los atributos.
+
+\subsection{Distribución gaussiana multivariante}
+Esto permite introducir algo más flexible que la hipótesis Naive de Bayes. Las entradas de la diagonal representan la varianza de cada componente. Las entradas fuera de la diagonal son las dependencias entre variables. Si son negativas, es que existe correlación negativa entre variables. Cuando recibe el valor 0, es que no hay dependencias. 
+
+Esto permite describir una serie de métodos para resolver problemas de clasificación: análisis discriminante. Utiliza una gaussiana multivariante para describir las condiciones multivariante. Aunque se llame análisis discriminante, se trata de un modelo generativo. Se utiliza una gaussiana para estimar las probabilidades a priori de cada clase y mediante el teorema de Bayes se puede calcular la probabilidad posterior para predecir. Si la matriz es cuadrada y la diagonal es 0, se trata de Naive Bayes. Para el prior se utilizan los estimadores de máxima verosimilitud (media empírica y promediar el vector con la media y él mismo transpuesto). 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/multivariant-gaussian.png}
+\end{figure}
+
+\subsection{Análisis discriminante cuadrático}
+Se utilizan matrices de covarianza distintas para cada clase. Al enchufar las distribuciones en la regla de Bayes, en el numerador queda el prior de la clase y la probabilidad de x dada la etiqueta de clase (densidad gaussiana multivariante). En el denominador se pone la suma del numerador para cada etiqueta de clase. 
+
+$$
+p(y_i = \mathcal{C}_k \mid \vec{x}) =
+\frac{\pi_k \det(2 \pi \sigma_k)^{-1/2} \exp \left\{ -\frac{1}{2} (\vec{x} - \mu_k)^T \sigma_k^{-1} (\vec{x} - \mu_k) \right\}}
+{\sum_{k'} \pi_{k'} \det(2 \pi \sigma_{k'})^{-1/2} \exp \left\{ -\frac{1}{2} (\vec{x} - \mu_{k'})^T \sigma_{k'}^{-1} (\vec{x} - \mu_{k'}) \right\} }
+$$
+
+En un problema de clasificación, la frontera está donde la probabilidad posterior para ambas clases es igual (0,5). El resultado es el análisis discriminante cuadrático, ya que la superficie de decisión es una función cuadrática.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/qda.png}
+\end{figure}
+
+\subsection{Análisis discriminante lineal}
+Cuando las matrices de covarianza para las clases se comparte (pero el vector de medias no), podemos simplificar. Así, el término cuadrático que depende de x por la matriz de covarianza invertida por x, se puede meter en un término constante. La frontera de clasificación va a ser lineal.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/lda.png}
+\end{figure}
+
+Lo difícil de este método es estimar las matrices de covarianza. Para ello, se maximiza la probabilidad de los datos observados, donde la media depende de la etiqueta de clase de donde venga. Se puede utilizar el estimador de máxima verosimilitud, quedando una mezcla de la máxima verosimilitud para las dos gaussianas.
+
+Entre estos dos análisis (el cuadrático y el lineal), es el cuadrático el que tiene más términos y también el más flexible. Además, el cuadrático es el que tiene mayor riesgo de sobreajuste. El lineal es más robusto: tiene menos parámetros, es menos flexible, pero tiene menos riesgo de sobreajustar.
