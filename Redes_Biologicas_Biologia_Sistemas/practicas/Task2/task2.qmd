@@ -1,0 +1,275 @@
+---
+title: "Task2 - Sistemas generalizados de interacciones"
+subtitle: "Redes Biológicas y Biología de Sistemas"
+author:   
+  - Sandra Mingo Ramírez
+format: pdf
+lang: es
+---
+
+# Parte 1
+
+```{python}
+import numpy as np
+```
+
+1. Escribe una función genérica `calculate_transpose` que tenga como input dos matrices A y B y devuelva el valor $(B-A)^T$. Esto se debe probar con las siguientes reacciones:
+
+- $NaCO_3 + CaCl_2 \leftrightarrow CaCO_3 + 2 NaCl$ 
+
+$NaCO_3 + CaCl_2 \rightarrow CaCO_3 + 2 NaCl$ 
+
+$CaCO_3 + 2 NaCl \rightarrow NaCO_3 + CaCl_2$ 
+
+$1 X_1 + 1 X_2 \rightarrow 1 X_3 + 2 X_4$
+
+$1 X_3 + 2 X_4 \rightarrow 1 X_1 + 1 X_2$
+
+$1 X_1 + 1 X_2 + 0 X_3 + 0 X_4 \rightarrow 0 X_1 + 0 X_2 + 1 X_3 + 2 X_4$
+
+$0 X_1 + 0 X_2 + 1 X_3 + 2 X_4 \rightarrow 1 X_1 + 1 X_2 + 0 X_3 + 0 X_4$
+
+$A_{11} X_1 + A_{12} X_2 + A_{13} X_3 + A_{14} X_4 \rightarrow B_{11} X_1 + B_{12} X_2 + B_{13} X_3 + B_{14} X_4$
+
+$A_{21} X_1 + A_{22} X_2 + A_{23} X_3 + A_{24} X_4 \rightarrow B_{21} X_1 + B_{22} X_2 + B_{23} X_3 + B_{24} X_4$
+
+$A = \begin{pmatrix} 1 & 1 & 0 & 0 \\ 0 & 0 & 1 & 2 \end{pmatrix}$
+
+$B = \begin{pmatrix} 0 & 0 & 1 & 2 \\ 1 & 1 & 0 & 0 \end{pmatrix}$
+
+- $N_2 + 3H_2 \leftrightarrow 2NH_3$
+
+- $H_2 + I_2 \leftrightarrow 2IH$
+
+```{python}
+def calculate_transpose(A, B):
+    ''' '''
+    transposition_matrix = np.transpose(B-A)
+    
+    return transposition_matrix
+
+A = np.matrix('1 1 0 0; 0 0 1 2')
+B = np.matrix('0 0 1 2; 1 1 0 0' )
+
+print(calculate_transpose(A, B))
+```
+
+2. Modifica la función anterior para que devuelva además el orden de la reacción.
+```{python}
+def calculate_transpose_order(A, B):
+    ''' '''
+    transposition_matrix = np.transpose(B-A)
+
+    reaction1 = np.sum(A[0])
+    reaction2 = np.sum(B[0])
+    return transposition_matrix, reaction1, reaction2
+
+A = np.matrix('1 1 0 0; 0 0 1 2')
+B = np.matrix('0 0 1 2; 1 1 0 0' )
+
+print(f'The stoichiometric matrix is {calculate_transpose_order(A, B)[0]}')
+print(f'The order of the reaction 1 is {calculate_transpose_order(A, B)[1]}')
+print(f'The order of the reaction 2 is {calculate_transpose_order(A, B)[2]}')
+```
+
+3. Generaliza la función desarrollada anteriormente para proporcionar como salida la matriz $(B-A)^T$, el orden de cada reacción y las unidades de cada una de las constantes de velocidad. Prueba con las reacciones anteriores.
+
+```{python}
+def calculate_stoichiometric_generic(A, B):
+    ''' '''
+    transposition_matrix = np.transpose(B-A)
+
+    reaction1 = np.sum(A[0])
+    reaction2 = np.sum(B[0])
+
+    units1 = 1 - reaction1
+    units2 = 1 - reaction2
+
+    return transposition_matrix, reaction1, units1, reaction2, units2
+
+A = np.matrix('1 1 0 0; 0 0 1 2')
+B = np.matrix('0 0 1 2; 1 1 0 0' )
+
+print(f'The stoichiometric matrix is {calculate_stoichiometric_generic(A, B)[0]}')
+print(f'The order of the reaction 1 is {calculate_stoichiometric_generic(A, B)[1]}')
+print(f'The units of k1 are M^{calculate_stoichiometric_generic(A, B)[2]}/s')
+print(f'The order of the reaction 2 is {calculate_stoichiometric_generic(A, B)[3]}')
+print(f'The units of k2 are M^{calculate_stoichiometric_generic(A, B)[4]}/s')
+```
+
+# Parte 2
+
+Encuentra el orden de las reacciones, las unidades de k y las ecuaciones diferenciales que gobiernan la dinámica del siguiente sistema:
+
+1. $X_1 \overset{k_1}{\underset{k_2}{\rightleftharpoons}} X_2$
+
+Esto se divide en dos reacciones:
+
+$X_1 \xrightarrow{k_1} X_2$
+
+$X_2 \xrightarrow{k_2} X_1$
+
+La formulación completa sería:
+
+$1X_1 + 0X_2 \xrightarrow{k_1} 0X_1 + 1X_2$
+
+$0X_1 + 1X_2 \xrightarrow{k_2} 1X_1 + 0X_2$
+
+Obtenemos las matrices A y B:
+
+$A = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}$
+
+$B = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}$
+
+Con esto podemos calcular $(B-A)^T$:
+
+$(B-A)^T = \begin{pmatrix} -1 & 1 \\ 1 & -1 \end{pmatrix}$
+
+$k = \begin{pmatrix} k_1 & 0 \\ 0 & k_2 \end{pmatrix}$
+
+$X^A = \begin{pmatrix} X_1 \\ X_2 \end{pmatrix}$
+
+Aplicando la fórmula, esto se resuelve de la siguiente forma:
+
+$\begin{pmatrix}-1 & 1 \\ 1 & -1 \end{pmatrix} \cdot \begin{pmatrix} k_1 x_1\\ k_2 x_2 \end{pmatrix} = \begin{pmatrix} -k_1x_1 + k_2x_2 \\ k_1x_1 - k_2x_2 \end{pmatrix}$
+
+De forma que:
+$dx_1/dt = -k_1x_1 + k_2x_2$
+
+$dx_2/dt = k_1x_1 - k_2x_2$
+
+Y para comprobar las unidades:
+
+$dx_1/dt = -k_1x_1 + k_2x_2$
+
+$dx_1/dt = \frac{Mol}{s}$
+
+$-k_1x_1 + k_2x_2 = \frac{1}{s} \cdot Mol + \frac{1}{s} \cdot Mol = \frac{Mol}{s}$
+
+Esto confirma que las unidades de la primera fórmula están bien. Para la segunda hacemos lo mismo:
+
+$dx_2/dt = k_1x_1 - k_2x_2$
+
+$dx_2/dt = \frac{Mol}{s}$
+
+$k_1x_1 - k_2x_2 = \frac{1}{s} \cdot Mol - \frac{1}{s} \cdot Mol = \frac{Mol}{s}$
+
+2. $X_1 + X_2 \overset{k_3}{\underset{k_4}{\rightleftharpoons}} 2X_1$
+
+Esto se divide en dos reacciones:
+
+$X_1 + X_2 \xrightarrow{k_3} 2X_1$
+
+$2X_1 \xrightarrow{k_4} X_1 + X_2$
+
+La formulación completa sería:
+
+$1X_1 + 1X_2 \xrightarrow{k_3} 2X_1 + 0X_2$
+
+$2X_1 + 0X_2 \xrightarrow{k_4} 1X_1 + 1X_2$
+
+Obtenemos las matrices A y B:
+
+$A = \begin{pmatrix} 1 & 1 \\ 2 & 0 \end{pmatrix}$
+
+$B = \begin{pmatrix} 2 & 0 \\ 1 & 1 \end{pmatrix}$
+
+Con esto podemos calcular $(B-A)^T$:
+
+$(B-A)^T = \begin{pmatrix} 1 & -1 \\ -1 & 1 \end{pmatrix}$
+
+$k = \begin{pmatrix} k_3 & 0 \\ 0 & k_4 \end{pmatrix}$
+
+$X^A = \begin{pmatrix} X_1 X_2 \\ X_1^2 \end{pmatrix}$
+
+Aplicando la fórmula, esto se resuelve de la siguiente forma:
+
+$\begin{pmatrix}1 & -1 \\ -1 & 1 \end{pmatrix} \cdot \begin{pmatrix} k_3 x_1 x_2\\ k_4 x_1^2 \end{pmatrix} = \begin{pmatrix} k_3x_1x_2 - k_4x_1^2 \\ -k_3x_1x_2 + k_4x_1^2 \end{pmatrix}$
+
+De forma que:
+$dx_1/dt = k_3x_1x_2 - k_4x_1^2$
+
+$dx_2/dt = -k_3x_1x_2 + k_4x_1^2$
+
+Y para comprobar las unidades:
+
+$dx_1/dt = k_3x_1x_2 - k_4x_1^2$
+
+$dx_1/dt = \frac{Mol}{s}$
+
+$k_3x_1x_2 - k_4x_1^2 = \frac{1}{Mol \cdot s} \cdot Mol \cdot Mol + \frac{1}{Mol \cdot s} \cdot Mol \cdot Mol = \frac{Mol}{s}$
+
+Esto confirma que las unidades de la primera fórmula están bien. Para la segunda hacemos lo mismo:
+
+$dx_2/dt = -k_3x_1x_2 + k_4x_1^2$
+
+$dx_2/dt = \frac{Mol}{s}$
+
+$-k_3x_1x_2 + k_4x_1^2 = \frac{1}{Mol \cdot s} \cdot Mol \cdot Mol - \frac{1}{Mol \cdot s} \cdot Mol \cdot Mol = \frac{Mol}{s}$
+
+3. $X_1 \xrightarrow{k_5} 2X_2 \xrightarrow{k_6} X_3$
+
+Esto se divide en dos reacciones:
+
+$X_1 \xrightarrow{k_5} 2X_2$
+
+$2X_2 \xrightarrow{k_6} X_3$
+
+La formulación completa sería:
+
+$X_1 + 0X_2 + 0X_3 \xrightarrow{k_5} 0X_1 + 2X_2 + 0X_3$
+
+$0X_1 + 2X_2 + 0X_3 \xrightarrow{k_6} 0X_1 + 0X_2 + X_3$
+
+Obtenemos las matrices A y B:
+
+$A = \begin{pmatrix} 1 & 0 & 0 \\ 0 & 2 & 0 \end{pmatrix}$
+
+$B = \begin{pmatrix} 0 & 2 & 0 \\ 0 & 0 & 1 \end{pmatrix}$
+
+Con esto podemos calcular $(B-A)^T$:
+
+$(B-A)^T = \begin{pmatrix} -1 & 0 \\ 2 & -2 \\ 0 & 1 \end{pmatrix}$
+
+$k = \begin{pmatrix} k_5 & 0 \\ 0 & k_6 \end{pmatrix}$
+
+$X^A = \begin{pmatrix} X_1 \\ X_2^2 \end{pmatrix}$
+
+Aplicando la fórmula, esto se resuelve de la siguiente forma:
+
+$\begin{pmatrix}-1 & 0 \\ 2 & -2 \\ 0 & 1 \end{pmatrix} \cdot \begin{pmatrix} k_5 X_1 \\ k_6 X_2^2 \end{pmatrix} = \begin{pmatrix} -k_5X_1 \\ 2k_5X_1 - 2k_6X_2^2 \\ k_6X_2^2 \end{pmatrix}$
+
+De forma que:
+$dX_1/dt = -k_5X_1$
+
+$dX_2/dt = 2k_5X_1 - 2k_6X_2^2$
+
+$dX_3/dt = k_6X_2^2$
+
+Y para comprobar las unidades:
+
+$dX_1/dt = -k_5X_1$
+
+$dX_1/dt = \frac{Mol}{s}$
+
+$-k_5X_1 = \frac{1}{s} \cdot Mol = \frac{Mol}{s}$
+
+Esto confirma que las unidades de la primera fórmula están bien. Para la segunda hacemos lo mismo:
+
+$dX_2/dt = 2k_5X_1 - 2k_6X_2^2$
+
+$dX_2/dt = \frac{Mol}{s}$
+
+$2k_5X_1 - 2k_6X_2^2 = 2\frac{1}{s} \cdot Mol - 2 \frac{1}{Mol \cdot s} \cdot Mol^2 = \frac{Mol}{s}$
+
+Y por último la tercera ecuación:
+
+$dX_3/dt = k_6X_2^2$
+
+$dX_3/dt = \frac{Mol}{s}$
+
+$k_6X_2^2 = \frac{1}{Mol \cdot s} \cdot Mol^2 = \frac{Mol}{s}$
+
+Y vemos que las tres están bien.
+
+4. Extra: 1+2+3

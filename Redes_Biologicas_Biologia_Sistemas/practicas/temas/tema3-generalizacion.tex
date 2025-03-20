@@ -1,0 +1,109 @@
+%20/03 - 
+\section{Sistemas generalizados de interacciones}
+\subsection{Pensamiento computacional}
+La notación para la formulación general que permita resolver algo numéricamente es mediante vectores y matrices que permitan la construcción de algoritmos. 
+
+Vamos a utilizar el \textbf{pensamiento computacional}. Para resolver los sistemas, debemos imaginarnos lo que hace un ordenador para resolver problemas y meternos en ese papel para escribir el algoritmo. El pensamiento computacional es un método para resolver problemas, siendo el método tradicional el método científico. El pensamiento computacional viene antes de la programación; es pensar el programa. Para ello, hay que entender cómo funciona el ordenador y el sistema. Se resuelven problemas de ecuaciones diferenciales como los ordenadores, es decir, de forma iterativa. 
+
+El pensamiento computacional se compone de: descomposición del problema en partes que se puedan tratar (simplificación), encontrar patrones, abstracción y algorítmica.
+
+Vamos a utilizar la siguiente fórmula de formación de agua:
+$$2H_2 + O_2 \xrightarrow{k} 2H_2O$$
+
+Como buscamos encontrar un sistema genérico y aplicable a cualquier situación, hay que eliminar el nombre de las variables y sustituirlas por X. 
+$$2X_1 + X_2 \xrightarrow{k} 2X_3$$
+
+$X_1$, $X_2$ y $X_3$ componen el \textbf{vector de estado}, un vector que recapitula o guarda el estado de un sistema en un tiempo que nos interesa (a cualquier tiempo). 
+
+En general, los componentes estequiométricos indican cuántas unidades de una variable son necesarias para la reacción. El siguiente paso es poner todas las variables en todas las reacciones.
+$$2X_1 +1 X_2 + 0X_3 \xrightarrow{k} 0X_1 + 0X_2 + 2X_3$$
+
+Ahora se pueden generar dos matrices, A para los reactivos y B para los productos:
+$$A_1X_1 +A_2 X_2 + A_3X_3 \xrightarrow{k} B_1X_1 + B_2X_2 + B_3X_3$$
+
+Cualquier sistema o reacción química se puede escribir así, como un sumatorio de los números por las variables, una flecha de reacción y otro sumatorio:
+$$\sum^3_{j=1} A_jX_j \xrightarrow{k} \sum^3_{i=1} B_iX_i $$
+
+Por ejemplo:
+$$Na_2CO_3 + CaCl_2 \leftrightarrow CaCO_3 + 2NaCl$$
+
+Esto se descompone en:
+$$Na_2CO_3 + CaCl_2 \rightarrow CaCO_3 + 2NaCl$$
+$$CaCO_3 + 2NaCl \rightarrow Na_2CO_3 + CaCl_2 $$
+
+Ahora sustituimos con X y añadimos las mismas variables a ambos lados:
+$$1X_1 + 1X_2 + 0X_3 + 0X_4 \rightarrow 0X_1 + 0X_2 + 1X_3 + 2X_4$$
+$$0X_1 + 0X_2 + 1X_3 + 2X_4 \rightarrow 1X_1 + 1X_2 + 0X_3 + 0X_4$$
+
+El sistema general sería:
+$$A_{11}X_1 + A_{12}X_2 + A_{13}X_3 + A_{14}X_4 \rightarrow B_{11}X_1 + B_{12}X_2 + B_{13}X_3 + B_{14}X_4$$
+$$0X_1 + 0X_2 + 1X_3 + 2X_4 \rightarrow 1X_1 + 1X_2 + 0X_3 + 0X_4$$
+
+\subsection{Orden de la reacción y unidad de las constantes}
+El orden de las reacciones es tan sencillo como sumar los coeficientes de estequiometría.
+
+\subsection{Ley de atracción de masas}
+Las ecuaciones diferenciales permiten capturar la dinámica de la reacción, es decir, el cambio en el tiempo de la cantidad de especies. Se necesitan tantas ecuaciones diferenciales como especies que hay en la reacción. 
+
+Para la reacción $X_1 + X_2 \rightarrow X_3$, hay tres ecuaciones diferenciales.
+$$dX_1/dt = -k X_1X_2$$
+$$dX_2/dt = -k X_1X_2$$
+$$dX_3/dt = k X_1X_2$$
+Cuando algo se reduce, la velocidad (la derivada) es negativa, mientras que cuando algo aumenta, el cambio es positivo.
+
+Por ejemplo, para $O_2 + 2 H_2 \xrightarrow{k} 2 H_2O$, que equivale a $X_1 + 2 X_2 \xrightarrow{k} 2 X_3$
+$$dX_1/dt = -k X_1 X_2^2$$
+$$dX_2/dt = -2k X_1 X_2^2$$
+$$dX_3/dt = +2k X_1 X_2^2$$
+
+De forma general, vamos a seguir la siguiente fórmula:
+$$dX/dt = (B - A)^T K X^A$$
+
+K es una matriz con los valores de k en la diagonal. X es el vector de estado, y A es una matriz de la estequiometría de los reactivos:
+$$X^A = \begin{pmatrix}
+X_1^{A_{11}} \cdot X_2^{A_{12}} \cdot X_3^{A_{13}} \cdot \ldots X_s^{A_{1s}} \\
+\ldots \text{la cantidad de veces como de reacciones} \ldots \\
+X_1^{A_{r1}} \cdot X_2^{A_{r2}} \cdot X_3^{A_{r3}} \cdot \ldots X_s^{A_{rs}} \\
+\end{pmatrix} = \begin{pmatrix}
+\prod^s_{i = 1} X_i^{A_{1i}} \\
+\prod^s_{i = 1} X_i^{A_{2i}} \\
+\prod^s_{i = 1} X_i^{A_{ri}} \\
+\end{pmatrix}$$
+
+Volviendo al problema anterior ($Na_2CO_3 + CaCl_2 \leftrightarrow CaCO_3 + 2NaCl$) tendríamos:
+$$A = \begin{pmatrix}
+1 & 1 & 0 & 0 \\
+0 & 0 & 1 & 2
+\end{pmatrix}$$
+$$X^A = \begin{pmatrix}
+X_1 & X_2 \\
+X_3 & X_4^2 
+\end{pmatrix}$$
+$$k = \begin{pmatrix}
+k_1 & 0 \\
+0 & k_2 
+\end{pmatrix}$$
+$$(B-A)^T = \begin{pmatrix}
+-1 & 1 \\ -1 & 1 \\
+1 & -1 \\ 2 & -2
+\end{pmatrix}$$
+
+Queremos obtener cuatro ecuaciones diferenciales. Para ello hacemos:
+$$\begin{pmatrix}
+-1 & 1 \\ -1 & 1 \\
+1 & -1 \\ 2 & -2
+\end{pmatrix} \cdot \begin{pmatrix}
+k_1 x_1 x_2 \\
+k_2 x_3 x_4^2
+\end{pmatrix} = \begin{pmatrix}
+-k_1x_1x_2 + k_2x_3x_4^2 \\
+-k_1x_1x_2 + k_2x_3x_4^2 \\
+k_1x_1x_2 - k_2x_3x_4^2 \\
+2k_1x_1x_2 -2 k_2x_3x_4^2 
+\end{pmatrix}$$
+
+De esta forma, queda:
+$$dx_1/dt = -k_1x_1x_2 + k_2x_3x_4^2 $$
+$$dx_2/dt = -k_1x_1x_2 + k_2x_3x_4^2 $$
+$$dx_3/dt = k_1x_1x_2 - k_2x_3x_4^2 $$
+$$dx_4/dt = 2k_1x_1x_2 -2 k_2x_3x_4^2 $$
