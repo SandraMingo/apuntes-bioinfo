@@ -236,7 +236,7 @@ Hay un tipo de oscilaciones robustas llamados \textbf{ciclo límite}. Estos cicl
 \end{figure}
 
 \subsection{Generalización del modelo Lotka-Volterra de un ecosistema presa-predador}
-El crecimiento de las presas depende de su número y la capacidad de recursos del medio. La ecuación para el número de depredadores es logística. Tiene una casa de crecimiento, pero la capacidad de recursos de los depredadores es el número de presas. 
+El crecimiento de las presas depende de su número y la capacidad de recursos del medio. La ecuación para el número de depredadores es logística. Tiene una tasa de crecimiento, pero la capacidad de recursos de los depredadores es el número de presas. 
 $$\frac{dx}{dt} = xf(x,y) \rightarrow f(x,y) = r(1 - x/c) - \frac{ky}{x + D}$$
 $$\frac{dy}{dt} = yg(x,y) \rightarrow g(x,y) = s(1 - \frac{hy}{x})$$
 
@@ -275,13 +275,13 @@ Sustituyendo en las ecuaciones dinámicas
 $$\frac{du}{dt} = \frac{d(u^{eq} + \Delta u)}{dt} = \frac{du^{eq}}{dt} + \frac{d \Delta u}{dt} = f(u^{eq} + \Delta u, v^{eq} + \Delta v)$$
 expandiendo en serie de Taylor alrededor del equilibrio
 $$f(u, v) \sim f(u^{eq}, v^{eq}) + \frac{\delta f(u^{eq}, v^{eq})}{\delta u}(u - u^{eq}) + \frac{\delta f(u^{eq}, v^{eq})}{\delta v}(v - v^{eq})$$
-, obtenemos:
+obtenemos:
 $$\frac{d \Delta u}{dt} = \frac{\delta f^{eq}}{\delta u} \Delta u + \frac{\delta f^{eq}}{\delta v} \Delta v$$
 $$\frac{d \Delta v}{dt} = \frac{\delta g^{eq}}{\delta u} \Delta u + \frac{\delta g^{eq}}{\delta v} \Delta v$$
 
 Estas ecuaciones son lineales y pueden escribirse en forma matricial como:
 $$\Delta \vec{x} = \begin{pmatrix}
-\Delta x \\ \Delta v
+\Delta u \\ \Delta v
 \end{pmatrix} $$
 
 $$\frac{d \Delta \vec{x}}{dt} = \begin{pmatrix}
@@ -293,7 +293,7 @@ $$\vec{J} = \begin{pmatrix}
 \frac{\delta f^{eq}}{\delta u} & \frac{\delta f^{eq}}{\delta u} \\
 \frac{\delta g^{eq}}{\delta u} & \frac{\delta g^{eq}}{\delta v}
 \end{pmatrix}$$
-Ahora se debe multiplicar J con delta x.
+Ahora se debe multiplicar J con $\Delta x$.
 $$\frac{d \Delta \vec{x}}{dt} = \vec{J} \cdot \Delta \vec{x}$$
 
 $$\begin{pmatrix}
