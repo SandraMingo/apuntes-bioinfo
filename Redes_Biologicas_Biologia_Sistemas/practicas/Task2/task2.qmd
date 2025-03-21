@@ -43,7 +43,7 @@ $B = \begin{pmatrix} 0 & 0 & 1 & 2 \\ 1 & 1 & 0 & 0 \end{pmatrix}$
 
 ```{python}
 def calculate_transpose(A, B):
-    ''' '''
+    '''Calculate transposition matrix of B-A'''
     transposition_matrix = np.transpose(B-A)
     
     return transposition_matrix
@@ -57,7 +57,7 @@ print(calculate_transpose(A, B))
 2. Modifica la función anterior para que devuelva además el orden de la reacción.
 ```{python}
 def calculate_transpose_order(A, B):
-    ''' '''
+    '''Calculate transposition matrix of B-A and the order of both reactions.'''
     transposition_matrix = np.transpose(B-A)
 
     reaction1 = np.sum(A[0])
@@ -76,7 +76,8 @@ print(f'The order of the reaction 2 is {calculate_transpose_order(A, B)[2]}')
 
 ```{python}
 def calculate_stoichiometric_generic(A, B):
-    ''' '''
+    '''Calculate transposition matrix of B-A, the order of both reactions 
+    and their units.'''
     transposition_matrix = np.transpose(B-A)
 
     reaction1 = np.sum(A[0])
@@ -129,7 +130,7 @@ $k = \begin{pmatrix} k_1 & 0 \\ 0 & k_2 \end{pmatrix}$
 
 $X^A = \begin{pmatrix} X_1 \\ X_2 \end{pmatrix}$
 
-Aplicando la fórmula, esto se resuelve de la siguiente forma:
+Aplicando la fórmula $(B-A)^T \cdot k \cdot X^A$, esto se resuelve de la siguiente forma:
 
 $\begin{pmatrix}-1 & 1 \\ 1 & -1 \end{pmatrix} \cdot \begin{pmatrix} k_1 x_1\\ k_2 x_2 \end{pmatrix} = \begin{pmatrix} -k_1x_1 + k_2x_2 \\ k_1x_1 - k_2x_2 \end{pmatrix}$
 
@@ -182,7 +183,7 @@ $k = \begin{pmatrix} k_3 & 0 \\ 0 & k_4 \end{pmatrix}$
 
 $X^A = \begin{pmatrix} X_1 X_2 \\ X_1^2 \end{pmatrix}$
 
-Aplicando la fórmula, esto se resuelve de la siguiente forma:
+Aplicando la fórmula $(B-A)^T \cdot k \cdot X^A$, esto se resuelve de la siguiente forma:
 
 $\begin{pmatrix}1 & -1 \\ -1 & 1 \end{pmatrix} \cdot \begin{pmatrix} k_3 x_1 x_2\\ k_4 x_1^2 \end{pmatrix} = \begin{pmatrix} k_3x_1x_2 - k_4x_1^2 \\ -k_3x_1x_2 + k_4x_1^2 \end{pmatrix}$
 
@@ -217,9 +218,9 @@ $2X_2 \xrightarrow{k_6} X_3$
 
 La formulación completa sería:
 
-$X_1 + 0X_2 + 0X_3 \xrightarrow{k_5} 0X_1 + 2X_2 + 0X_3$
+$1X_1 + 0X_2 + 0X_3 \xrightarrow{k_5} 0X_1 + 2X_2 + 0X_3$
 
-$0X_1 + 2X_2 + 0X_3 \xrightarrow{k_6} 0X_1 + 0X_2 + X_3$
+$0X_1 + 2X_2 + 0X_3 \xrightarrow{k_6} 0X_1 + 0X_2 + 1X_3$
 
 Obtenemos las matrices A y B:
 
@@ -235,7 +236,7 @@ $k = \begin{pmatrix} k_5 & 0 \\ 0 & k_6 \end{pmatrix}$
 
 $X^A = \begin{pmatrix} X_1 \\ X_2^2 \end{pmatrix}$
 
-Aplicando la fórmula, esto se resuelve de la siguiente forma:
+Aplicando la fórmula $(B-A)^T \cdot k \cdot X^A$, esto se resuelve de la siguiente forma:
 
 $\begin{pmatrix}-1 & 0 \\ 2 & -2 \\ 0 & 1 \end{pmatrix} \cdot \begin{pmatrix} k_5 X_1 \\ k_6 X_2^2 \end{pmatrix} = \begin{pmatrix} -k_5X_1 \\ 2k_5X_1 - 2k_6X_2^2 \\ k_6X_2^2 \end{pmatrix}$
 
@@ -273,3 +274,80 @@ $k_6X_2^2 = \frac{1}{Mol \cdot s} \cdot Mol^2 = \frac{Mol}{s}$
 Y vemos que las tres están bien.
 
 4. Extra: 1+2+3
+Para este ejercicio, combinamos los tres anteriores. De esta forma, tenemos las siguientes reacciones:
+
+$X_1 \xrightarrow{k_1} X_2$
+
+$X_2 \xrightarrow{k_2} X_1$
+
+$X_1 + X_2 \xrightarrow{k_3} 2X_1$
+
+$2X_1 \xrightarrow{k_4} X_1 + X_2$
+
+$X_1 \xrightarrow{k_5} 2X_2$
+
+$2X_2 \xrightarrow{k_6} X_3$
+
+Las formulaciones completas serían:
+
+$1X_1 + 0X_2 \xrightarrow{k_1} 0X_1 + 1X_2$
+
+$0X_1 + 1X_2 \xrightarrow{k_2} 1X_1 + 0X_2$
+
+$1X_1 + 1X_2 \xrightarrow{k_3} 2X_1 + 0X_2$
+
+$2X_1 + 0X_2 \xrightarrow{k_4} 1X_1 + 1X_2$
+
+$1X_1 + 0X_2 + 0X_3 \xrightarrow{k_5} 0X_1 + 2X_2 + 0X_3$
+
+$0X_1 + 2X_2 + 0X_3 \xrightarrow{k_6} 0X_1 + 0X_2 + 1X_3$
+
+Así, obtenemos las matrices A y B:
+
+$A = \begin{pmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 1 & 1 & 0 \\ 2 & 0 & 0 \\ 1 & 0 & 0 \\ 0 & 2 & 0\end{pmatrix}$
+
+$B = \begin{pmatrix} 0 & 1 & 0 \\ 1 & 0 & 0 \\ 2 & 0 & 0 \\ 1 & 1 & 0 \\ 0 & 2 & 0 \\ 0 & 0 & 1 \end{pmatrix}$
+
+Con esto podemos calcular $(B-A)^T$:
+
+$(B-A)^T = \begin{pmatrix} -1 & 1 & 1 & -1 & -1 & 0 \\ 1 & -1 & -1 & 1 & 2 & -2 \\ 0 & 0 & 0 & 0 & 0 & 1 \end{pmatrix}$
+
+$k = \begin{pmatrix} k_1 & 0 & 0 & 0 & 0 & 0 \\ 0 & k_2 & 0 & 0 & 0 & 0 \\ 0 & 0 & k_3 & 0 & 0 & 0 \\ 0 & 0 & 0 & k_4 & 0 & 0 \\ 0 & 0 & 0 & 0 & k_5 & 0 \\ 0 & 0 & 0 & 0 & 0 & k_6 \end{pmatrix}$
+
+$X^A = \begin{pmatrix} X_1 \\ X_2 \\ X_1X_2 \\ X_1^2 \\ X_1 \\ X_2^2 \end{pmatrix}$
+
+
+Aplicando la fórmula $(B-A)^T \cdot k \cdot X^A$, esto se resuelve de la siguiente forma:
+
+$\begin{pmatrix} -1 & 1 & 1 & -1 & -1 & 0 \\ 1 & -1 & -1 & 1 & 2 & -2 \\ 0 & 0 & 0 & 0 & 0 & 1 \end{pmatrix} \cdot \begin{pmatrix} k_1X_1 \\ k_2X_2 \\ k_3X_1X_2 \\ k_4X_1^2 \\ k_5X_1 \\ k_6X_2^2 \end{pmatrix} = \begin{pmatrix} -k_1X_1 + k_2X_2 + k_3X_1X_2 - k_4X_1^2 -k_5X_1 \\ k1X_1 - k_2X_2 - k_3X_1X_2 + k_4X_1^2 + 2k_5X_1 - 2k_6X_2^2 \\ k_6X_2^2 \end{pmatrix}$
+
+De forma que:
+$dX_1/dt = -k_1X_1 + k_2X_2 + k_3X_1X_2 - k_4X_1^2 -k_5X_1$
+
+$dX_2/dt = k1X_1 - k_2X_2 - k_3X_1X_2 + k_4X_1^2 + 2k_5X_1 - 2k_6X_2^2$
+
+$dX_3/dt = k_6X_2^2$
+
+En cuanto a las unidades:
+
+$dX_1/dt = -k_1X_1 + k_2X_2 + k_3X_1X_2 - k_4X_1^2 -k_5X_1$
+
+$dX_1/dt = \frac{Mol}{s}$
+
+$-k_1X_1 + k_2X_2 + k_3X_1X_2 - k_4X_1^2 -k_5X_1 = - \frac{1}{s} \cdot Mol + \frac{1}{s} \cdot Mol + \frac{1}{Mol \cdot s} \cdot Mol \cdot Mol - \frac{1}{Mol \cdot s} \cdot Mol^2 -\frac{1}{s} \cdot Mol = \frac{Mol}{s}$
+
+Esto confirma que las unidades de la primera fórmula están bien. Para la segunda hacemos lo mismo:
+
+$dX_2/dt = k1X_1 - k_2X_2 - k_3X_1X_2 + k_4X_1^2 + 2k_5X_1 - 2k_6X_2^2$
+
+$dX_2/dt = \frac{Mol}{s}$
+
+$k1X_1 - k_2X_2 - k_3X_1X_2 + k_4X_1^2 + 2k_5X_1 - 2k_6X_2^2 = \frac{1}{s} \cdot Mol - \frac{1}{s} \cdot Mol - \frac{1}{Mol \cdot s} \cdot Mol \cdot Mol + \frac{1}{Mol \cdot s} \cdot Mol^2 + \frac{1}{s} \cdot Mol  - \frac{1}{Mol \cdot s} \cdot Mol \cdot Mol= \frac{Mol}{s}$
+
+Y por último la tercera ecuación:
+
+$dX_3/dt = k_6X_2^2$
+
+$dX_3/dt = \frac{Mol}{s}$
+
+$k_6X_2^2 = \frac{1}{Mol \cdot s} \cdot Mol^2 = \frac{Mol}{s}$
