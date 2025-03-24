@@ -276,8 +276,8 @@ $$\frac{du}{dt} = \frac{d(u^{eq} + \Delta u)}{dt} = \frac{du^{eq}}{dt} + \frac{d
 expandiendo en serie de Taylor alrededor del equilibrio
 $$f(u, v) \sim f(u^{eq}, v^{eq}) + \frac{\delta f(u^{eq}, v^{eq})}{\delta u}(u - u^{eq}) + \frac{\delta f(u^{eq}, v^{eq})}{\delta v}(v - v^{eq})$$
 obtenemos:
-$$\frac{d \Delta u}{dt} = \frac{\delta f^{eq}}{\delta u} \Delta u + \frac{\delta f^{eq}}{\delta v} \Delta v$$
-$$\frac{d \Delta v}{dt} = \frac{\delta g^{eq}}{\delta u} \Delta u + \frac{\delta g^{eq}}{\delta v} \Delta v$$
+$$\frac{d \Delta u}{dt} = \frac{\partial f^{eq}}{\partial u} \Delta u + \frac{\partial f^{eq}}{\partial v} \Delta v$$
+$$\frac{d \Delta v}{dt} = \frac{\partial g^{eq}}{\partial u} \Delta u + \frac{\partial g^{eq}}{\partial v} \Delta v$$
 
 Estas ecuaciones son lineales y pueden escribirse en forma matricial como:
 $$\Delta \vec{x} = \begin{pmatrix}
@@ -290,8 +290,8 @@ $$\frac{d \Delta \vec{x}}{dt} = \begin{pmatrix}
 
 La matriz J es una matriz de estabilidad o matriz jacobiana.
 $$\vec{J} = \begin{pmatrix}
-\frac{\delta f^{eq}}{\delta u} & \frac{\delta f^{eq}}{\delta u} \\
-\frac{\delta g^{eq}}{\delta u} & \frac{\delta g^{eq}}{\delta v}
+\frac{\partial f^{eq}}{\partial u} & \frac{\partial f^{eq}}{\partial u} \\
+\frac{\partial g^{eq}}{\partial u} & \frac{\partial g^{eq}}{\partial v}
 \end{pmatrix}$$
 Ahora se debe multiplicar J con $\Delta x$.
 $$\frac{d \Delta \vec{x}}{dt} = \vec{J} \cdot \Delta \vec{x}$$
@@ -299,8 +299,8 @@ $$\frac{d \Delta \vec{x}}{dt} = \vec{J} \cdot \Delta \vec{x}$$
 $$\begin{pmatrix}
 \frac{d \Delta u}{dt} \\ \frac{d \Delta v}{dt}
 \end{pmatrix} = \begin{pmatrix}
-\frac{\delta f^{eq}}{\delta u} & \frac{\delta f^{eq}}{\delta u} \\
-\frac{\delta g^{eq}}{\delta u} & \frac{\delta g^{eq}}{\delta v}
+\frac{\partial f^{eq}}{\partial u} & \frac{\partial f^{eq}}{\partial u} \\
+\frac{\partial g^{eq}}{\partial u} & \frac{\partial g^{eq}}{\partial v}
 \end{pmatrix} \cdot \begin{pmatrix}
 \Delta u \\ \Delta v
 \end{pmatrix}$$
@@ -372,8 +372,8 @@ Volviendo al modelo de Lotka-Volterra:
 
 Calculamos la matriz jacobiana:
 $$\vec{J} = \begin{pmatrix}
-\frac{\delta f^{eq}}{\delta u} & \frac{\delta f^{eq}}{\delta u} \\
-\frac{\delta g^{eq}}{\delta u} & \frac{\delta g^{eq}}{\delta v}
+\frac{\partial f^{eq}}{\partial u} & \frac{\partial f^{eq}}{\partial u} \\
+\frac{\partial g^{eq}}{\partial u} & \frac{\partial g^{eq}}{\partial v}
 \end{pmatrix}$$
 
 Calculamos las derivadas parciales normales:

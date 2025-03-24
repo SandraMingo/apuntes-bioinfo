@@ -59,11 +59,11 @@ $$\frac{dY}{dt} = \alpha - \delta Y$$
 Esto se considera en el modelo de la siguiente forma:
 \begin{figure}[h]
 \centering
-\includegraphics[width = 0.7\textwidth]{figs/reacciones.png}
+\includegraphics[width = 0.6\textwidth]{figs/reacciones.png}
 \caption{Las proteínas Y se crean mediante $\alpha$, y desaparecen mediante $\delta$.}
 \end{figure}
 
-Algunas proteínas actúan como factores de transcipción, activando o reprimiendo la expresión de otra proteína. 
+Algunas proteínas actúan como factores de transcripción, activando o reprimiendo la expresión de otra proteína. 
 
 ¿Cuánta proteína Y se produce en función de la cantidad de X que hay?
 \begin{figure}[h]
@@ -273,12 +273,9 @@ Y^1_{eq} = 0 \\
 \end{cases}
 $$
 $$\delta Y^2_{eq} + \delta - Y_{eq} = 0$$
-$$Y_{eq} = \frac{1 \pm \sqrt{1 - 4 \delta^2}}{2}$$
-$$1 - 4 \delta^2 > 0 $$
-$$4 \delta^2 < 1$$
-$$\delta < 1/2$$
+$$Y_{eq} = \frac{1 \pm \sqrt{1 - 4 \delta^2}}{2 \delta}$$
 
-Por tanto, hay tres puntos de equilibrio, los cuales causan la bifurcación silla-nodo. 
+Para que esto se dé, la raíz debe ser positiva $1 - 4 \delta^2 > 0 $ y $4 \delta^2 < 1$. Por lo tanto, $\delta < 1/2$. Así, hay tres puntos de equilibrio, los cuales causan la bifurcación silla-nodo. 
 
 Añadiendo un inductor ($s$), la recta de degradación se desplaza hacia los lados desde el origen. Para un $\delta = 0.55$ y $s=0$, no hay producción. No obstante, cuando $s = 0.2$, la producción basal aumenta la producción de la proteína, viéndose amplificada por la autorregulación positiva. Esto se conoce como \textbf{interruptor genético}.  
 
@@ -317,7 +314,7 @@ Hay muchos procesos fisiológicos y de señalización celular regulados por ritm
 \includegraphics[width = 0.8\textwidth]{figs/feedback-negativo.png}
 \end{figure}
 
-Suponiendo que tenemos dos proteínas que interaccionan mediante un feedback negativo: una favorece a otra, la cual inhibe a la primera. Los mecanismos por los que un modelo dinámico oscila de forma robusta son los ciclos límite. Todos los ejemplos que tienen oscilaciones son debidos a los ciclos límite. Las condiciones para que haya un ciclo límite es la existencia de un punto inestable en el centro, el cual se denomina como espiral inestable. El tipo de bifurcación en el que una espiral estable pasa a inestable se conoce como bifurcación de Hopf, la cual implica la creación de un ciclo límite. Las espirales son autovalores complejos de la matriz jacobiana. Para un sistema de dos variables, hay una función $f(y)$ y una función $g(x)$, siendo la matriz jacobiana la matriz con las derivadas de las funciones en el punto de equilibrio. Los autovalores se pueden oner como la traza de las dos variables. Para tener bifurcación Hopf, el determinante debe ser positivo y la parte real debe pasar por 0, lo que equivale a que la traza pase por 0. 
+Suponiendo que tenemos dos proteínas que interaccionan mediante un feedback negativo: una favorece a otra, la cual inhibe a la primera. Los mecanismos por los que un modelo dinámico oscila de forma robusta son los ciclos límite. Todos los ejemplos que tienen oscilaciones son debidos a los ciclos límite. Las condiciones para que haya un ciclo límite es la existencia de un punto inestable en el centro, el cual se denomina como espiral inestable. El tipo de bifurcación en el que una espiral estable pasa a inestable se conoce como bifurcación de Hopf, la cual implica la creación de un ciclo límite. Las espirales son autovalores complejos de la matriz jacobiana. Para un sistema de dos variables, hay una función $f(y)$ y una función $g(x)$, siendo la matriz jacobiana la matriz con las derivadas de las funciones en el punto de equilibrio. Los autovalores se pueden poner como la traza de las dos variables. Para tener bifurcación Hopf, el determinante debe ser positivo y la parte real debe pasar por 0, lo que equivale a que la traza pase por 0. 
 
 Suponemos dos genes con interacciones mutuas. La producción de x depende de y. Suponemos que el término de degradación es $\delta x,y$.
 $$\frac{dx}{dt} = f(y) - \delta x$$
@@ -325,8 +322,8 @@ $$\frac{dy}{dt} = g(x) - \delta y$$
 
 La matriz jacobiana sería de la siguiente forma:
 $$\vec{J} = \begin{pmatrix}
-- \delta & \frac{\sigma f}{\sigma y} \\
-\frac{\sigma g}{\sigma x} & - \delta
+- \delta & \frac{\partial f}{\partial y} \\
+\frac{\partial g}{\partial x} & - \delta
 \end{pmatrix} \rightarrow \begin{pmatrix}
 \text{Efecto de X sobre X} & \text{Efecto de Y sobre X} \\
 \text{Efecto de X sobre Y} & \text{Efecto de Y sobre Y}
