@@ -891,7 +891,7 @@ p(y_i = \mathcal{C}_k \mid \vec{x}) =
 {\sum_{k'} \pi_{k'} \det(2 \pi \sigma_{k'})^{-1/2} \exp \left\{ -\frac{1}{2} (\vec{x} - \mu_{k'})^T \sigma_{k'}^{-1} (\vec{x} - \mu_{k'}) \right\} }
 $$
 
-En un problema de clasificación, la frontera está donde la probabilidad posterior para ambas clases es igual (0,5). El resultado es el análisis discriminante cuadrático, ya que la superficie de decisión es una función cuadrática.
+En un problema de clasificación, la frontera está donde la probabilidad posterior para ambas clases es igual (0,5). El resultado es el análisis discriminante cuadrático, ya que la superficie de decisión es una función cuadrática (parábola).
 
 \begin{figure}[h]
 \centering
@@ -908,4 +908,180 @@ Cuando las matrices de covarianza para las clases se comparte (pero el vector de
 
 Lo difícil de este método es estimar las matrices de covarianza. Para ello, se maximiza la probabilidad de los datos observados, donde la media depende de la etiqueta de clase de donde venga. Se puede utilizar el estimador de máxima verosimilitud, quedando una mezcla de la máxima verosimilitud para las dos gaussianas.
 
-Entre estos dos análisis (el cuadrático y el lineal), es el cuadrático el que tiene más términos y también el más flexible. Además, el cuadrático es el que tiene mayor riesgo de sobreajuste. El lineal es más robusto: tiene menos parámetros, es menos flexible, pero tiene menos riesgo de sobreajustar.
+Entre estos dos análisis (el cuadrático y el lineal), es el cuadrático el que tiene más términos y también el más flexible. Además, el cuadrático es el que tiene mayor riesgo de sobreajuste. El lineal es más robusto: tiene menos parámetros, es menos flexible, pero tiene menos riesgo de sobreajustar a los datos de entrenamiento.
+
+%24/03 - Daniel Hernández
+La única diferencia entre los dos análisis es la estimación de la matriz de covarianza (para el cuadrático hay dos matrices, para el lineal es compartida entre las clases). Hay que maximizar la matriz de covarianza observada con respecto a la matriz sigma. Se obtiene el estimador de máxima verosmilitud para la matriz de covarianza, siendo el promedio de las matrices de covarianzas de las distintas etiquetas de clase. 
+
+\subsubsection{Sobreaprendizaje}
+El análisis discriminante cuadrático es más sensible al sobreaprendizaje, pudiendo haber problemas cuando hay pocos datos. A la hora de calcular las probabilidades posteriores de clase, hay que calcular las inversas de las matrices de covarianza. Si el número de datos es menor que el de las observaciones, no va a ser posible la inversión, siendo un problema para estos clasificadores. Si ocurre eso, la matriz de covarianza no se puede invertir, por lo que se hace diagonal. En ese caso, iríamos al clasificador de Naive Bayes. Otra técnica podría ser igualar todas las matrices de covarianza, juntando los datos de todas las clases, aplicando el análisis discriminante lineal. Alternativamente, se puede forzar que las matrices de covarianza sean iguales y forzar que sean diagonales, utilizando el clasificador del análisis discriminante lineal diagonal. Por último, se puede utilizar la estimación máxima a posteriori para ajustar la matriz de covarianza. 
+
+\subsection{Análisis discriminante regularizado (RDA)}
+Se puede introducir como prior para la matriz de covarianzas la distribución de probabilidad de Wishart. Tiene dos parámetros: la media de la distribución (una matriz de covarianzas alrededor de la que estarían nuestras matrices) y un escalar que define la dispersión alrededor de la media. Con esta distribución definimos que esperamos que la matriz de covarianzas esté cerca de la matriz de identidad. El parámetro de dispersión es equivalente a $\lambda$, que afectaría al parámetro máximo a posteriori. $\lambda$ tomaría valores entre 0 y 1, mientras que MAP sería una combinación entre la matriz prior y máxima verosimilitud. Lo ideal sería poner algo intermedio entre los dos valores. Para algunos valores de $\lambda$ podemos obtener algunas matrices invertibles, mejores que las de MAP. Esto introduce un hiperparámetro al modelo que se debe ajustar. Para ello, se utilizan técnicas de comparación de modelos mediante la validación cruzada. 
+
+Hay que tener cuidado a la hora de elegir hiperparámetros. Cuando se ajusta, no se pueden utilizar datos de tests, ya que se utilizarían para construir el clasificador y ya no sería independiente a ellos. La estimación sería sesgada. Para ajustar los hiperparámetros, se haría validación cruzada sobre los datos de entrenamiento. Se obtendría el valor de $\lambda$ con el que funcione mejor el modelo y se evalúa con los datos de test.
+
+\subsection{Análisis discriminante lineal diagonal}
+En el caso de que la matriz de covarianza sea diagonal y compartida entre todas las clases, se conoce el modelo como análisis discriminante lineal diagonal. Para cuando hay muchas dimensiones, esto funciona mejor que otros análisis. Esto es menos flexible al tener menos parámetros, por lo que es bueno con pocos datos de entrenamiento y muchas dimensiones, ya que se limita el riesgo de sobreaprendizaje.
+
+\subsection{Clasificador Nearest Shrunken Centroids}
+Este clasificador es una variante del anterior en el que solo algunos atributos son relevantes. En lugar de hacer estimación máxima a posteriori para la matriz, se utiliza MAP para las medias. La media de cada clase es igual a una media común igual para todas las clases y un término diferenciador que va a ser el que diferencie las etiquetas de clase. A eso se le conoce como centroide. Se fuerza que ese término se aproxime a 0. Cuando el término se hace exactamente a 0, la media para todas las clases es la misma, siendo la media para ese atributo. Esto se traduce en que el atributo es irrelevante para calcular la probabilidad a posteriori, al contribuir de la misma manera para cada una de las distintas etiquetas de clase, sin introducir ningún cambio en el cálculo de las probabilidades posteriores. Así, se hace una selección de atributos. 
+
+Para que los centroides se aproximen a 0, hay un hiperparámetro entre 0 y el máximo valor de los centroides, siendo esa la cantidad que se sustrae a los centroides. Si se sustituye para que los centroides sean 0, lo que queda es el prior en la regla de Bayes. 
+
+Este clasificador tiene un hiperparámetro que indica lo que se encogen los centroides. Si no se encogen, tenemos un análisis discriminante lineal, y si se encogen mucho, el prior de las clases. Por ello, se debe estimar el hiperparámetro con validación cruzada.  
+
+\subsection{Ejercicios}
+\begin{enumerate}
+\item ¿Qué ventajas y desventajas tienen QDA y LDA?
+
+QDA tiene fronteras más flexibles al ser parábolas en comparación con las fronteras lineales de LDA. No obstante, es más propenso al sobreaprendizaje con un peor error de generalización.
+
+\item Imagina que aplicas QDA a un problema de clasificación con más atributos que datos. La matriz es singular y no inverda. ¿Qué técnicas se pueden utilizar para resolver este problema?
+
+Se puede utilizar la estimación máxima a posteriori y ajustar $\lambda$ que interpola entre una matriz igual a la de identidad y una matriz diagonal. Esta es una de las soluciones. Otra solución sería coger la diagonal, quedando así Naive Bayes. También se podrían forzar las matrices de covarianza para que fueran iguales (y por tanto, compartidas).
+\end{enumerate}
+
+\subsection{Resumen}
+\begin{itemize}
+\item Es poco probable que se cumpla la hipótesis Naive Bayes. Una distribución gaussiana multivariante puede tener en cuenta las dependencias.
+\item El análisis discriminante surge utilizando el teorema de Bayes y una gaussiana multivariante para estimar las densidades condicionales de clase.
+\item QDA considera diferentes matrices de covarianza para cada densidad condicional de clase, que pueden estimarse utilizando ML. Los límites de decisión de QDA son funciones cuadráticas.
+\item LDA considera matrices de covarianza compartidas para cada densidad condicional de clase. Los límites de decisión de LDA son funciones lineales. Es menos flexible pero más robusto al sobreajuste.
+\item DLDA es una variante de LDA que asume una matriz de covarianza diagonal.
+\item Para mejorar la robustez de los métodos discriminantes se puede utilizar la estimación MAP. En algunos casos, esto conduce a la selección de atributos.
+\end{itemize}
+
+\section{Vecinos próximos y árboles de clasificación}
+\subsection{Vecinos más próximos y estimación de la densidad}
+Hasta ahora, hemos creado modelos generativos con probabilidades condicionales calculadas con el teorema de Bayes para hacer predicciones. Calcular las estimaciones condicionales es complicado de hacer en la práctica. 
+
+La hipótesis de gaussianidad es restrictiva al ser unimodal, lo cual no siempre coincide. Los vecinos próximos es más flexible que la distribución gaussiana. Se estiman densidades de distribuciones (cada etiqueta de clase). La probabilidad de que los datos caigan en una región en el espacio depende del área bajo la curva de la densidad. 
+
+Imaginemos que tenemos datos observados, teniendo que estimar la densidad de probabilidad en dos regiones. La probabilidad de que los datos caigan en la región 1 es el área debajo de la curva de la densidad de la región 1. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/density-estimation.png}
+\end{figure}
+
+La estimación de densidad se debe normalizar en cuanto al tamaño de la región. Suponemos que la densidades son constantes (que la curva es plana), el área bajo la curva es un rectángulo, altura por longitud, es decir, densidad de probabilidad por anchura de la región.
+
+De esta forma, la densidad se puede aproximar como:
+$$f(x) \approx \frac{\text{number of samples in region}}{\text{total number of samples}} \cdot \frac{1}{\text{volume of the region}} = \frac{\kappa}{N} \frac{1}{V}$$
+
+Esto se debe estimar para cada etiqueta de clase. Si hacemos esto, para la estimación de la distribución condicional queda:
+$$p(\vec{x} \mid \mathcal{C}_k) \approx \frac{N_k(\vec{x}}{N_k V(\vec{x})}$$
+Este estimador es para la distribución condicional, y se utiliza en la regla de Bayes para las probabilidades posteriores:
+$$p(y_i = \mathcal{C}_k \mid \vec{x}) = \frac{N_k (\vec{x})}{\sum_{k'} N_{k'}(\vec{x})} = \frac{N_k(\vec{x})}{\kappa}$$
+
+Así, en la clasificación de vecinos $\kappa$-próximos, simplemente hay que predecir la clase más común entre los $\kappa$ vecinos de x. Una $\kappa$ pequeña produce muchas regiones pequeñas de cada clase, mientras que una $\kappa$ grande da lugar a menos regiones grandes.
+
+Las ventajas de este clasificador son:
+\begin{itemize}
+\item Puede aplicarse a los datos de cualquier distribución.
+\item Muy sencillo e intuitivo.
+\item No paramétrico: más expresivo a medida que tenemos más muestras.
+\item Buen rendimiento si el número de muestras es grande.
+\end{itemize}
+
+No obstante, también tiene algunas desventajas:
+\begin{itemize}
+\item Elegir el mejor $\kappa$ puede ser difícil, realizándose mediante búsqueda en validación cruzada. Una $\kappa$ pequeña provoca un sobreajuste, y una $\kappa$ pequeña un infraajuste.
+\item Es computacionalmente pesado al necesitar almacenar todos los datos de entrenamiento.
+\item Se necesita un gran número de muestras para obtener una buena precisión.
+\end{itemize}
+
+\subsection{Árboles de clasificación}
+Es natural clasificar un patrón mediante una secuencia de preguntas, en la que la siguiente pregunta depende de la respuesta a la pregunta actual. La principal ventaja es la interpretabilidad. Es sencillo transformar el árbol en un conjunto de reglas de clasificación.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/classification-tree.png}
+\end{figure}
+
+El aprendizaje de árboles de decisión suele ser más adecuado si
+\begin{itemize}
+\item Varios atributos categóricos, por ejemplo, el tamaño puede ser pequeño, mediano o grande.
+\item El problema de clasificación tiene varias etiquetas, es decir, es multiclase.
+\item Los datos de entrenamiento pueden contener errores (atributos o etiquetas).
+\item Los datos de entrenamiento pueden contener valores perdidos (missing values).
+\item Nos interesa la interpretabilidad del clasificador.
+\end{itemize}
+
+La mayoría de los algoritmos emplean una búsqueda codiciosa descendente:
+\begin{enumerate}
+\item Se determina qué atributo debe comprobarse en la raíz.
+\item A continuación, se crean descendientes para cada valor posible.
+\item Los datos de entrenamiento se clasifican en el descendiente apropiado.
+\item El proceso se repite con los datos asociados a cada descendiente.
+\item El proceso se detiene, por ejemplo, cuando todos los casos pertenecen a la misma clase.
+\end{enumerate}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/tree-construction.png}
+\end{figure}
+
+\subsubsection{Selección de test en cada nodo}
+¿Qué atributo debemos seleccionar en cada nodo? La idea clave es seleccionar el atributo que sea más útil para clasificar. Esto dará lugar a árboles más pequeños y compactos, y requiere una medida de impureza de los datos. Esta impureza se mide con la entropía, el índice de Gini o la tasa de error. Todas las medidas son altas en el 50\% de cada clase.
+
+Dada una determinada medida de impureza, ¿qué atributo debemos seleccionar para dividir en el nodo del árbol parcial? Una heurística elige el atributo que disminuye más la impureza. Se trata de una regla codiciosa que intenta generar árboles pequeños.
+
+Como ejemplo, retomamos el dataset de la clasificación tumoral (con size, smoothness y symmetry). Utilizando la entropía, hay 5 ejemplos de la clase positiva y 9 de la negativa. La impureza de los datos es la entropía de un conjunto de datos con 9 ejemplos de la clase negativa y 5 de la positiva. Los cálculos serían
+$$5/9 \cdot  log_2(5/14) - 9/14 \cdot log_2(9/14) = 0.940286$$
+
+Ahora queremos ver la reducción esperada de la impureza de los datos al utilizar el atributo symmetry para separar los datos. Es un atributo binario con 6 datos yes y 8 no. De los 6, hay 5 ejemplos de la clase negativa y 1 de la positiva, mientras que de los 8 son 4 de la clase positiva y 4 de la negativa. Así:
+$$0.94 - 6/14 log_2(6/14) - 8/14 log_2(8/14) = 0.09$$
+
+Ahora consideramos el tamaño:
+$$0.94 - 5/14 log_2(5/14) - 5/14 log_2(5/14) - 4/14 \cdot 0 = 0.424$$
+
+Comparando los dos resultados, la entropía de tamaño es mayor, por lo que es un mejor atributo para la raíz. También habría que tener en cuenta smoothness para determinar la raíz. Los resultados son:
+\begin{itemize}
+\item Smoothness = 0.119
+\item Symmetry = 0.09
+\item Size = 0.424
+\end{itemize}
+
+La mayor disminución de la impureza de los datos corresponde a Tamaño. El nodo raíz comprueba el atributo Tamaño y el proceso se repite para cada hijo hasta que se cumple un criterio de parada.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/tree-result.png}
+\end{figure}
+
+\subsubsection{Tamaño del árbol}
+Si el tamaño del árbol es muy grande, puede ajustarse en exceso a los datos. Por el contrario, si el tamaño es demasiado pequeño, puede no ajustarse lo suficiente a los datos.
+Existen diferentes métodos para evitar que crezcan árboles demasiado grandes:
+\begin{itemize}
+\item Mantener un conjunto de validación (10\% de los datos). Continúa dividiendo nodos hasta que se minimice el error en los datos de validación.
+\item La división se detiene si la mejor división reduce la impureza en menos de una cantidad preestablecida $\beta$, es decir, si $max_a Decrease(\mathcal{D}, a) \leq \beta$.
+\item Se detiene cuando un nodo tiene menos de algún número umbral de puntos$N_{min}$ o algún porcentaje del conjunto total de entrenamiento, por ejemplo, 5\%.
+\item Intercambia complejidad por precisión de la prueba
+\end{itemize}
+
+\subsubsection{Estrategias post-pruning}
+La división detenida adolece de falta de suficiente visión de futuro, por lo que es preferible la realizar post-pruning.
+
+Hay que hacer crecer un árbol hasta que los nodos de las hojas tengan una impureza mínima. A continuación, se considera cada nodo del árbol como candidato a la poda:
+\begin{itemize}
+\item Eliminar el subárbol completo enraizado en ese nodo.
+\item Convertir el nodo eliminado en una hoja.
+\item Asignar la clase más común dentro de los datos que llegan a ese nodo.
+\end{itemize}
+
+Los nodos se podan de forma iterativa, eligiendo el nodo cuya eliminación más aumenta la precisión en el conjunto de validación. La poda continúa hasta que una nueva poda resulte perjudicial.
+
+\subsubsection{Incorporación de atributos continuos}
+Se ordenan los atributos continuos de menor a mayor y se observa en qué rango hay un cambio de la etiqueta.
+
+\subsection{Resumen}
+\begin{itemize}
+\item Los vecinos más próximos son un método de clasificación no paramétrico muy sencillo cuya capacidad expresiva crece con el tamaño del conjunto de datos.
+\item El número de vecinos $\kappa$ especifica la complejidad del modelo. Un valor alto de $\kappa$ conduce a un ajuste insuficiente y $\kappa$ pequeño conduce a un ajuste excesivo.
+\item Los árboles son modelos interpretables que dividen los datos en cada nodo. Tratan atributos continuos, categóricos y ausentes.
+\item Los árboles se generan mediante un algoritmo codicioso que trata de encontrar la mejor división en cada nodo para reducir al máximo la impureza de los datos.
+\item Los árboles completamente desarrollados suelen ajustarse en exceso a los datos de entrenamiento, por lo que las estrategias de poda a posteriori, en las que se reduce el tamaño del árbol, son necesarias. 
+\item Los árboles de clasificación tienden a funcionar un poco peor que otros modelos.
+\end{itemize} 
