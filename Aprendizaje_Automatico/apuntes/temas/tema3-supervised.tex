@@ -1085,3 +1085,263 @@ Se ordenan los atributos continuos de menor a mayor y se observa en qué rango h
 \item Los árboles completamente desarrollados suelen ajustarse en exceso a los datos de entrenamiento, por lo que las estrategias de poda a posteriori, en las que se reduce el tamaño del árbol, son necesarias. 
 \item Los árboles de clasificación tienden a funcionar un poco peor que otros modelos.
 \end{itemize} 
+
+%25/03 - Daniel Hernández
+\section{Combinación de clasificadores: métodos ensemble}
+La predicción del conjunto de los clasificadores individuales será la clase mayoritaria. De esta forma, se puede probar si los errores de los clasificadores son independientes, teniendo así una clasificación mejorada. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.6\textwidth]{figs/majority-voting.png}
+\end{figure}
+
+El ensemble puede reducir significativamente el error de un único clasificador simplemente considerando varias versiones del mismo. Por desgracia, los errores cometidos por los clasificadores no son independientes en la práctica. Sólo existe un único conjunto de datos de entrenamiento D, y hay que introducir variabilidad entre los clasificadores utilizando diferentes técnicas:
+\begin{itemize}
+\item Entrenamiento de cada clasificador en una muestra bootstrap.
+\item Inyección de ruido en el conjunto de entrenamiento (cambiar algunas etiquetas).
+\item Introduciendo cierta aleatoriedad en el algoritmo de entrenamiento.
+\end{itemize}
+
+Los errores suelen estar sólo ligeramente correlacionados, y la reducción del error global suele ser significativa.
+
+\subsection{Bagging, agregación de bootstrap}
+Cada clasificador base se entrena en una muestra bootstrap de los datos, y se utiliza la votación por mayoría para combinar los resultados de los clasificadores. Al construir una muestra bootstrap, se pueden repetir algunos datos en una misma muestra, y algunos datos pueden faltar. En torno a un tercio de los datos de una muestra de bootstrap van a estar repetidos, y por tanto en torno a un tercio de los datos totales no van a estar presentes. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.6\textwidth]{figs/bootstrap.png}
+\end{figure}
+
+Las características del Bagging son:
+\begin{itemize}
+\item Puede aplicarse a cualquier algoritmo de clasificación (normalmente árboles).
+\item El error de un clasificador suele ser mayor (debido al muestreo bootstrap).
+\item El error del conjunto disminuye con M y suele ser mucho mejor.
+\item Funciona mejor con clasificadores inestables (reduce la varianza). Estos clasificadores tienen grandes cambios en los límites de decisión y la predicción con pequeños cambios en el conjunto de entrenamiento. Por ejemplo, los árboles de clasificación no podados serían un clasificador inestable.
+\item Puede degradar el rendimiento de los clasificadores estables, es decir, clasificadores en los cuales grandes cambios en el conjunto de entrenamiento producen pequeños en los límites de decisión (predicciones), como pueden ser los K-vecinos más próximos.
+\end{itemize}
+
+El bagging es peor al principio que utilizar un solo clasificador debido al bootstrap (se utilizarían menos datos de entrenamiento), pero al final es mejor que un solo árbol. No obstante, es más costoso computacionalmente, ya que hay que generar varios clasificadores. Otra desventaja es que la interpretabilidad se pierde, pero al menos se mejora el error de clasificación. 
+
+\subsection{Cambio de clases}
+Cada clasificador base se entrena en una versión corrupta de los datos. Cada vez, se cambia aleatoriamente la etiqueta de una fracción p de los datos. Se utiliza la votación por mayoría para combinar los resultados de los clasificadores.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.6\textwidth]{figs/class-switching.png}
+\end{figure}
+
+Este cambio de clase obliga a cometer errores independientes de forma más agresiva que el bagging. Requiere ajustar un (hiper)parámetro adicional p que depende del problema. A menudo se requieren conjuntos de mayor tamaño que en el bagging. Un p grande tiende a funcionar mejor, pero también requiere valores más grandes de M. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/bagging-classswitching.png}
+\end{figure}
+
+Comparando el cambio de clases con el uso de un solo clasificador y el bagging, al principio es el peor método, pero al final es el mejor.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/noclass-bagging-classswitching.png}
+\end{figure}
+
+Cuando p aumenta, el error del conjunto tarda más en converger, por lo que pueden ser necesarios conjuntos más grandes.
+
+\subsection{Random forest}
+Cada clasificador de árbol se entrena en una muestra bootstrap de los datos. Se introduce una cierta aleatoriedad en el algoritmo de crecimiento de los árboles, y se permite que éstos crezcan al completo, sin poda. Se utiliza la votación por mayoría para combinar los resultados de los clasificadores. 
+
+La aleatoriedad se introduce en el proceso de crecimiento del árbol:
+\begin{itemize}
+\item En cada nodo, se elige un subconjunto aleatorio de m < D atributos.
+\item Se calcula la disminución de impurezas para cada uno de los m atributos.
+\item Se dividen los datos en ese nodo utilizando el atributo con la mayor disminución.
+\end{itemize}
+
+Este proceso introduce variabilidad en los clasificadores y decorrelaciona los errores cometidos.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.6\textwidth]{figs/random-forest-indv.png}
+\includegraphics[width = 0.6\textwidth]{figs/random-forest-prediction.png}
+\end{figure}
+
+Random forest es más eficaz que bagging a la hora de generar árboles diversos. El proceso de construcción de cada árbol es más rápido, y debido a la aleatorización de las divisiones, los árboles son más grandes. Los datos fuera de bootstrap (OOB) se utilizan para estimar el error de prueba de forma gratuita. Además, es bastante insensible al parámetro m (a menudo, $m = \sqrt{D}$).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.6\textwidth]{figs/random-forest-error.png}
+\end{figure}
+
+Random forest ofrece mejores resultados que el bagging y el árbol único.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/noclass-bagging-randomforest.png}
+\end{figure}
+
+\subsection{Resumen}
+\begin{itemize}
+\item Los métodos de ensamblaje pueden mejorar significativamente el rendimiento de un clasificador base, aunque pueden reducir la interpretabilidad.
+\item Un buen ensemble debe contener clasificadores que cometan errores independientes pero que también sean relativamente precisos (mejores que los aleatorios).
+\item El bagging introduce diversidad en los clasificadores de base mediante el ajuste de cada clasificador a una muestra bootstrap de los datos.
+\item El cambio de clase invierte aleatoriamente las etiquetas de los datos.
+\item El random forest añade más aleatoriedad al proceso de crecimiento del árbol.
+\end{itemize}
+
+El método por defecto basado en conjuntos de clasificadores es random forest.
+
+\section{Selección de atributos}
+La selección de atributos se realiza con técnicas que identifican unos pocos atributos relevantes del conjunto total de atributos que son más útiles para abordar una tarea de clasificación. También se denomina como selección de variables o selección de atributos. Es diferente a las técnicas de extracción de características, que crean nuevas características a partir de funciones de las características originales, como por ejemplo: PCA.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/feature-selection-extraction.png}
+\end{figure}
+
+La selección de atributos se realiza por los siguientes motivos:
+\begin{itemize}
+\item Simplificación de los clasificadores para facilitar su interpretación.
+\item Tiempos de entrenamiento más cortos.
+\item Aliviar la maldición de la dimensionalidad.
+\item Mejorar la generalización reduciendo el sobreajuste.
+\item Simplificar la recogida de datos.
+\end{itemize}
+
+En las técnicas de selección de rasgos, el objetivo es identificar qué rasgos son
+\begin{itemize}
+\item \textbf{Relevantes:} Características que son estrictamente necesarias para obtener buenos resultados en la tarea de predicción. Sin ellas, el error de generalización aumenta.
+\item \textbf{Irrelevantes:} Características innecesarias para la tarea de clasificación. El error de generalización no se reduce al considerarlas.
+\item \textbf{Redundantes:} Características que se vuelven irrelevantes en presencia de otras características relevantes para la clasificación.
+\end{itemize}
+
+El objetivo de las técnicas de selección de características es identificar las características relevantes y excluir las irrelevantes y redundantes.
+
+Hay dos posibles escenarios que pueden surgir: 
+\begin{enumerate}
+\item \textbf{Gran número de datos, pero con pocas dimensiones/atributos:} al utilizar un método de selección de atributos, en esta situación va a ayudar algo, pero no demasiado a la hora de mejorar el error de clasificación. 
+\item \textbf{Número pequeño de datos y muchas dimensiones:} en este escenario, la selección de atributos será clave. Esto se puede dar en estudios clínicos con pocos pacientes, pero muchos genes de los que se mide la expresión. La selección de atributos puede ser interesante para identificar un número reducido de genes que sean relevantes para predecir la enfermedad, obteniendo un subset interpretable que ayude a los médicos.
+\end{enumerate}
+
+En función del número de variables consideradas conjuntamente, se distinguen:
+\begin{itemize}
+\item \textbf{Métodos univariantes, clasificación de variables}: Consideran las variables de entrada una a una. Puede ignorar variables importantes.
+\item \textbf{Métodos multivariantes, selección de subconjuntos de variables}: considera grupos de variables juntos. No es posible probar todas las combinaciones
+\end{itemize}
+
+Basado en el uso de un clasificador en la selección de características:
+\begin{itemize}
+\item \textbf{Filtro}: selecciona un subconjunto de variables independientemente del clasificador que luego las utilizará. A menudo, métodos univariantes.
+\item \textbf{Wrapper}: selecciona un subconjunto de variables teniendo en cuenta la precisión del clasificador que las utilizará.
+\item \textbf{Embebido}: el método de selección de características se incorpora al proceso de entrenamiento del clasificador (por ejemplo, árboles de clasificación o centroides encogidos).
+\end{itemize}
+
+\subsection{Métodos de filtrado}
+Este método se basa en encontrar un subconjunto de variables de las que se espera un buen rendimiento utilizando únicamente los datos observados X e y. En el \textbf{ranking de variables}, se calcula el estadístico J para cada atributo y se mantienen los valores por encima de un umbral. Este método es univariable al mirarse cada atributo de forma individual.
+
+Uno de los scores que se puede utilizar en variable ranking es ANOVA. Se realiza el análisis de la varianza como prueba estadística para evaluar si las medias de varios grupos son iguales o no. Se obtiene el F-score. F será grande si la variabilidad entre grupos es grande en relación con la variabilidad dentro de los grupos (poco probable si todas las medias son iguales).
+
+La ventaja de los filtros es que son rápidos de computar, y permite la selección genérica de variables sin estar condicionado por ningún clasificador. Requiere un paso de preprocesado para reducir el espacio de dimensionalidad y el sobreajuste. No obstante, filtros simples pueden ignorar variables que solo son relevantes en conjunto con otras.
+
+\subsection{Wrappers}
+Los wrappers permiten evaluar la calidad de un subconjunto de características en función de la precisión de un clasificador concreto. Implica evaluar muchos subconjuntos diferentes. Es un proceso interativo en el que, en cada iteración, se generan y evalúan varios subconjuntos de atributos. El éxito de cada subconjunto determina qué subconjuntos se probarán a continuación. La selección de características pasa a formar parte del entrenamiento del clasificador.
+
+La ventaja es que puede utilizarse con cualquier clasificador, y la selección de variables está sintonizada para un clasificador dado. Además, puede encontrar atributos que sean relevantes conjuntamente. No obstante, es muy costoso computacionalmente, y requiere dejar de lado los datos de validación.
+Las características D dan $2^D$ posibles subconjuntos, por lo que es necesario una estrategia de búsqueda: selección secuencial hacia delante, eliminación recursiva hacia atrás, algoritmos genéticos, annealing simulado, etc.
+
+\subsection{Métodos embebidos}
+En este caso, el proceso de selección de características se realiza durante el entrenamiento del clasificador. Ejemplos son árboles de decisión, centroides encogidos más próximos o LASSO generalizado. Este último es un modelo discriminativo que contiene el hiperparámetro w. 
+
+La selección de variables se realiza de forma gratuita mientras se entrena el clasificador. De esta forma, pueden encontrarse atributos que sean relevantes conjuntamente y utilizar conocimientos sobre el algoritmo de clasificación específico. Además, suele ser más barato que los métodos wrappers y tiene un buen rendimiento empírico en general. La desventaja es que suele requerir el ajuste de hiperparámetros mediante validación cruzada, y las características seleccionadas son específicas del clasificador. 
+
+\subsection{Medidas de dependencia: correlación lineal}
+Es importante medir la dependencia de un atributo con la etiqueta de clase. Si las dependencias son grandes, es bastante probable que el atributo sea relevante. 
+
+La correlación entre dos variables toma valores entre -1 y 1. Esos valores indican que la dependencia es fuerte. El coeficiente al cuadrado toma valores entre 0 y 1, e indica así la fracción de varianza total que se explica mediante una relación lineal simple entre el atributo y la etiqueta de clase. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/linear-correlation.png}
+\end{figure}
+
+La correlación lineal solo tiene sentido en problemas de clasificación cuando el problema es binario. Además, solo puede captar las dependencias lineales y puede subestimar variables importantes. 
+
+\subsection{Medidas de dependencia: información mutua}
+La información mutua mide la información que comparten x e y: En qué medida el conocimiento de una de estas variables reduce la incertidumbre sobre la otra. Esto se puede definir de muchas formas, entre las que se incluye la entropía.
+
+La entropía condicional es la incertidumbre en y después de conocer x.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/mutual-information.png}
+\end{figure}
+
+En la práctica, $I(x;y)$ capta las dependencias no lineales, a diferencia de la correlación lineal. $y$ no tiene por qué ser binario (asignado a un conjunto entero). En el caso discreto, I(x; y) puede estimarse simplemente contando. En el caso continuo, es necesario estimar la densidad (muy difícil). A menudo, las variables se discretizan o se utilizan técnicas basadas en los vecinos más próximos para su estimación.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/mutual-information-practice.png}
+\end{figure}
+
+\subsection{Métodos de filtrado avanzado}
+Un enfoque heurístico común es una búsqueda secuencial que considera las características una por una para añadirlas/eliminarlas.
+Dos enfoques secuenciales populares son:
+\begin{itemize}
+\item \textbf{Selección hacia delante:} añade la característica que maximiza $J(x., j)$
+\item \textbf{Eliminación hacia atrás:} elimina la característica que minimiza J.
+\end{itemize}
+
+\subsubsection{Minimum-Redundancy Maximum-Relevance}
+Éste es un criterio que favorece las características relevantes que no son redundantes
+$$J(\vec{x}., j) = Relevance - Redundancy$$
+
+Se favorecen atributos relevantes, penalizando aquellos que, aunque sean relevantes, sean redundantes, estando altamente correlacionados con los atributos ya elegidos. De esta forma, una característica que sea muy relevante pero también muy redundante con las características ya seleccionadas en S recibirá una puntuación baja.
+
+Variable ranking utiliza $I(x.,j; y)$. En MRMR, el ranking de variables se utiliza en primer lugar para conservar solo el 20\% de las características y reducir el coste computacional.
+
+Para el mismo número de características, MRMR ofrece resultados similares o mejores que un enfoque de clasificación de variables simple.
+
+\subsubsection{Información mutua conjunta}
+El criterio de información mutua conjunta favorece las características que son relevantes cuando se consideran junto con las características ya seleccionadas.
+
+En JMI, el ranking de variables se utiliza en primer lugar para conservar solo el 20\% de las características y reducir el coste computacional.
+
+Para el mismo número de características, JMI ofrece resultados similares o mejores que una simple clasificación de variables.
+
+\subsection{Random forest para selección de atributos}
+Se puede utilizar random forest para calcular la importancia de cada atributo. Si un atributo es muy importante, su aleatoriedad va a incrementar el error de OOB en una gran cantidad.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/random-forest-feature-selection.png}
+\end{figure}
+
+La ventaja es que se obtiene gratuitamente tras construir un random forest sobre los datos. Se pueden identificar los atributos que solo son relevantes cuando se consideran juntos, teniendo en cuenta las interacciones multivariantes. Además, devuelve una medida cuantitativa de la importancia (aumento del error), siendo relativamente barato de obtener. No obstante, puede sobreestimar la importancia de las variables predictoras correlacionadas debido a la preferencia de las variables predictoras correlacionadas en las primeras divisiones. También puede sobreestimar la importancia de variables categóricas con un gran número de categorías debido a su preferencia para dividir los datos.
+
+\subsection{Sesgos en el proceso de selección de atributos}
+Considerar un número reducido de características mejora la interpretabilidad, pero puede reducir el rendimiento de la predicción.
+
+Muchos trabajos presentan estimaciones de rendimiento demasiado optimistas debido al uso de datos de prueba para llevar a cabo la selección de características.
+
+Los datos de prueba no deben utilizarse en ninguna de las etapas de construcción del clasificador, incluidas la selección de características o la normalización de datos.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/feature-selection-bias.png}
+\end{figure}
+
+\subsection{Ejercicios}
+\begin{enumerate}
+\item \textit{En un conjunto de datos con 100.000 características y unos cientos de instancias, es demasiado costoso ejecutar Random Forest para la selección de características. Indique qué enfoques puede seguir para resolver este problema.}
+
+Se podría hacer una preselección de atributos con variable ranking. De 100.000 podríamos quedarnos con 10.000 y después aplicar ya Random Forest.
+\end{enumerate}
+
+\subsection{Resumen}
+\begin{itemize}
+\item La selección de atributos puede utilizarse para identificar un pequeño conjunto de características más adecuadas para abordar una determinada tarea de clasificación.
+\item Mejora la interpretabilidad del clasificador, simplifica la adquisición de datos y, en ocasiones, también mejora el rendimiento de la predicción.
+\item La mayoría de las técnicas de selección de características pueden clasificarse en filtros, wrappers y métodos embebidos.
+\item Los métodos de filtro son sencillos, rápidos y, la mayoría de las veces, suficientes para encontrar un buen conjunto de características para una tarea de clasificación concreta.
+\item Existe un trade-off entre el número de características consideradas para la predicción y la precisión de la clasificación resultante.
+\item Hay que tener cuidado para evitar sesgos optimistas en la estimación del rendimiento de predicción de un conjunto de características no utilizando datos de test para la selección de atributos.
+\end{itemize}
