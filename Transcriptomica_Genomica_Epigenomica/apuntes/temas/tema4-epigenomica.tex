@@ -148,3 +148,33 @@ Nos descargamos ChromHMM. Funciona tanto en Linux como en la CMD de Windows. En 
 En la carpeta CHROMSIZES creamos un fichero hg19\_chr16.txt y escribimos chr16 90354753 separado por tabulador. Ahora debemos crear file config\_chromHmm\_bin.txt como se indica en el manual:
 \texttt{cell1 mark1 cell1\_mark1.bed cell1\_control.bed} separado por tabuladores.
 
+%26/03 - Enrique
+El siguiente paso es binarizar los datos en ventanas de longitud 200pb. 
+\texttt{java -jar ChromHMM.jar BinarizeBed -c ./input/
+./CHROMSIZES/hg19\_chr16.txt ./archivos/
+config\_chromHmm\_bin.txt ./RESULTS}
+
+Ahora vamos a entrenar modelos HMM para los distintos estados. No conocemos los estados, por lo que entrenamos varios para ver cuál es el mejor. Empezamos por un modelo con 8 estados y repetimos para 9-11:
+\texttt{java -jar ChromHMM.jar LearnModel -i Master\_8 -l ./CHROMSIZES/hg19\_chr16.txt -printposterior -printstatebyline ./RESULTS ./RESULTS/LearnModel\_8 8 hg19}
+
+\texttt{java -jar ChromHMM.jar LearnModel -i Master\_9 -l ./CHROMSIZES/hg19\_chr16.txt -printposterior -printstatebyline ./RESULTS ./RESULTS/LearnModel\_9 9 hg19}
+
+\texttt{java -jar ChromHMM.jar LearnModel -i Master\_10 -l ./CHROMSIZES/hg19\_chr16.txt -printposterior -printstatebyline ./RESULTS ./RESULTS/LearnModel\_10 10 hg19}
+
+\texttt{java -jar ChromHMM.jar LearnModel -i Master\_11 -l ./CHROMSIZES/hg19\_chr16.txt -printposterior -printstatebyline ./RESULTS ./RESULTS/LearnModel\_11 11 hg19}
+
+Abrimos por ejemplo el report website\_11\_Master\_11.html. El primer heatmap representa los estados con las marcas epigenéticas. Después hay un plot de transición de estados, en el cual se representa la probabilidad de pasar de un estado a otro contiguo. 
+
+Entre los archivos resultantes, se ha generado un txt con el modelo generado. Esto es muy útil si recibimos muestras nuevas con las mismas marcas epigenéticas, ya que no es necesario volver a ejecutar todo. No obstante, si hubiese alguna marca nueva no incorporada en el modelo, sí habría que replicar el procedimiento anterior.
+
+Cuando hay replicados, se puede crear una regla en la que nos quedemos con regiones en las que x replicados muestren un mismo estado para poder definir la región a nivel biológico. En otros casos, tenemos un solo replicado. Como referencia, nos podemos quedar con aquellos estados con una probabilidad posterior mayor del 0.95. 
+
+Ahora hay que comparar los modelos. Creamos una carpeta Compare en la que copiamos los ficheros emissions.txt de los cuatro modelos ahí. Ahora ejecutamos el siguiente comando:
+
+\texttt{java -jar ChromHMM.jar CompareModels ./RESULTS/LearnModel\_11/emissions\_11\_Master\_11.txt
+./RESULTS/Compare/
+./RESULTS/Compare/Model\_compared}.
+
+
+
+
