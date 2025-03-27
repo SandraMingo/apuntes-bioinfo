@@ -1,0 +1,61 @@
+\documentclass[nochap]{config/ejercicios}
+
+\title{Redes Biológicas y Biología de Sistemas - Biofísica}
+\author{Sandra Mingo Ramírez}
+\date{2024/25}
+
+\usepackage[all]{nowidow}
+\usepackage{listing}
+\usepackage{color}
+\usepackage{tabularx}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+
+\newpage
+
+%27/03 - Saúl Ares
+\section{La ciencia en la encrucijada de la física y la biología}
+La biología es estocástica. Hay aleatoriedad, pero eso no implica que no haya correlaciones. A pesar del ruido, hay un orden en el ruido. 
+
+Hay varias herramientas para hacer modelados. La favorita de matemáticos aplicados es la creación de ecuaciones diferenciales. Hay ecuaciones diferenciales ordinarias y parciales, en las cuales se tienen en cuenta varias variables (tiempo y espacio). Esto se debe modelar con simulaciones de Monte Carlo, entre otros. También hay un modelado basado en agentes, es decir, siguiendo las distintas moléculas con reglas. Las redes complejas ayudan a entender las reacciones/metabolitos más importantes. Por último, los modelos bayesianos son los más complicados, pero son los más útiles al implementar la probabilidad prior y posterior. 
+
+A partir de situaciones simétricas, se forman distintos patrones: gradiente de morfógenos, sistemas activador-inhibidor, oscilaciones genéticas y deformación mecánica. 
+
+\subsection{Formación de patrones por gradientes de señalización}
+Hay morfógenos que responden distintamente en función de dónde se encuentran en el espacio. Por ejemplo, los genes Hox son muy importantes para el desarrollo embrionario. Se expresan de forma ordenada, aportando la identidad de cada una de las partes del embrión que dará lugar a las partes del adulto. La primera célula del embrión ya tiene muchos núcleos celulares con un gradiente de ARN materno. Así, se distinguen las dos puntas, aportando la información posicional que da lugar a patrones segmentados. 
+
+Hay expresión de dos genes iniciales (bcd y cad), los cuales se oponen espacialmente. En función del gradiente, se expresan unos genes u otros, regulándose entre ellos. Hay otros genes de segunda generación que dan lugar a la polaridad. 
+
+Esto se puede explicar biológicamente, o matemáticamente con ecuaciones diferenciales. Hay muchos trabajos que han descrito y medido las distintas zonas de expresión de los genes para ajustar y entrenar los modelos. Luego, se pueden utilizar como herramienta para contestar preguntas relacionadas con el ruido: viendo que los procesos son estocásticos, ¿cómo hacen los procesos para que la segmentación sea tan producible y tan poco ruidosa, creando al adulto con una precisión tan alta? Los sistemas biológicos funcionan pese a la variabilidad y a la aleatoriedad.
+Se pueden realizar análisis de bifurcaciones para intentar encontrar los comportamientos en el experimento. 
+
+\subsection{Formación de patrones por reacción-difusión}
+Los modelos de reacción-difusión comenzaron con los patrones de Turing. Suponiendo solo dos variables que actúan como activador e inhibidor, utilizando ecuaciones diferenciales parciales se describen las fluctuaciones describiendo la reacción y la difusión. Con este mecanismo, hay fluctuaciones moleculares, pero también se pueden dar auto-activaciones cuando la fluctuación es más grande de un cierto umbral. Como el activador activa a todas las moléculas, también empieza a haber mucho inhibidor, formándose un pico de las dos moléculas. Si los coeficientes tienen distintos coeficientes de difusión, el pico del inhibidor se puede ensanchar (suponiendo que tiene un coeficiente más grande, que difunde más rápido), disminuyendo el activador alrededor del pico. Así, se definen las distancias a las que se pueden formar los picos, generándose así las fluctuaciones.
+
+Modelo de Gierer-Meinhard con patrones de Turing de reacción-difusión con un activador (A) y un inhibidor (H):
+$$\frac{\partial A}{\partial t} = \rho_A \frac{A^2}{H} - \mu_A A + D_A \nabla^2 A$$
+$$\frac{\partial H}{\partial t} = \rho_H A^2 - \mu_H H + D_H \nabla^2 H$$
+
+Este tipo de mecanismos se usa para explicar muchos patrones que se encuentran en la biología: las rayas del tigre, los topos de los leopardos, las formas de las conchas, etc. Recientemente se han encontrado sistemas que han sido demostrados para fundamentar este mecanismo (ningún laboratorio trabaja con tigres ni leopardos). Uno de los primeros sistemas en los que se dio fue el paladar de un ratón, donde se forman arrugas que muestran patrones espaciales bien definidos. Estas arrugas se podían seguir durante todo el crecimiento del ratón, y se descubrieron las rutas genéticas.
+
+Otro de los sistemas donde se comprobó es en la formación de los dedos. Esto también se realizó en ratones, caracterizando los genes Wnt, Sox9 y Bmp. La formación de los dedos se da desde un muñón, donde se van generando patrones de activación de Sox9 y apoptosis en los huecos. Por eso, cuando no hay separación completa de los dedos con la presencia de una membrana, se debe a que la apoptosis no funcionó del todo bien. 
+
+Un ejemplo adicional es el patrón de los peces zebra. Con ablación láser, se mataron células y se buscaba ver cómo se recuperaban. Al hacer los patrones distintos de ablación, se vio cómo se recuperaban las células, con la inhibición de células de corto y largo alcance. Las células oscuras se podían inhibir a sí mismas e inhibían las células claras a corto alcance. Las células claras inhibían a las células oscuras que se encontraban cerca, pero estimulaban a las que se encontraban a una mayor distancia. Así, pudieron generar distintos patrones que se observaron en el modelo y se observaron luego experimentalmente. Este tipo de modelos con ecuaciones diferenciales no funcionaba muy bien, ya que el modelo funciona para un continuo, mientras que en este caso un modelo basado en agentes funcionaría mejor, simulando así las células concretas. 
+
+\subsection{Ejemplo: filamentos de cianobacterias}
+Las cianobacterias, pese a ser unicelulares, pueden vivir en colonias, formando biofilms. Así, es un ejemplo sencillo de multicelularidad. Las cianobacterias son capaces de fijar nitrógeno, y son interesantes en biotecnología para biofertilizantes y biofuéles. 
+
+La bacteria \textit{Anabaena} forma filamentos con dos tipos celulares: células vegetativas que realizan la fotosíntesis y producen carbohidratos, y heterocistos que son células especializadas en fijar nitrógeno. Si hay suficiente nitrógeno en el ambiente, no aparecen los heterocistos, pero si no hay suficiente nitrógeno fijado, se diferencian este tipo de células para fijar el nitrógeno con la enzima nitrogenasa. La nitrogenasa es muy sensible al oxígeno. Por tanto, una célula que hace la fotosíntesis no es apta para la nitrogenasa, ya que produce el oxígeno. Por ello, se generan los heterocistos, los cuales tienen una membrana más gorda para aislarlas y evitar la difusión del oxígeno. Cuando se diferencian los heterocistos, ya no se dividen más, salen del ciclo celular. ¿Pero cómo puede saber la célula cuándo o si debe convertirse en heterocisto? El patrón es cuasiregular, se diferencia una célula cada diez. ¿Pero cómo saben contar? 
+
+Cuando bajan los niveles de nitrógeno, se activa una cascada de genes incluyendo el activador HetR y los inhibidores PatS y HetN. hetR es el regulador maestro, por lo que es totalmente necesario para la diferenciación celular. Si se eliminan los dos inhibidores, se diferencian más células, pero funcionan a distintas escalas temporales. patS solo lo producen las células vegetativas, mientras que hetN lo producen las células ya diferenciadas. 
+
+De esta forma, hay activación local e inhibición a grandes distancias tanto de forma temprana como tardía. Cuando la distancia entre dos heterocistos se hace grande, el gradiente del inhibidor baja lo suficiente como para permitir la activación del activador. Según se produce el nuevo heterocisto, se produce de nuevo el inhibidor para que no se formen otros a su alrededor. 
+
+\end{document}
