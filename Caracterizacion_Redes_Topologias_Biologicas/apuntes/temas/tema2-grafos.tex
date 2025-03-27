@@ -195,4 +195,34 @@ Un subgrafo abarcador acíclico de un grafo G se denomina un \textbf{bosque abar
 \includegraphics[width = 0.6\textwidth]{figs/arbol-abarcador.png}
 \end{figure}
 
+%27/03 - Carlos Aguirre
+\section{Grafos bipartitos}
+Un grafo se dice que es bipartito si:
+\begin{itemize}
+\item El conjunto de vértices V se puede romper en dos subconjuntos disjuntos V1 y V2.
+\item El vértice inicial de cada rama de E pertenece a V1 y el vértice final a V2
+\end{itemize}
+
+Ejercicio: el grafo anterior (el del árbol abarcador), ¿es bipartito? No, porque no es posible realizar la partición. Si V1 pertenece al conjunto 1, V2 y V3 deben estar en el conjunto 2, por lo que V4 y V5 tienen que estar en V1, pero esto no es posible porque están conectados entre sí. La condición necesaria para que un grafo sea bipartito es que no tenga triángulos. Pero esto no es suficiente; se puede construir un grafo sin triángulos, pero que tampoco sea bipartito. Si cogemos solo el cuadrado V4-V7, sí se podría generar un grafo bipartito: V4 y V7 en un conjunto y V5 y V6 en otro. 
+
+\section{Representación de grafos}
+Hay dos formas estándar de representar un grafo en un ordenador:
+\begin{itemize}
+\item \textbf{Matriz de adyacencia}: consume mucha memoria, pero es fácil de añadir o eliminar ramas. Es fácil saber si existe una rama, pero es lento enumerar los vecinos de un nodo. Se pueden calcular los autovalores y autovectores.
+\item \textbf{Lista de adyacencia}: tiene un consumo limitado de memoria, pero es costoso añadir o eliminar ramas. También es costoso saber si existe una rama, pero rápido enumerar los vecinos de un nodo.
+\end{itemize}
+
+\section{Métricas sobre grafos}
+Los grafos se clasifican en función de unas determinadas métricas topológicas. Las métricas más empleadas son:
+\begin{itemize}
+\item Tamaño |E| y orden |V|
+\item Dispersión: $\frac{2 |E|}{|V| (|V| - 1)}$ para un grafo no dirigido y $\frac{|E|}{|V| (|V| - 1)}$ para un grafo dirigido. Si el coeficiente es pequeño (0), el grafo es disperso, si es cercano a 1, es denso. En redes biológicas, los grafos suelen ser dispersos.
+\item Distribución del grado de los nodos: división del grado de todos los nodos entre el número de nodos. El resultado es una distribución de probabilidad. En un grafo aleatorio, la distribución es de Poisson (como la gaussiana, pero sin valores negativos). En las redes biológicas, la distribución no será de Poisson, por lo que este será el primer test que se haga a los datos. 
+\item Grado medio (<k>)
+\item Coeficiente de agrupamiento
+\item Camino característico (L)
+\end{itemize}
+
+\subsection{Coeficiente de agrupamiento}
+
 
