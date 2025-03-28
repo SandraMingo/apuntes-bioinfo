@@ -99,3 +99,141 @@ Podemos utilizar las opciones -t para aumentar el número de hilos que utilizar�
 Abra los archivos html para obtener información sobre el número de secuencias, la distribución de longitudes, el contenido de \%GCs, la calidad media, etc.
 
 Todos los ticks están en verde salvo "Per base sequence content", pero esto no es preocupante al tratarse de un virus. Esto depende de la naturaleza de la especie de estudio. 
+
+%28/03 - Alberto
+Queremos eliminar las lecturas con baja calidad. Para ello, se pueden utilizar herramientas como cutadapt o trimmomatic. 
+
+\texttt{conda install -c bioconda trimmomatic -y}
+
+Para ejecutar esto, debemos indicar que son secuencias Pair-End, 
+
+\texttt{trimmomatic PE -phred33 ECTV\_R1.fastq ECTV\_R2.fastq ECTV\_R1\_qf\_paired.fastq ECTV\_R1\_qf\_unpaired.fastq ECTV\_R2\_qf\_paired.fastq ECTV\_R2\_qf\_unpaired.fastq SLIDINGWINDOW:4:20 MINLEN:700}
+
+Una vez con esto, volvemos a hacer Quality Control para verificar que esté bien.
+
+\texttt{mkdir ECTV\_QF\_Quality}
+\texttt{fastqc ECTV\_R1\_qf\_paired.fastq -o ECTV\_QF\_Quality}
+\texttt{fastqc ECTV\_R2\_qf\_paired.fastq -o ECTV\_QF\_Quality}
+
+Es importante eliminar las lecturas que alineen al genoma de phiX174. Se utiliza en todas las carreras de Illumina a modo de control interno. Por ello, se deben quitar las lecturas antes de ensamblar. En este caso, también vamos a eliminar lecturas humanas, ya que el virus se ha cultivado en células humanas y podrían quedarse trazas por contaminación. Si se cultivase en células de mono, entonces se deben quitar las lecturas que alineen al genoma de mono. Esto lo haremos con la herramienta Bowtie2, pero también se podría utilizar BWA. 
+
+Para la descontaminación del genoma humano, no nos vamos a descargar todo el genoma porque es muy grande y generar el índice tardaría demasiado. Nosotros vamos a utilizar solo las regiones codificantes. Como aun así la creación del índice puede tardar 1 hora, el profesor nos ha dado acceso a los ficheros ya indexados desde su Google Drive:
+
+\begin{lstlisting}
+gdown --folder https://drive.google.com/drive/folders/1ames4k0NYqKlkxObuGbjJLDh2-UwHVdH
+for f in human_cds_index/*; do ln -s $f .; done
+bowtie2 -x human_cds -1 ECTV_R1_qf_paired.fastq -2 ECTV_R2_qf_paired.fastq --un-conc ECTV_qf_paired_nohuman_R%.fastq -S tmp.sam
+wc -l *_qf_paired_nohuman* | awk '{print $1/4}'
+\end{lstlisting}
+
+Y ahora hacemos la decontaminación de phiX.
+\begin{lstlisting}
+wget https://ftp.ncbi.nlm.nih.gov/genomes/refseq/viral/Sinsheimervirus_phiX174/latest_assembly_versions/GCF_000819615.1_ViralProj14015/GCF_000819615.1_ViralProj14015_genomic.fna.gz
+
+gunzip GCF_000819615.1_ViralProj14015_genomic.fna.gz
+\end{lstlisting}
+
+Creamos el índice de Bowtie2:
+\begin{lstlisting}
+bowtie2-build GCF_000819615.1_ViralProj14015_genomic.fna phix
+
+#Aligning human decontaminated reads against PhiX174 index
+bowtie2 -x phix -1 ECTV_qf_paired_nohuman_R1.fastq -2 ECTV_qf_paired_nohuman_R2.fastq --un-conc ECTV_qf_paired_nohuman_noPhiX_R%.fastq -S tmp.sam
+
+#Count decontaminated reads
+wc -l ECTV_qf_paired_nohuman_noPhiX_R* | awk '{print $1/4}'}
+\end{lstlisting}
+
+Ahora descargamos Spades, un ensamblador de gráficos de novo. Hay dos protocolos que vamos a comprobar: careful y isolate.
+\begin{lstlisting}
+spades.py --careful -t 2 -1 ECTV_qf_paired_nohuman_noPhiX_R1.fastq -2 ECTV_qf_paired_nohuman_noPhiX_R2.fastq -o ECTV_careful
+
+spades.py --isolate -t 2 -1 ECTV_qf_paired_nohuman_noPhiX_R1.fastq -2 ECTV_qf_paired_nohuman_noPhiX_R2.fastq -o ECTV_careful
+
+grep -c '>' ./ECTV_careful/*.fasta
+grep -c '>' ./ECTV_isolate/*.fasta
+
+grep '>' -m 5 ./ECTV_careful/*.fasta
+grep '>' -m 5 ./ECTV_isolate/*.fasta
+
+grep '>' ./ECTV_careful/scaffolds.fasta
+grep '>' ./ECTV_isolate/scaffolds.fasta
+\end{lstlisting}
+
+Careful tiene menos contigs y scaffolds, por lo que se puede considerar que va mejor. Pero isolate tiene mayor porcentaje de fragmentación, por lo que depende lo que se priorice. 
+
+Ahora instalamos quast con \texttt{conda install quast -y}. Ahora creamos una carpeta quast y copiamos ahí los ficheros contigs y scaffolds de las carpetas ECTV careful y ECTV isolate (vale con un enlace simbólico). Obtenemos el genoma viral y utilizamos quast:
+
+\begin{lstlisting}
+wget ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/841/905/GCF_000841905.1_ViralProj14211/GCF_000841905.1_ViralProj14211_genomic.fna.gz
+gunzip GCF_000841905.1_ViralProj14211_genomic.fna.gz
+mv GCF_000841905.1_ViralProj14211_genomic.fna ECTV_reference_genome.fasta
+quast.py contigs* scaffolds* -R ECTV_reference_genome.fasta
+\end{lstlisting}
+
+\section{Ensamblaje de un metagenoma}
+Para tener un ejemplo más realista de todo el proceso vamos a utilizar lecturas metagenómicas simuladas. Se ha utilizado InSilicoSeq. La ventaja de utilizar reads simuladas en lugar de datos metagenómicos reales reside en que con las reads simuladas podemos tener los genomas originales utilizados para la simulación y la proporción de cada uno en los datos.
+
+Creamos una carpeta nueva y creamos un script de bash llamado virome\_script.sh. El contenido es el siguiente:
+
+\begin{lstlisting}
+#!/bin/bash
+
+# We need to add this command to avoid a conda initiation problem when running from a script -> https://stackoverflow.com/questions/34534513/calling-conda-source-activate-from-bash-script
+eval "$(conda shell.bash hook)"
+
+# Activation ngs environment
+conda activate ngs
+
+# Download reads
+gdown 1QModYfordyNU0LjnE27-plr-QEftbSi5
+
+# If you are using virtual machine the file is already downloaded 
+# ln -s /home/metag/Documents/data/viromas/virome_1.tar.gz .
+tar -xzf virome_1.tar.gz
+
+# Raw reads quality  assessment
+mkdir quality
+fastqc virome_1_R1.fastq.gz -o quality
+fastqc virome_1_R2.fastq.gz -o quality
+
+# Quality filtering
+trimmomatic PE -phred33 virome_1_R1.fastq.gz virome_1_R2.fastq.gz \
+    virome_1_R1_qf_paired.fq.gz virome_1_R1_qf_unpaired.fq.gz \
+    virome_1_R2_qf_paired.fq.gz virome_1_R2_qf_unpaired.fq.gz \
+    SLIDINGWINDOW:4:20 MINLEN:150 LEADING:20 TRAILING:20 AVGQUAL:20
+
+# QF reads quality assessment
+fastqc virome_1_R1_qf_paired.fq.gz -o quality
+fastqc virome_1_R2_qf_paired.fq.gz -o quality
+
+# Decontaminating human reads
+bowtie2 -x ../unit_3/human_cds -1 virome_1_R1_qf_paired.fq.gz -2 virome_1_R2_qf_paired.fq.gz --un-conc-gz virome_1_qf_paired_nonHuman_R%.fq.gz -S tmp.sam
+
+# Decontaminating PhiX174 reads
+bowtie2 -x ../unit_3/phix -1 virome_1_qf_paired_nonHuman_R1.fq.gz -2 virome_1_qf_paired_nonHuman_R2.fq.gz --un-conc-gz virome_1_qf_paired_nonHuman_nonPhix_R%.fq.gz -S tmp.sam
+
+# Assembly
+spades.py -t 4 --careful -1 virome_1_qf_paired_nonHuman_nonPhix_R1.fq.gz -2 virome_1_qf_paired_nonHuman_nonPhix_R2.fq.gz -o virome_1_careful
+spades.py -t 4 --meta    -1 virome_1_qf_paired_nonHuman_nonPhix_R1.fq.gz -2 virome_1_qf_paired_nonHuman_nonPhix_R2.fq.gz -o virome_1_meta
+spades.py -t 4 --sc      -1 virome_1_qf_paired_nonHuman_nonPhix_R1.fq.gz -2 virome_1_qf_paired_nonHuman_nonPhix_R2.fq.gz -o virome_1_sc
+
+# Assembly analysis
+
+# Activation quast environment
+mkdir quast
+cd quast
+ln -s ../virome_1_careful/contigs.fasta   virome_1_contigs_careful.fasta
+ln -s ../virome_1_careful/scaffolds.fasta virome_1_scaffolds_careful.fasta
+ln -s ../virome_1_meta/contigs.fasta      virome_1_contigs_meta.fasta
+ln -s ../virome_1_meta/scaffolds.fasta    virome_1_scaffolds_meta.fasta
+ln -s ../virome_1_sc/contigs.fasta        virome_1_contigs_sc.fasta
+ln -s ../virome_1_sc/scaffolds.fasta      virome_1_scaffolds_sc.fasta
+ln -s ../virome_1_genomes.fasta           virome_1_genomes.fasta
+quast.py virome_1_contigs_careful.fasta virome_1_contigs_meta.fasta virome_1_contigs_sc.fasta virome_1_scaffolds_careful.fasta virome_1_scaffolds_meta.fasta virome_1_scaffolds_sc.fasta -R virome_1_genomes.fasta
+conda deactivate
+\end{lstlisting}
+
+Damos permisos de ejecución con \texttt{chmod +x virome\_script.sh} y lo ejecutamos.
+
+El mejor modelo sería mayor número de bases y menor número de trozos. Nunca se consigue alinear el 100\% debido a las regiones repetidas. 
