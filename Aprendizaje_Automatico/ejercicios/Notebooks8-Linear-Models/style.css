@@ -1,0 +1,42 @@
+.qst {
+    background-color: #85A7BE;
+    padding:10px;
+    border-radius: 5px;
+    border: solid 2px #5D8AA8;
+}
+
+.qst:before {
+    font-weight: bold;
+    content:"Exercise";
+    display: block;
+    margin: 0px 10px 10px 10px;
+}
+
+h1, h2, h3 {
+    color: #5D8AA8;
+}
+
+.title, .subtitle, .author {
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    color: #5D8AA8;
+}
+
+.title {
+    font-size:xx-large;
+}
+
+.subtitle {
+    color: gray;
+    font-size:x-large;
+}
+
+.author {
+    font-size:large;
+}
+
+.notes::before {
+    content: "Notes: ";
+    font-style: italic;
+}

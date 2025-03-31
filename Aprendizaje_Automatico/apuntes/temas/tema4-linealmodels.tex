@@ -1,0 +1,38 @@
+%31/03 - Carlos Alaíz 
+\chapter{Modelos lineales, métodos de Kernel y redes neuronales}
+\section{Modelos lineales de regresión}
+El aprendizaje supervisado es la creación de un modelo que prediga la salida en base a unas entradas, partiendo de un histórico con parejas entrada-salida. Dentro de esto aparece la regresión, donde se quiere predecir un valor continuo. 
+
+Los elementos de un problema de aprendizaje supervisado son:
+\begin{itemize}
+\item Datos: parejas entrada-salida
+\item Características: atributos
+\item Objetivo: la salida real, las etiquetas, la salida asociada
+\item Modelo: una función matemática de x a y que proporciona la salida. Puede tener varios parámetros $\Theta$.
+\item Algoritmo de aprendizaje: procedimiento para la obtención del modelo en base a los datos.
+\end{itemize}
+
+El enfoque más sencillo de la regresión es un modelo constante, ignorando la entrada. Así, se define la salida como una combinación lineal de entradas, creando un modelo lineal. La ventaja es que es simple, robusto, interpretable, fácil de entrenar y fácil de predecir. La desventaja es que sea demasiado limitado y un subajuste a los datos.
+
+\section{Regresión lineal dimensional}
+El caso más simple tiene un solo dato de valores reales. El modelo lineal simple sería una línea recta con parámetros $\Theta = \{b, w\}$, siendo $b$ el sesgo y $w$ la pendiente de la recta. Así, el modelo se definiría como
+$$f_{\Theta} = b + wx$$
+
+Ejercicio: dado este modelo lineal con $b=1$ y $w=2$, computa la salida del modelo para $x=2$ y para $x=-1$.
+$$1 + 2 \cdot 2 = 1 + 4 = 5$$
+$$1 + 2 \cdot -1 = 1 - 2 = -1 $$
+
+Se necesita un procedimiento que determine el sesgo y la pendiente para optimizar la calidad del modelo. Se pueden utilizar dos perspectivas para definir la calidad: 
+\begin{itemize}
+\item En base al error: medida sobre cómo de bien se ajusta el modelo a los datos de entrenamiento
+\item En base a la complejidad: un término de regulación que penaliza la complejidad del modelo
+\end{itemize}
+
+Se define el residuo como la diferencia entre lo que se debería haber predicho y lo que el modelo ha predicho. El error cuadrático sería la esperanza de los residuos al cuadrado. Es decir, sobre el conjunto de datos de entrenamiento, se mide el error, se suma y se eleva al cuadrado. Esto es una medida automática de cuánto se confunde el modelo. También se puede calcular el error absoluto con el valor absoluto en lugar del error cuadrado. 
+
+Ejercicio: calcular MAE y MSE del modelo anterior con $b=1$ y $w=2$ con los pares (2,4) y (-1,1).
+$$f_{\Theta} = 1 + 2 \cdot 2 = 1 + 4 = 5 \neq 4$$
+$$f_{\Theta} = 1 + 2 \cdot -1 = 1 - 2 = -1 \neq 1$$
+$$r = -1, 2$$
+$$MAE = 1/2 \cdot (1 + 2) = 1/2 \cdot 3 = 1.5$$
+$$MSE = 1/2 \cdot (1^2 + 2^2) = 1/2 \cdot (1 + 4) = 2.5$$
