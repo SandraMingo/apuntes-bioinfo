@@ -1,0 +1,114 @@
+%31/03 - Alberto Rastrojo
+\chapter{Clasificación de taxonomía}
+\section{Pipeline de clasificación taxonómica}
+A la hora de ensamblar un metagenoma, se debe también clasificar la taxonomía. Nosotros, por capacidad computacional, haremos la clasificación taxonómica desde las lecturas, pero dependiendo del programa que se utilice, el camino puede cambiar. 
+
+Para una clasificación taxonómica se necesitan las secuencias o contigs, una base de datos con las secuencias y su taxonomía asociada y un alineador. Con las lecturas alienadas, se obtienen las taxonomías. 
+
+Hay distintas herramientas online, pero no terminas de controlar lo que hacen:
+\begin{itemize}
+\item MG-Rast: es lento
+\item EBI-Metagenomics
+\item IMG/M: integrated microbial genomics and microbiomes
+\item MetaVir: ya no se mantiene y dejó de funcionar. Esto puede ocurrir con todas.
+\item iMicrobe: colección de herramientas
+\item: CyVerse: colección de herramientas
+\end{itemize}
+
+En cuanto a las bases de datos están:
+\begin{itemize}
+\item GenBank del NCBI: la más accesible y que más curada está
+\item European nucleotide archive (ENA) at EBI: el buscador es más complicado de utilizar, pero es más fácil de descargar secuencias.
+\item DNA data bank of Japan (DDBJ): está sincronizada con las dos anteriores.
+\item Uniprot: enfocado en secuencias proteicas
+\item Uniclust: versión clusterizada de Uniprot con distintos niveles de identidad
+\end{itemize}
+
+Existen los siguientes programas de alineamiento de secuencias:
+\begin{itemize}
+\item Blast
+\item MMSeqs2
+\item Diamond
+\item Centrifuge
+\item Kraken2
+\end{itemize}
+
+Blast alinea las secuencias localmente en función a la base de datos, por lo que hay que tener en cuenta el tamaño de la misma. El problema de Blast es que es muy lento, por lo que se recomienda utilizar Diamond, que es 2.500 veces más rápido y encuentra más del 94\% de los matches. 
+
+\section{Práctica}
+Vamos a utilizar los datos del viroma de la práctica anterior. Podemos copiar los ficheros o crear un enlace simbólico:
+\begin{lstlisting}
+cd unit_4
+ln -s ../unit_3b/virome_1_qf_paired_nonHuman_nonPhix_R1.fq.gz virome_1_qf_R1.fq.gz
+ln -s ../unit_3b/virome_1_qf_paired_nonHuman_nonPhix_R2.fq.gz virome_1_qf_R2.fq.gz
+\end{lstlisting}
+
+Además, vamos a descargar lecturas de calidad filtrada de virome\_2 para comparar la clasificación taxonómica de ambos viromas:
+\begin{lstlisting}
+conda activate ngs
+gdown https://drive.google.com/uc?id=11xOf45e5aIIKLTc1pEKsUCHpYyC-84NF
+gdown https://drive.google.com/uc?id=1TuTyun2dlmUMvsF6N9LK6zAySI3xvqtx
+
+# MD5
+# 7c508583dbda80b948b5f88eb879ae16  virome_2_qf_R1.fq.gz
+# d1894eec561128bc29e4a3050e0eafaa  virome_2_qf_R2.fq.gz
+
+# Virome_2 is also avaible in Moodle
+\end{lstlisting}
+
+Ahora instalamos Diamond, descargamos la base de datos de proteínas del NCBI y creamos la base de datos de referencia para Diamond:
+\begin{lstlisting}
+conda install -c bioconda diamond -y 
+#asegurar que sea la versión .10 y no la .11
+
+wget https://ftp.ncbi.nlm.nih.gov/refseq/release/viral/viral.1.protein.faa.gz
+gunzip viral.1.protein.faa.gz
+
+diamond makedb --in viral.1.protein.faa -d viralproteins
+\end{lstlisting}
+
+Esto creará un archivo binario de base de datos DIAMOND con el nombre: viralproteins.dmnd
+Como tenemos lecturas emparejadas, y Diamond no puede manejarlas, podemos ejecutar Diamond para cada par y luego fusionar los resultados o podemos fusionar las lecturas emparejadas en un solo archivo y ejecutar Diamond una sola vez.
+Sin embargo, aunque el tiempo de ejecución de Diamond no es muy elevado (unas 160k lecturas tarda aproximadamente 4 minutos), MEGAN, el programa que vamos a utilizar para analizar los hits de Diamond y asignar la taxonomía a las lecturas, utiliza una enorme cantidad de memoria RAM y con un conjunto de datos grande muchas veces se bloquea. Para evitar esto, vamos a tomar una submuestra aleatoria utilizando seqtk:
+\begin{lstlisting}
+conda install -c bioconda seqtk -y
+
+# Virome_1
+seqtk sample -s 123 virome_1_qf_R1.fq.gz 5000 > virome_1_10k.fq
+seqtk sample -s 123 virome_1_qf_R2.fq.gz 5000 >> virome_1_10k.fq
+
+# Virome_2
+seqtk sample -s 123 virome_2_qf_R1.fq.gz 5000 > virome_2_10k.fq
+seqtk sample -s 123 virome_2_qf_R2.fq.gz 5000 >> virome_2_10k.fq
+
+# Note the ">>" in the second subsample for each virome
+
+head virome_1_10k.m8
+\end{lstlisting}
+
+Este es el significado de las 12 columnas:
+\begin{enumerate}
+\item qseqid significa Seq-id de consulta
+\item sseqid significa código de secuencia del sujeto
+\item pident significa Porcentaje de coincidencias idénticas
+\item length significa Longitud de la alineación
+\item mismatch significa número de coincidencias erróneas
+\item gapopen significa Número de huecos abiertos
+\item qstart significa Inicio de la alineación en la consulta
+\item qend significa Fin de la alineación en la consulta
+\item sstart significa Inicio de la alineación en el tema
+\item send significa fin de la alineación en el tema
+\item evalue significa Valor esperado
+\item bitscore significa puntuación de bits
+\end{enumerate}
+
+Podemos tomar el número de acceso de uno de los hits (columna 2) y pegarlo en NCBI y mirar la taxonomía de estas secuencias. A continuación, puede repetir este paso uno por uno varios miles de veces para tener un perfil taxonómico de estos metagenomas. Alternativamente, puede utilizar un programa específico que toma la salida de la comparación de Blast o Diamond y devuelve el resultado de todos los matches juntos en un gráfico. 
+
+MEGAN6 analiza el contenido taxonómico de un conjunto de lecturas de ADN alineadas con un conjunto de datos del NCBI y asigna las lecturas a un árbol taxonómico.
+\begin{lstlisting}
+conda install -c bioconda megan -y
+gdown https://drive.google.com/uc?id=1330Lx36_mMvylVTUHnDI8iIlSCg0WnA6
+MEGAN
+\end{lstlisting}
+
+Con esto se abre el programa de Megan. File > Import from Blast y seleccionamos uno de los viromas en formato BlastTab y modo BlastX. También se debe cargar el la base de datos de MeganMap y se aplica todo. Esto se hace para ambos viromas, y posteriormente File > Compare y seleccionamos ambos. 
