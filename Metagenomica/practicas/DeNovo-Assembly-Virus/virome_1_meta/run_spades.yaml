@@ -1,0 +1,144 @@
+- STAGE: Before start
+  args: []
+  config_dir: ''
+  del_after: []
+  output_files: []
+  path: 'true'
+  short_name: before_start
+- STAGE: Read error correction
+  args: []
+  config_dir: ''
+  del_after: []
+  output_files: []
+  path: 'true'
+  short_name: ec_start
+- STAGE: Read error correction
+  args:
+  - /media/sf_METAG/unit_3b/virome_1_meta/corrected/configs/config.info
+  config_dir: corrected
+  del_after:
+  - tmp/hammer_k3ve_sc6
+  output_files:
+  - /media/sf_METAG/unit_3b/virome_1_meta/corrected/corrected.yaml
+  path: /home/sandra/miniconda3/envs/ngs/bin/spades-hammer
+  short_name: ec_runtool
+- STAGE: corrected reads compression
+  args:
+  - /home/sandra/miniconda3/envs/ngs/share/spades/spades_pipeline/scripts/compress_all.py
+  - --input_file
+  - /media/sf_METAG/unit_3b/virome_1_meta/corrected/corrected.yaml
+  - --ext_python_modules_home
+  - /home/sandra/miniconda3/envs/ngs/share/spades
+  - --max_threads
+  - '4'
+  - --output_dir
+  - /media/sf_METAG/unit_3b/virome_1_meta/corrected
+  - --gzip_output
+  config_dir: ''
+  del_after: []
+  output_files: []
+  path: /home/sandra/miniconda3/envs/ngs/bin/python3
+  short_name: ec_compress
+- STAGE: Read error correction
+  args: []
+  config_dir: ''
+  del_after: []
+  output_files: []
+  path: 'true'
+  short_name: ec_finish
+- STAGE: Assembling
+  args: []
+  config_dir: ''
+  del_after: []
+  output_files: []
+  path: 'true'
+  short_name: as_start
+- STAGE: K21
+  args:
+  - /media/sf_METAG/unit_3b/virome_1_meta/K21/configs/config.info
+  - /media/sf_METAG/unit_3b/virome_1_meta/K21/configs/mda_mode.info
+  - /media/sf_METAG/unit_3b/virome_1_meta/K21/configs/meta_mode.info
+  config_dir: K21
+  del_after: []
+  output_files: []
+  path: /home/sandra/miniconda3/envs/ngs/bin/spades-core
+  short_name: k21
+- STAGE: K33
+  args:
+  - /media/sf_METAG/unit_3b/virome_1_meta/K33/configs/config.info
+  - /media/sf_METAG/unit_3b/virome_1_meta/K33/configs/mda_mode.info
+  - /media/sf_METAG/unit_3b/virome_1_meta/K33/configs/meta_mode.info
+  config_dir: K33
+  del_after: []
+  output_files: []
+  path: /home/sandra/miniconda3/envs/ngs/bin/spades-core
+  short_name: k33
+- STAGE: K55
+  args:
+  - /media/sf_METAG/unit_3b/virome_1_meta/K55/configs/config.info
+  - /media/sf_METAG/unit_3b/virome_1_meta/K55/configs/mda_mode.info
+  - /media/sf_METAG/unit_3b/virome_1_meta/K55/configs/meta_mode.info
+  config_dir: K55
+  del_after: []
+  output_files: []
+  path: /home/sandra/miniconda3/envs/ngs/bin/spades-core
+  short_name: k55
+- STAGE: Copy files
+  args:
+  - /home/sandra/miniconda3/envs/ngs/share/spades/spades_pipeline/scripts/copy_files.py
+  - /media/sf_METAG/unit_3b/virome_1_meta/K55/before_rr.fasta
+  - /media/sf_METAG/unit_3b/virome_1_meta/before_rr.fasta
+  - /media/sf_METAG/unit_3b/virome_1_meta/K55/assembly_graph_after_simplification.gfa
+  - /media/sf_METAG/unit_3b/virome_1_meta/assembly_graph_after_simplification.gfa
+  - /media/sf_METAG/unit_3b/virome_1_meta/K55/final_contigs.fasta
+  - /media/sf_METAG/unit_3b/virome_1_meta/contigs.fasta
+  - /media/sf_METAG/unit_3b/virome_1_meta/K55/first_pe_contigs.fasta
+  - /media/sf_METAG/unit_3b/virome_1_meta/first_pe_contigs.fasta
+  - /media/sf_METAG/unit_3b/virome_1_meta/K55/strain_graph.gfa
+  - /media/sf_METAG/unit_3b/virome_1_meta/strain_graph.gfa
+  - /media/sf_METAG/unit_3b/virome_1_meta/K55/scaffolds.fasta
+  - /media/sf_METAG/unit_3b/virome_1_meta/scaffolds.fasta
+  - /media/sf_METAG/unit_3b/virome_1_meta/K55/scaffolds.paths
+  - /media/sf_METAG/unit_3b/virome_1_meta/scaffolds.paths
+  - /media/sf_METAG/unit_3b/virome_1_meta/K55/assembly_graph_with_scaffolds.gfa
+  - /media/sf_METAG/unit_3b/virome_1_meta/assembly_graph_with_scaffolds.gfa
+  - /media/sf_METAG/unit_3b/virome_1_meta/K55/assembly_graph.fastg
+  - /media/sf_METAG/unit_3b/virome_1_meta/assembly_graph.fastg
+  - /media/sf_METAG/unit_3b/virome_1_meta/K55/final_contigs.paths
+  - /media/sf_METAG/unit_3b/virome_1_meta/contigs.paths
+  config_dir: ''
+  del_after:
+  - .bin_reads
+  - tmp/spades_vjocivno
+  output_files: []
+  path: /home/sandra/miniconda3/envs/ngs/bin/python3
+  short_name: copy_files
+- STAGE: Assembling
+  args: []
+  config_dir: ''
+  del_after: []
+  output_files: []
+  path: 'true'
+  short_name: as_finish
+- STAGE: Breaking scaffolds
+  args:
+  - /home/sandra/miniconda3/envs/ngs/share/spades/spades_pipeline/scripts/breaking_scaffolds_script.py
+  - --result_scaffolds_filename
+  - /media/sf_METAG/unit_3b/virome_1_meta/scaffolds.fasta
+  - --misc_dir
+  - /media/sf_METAG/unit_3b/virome_1_meta/misc
+  - --threshold_for_breaking_scaffolds
+  - '3'
+  config_dir: ''
+  del_after: []
+  output_files: []
+  path: /home/sandra/miniconda3/envs/ngs/bin/python3
+  short_name: bs
+- STAGE: Terminate
+  args: []
+  config_dir: ''
+  del_after:
+  - configs
+  output_files: []
+  path: 'true'
+  short_name: terminate

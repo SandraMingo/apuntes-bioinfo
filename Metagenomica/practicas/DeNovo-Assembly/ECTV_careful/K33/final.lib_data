@@ -1,0 +1,38 @@
+¢---
+max read length: 76
+nomerge max read length: 76
+average read length: 75.9458
+average coverage: 17.0889
+libraries:
+  - type:            paired-end
+    number:          1
+    orientation:     fr
+    left reads:
+      - '/media/sf_METAG/unit_3/ECTV_careful/corrected/ECTV_qf_paired_nohuman_noPhiX_R100.0_0.cor.fastq.gz'
+    right reads:
+      - '/media/sf_METAG/unit_3/ECTV_careful/corrected/ECTV_qf_paired_nohuman_noPhiX_R200.0_0.cor.fastq.gz'
+    single reads:
+      - '/media/sf_METAG/unit_3/ECTV_careful/corrected/ECTV_qf_paired_nohuman_noPhiX_R_unpaired00.0_0.cor.fastq.gz'
+    data:
+      unmerged read length: 76
+      merged read length: 0
+      insert size mean: 0
+      insert size deviation: 0
+      insert size left quantile: 0
+      insert size right quantile: 0
+      insert size median: 0
+      insert size mad: 0
+      insert size distribution: {  }
+      pi threshold:    0
+      binary reads info:
+        binary converted: true
+        bin reads info file: '/media/sf_METAG/unit_3/ECTV_careful/.bin_reads/INFO_0'
+        paired read prefix: '/media/sf_METAG/unit_3/ECTV_careful/.bin_reads/paired_0'
+        merged read prefix: '/media/sf_METAG/unit_3/ECTV_careful/.bin_reads/merged_0'
+        single read prefix: '/media/sf_METAG/unit_3/ECTV_careful/.bin_reads/single_0'
+        chunk num:       2
+      single reads mapped: false
+      library index:   0
+      number of reads: 83915
+      total nucleotides: 6372988
+...

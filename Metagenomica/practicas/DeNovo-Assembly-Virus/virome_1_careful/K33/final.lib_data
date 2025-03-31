@@ -1,0 +1,38 @@
+á---
+max read length: 301
+nomerge max read length: 301
+average read length: 230.558
+average coverage: 72.552
+libraries:
+  - type:            paired-end
+    number:          1
+    orientation:     fr
+    left reads:
+      - '/media/sf_METAG/unit_3b/virome_1_careful/corrected/virome_1_qf_paired_nonHuman_nonPhix_R1.fq00.0_0.cor.fastq.gz'
+    right reads:
+      - '/media/sf_METAG/unit_3b/virome_1_careful/corrected/virome_1_qf_paired_nonHuman_nonPhix_R2.fq00.0_0.cor.fastq.gz'
+    single reads:
+      - '/media/sf_METAG/unit_3b/virome_1_careful/corrected/virome_1_qf_paired_nonHuman_nonPhix_R_unpaired00.0_0.cor.fastq.gz'
+    data:
+      unmerged read length: 301
+      merged read length: 0
+      insert size mean: 0
+      insert size deviation: 0
+      insert size left quantile: 0
+      insert size right quantile: 0
+      insert size median: 0
+      insert size mad: 0
+      insert size distribution: {  }
+      pi threshold:    0
+      binary reads info:
+        binary converted: true
+        bin reads info file: '/media/sf_METAG/unit_3b/virome_1_careful/.bin_reads/INFO_0'
+        paired read prefix: '/media/sf_METAG/unit_3b/virome_1_careful/.bin_reads/paired_0'
+        merged read prefix: '/media/sf_METAG/unit_3b/virome_1_careful/.bin_reads/merged_0'
+        single read prefix: '/media/sf_METAG/unit_3b/virome_1_careful/.bin_reads/single_0'
+        chunk num:       2
+      single reads mapped: false
+      library index:   0
+      number of reads: 159921
+      total nucleotides: 36871069
+...

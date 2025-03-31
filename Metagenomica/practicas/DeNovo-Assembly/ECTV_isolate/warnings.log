@@ -1,0 +1,4 @@
+
+=== Error correction and assembling warnings:
+ * 0:00:08.608     3M / 64M   WARN    General                 (kmer_coverage_model.cpp   : 219)   Too many erroneous kmers, the estimates might be unreliable
+======= Warnings saved to /media/sf_METAG/unit_3/ECTV_isolate/warnings.log

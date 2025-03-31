@@ -1,0 +1,7 @@
+- "left reads":
+  - "/media/sf_METAG/unit_3/ECTV_qf_paired_nohuman_noPhiX_R1.fastq"
+  "number": !!int "1"
+  "orientation": "fr"
+  "right reads":
+  - "/media/sf_METAG/unit_3/ECTV_qf_paired_nohuman_noPhiX_R2.fastq"
+  "type": "paired-end"

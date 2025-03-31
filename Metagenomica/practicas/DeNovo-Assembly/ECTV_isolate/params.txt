@@ -1,0 +1,33 @@
+Command line: /home/sandra/miniconda3/envs/ngs/bin/spades.py	--isolate	-t	2	-1	/media/sf_METAG/unit_3/ECTV_qf_paired_nohuman_noPhiX_R1.fastq	-2	/media/sf_METAG/unit_3/ECTV_qf_paired_nohuman_noPhiX_R2.fastq	-o	/media/sf_METAG/unit_3/ECTV_isolate	
+
+System information:
+  SPAdes version: 4.1.0
+  Python version: 3.11.11
+  OS: Linux-6.8.0-52-generic-x86_64-with-glibc2.35
+
+Output dir: /media/sf_METAG/unit_3/ECTV_isolate
+Mode: ONLY assembling (without read error correction)
+Debug mode is turned OFF
+
+Dataset parameters:
+  Isolate mode
+  Reads:
+    Library number: 1, library type: paired-end
+      orientation: fr
+      left reads: ['/media/sf_METAG/unit_3/ECTV_qf_paired_nohuman_noPhiX_R1.fastq']
+      right reads: ['/media/sf_METAG/unit_3/ECTV_qf_paired_nohuman_noPhiX_R2.fastq']
+      interlaced reads: not specified
+      single reads: not specified
+      merged reads: not specified
+Assembly parameters:
+  k: automatic selection based on read length
+  Repeat resolution is enabled
+  Mismatch careful mode is turned OFF
+  MismatchCorrector will be SKIPPED
+  Coverage cutoff is turned OFF
+  Assembly graph output will use GFA v1.2 format
+Other parameters:
+  Dir for temp files: /media/sf_METAG/unit_3/ECTV_isolate/tmp
+  Threads: 2
+  Memory limit (in Gb): 3
+

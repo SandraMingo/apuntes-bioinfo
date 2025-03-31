@@ -1,0 +1,14 @@
+set -e
+true
+true
+/home/sandra/miniconda3/envs/ngs/bin/spades-hammer /media/sf_METAG/unit_3b/virome_1_meta/corrected/configs/config.info
+/home/sandra/miniconda3/envs/ngs/bin/python3 /home/sandra/miniconda3/envs/ngs/share/spades/spades_pipeline/scripts/compress_all.py --input_file /media/sf_METAG/unit_3b/virome_1_meta/corrected/corrected.yaml --ext_python_modules_home /home/sandra/miniconda3/envs/ngs/share/spades --max_threads 4 --output_dir /media/sf_METAG/unit_3b/virome_1_meta/corrected --gzip_output
+true
+true
+/home/sandra/miniconda3/envs/ngs/bin/spades-core /media/sf_METAG/unit_3b/virome_1_meta/K21/configs/config.info /media/sf_METAG/unit_3b/virome_1_meta/K21/configs/mda_mode.info /media/sf_METAG/unit_3b/virome_1_meta/K21/configs/meta_mode.info
+/home/sandra/miniconda3/envs/ngs/bin/spades-core /media/sf_METAG/unit_3b/virome_1_meta/K33/configs/config.info /media/sf_METAG/unit_3b/virome_1_meta/K33/configs/mda_mode.info /media/sf_METAG/unit_3b/virome_1_meta/K33/configs/meta_mode.info
+/home/sandra/miniconda3/envs/ngs/bin/spades-core /media/sf_METAG/unit_3b/virome_1_meta/K55/configs/config.info /media/sf_METAG/unit_3b/virome_1_meta/K55/configs/mda_mode.info /media/sf_METAG/unit_3b/virome_1_meta/K55/configs/meta_mode.info
+/home/sandra/miniconda3/envs/ngs/bin/python3 /home/sandra/miniconda3/envs/ngs/share/spades/spades_pipeline/scripts/copy_files.py /media/sf_METAG/unit_3b/virome_1_meta/K55/before_rr.fasta /media/sf_METAG/unit_3b/virome_1_meta/before_rr.fasta /media/sf_METAG/unit_3b/virome_1_meta/K55/assembly_graph_after_simplification.gfa /media/sf_METAG/unit_3b/virome_1_meta/assembly_graph_after_simplification.gfa /media/sf_METAG/unit_3b/virome_1_meta/K55/final_contigs.fasta /media/sf_METAG/unit_3b/virome_1_meta/contigs.fasta /media/sf_METAG/unit_3b/virome_1_meta/K55/first_pe_contigs.fasta /media/sf_METAG/unit_3b/virome_1_meta/first_pe_contigs.fasta /media/sf_METAG/unit_3b/virome_1_meta/K55/strain_graph.gfa /media/sf_METAG/unit_3b/virome_1_meta/strain_graph.gfa /media/sf_METAG/unit_3b/virome_1_meta/K55/scaffolds.fasta /media/sf_METAG/unit_3b/virome_1_meta/scaffolds.fasta /media/sf_METAG/unit_3b/virome_1_meta/K55/scaffolds.paths /media/sf_METAG/unit_3b/virome_1_meta/scaffolds.paths /media/sf_METAG/unit_3b/virome_1_meta/K55/assembly_graph_with_scaffolds.gfa /media/sf_METAG/unit_3b/virome_1_meta/assembly_graph_with_scaffolds.gfa /media/sf_METAG/unit_3b/virome_1_meta/K55/assembly_graph.fastg /media/sf_METAG/unit_3b/virome_1_meta/assembly_graph.fastg /media/sf_METAG/unit_3b/virome_1_meta/K55/final_contigs.paths /media/sf_METAG/unit_3b/virome_1_meta/contigs.paths
+true
+/home/sandra/miniconda3/envs/ngs/bin/python3 /home/sandra/miniconda3/envs/ngs/share/spades/spades_pipeline/scripts/breaking_scaffolds_script.py --result_scaffolds_filename /media/sf_METAG/unit_3b/virome_1_meta/scaffolds.fasta --misc_dir /media/sf_METAG/unit_3b/virome_1_meta/misc --threshold_for_breaking_scaffolds 3
+true

@@ -1,0 +1,5 @@
+
+=== Error correction and assembling warnings:
+ * 0:00:08.630     2M / 72M   WARN    General                 (kmer_coverage_model.cpp   : 219)   Too many erroneous kmers, the estimates might be unreliable
+ * 0:00:08.257     7M / 41M   WARN    General                 (kmer_coverage_model.cpp   : 328)   Valley value was estimated improperly, reset to 1
+======= Warnings saved to /media/sf_METAG/unit_3/ECTV_careful/warnings.log

@@ -1,0 +1,7 @@
+"bwa": "/home/sandra/miniconda3/envs/ngs/bin/spades-bwa"
+"dataset": "/media/sf_METAG/unit_3/ECTV_careful/input_dataset.yaml"
+"log_filename": "log.properties"
+"max_nthreads": !!int "2"
+"output_dir": "/media/sf_METAG/unit_3/ECTV_careful/mismatch_corrector/scaffolds"
+"strategy": "mapped_squared"
+"work_dir": "/media/sf_METAG/unit_3/ECTV_careful/tmp/corrector_wjjob8by"

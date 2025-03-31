@@ -1,0 +1,6 @@
+
+=== Error correction and assembling warnings:
+ * 0:00:16.295     7M / 488M  WARN    General                 (kmer_coverage_model.cpp   : 367)   Failed to determine erroneous kmer threshold. Threshold set to: 12
+ * 0:00:25.873     7M / 697M  WARN    General                 (kmer_coverage_model.cpp   : 367)   Failed to determine erroneous kmer threshold. Threshold set to: 10
+ * 0:00:29.112     7M / 792M  WARN    General                 (kmer_coverage_model.cpp   : 367)   Failed to determine erroneous kmer threshold. Threshold set to: 9
+======= Warnings saved to /media/sf_METAG/unit_3b/virome_1_careful/warnings.log

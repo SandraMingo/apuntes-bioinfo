@@ -1,0 +1,9 @@
+- "left reads":
+  - "/media/sf_METAG/unit_3b/virome_1_sc/corrected/virome_1_qf_paired_nonHuman_nonPhix_R1.fq00.0_0.cor.fastq.gz"
+  "number": !!int "1"
+  "orientation": "fr"
+  "right reads":
+  - "/media/sf_METAG/unit_3b/virome_1_sc/corrected/virome_1_qf_paired_nonHuman_nonPhix_R2.fq00.0_0.cor.fastq.gz"
+  "single reads":
+  - "/media/sf_METAG/unit_3b/virome_1_sc/corrected/virome_1_qf_paired_nonHuman_nonPhix_R_unpaired00.0_0.cor.fastq.gz"
+  "type": "paired-end"

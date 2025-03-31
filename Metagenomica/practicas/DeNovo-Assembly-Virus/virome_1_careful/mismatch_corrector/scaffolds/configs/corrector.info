@@ -1,0 +1,7 @@
+"bwa": "/home/sandra/miniconda3/envs/ngs/bin/spades-bwa"
+"dataset": "/media/sf_METAG/unit_3b/virome_1_careful/input_dataset.yaml"
+"log_filename": "log.properties"
+"max_nthreads": !!int "4"
+"output_dir": "/media/sf_METAG/unit_3b/virome_1_careful/mismatch_corrector/scaffolds"
+"strategy": "mapped_squared"
+"work_dir": "/media/sf_METAG/unit_3b/virome_1_careful/tmp/corrector_4gv_ebzr"
