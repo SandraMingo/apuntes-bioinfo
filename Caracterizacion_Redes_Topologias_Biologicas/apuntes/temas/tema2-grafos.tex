@@ -224,6 +224,69 @@ Los grafos se clasifican en función de unas determinadas métricas topológicas
 \item Camino característico (L)
 \end{itemize}
 
-\subsection{Coeficiente de agrupamiento}
+%01/04 - Carlos
+\subsection{Coeficiente de agrupamiento C}
+El coeficiente de agrupamiento (C) es un valor métrico \textbf{local} que mide el nivel de agrupamiento de los nodos. Es decir, mira un nodo y sus vecinos y mira el índice de clusterización. En redes biológicas, el índice de clusterización es alto. Para cada nodo v del grafo se obtiene su vecindario, es decir, el conjunto de nodos que son vecinos de v, el tamaño del vecindario coincide con el grado de v (kv). Se calcula el coeficiente
+$$Cv = \frac{Nv}{kv(kv-1)/2} = \frac{\text{número real de ramas entre vecinos sin incluir el nodo v}}{\text{número máximo de ramas entre vecinos}}$$
+donde Nv es el numero de ramas que hay entre los vecinos de v. El valor anterior se promedia entre todos los nodos del grafo. 
 
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/coeficiente-agrupamiento.png}
+\caption{Figura de la izquierda: todos los vecinos del nodo v son vecinos entre sí. Figura de la derecha: la mitad de mis amigos son amigos entre sí (0,5).}
+\end{figure}
 
+Para un grafo, se calcula el coeficiente de agrupación es el valor de cada nodo dividido por el número de nodos - es decir, el promedio. Para simetría, se calcula el valor de una fracción de los nodos y se divide por esa fracción.
+
+Ejercicio: calcular el coeficiente de agrupamiento C del siguiente grafo. Se sugiere utilizar simetrías para reducir el trabajo. Esto será igual en el examen. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.3\textwidth]{figs/ejercicio-calculo-c.png}
+\caption{Se deben calcular dos índices de clusterización: nodo superior (igual al nodo inferior) y nodo izquierdo (igual al nodo derecho). Empezando por el nodo superior, la fórmula quedaría como $2/(3*2/2) = 2/3 = 0,66$. Para el nodo izquierdo, quedaría $3/(3*2/2) = 1$. Ahora hay que sumar esos dos valores y dividir entre el número de nodos calculados: $(1 + 0,66)/ 2 = 1,66/2 = 0,83$.}
+\end{figure}
+
+\subsection{Camino característico L}
+El camino característico (L) es un valor métrico \textbf{global} que mide el nivel grado de separación de los nodos. Para cada nodo v se calcula la distancia promedio a todos los demás nodos del grafo:
+$$Lv = \sum^{|v|}_{k=1} d(v, v_k) / (|v| - 1)$$
+
+Se calcula el promedio del valor anterior entre todos los nodos del grafo. Es como un farness normalizado al número de nodos del grafo.
+$$L = \sum^{|v|}_{v=1} L_v / (|v| - 1)$$
+
+En las redes biológicas, el camino característico suele ser cortito. 
+
+Ejercicio: Calcular el camino característico L del grafo de la figura anterior. Se puede (y debe) volver a utilizar simetrías. 
+$$L_{v1} = L_{v3} = 1/3 + 1/3 + 1/3 = 1$$
+$$L_{v2} = L_{v4} = 1/3 + 1/3 + 2/3 = 4/3 = 1,33$$
+$$L = 1/4 + 1,33/4 + 1/4 + 1,33/4 = 7/6 = 1,165$$
+
+\section{Topologías}
+\subsection{Grafos aleatorios}
+Fueron estudiados principalmente por Erdos y Renyi en los años 50. Cada rama del grafo existe con una determinada probabilidad p. Erdos y Renyi estudiaron los valores de las métricas topológicas para diferentes valores de $p$. Para la grafos dispersos (p pequeña) se puede comprobar que tanto C (aproximadamente 0) como L (aproximadamemte Ln(|V|) son pequeños.
+
+\subsection{Grafos regulares}
+Son los mejor conocidos de forma analítica. Existen expresiones cerradas para todas las métricas. Para la grafos dispersos se puede comprobar que tanto C (aproximadamente 0.75) como L (aproximadamente |V|/<k>) son grandes. 
+
+\subsection{Mundo pequeño}
+Son grafos que presentan altos valores de C (aprox .8) y bajos valores de L (aprox ln(|V|). Se obtienen introduciendo un pequeño número de “atajos” en un grafo regular. Representan bien un gran número de redes tales como redes sociales.
+
+Las redes biológicas son todas de mundo pequeño. 
+
+Un grafo de mundo pequeño es aquel cuyo índice de clusterización es el mismo de un grafo regular con el mismo número de nodos y ramas, y cuyo camino característico es el mismo de un grafo aleatorio con el mismo número de nodos y ramas. 
+
+\subsection{Grafos libres de escala}
+Son grafos que presentan bajos valores de C (aprox 0) y bajos valores de L (aprox ln(|V|). Se obtienen mediante crecimiento de la red y enlace preferencial. Cuando la distribución de los nodos se dibuja en escala log-log aparece una línea recta. Representan bien un gran número de redes tales como internet o redes de reacciones químicas.
+
+Para diferenciar estas redes de un grafo aleatorio en la escala log-log, ya que los grafos libre de escala son una recta mientras que los aleatorios siguen una distribución de Poisson.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/metricas-estandar.png}
+\end{figure}
+
+Un grafo con 2000 vecinos en el que cada nodo tiene 8 vecinos, ¿cuántas ramas tiene el grafo? 8000. De cada nodo entran y salen 8 ramas. $8 \cdot 2000/2$ porque cada rama se cuenta dos veces, una en cada vecino.
+
+\section{Algoritmos sobre grafos}
+El algoritmo de búsqueda en anchura permite calcular un camino mínimo entre dos nodos de un grafo. Dijkstra es una versión del algoritmo anterior para grafos ponderados. Ambos algoritmos funcionan tanto en grafos dirigidos como no dirigidos. Los algoritmos nos permiten calcular las métricas sobre el grafo.
+
+Si los grafos tienen bucles y ramas paralelas, el algoritmo no funciona. 
