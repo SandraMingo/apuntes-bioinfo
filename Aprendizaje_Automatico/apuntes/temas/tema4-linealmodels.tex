@@ -14,7 +14,7 @@ Los elementos de un problema de aprendizaje supervisado son:
 
 El enfoque más sencillo de la regresión es un modelo constante, ignorando la entrada. Así, se define la salida como una combinación lineal de entradas, creando un modelo lineal. La ventaja es que es simple, robusto, interpretable, fácil de entrenar y fácil de predecir. La desventaja es que sea demasiado limitado y un subajuste a los datos.
 
-\section{Regresión lineal dimensional}
+\subsection{Regresión lineal 1-dimensional}
 El caso más simple tiene un solo dato de valores reales. El modelo lineal simple sería una línea recta con parámetros $\Theta = \{b, w\}$, siendo $b$ el sesgo y $w$ la pendiente de la recta. Así, el modelo se definiría como
 $$f_{\Theta} = b + wx$$
 
@@ -36,3 +36,205 @@ $$f_{\Theta} = 1 + 2 \cdot -1 = 1 - 2 = -1 \neq 1$$
 $$r = -1, 2$$
 $$MAE = 1/2 \cdot (1 + 2) = 1/2 \cdot 3 = 1.5$$
 $$MSE = 1/2 \cdot (1^2 + 2^2) = 1/2 \cdot (1 + 4) = 2.5$$
+
+%01/04 - Carlos
+\subsubsection{Optimización}
+Optimizar hace referencia a encontrar la mejor solución posible respecto a algún criterio. 
+
+En un modelo lineal, hay que elegir una métrica que generalmente es el error cuadrático. Esto se debe a que es diferenciable (se puede calcular la derivada) y tiene sentido geométricamente. En el algoritmo, la optimización sería los valores de $b$ y $w$ que hacen que el error cuadrático sea mínimo.
+
+En resumen, la línea de regresión por mínimos cuadrados se obtiene resolviendo
+$$\min_{b, w \in \mathbb{R}} \left\{ \frac{1}{N} \sum_{i=1}^{N} \left( y_i - (b + w x_i) \right)^2 \right\}$$
+Los elementos auxiliares son:
+$$
+\bar{y} = \frac{1}{N} \sum_{i=1}^{N} y_i \quad \text{(Mean Target)}, \quad
+\bar{x} = \frac{1}{N} \sum_{i=1}^{N} x_i \quad \text{(Mean Feature)},
+$$
+$$
+\hat{y}_i = y_i - \bar{y} \quad \text{(Centred Target)}, \quad
+\hat{x}_i = x_i - \bar{x} \quad \text{(Centred Feature)}.
+$$
+
+Ejercicio: dado los siguientes pares de datos (0,4), (1,6), (2,4), (3,6), (4,8), computa:
+\begin{itemize}
+\item El valor de $\bar{x}$ y $\bar{y}$: 
+$$\bar{x} = (0 + 1 + 2 + 3 + 4)/5 = 10/5 = 2$$
+$$\bar{y} = (4 + 6 + 4 + 6 + 8)/5 = 28/5 = 5.6$$
+
+\item El valor de $\hat{x}_i$ y $\hat{y}_i$:
+$$\hat{x}_1 = 0 - 2 = -2 \quad \hat{y}_1 = 4 - 5.6 = -1.6$$
+$$\hat{x}_2 = 1 - 2 = -1 \quad \hat{y}_2 = 6 - 5.6 = 0.4$$
+$$\hat{x}_3 = 2 - 2 = 0 \quad \hat{y}_3 = 4 - 5.6 = -1.6$$
+$$\hat{x}_4 = 3 - 2 = 1 \quad \hat{y}_4 = 6 - 5.6 = 0.4$$
+$$\hat{x}_5 = 4 - 2 = 2 \quad \hat{y}_5 = 8 - 5.6 = 2.4$$
+
+\item El valor de $w^*$ y $b^*$:
+$$w^* = \frac{\sum^N_{i=1} \hat{x}_i\hat{y}_i}{\sum^N_{i=1} \hat{x}_i\hat{x}_i} = \frac{3.2 - 0.4 + 0 + 0.4 + 4.8 }{4 + 1 + 0 + 1 + 4} = \frac{8}{10} = 0.8$$
+$$b^* = \bar{y} - w^*\bar{x} = 5.6 - 0.8 \cdot 2 = 4$$
+
+\item El valor de MSE:
+$$MSE = \frac{1}{N} \sum^N_{i=1} (y_i - (b + wx_i))^2$$
+$$\frac{1}{5} \cdot ((4 - (4 + 0.8\cdot 0)^2 + 6 - (4 + 0.8\cdot 1)^2 + 4 - (4 + 0.8\cdot 2)^2 + 6 - (4 + 0.8\cdot 3)^2 + 8 - (4 + 0.8\cdot 4))^2$$
+$$\frac{1}{5} \cdot (0 + 1.44 + 2.56 + 0.16 + 0.64) = \frac{1}{5} \cdot 4.8 = 0.96$$
+\end{itemize}
+
+\subsection{Regresión lineal múltiple}
+Por simplicidad, $\mathcal{X} = \mathbb{R}^d$. Los datos se representan como $D = \{ (x_i, y_i) \}_{i=1}^N$, donde $x_i = (x_{i,1}, x_{i,2}, \ldots, x_{i,d}) \in \mathbb{R}^d$ y $y_i \in \mathbb{R}$.
+
+El modelo lineal correspondiente es un hiperplano, con parámetros $\theta = \{ b, w \}$.
+\begin{itemize}
+\item $b \in \mathbb{R}$ es el término de intercepción o sesgo.
+\item $w = (w_1, w_2, \ldots, w_d) \in \mathbb{R}^d$ es el vector normal del hiperplano.
+\item El modelo se define como:    
+    $$f_\theta (\mathbf{x}) = b + w^\top \mathbf{x} = b + \sum_{i=1}^d w_i x_i.$$
+\end{itemize}
+
+El algoritmo de aprendizaje determinará $b$ y $w$ utilizando $D$.
+
+Ejercicio: dado un modelo lineal bidimensional con parámetros $\Theta = \{ b, \vec{w}\}$ con $b = 1$ y $\vec{w} = (1,2)^T$. Computa la salida del modelo para $\x = (1,1)^T$:
+$$1 + (1 \cdot 1 + 1 \cdot 2) = 4$$
+ Computa la salida del modelo para $\x = (-1,0)^T$:
+ $$1 + (1 \cdot -1 + 0 \cdot 2) = 0$$
+
+\subsubsection{Ecuaciones lineales}
+Se necesita un procedimiento para determinar el sesgo $b $ y el vector $\mathbf{w}$.
+
+Un primer enfoque es intentar igualar todos los pares entrada-salida $(x_i, y_i)$, $i = 1, \ldots, N$. Específicamente:
+$$
+\begin{cases}
+b + \mathbf{w}^T x_1 = y_1 \\
+b + \mathbf{w}^T x_2 = y_2 \\
+\vdots \\
+b + \mathbf{w}^T x_N = y_N
+\end{cases}
+\equiv 
+\begin{cases}
+b + w_1 x_{1,1} + w_2 x_{1,2} + \cdots + w_d x_{1,d} = y_1 \\
+b + w_1 x_{2,1} + w_2 x_{2,2} + \cdots + w_d x_{2,d} = y_2 \\
+\vdots \\
+b + w_1 x_{N,1} + w_2 x_{N,2} + \cdots + w_d x_{N,d} = y_N
+\end{cases}
+$$
+
+La siguiente notación matricial puede simplificar las ecuaciones:
+$$
+\mathbf{X} =
+\begin{pmatrix}
+x_{1,1} & x_{1,2} & \cdots & x_{1,d} \\
+x_{2,1} & x_{2,2} & \cdots & x_{2,d} \\
+\vdots & \vdots & \ddots & \vdots \\
+x_{N,1} & x_{N,2} & \cdots & x_{N,d}
+\end{pmatrix}
+;\quad \tilde{\mathbf{X}} =
+\begin{pmatrix}
+1 & x_{1,1} & \cdots & x_{1,d} \\
+1 & x_{2,1} & \cdots & x_{2,d} \\
+\vdots & \vdots & \ddots & \vdots \\
+1 & x_{N,1} & \cdots & x_{N,d}
+\end{pmatrix}
+;\quad \mathbf{y} =
+\begin{pmatrix}
+y_1 \\
+y_2 \\
+\vdots \\
+y_N
+\end{pmatrix}
+;\quad \tilde{\mathbf{w}} =
+\begin{pmatrix}
+b \\
+w_1 \\
+\vdots \\
+w_d
+\end{pmatrix},
+$$
+
+donde $\mathbf{X} \in \mathbb{R}^{N \times d}$ es la matriz de datos, $ \tilde{\mathbf{X}} \in \mathbb{R}^{N \times (d+1)}$ es la matriz de datos con un término constante, $\mathbf{y} \in \mathbb{R}^N$ es el vector de objetivos y $\tilde{\mathbf{w}} \in \mathbb{R}^{d+1}$ es el vector de pesos que incluye el intercepto.
+
+El sistema de ecuaciones se convierte en $\tilde{\vec{X}}\tilde{\vec{w}} = \vec{y}$. Como $\tilde{\vec{X}} \in \real^{N \times (d + 1)}, \tilde{\vec{w}} \in \real^{d + 1}$ y $\vec{y} \in \real^N$, tenemos $N$ ecuaciones y $d + 1$ incógnitas. Normalmente, $N >> d+1$ y el sistema está \textbf{sobredeterminado}.
+
+\subsubsection{Calidad del modelo}
+Se define con el término de error y de complejidad, al igual que en el caso de una sola dimensión. Los residuos son la desviación de la salida con respecto a la predicción. El error cuadrático y el error absoluto se definen igual que antes.
+
+Para el $i$-ésimo patrón, el \textbf{residual} se define como:
+$$
+r_i = y_i - f_\theta(\mathbf{x}_i) = y_i - (b + \mathbf{w}^\intercal\mathbf{x}_i).
+$$
+
+El \textbf{Error Cuadrático Medio} se calcula como:
+$$
+\text{MSE}(b, \mathbf{w}) = \mathbb{E}\left[R^2\right] \approx \frac{1}{N} \sum_{i=1}^{N} \big(y_i - (b + \mathbf{w}^\intercal\mathbf{x}_i)\big)^2.
+$$
+
+$$
+\text{MAE}(b, \mathbf{w}) = \mathbb{E}\left[|R|\right] \approx \frac{1}{N} \sum_{i=1}^{N} \left|y_i - (b + \mathbf{w}^\intercal\mathbf{x}_i)\right|.
+$$
+
+Ejercicio: dado un modelo lineal bidimensional con parámetros $\Theta = \{b, \vec{w}\}$, con $b=1$ y $\vec{w} = (1,2)^T$, y los datos siguientes datos para $x_{i,1}$, $x_{i,2}$ y $y_i$, computa MAE y MSE.
+Para un modelo lineal bidimensional:
+$$f(x_1, x_2) = b + w_1x_1 + w_2x_2$$
+En el enunciado nos dicen b y w, por lo que la fórmula queda en:
+$$f(x_1, x_2) = 1 + 1 x_1 + 2 x_2$$
+Ahora tenemos dos datos, por lo que calculamos las salidas predichas:
+$$f_1 = 1 + 1 + 2 = 4$$
+$$f_2 = 1 - 1 + 0 = 0 \neq 2$$
+Los residuos son 0 y 2. Por tanto, los residuos cuadrados son 0 y 4. Calculando la media, $MAE = 1$ y $MSE = 2$. 
+
+\subsubsection{Optimización basada en gradiente: problemas multidimensionales}
+En muchas dimensiones, la derivada se generaliza con el gradiente, que es un vector de derivadas parciales. El gradiente define el hiperplano tangente. 
+
+\subsubsection{Entrenamiento de un modelo lineal}
+Usualmente se utiliza como función de error el MSE al ser diferenciable y corresponderse a la distancia entre los vectores de predicción y de salida esperada. Se busca minimizar este error, calculando para cada entrada la salida correspondiente y viendo el error.
+
+El problema de optimización para encontrar los parámetros óptimos se formula como:
+
+$$
+\min_{\substack{b \in \mathbb{R} \\ \mathbf{w} \in \mathbb{R}^d}} \left\{ \text{MSE}(b, \mathbf{w}) \right\} = \min_{\substack{b \in \mathbb{R} \\ \mathbf{w} \in \mathbb{R}^d}} \left\{ \frac{1}{N} \sum_{i=1}^{N} \big(y_i - (b + \mathbf{w}^\intercal\mathbf{x}_i)\big)^2 \right\} \equiv \min_{\tilde{\mathbf{w}} \in \mathbb{R}^{d+1}} \left\{ (\mathbf{y} - \tilde{\mathbf{X}}\tilde{\mathbf{w}})^\top (\mathbf{y} - \tilde{\mathbf{X}}\tilde{\mathbf{w}}) \right\}.
+$$
+
+Para encontrar el punto óptimo $\tilde{\mathbf{w}}^*$, calculamos el gradiente e igualamos a cero:
+
+$$\nabla_{\tilde{\mathbf{w}}} \text{MSE}(\tilde{\mathbf{w}})\big|_{\tilde{\mathbf{w}}=\tilde{\mathbf{w}}^*} = \mathbf{0} \implies 2\tilde{\mathbf{X}}^\top(\mathbf{y} - \tilde{\mathbf{X}}\tilde{\mathbf{w}}^*) = \mathbf{0}
+$$
+
+Esto conduce al sistema de ecuaciones normales:
+
+$$\tilde{\mathbf{X}}^\top \mathbf{y} - \tilde{\mathbf{X}}^\top \tilde{\mathbf{X}}\tilde{\mathbf{w}}^* = \mathbf{0} \\
+\implies \tilde{\mathbf{X}}^\top \tilde{\mathbf{X}}\tilde{\mathbf{w}}^* = \tilde{\mathbf{X}}^\top \mathbf{y}
+$$
+
+Finalmente, la solución óptima (si $\tilde{\mathbf{X}}^\top \tilde{\mathbf{X}}$ es invertible) es:
+
+$$
+\tilde{\mathbf{w}}^* = (\tilde{\mathbf{X}}^\top \tilde{\mathbf{X}})^{-1} \tilde{\mathbf{X}}^\top \mathbf{y} \quad \text{(Mínimos Cuadrados)}
+$$
+
+Caso especial: cuando $\tilde{\mathbf{X}}^\top \tilde{\mathbf{X}}$ es invertible y $N = d+1$, se simplifica a:
+$$
+\tilde{\mathbf{w}}^* = \tilde{\mathbf{X}}^\top \mathbf{y}
+$$
+
+En resumen, el modelo de mínimos cuadrados lineales es la solución del siguiente problema de optimización:
+$$
+\min_{\begin{subarray}{c} 
+    b \in \mathbb{R} \\
+    \mathbf{w} \in \mathbb{R}^d 
+\end{subarray}} \left\{ 
+    \frac{1}{N} \sum_{i=1}^{N} \big(y_i - (b + \mathbf{w}^{\intercal} \mathbf{x}_i)\big)^2 
+\right\}.
+$$
+
+La solución óptima viene dada por:
+$$
+\begin{pmatrix} b^* \\ \mathbf{w}^* \end{pmatrix} = 
+\tilde{\mathbf{w}}^* = 
+\tilde{\mathbf{X}}^{\dagger} \mathbf{y} = 
+\begin{bmatrix} \mathbf{1} & \mathbf{X} \end{bmatrix}^{\dagger} \mathbf{y},
+$$
+
+donde:
+\begin{itemize}
+\item $\tilde{\mathbf{X}} = \begin{bmatrix} \mathbf{1} & \mathbf{X} \end{bmatrix}$ es la matriz de diseño aumentada
+\item $\dagger$ denota la pseudoinversa de Moore-Penrose
+\item $\mathbf{1}$ es un vector columna de unos
+\end{itemize}
+
