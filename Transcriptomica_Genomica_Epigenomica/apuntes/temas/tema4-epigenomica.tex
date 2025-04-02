@@ -175,6 +175,73 @@ Ahora hay que comparar los modelos. Creamos una carpeta Compare en la que copiam
 ./RESULTS/Compare/
 ./RESULTS/Compare/Model\_compared}.
 
+%02/04 - Enrique
+\section{Epigenómica - Visualizador UCSC}
+Se necesita visualizar los datos con los que se trabaja. El control de calidad indica la calidad de las lecturas obtenidas en secuenciación, pero no da información sobre lo buen o mal genoma que es. Para ello, se debe visualizar. El visualizador más utilizado es el UCSC Genome Browser. Seleccionamos la herramienta Genome Browser y elegimos un mirror. Importante acordarnos del mirror. Una vez ahí elegimos el ensamblaje (lo mantenemos por defecto) y buscamos el gen CD69. Esto nos lleva directamente al visualizador de la región. Se puede hacer zoom in y zoom out, movernos, etc. Las flechitas en el gen indican hacia dónde se transcribe. 
 
+En el propio visualizador viene mucha información por defecto. Primero hay una representación del gen con su orientación. También hay fenotipos alélicos, SNPs anotados en la base de datos dbSNP. Se incluye un track con GTEx que muestra el nivel de expresión del gen, elementos regulatorios de ENCODE. Otros tracks incluyen la representación en vertebrados, regiones repetidas, etc. 
 
+En la parte inferior hay multitud de información que se puede cargar de otras bases de datos o publicaciones. Todos los que pone "hide" no están activos en el visualizador. Hay información de secuencia y mapping, información de genes, fenotipos y variantes, variación, pangenoma humano, ARNm, expresión, single-cell ARN, genómica comparativa, etc. 
 
+En la pestaña de "configure" se puede personalizar el visualizador para ponerlo al gusto de cada uno o prepararlo para alguna figura de un paper.
+
+\subsection{Tracks epigenómicos}
+El principal track epigenómico es el de ENCODE. Se puede personalizar y descargar los datos. 
+
+Todo esto es para bajar regiones concretas. Para un track completo, sería mejor ir a la pestaña de Downloads.
+
+En la pestaña My Data se pueden subir los ficheros propios con un ensamblaje concreto. Se puede salvar la sesión creándose una cuenta.
+Además, la sesión se puede enviar a otras personas, compartiéndola y trabajando de forma colaborativa (aunque no se pueden ver los cambios).
+
+Hay Track Hubs con datos externos que se han compartido, pero no están validados por UCSC. Esto puede ser interesante para datos de otros grupos de investigación o líneas celulares y experimentos concretos. Cuando tenemos muchos experimentos, podemos crear nuestro propio Track Hub con un FTP propio para poder subir todos los datos, además de poder enlazarlo con publicaciones científicas.
+
+%Bad Blood: Secrets and Lies in a Silicon Valley Startup - John Carreyrou
+%Documental-Serie Netflix - El código que valía millones
+
+\section{Mecanismos epigenéticos (continuación)}
+\subsection{Metilación de citosinas}
+La metilación está presente en plantas, hongos, vertebrados e invertebrados. Es heredable y reversible. 
+Modifica el fenotipo, pero no el genotipo. Esto significa que es un cambio en la citosina, pero que no cambia el nucleótido. Puede ser alterado por factores ambientales. 
+Produce cambios estructurales y cambia la afinidad de los factores de transcripción a sus motivos de unión. 
+
+Aunque sea un cambio reversible, actualmente no se conoce el mecanismo por el que una citosina metilada pasa a no estar metilada en el ADN. Un alto nivel de metilación en promotores está asociado en silenciar genes. La metilación ocurre en un mayor nivel en las islas CpG, que suelen ser precisamente partes de las regiones promotoras de genes. No obstante, hay también en otros contextos. Cuando el ADN está metilado, se une a las histonas de forma más compacta, haciendo que el ADN no se pueda transcribir. 
+
+Existen otras conformaciones de citosinas. Desde la citosina nativa, se puede pasar a 5mC, 5hmC, 5fC y 5caC. No hay un mecanismo directo para volver de una citosina metilada a una citosina nativa, usualmente debe pasar por replicación. La modificación predominante es la metilación, las demás son minoritarias.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = \textwidth]{figs/5mC.png}
+\end{figure}
+
+Hay varias formas de medir la metilación en el ADN. Una técnica puede ser \textbf{afinidad por enriquecimiento con anticuerpos}. Esto es relativamente barato, pero aporta una resolución baja. Además, tiene un sesgo en cuanto a la variación del número de copias en regiones con alto contenido en GC. Se puede medir con distintos tipos de assays, pasando de arrays a nanopore. 
+
+Hasta hace no mucho no se podía identificar a tiempo real y a nivel de moléculas únicas, la metilación de citosinas. Recientemente se consiguió hacer secuenciación single-cell para la metilación, pero todavía no está muy extendido al ser complejo. 
+
+Dependiendo de los métodos, vamos a ir de un procesamiento de los datos bajo a complejo y cantidad de información. Las técnicas de NGS tenían un procesamiento relativamente bajo y se obtiene una gran cantidad de CpGs analizados por secuencia. Los arrays tienen un procesamiento muy complejo, y no da tanta información. No obstante, muchos datos públicos están hechos con Infinium 450K, ya que estuvo muy de moda hace 20 años. Siempre se necesita un control de muestra para saber si hay cambios entre la metilación o no. Así, se deben hacer varios experimentos. Por ejemplo, teniendo tejido normal y tumoral, en ambos se deben añadir anticuerpos, y luego hacer un control sin anticuerpo o con uno inespecífico. 
+
+Actualmente, Infinium 450K se dejó de vender y se sustituyó por MethylationEPIC. Este kit permite identificar sitios CpG fuera de las islas de CpG, sitios metilados no CpG en células madre humanas, sitios metilados diferencialmente en tumor vs tejido normal, enhancers de FANTOM5, etc. 
+
+La alternativa a los anticuerpos es la \textbf{técnica basada en conversión con bisulfito}, la cual tiene una resolución a nivel de nucleótido único, pero tiene un trabajo computacional intensivo. Las citosinas no metiladas se convierten en uracilos, mientras que las metiladas no se modifican. Por tanto, en una lectura de PCR, los uracilos se leen como timinas por la polimerasa. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.3\textwidth]{figs/bisulphite.png}
+\end{figure}
+
+Esto no deja de ser una modificación química, y se han descrito muchas otras reacciones, aunque el bisulfito sea el más habitual. Para mirar otro tipo de modificaciones, se pueden utilizar otras reacciones que produzcan otros cambios químicos en el ADN. El proceso del bisulfito no distingue entre citosinas metiladas, hidroxi-metiladas, formi-metiladas, etc. En determinados escenarios de desarrollo, experimentos de bisulfito no permite distinguir los tipos de modificación de la citosina. Esto también es importante para trabajos en tejido cerebral; para otros estudios puede no ser importante.
+
+Hay dos protocolos de bisulfito: direccional y no direccional. Ahora se puede identificar si la lectura viene de una hebra o de otra. 
+
+Hay dos tipos principales de alineadores. Los wild-cards reemplazan las citosinas por Y en las lecturas secuenciadas. Los alineadores de tres letras convierten la citosina en timina en las dos lecturas secuenciadas y en el genoma de referencia. 
+Los wild-cards hacen alineaciones más precisas y consistentes entre réplicas, y son más eficientes en el uso de memoria y tiempos de ejecución. Pero introducen un sesgo al alza en los valores de metilación. Tras el alineamiento frente al genoma de referencia, se cuenta el número de citosinas (metiladas) y timinas (citosinas no metiladas) en la misma posición para ver el ratio. Para los wild-cards se permite el alineamiento con mismatches de Y en posiciones de C. 
+
+Hay una herramienta llamada BioTools que tiene muchas herramientas para las ómicas. Es de la empresa Élixir, una empresa europea que representa la infraestructura de los datos. Es federado al tener distintos nodos, uno por país y tener muchas comunidades de trabajo. Mantienen el catálogo de herramientas BioTools. 
+
+Una vez con la secuencia, el resto de los análisis son bastante triviales. Se hace lo mismo que con el resto de estudios, solo cambia el alineamiento. Se utiliza fastqc para ver cómo ha ido la secuenciación, se visualiza de distintas formas, se obtiene un score de metilación, se pueden anotar las citosinas en función de su localización genómica (región de enhancers, promotor, etc), metilación diferencial, clasificadores, etc.
+
+Factores que afectan a la precisión de los resultados son el proceso de bisulfitado (no todas las citosinas se van a convertir en uracilo) y el alineamiento, que dependiendo del método puede ser más complejo. 
+
+\subsubsection{Ejercicio: generación de datos sintéticos de bisulfito}
+Queremos crear 150.000 lecturas direccionales de bisulphite-seq de 70 pares de base con aproximadamente 50\% CpG. 
+
+\texttt{./Sherman -l 70 -n 150000 --genome_folder ./ --CG 50 --CH 2 -e 0.5 > bisulphite-in-silico.txt}
