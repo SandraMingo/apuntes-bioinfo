@@ -1,0 +1,33 @@
+%03/04 - David
+\section{Método de Euler}
+El método de Euler es la forma más simple y explícita de resolver numéricamente un conjunto de ecuaciones diferenciales. Sirve como base para construir métodos más complejos para resolver sistemas de ecuaciones. 
+
+Se asume que hay una solución y se pretende aproximarse a ella. Esto se debe a que las ecuaciones diferenciales son acopladas, por lo que no se pueden resolver y se debe aproximar a la solución numéricamente. 
+
+Supongamos un sistema del tipo
+$$a + b \rightarrow c$$
+
+Utilizando la ley de acción de masas y la ley de conservación de masas, se puede derivar el conjunto mínimo de ecuaciones diferenciales que corresponden a una reacción. Se puede expresar como el vector de estado que se puede sacar de las ecuaciones diferenciales. Esta función es del tiempo, dependiente de la variable t. 
+
+El primer paso es describir un vector columna en el que cada fila corresponda a una variable. Esto es el vector de estado:
+$$u = \begin{bmatrix}
+a \\ b \\ c
+\end{bmatrix}$$
+
+Si tenemos unos valores de las variables a un determinado tiempo, se puede aproximar con una derivada. La derivada representa cuánto cambia una función a lo largo del tiempo. En términos de álgebra, la derivada es la pendiente de la recta en un punto. Desde la recta de la derivada, se pueden inferir otros puntos de la función, pero como la pendiente de la función primaria cambia, el error de aproximación aumentará conforme se aleje el tiempo del que se quiere inferir.
+
+Empezamos definiendo unas condiciones iniciales para el vector de estado. Después, creamos un vector que indique el intervalo de tiempo. El tercer argumento es una matriz de 3 x 100, teniendo una fila para cada variable y una columna para cada tiempo. Ahí se van a ir guardando los resultados. Cada fila va a ir mostrando la evolución temporal de a, b y c. 
+
+Para el método de Euler, hay que empezar con un valor conocido. Esto serán nuestras condiciones iniciales. Esto se pondrá en la primera columna de la matriz. 
+
+El siguiente input es la constante k, que indica la tasa cinética. En nuestro ejemplo, es un número.
+
+Para calcular los resultados, el valor nuevo es el valor viejo más el cambio que es la derivada. 
+$$U(1,t) = U(1, t-1) + f(U(1,t-1), U(2,t-1), U(3,t-1), k)$$ 
+$$U(2,t) = U(2, t-1) + g(U(1,t-1), U(2,t-1), U(3,t-1), k)$$ 
+$$U(3,t) = U(3, t-1) + h(U(1,t-1), U(2,t-1), U(3,t-1), k)$$ 
+
+Con la matriz completa, se puede generar un gráfico con la evolución temporal de las especies de la reacción (véase documento de Quarto en carpeta "Task3").
+
+Python tiene un sistema de integración de ecuaciones diferenciales llamado ODEINT. 
+
