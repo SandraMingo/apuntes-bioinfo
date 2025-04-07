@@ -165,6 +165,100 @@ plt.legend()
 plt.show()
 ```
 
+Para la segunda parte hay que introducir un 10% de variabilidad en las condiciones iniciales y realizar 50 simulaciones para calcular las dinámicas medias y calcular el intervalo de confianza del 95%. 
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.integrate import odeint
+from scipy.stats import sem, t
+
+# Parámetros de la reacción
+k1 = 1.0    # Constante de velocidad directa
+k2 = 0.01   # Constante de velocidad inversa
+
+# Condiciones iniciales base
+A0_base = 0.02
+B0_base = 0.01
+C0_base = 0.0
+
+# Configuración de la simulación
+t_max = 100          # Tiempo máximo
+n_points = 1000      # Número de puntos de tiempo
+n_simulations = 50   # Número de simulaciones
+variability = 0.1    # 10% de variabilidad
+
+# Definir el sistema de ecuaciones diferenciales
+def reaction_system(y, t, k1, k2):
+    A, B, C = y
+    dA_dt = -k1 * A * B + k2 * C
+    dB_dt = -k1 * A * B + k2 * C
+    dC_dt = k1 * A * B - k2 * C
+    return [dA_dt, dB_dt, dC_dt]
+
+# Tiempo de integración
+t_points = np.linspace(0, t_max, n_points)
+
+# Almacenamiento de resultados
+all_A = np.zeros((n_simulations, n_points))
+all_B = np.zeros((n_simulations, n_points))
+all_C = np.zeros((n_simulations, n_points))
+
+# Realizar las 50 simulaciones
+for sim in range(n_simulations):
+    # Añadir variabilidad del 10% a las condiciones iniciales
+    A0 = A0_base * np.random.uniform(1 - variability, 1 + variability)
+    B0 = B0_base * np.random.uniform(1 - variability, 1 + variability)
+    C0 = C0_base * np.random.uniform(1 - variability, 1 + variability)
+    
+    # Resolver con odeint
+    solution = odeint(reaction_system, [A0, B0, C0], t_points, args=(k1, k2))
+    
+    all_A[sim] = solution[:, 0]
+    all_B[sim] = solution[:, 1]
+    all_C[sim] = solution[:, 2]
+
+# Calcular estadísticas
+mean_A = np.mean(all_A, axis=0)
+mean_B = np.mean(all_B, axis=0)
+mean_C = np.mean(all_C, axis=0)
+
+# Calcular intervalos de confianza del 95%
+def confidence_interval(data, confidence=0.95):
+    n = len(data)
+    m = np.mean(data, axis=0)
+    std_err = sem(data, axis=0)
+    h = std_err * t.ppf((1 + confidence) / 2, n - 1)
+    return m - h, m + h
+
+ci_A_low, ci_A_high = confidence_interval(all_A)
+ci_B_low, ci_B_high = confidence_interval(all_B)
+ci_C_low, ci_C_high = confidence_interval(all_C)
+
+# Graficar resultados
+plt.figure(figsize=(12, 8))
+
+# Concentración de A
+plt.plot(t_points, mean_A, label='[A] medio', color='blue')
+plt.fill_between(t_points, ci_A_low, ci_A_high, color='blue', alpha=0.2, label='IC 95%')
+
+# Concentración de B
+plt.plot(t_points, mean_B, label='[B] medio', color='red')
+plt.fill_between(t_points, ci_B_low, ci_B_high, color='red', alpha=0.2, label='IC 95%')
+
+# Concentración de C
+plt.plot(t_points, mean_C, label='[C] medio', color='green')
+plt.fill_between(t_points, ci_C_low, ci_C_high, color='green', alpha=0.2, label='IC 95%')
+
+plt.xlabel('Tiempo [s]')
+plt.ylabel('Concentración [M]')
+plt.title('Dinámica de la Concentración (odeint)')
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+```
+
 # Parte 3: Método de Euler para ecuación de la sal $NaCO_3 + CaCl_2 \overset{k_1}{\underset{k_2}{\rightleftharpoons}} CaCO_3 + 2NaCl$
 
 ```{python}
@@ -174,40 +268,54 @@ import matplotlib.pyplot as plt
 
 # Definir el sistema de ecuaciones diferenciales
 def differential_equations(y, t, k1, k2):
-    A, B, C, D = y  
-    dA_dt = -k1 * A * B + k2 * C * D**2  # Ecuación para A (NaCO_3)
-    dB_dt = -k1 * A * B + k2 * C * D**2  # Ecuación para B (CaCl_2)
-    dC_dt = k1 * A * B - k2 * C * D**2   # Ecuación para C (CaCO_3)
-    dD_dt = 2 * (k1 * A * B - k2 * C * D**2)# Ecuación para D (NaCl)
+    A, B, C, D = y  # A: NaCO3, B: CaCl2, C: CaCO3, D: NaCl
+    dA_dt = -k1 * A * B + k2 * C * D**2
+    dB_dt = -k1 * A * B + k2 * C * D**2
+    dC_dt = k1 * A * B - k2 * C * D**2
+    dD_dt = 2 * (k1 * A * B - k2 * C * D**2)  
     return [dA_dt, dB_dt, dC_dt, dD_dt]
 
-k_1 = 2.3
-k_2 = 2.5
+# Parámetros de reacción
+k_1 = 2.3  # Constante de velocidad directa
+k_2 = 2.5  # Constante de velocidad indirecta
 
-a_0 = 0.02
-b_0 = 0.01
-c_0 = 0.0
-d_0 = 0.0
+# Concentraciones iniciales
+a_0 = 0.02  # NaCO3
+b_0 = 0.01  # CaCl2
+c_0 = 0.0   # CaCO3
+d_0 = 0.0   # NaCl
 y0 = [a_0, b_0, c_0, d_0]
 
 # Tiempo de integración
-t = np.linspace(0, 100, 10)  
+simulation_time = 200  # Tiempo de reacción
+time_points = 1000      # Número de mediciones, puntos en el tiempo
 
-# Resolver las ecuaciones diferenciales
-ode_solved = odeint(differential_equations, y0, t, args=(k_1, k_2))
+t = np.linspace(0, simulation_time, time_points)
 
-# Graficar los resultados
-plt.figure(figsize=(8, 5))
-plt.plot(t, ode_solved[:, 0], label='NaCO_3')
-plt.plot(t, ode_solved[:, 1], label='CaCl_2')
-plt.plot(t, ode_solved[:, 2], label='CaCO_3')
-plt.plot(t, ode_solved[:, 3], label='NaCl')
+# Resolver ecuaciones diferenciales
+solution = odeint(differential_equations, y0, t, args=(k_1, k_2))
 
-plt.xlabel('Time [s]')
-plt.ylabel('Concentration [M]')
-plt.title('NaCO_3 + CaCl_2 <--> CaCO_3 + 2NaCl')
+# Concentración en equilibrio (último valor en el array)
+equilibrium_NaCl = solution[-1, 3]
+
+# Graficar resultados
+plt.figure(figsize=(10, 6))
+plt.plot(t, solution[:, 0], label='NaCO$_3$')
+plt.plot(t, solution[:, 1], label='CaCl$_2$')
+plt.plot(t, solution[:, 2], label='CaCO$_3$')
+plt.plot(t, solution[:, 3], label='NaCl', linewidth=2)
+
+# Añadir línea del equilibrio de NaCl
+plt.axhline(y=equilibrium_NaCl, color='gray', linestyle='--', 
+            label=f'Equilibrium NaCl = {equilibrium_NaCl:.4f} M')
+
+plt.xlabel('Tiempo [s]')
+plt.ylabel('Concentración [M]')
+plt.title(f'NaCO$_3$ + CaCl$_2$ $\leftrightarrow$ CaCO$_3$ + 2NaCl')
 plt.legend()
+plt.grid(True)
+plt.tight_layout()
 plt.show()
-```
 
-Primero calcular valor de equilibrio de NaCl y después ajustar el tiempo "a ojo" hasta que la curva respectiva llegue a ese valor (pintar línea horizontal en ese valor para comprobar)
+print(f"Concentración final de NaCl en {simulation_time} s: {equilibrium_NaCl:.4f} M")
+```
