@@ -1,0 +1,27 @@
+%07/04 - Alberto Rastrojo
+\chapter{Clasificación funcional}
+Con la composición taxonómica se puede ver qué microorganismos están ahí, mientras que la composición funcional permite responder a la pregunta de lo que están haciendo esos microorganismos. Sin embargo, esto no es del todo cierto, en el sentido de que la metagenómica funcional brinda la oportunidad de catalogar el conjunto de genes de toda una comunidad. 
+Por lo tanto, podemos detectar o predecir los genes microbianos presentes en una muestra, pero estos genes no son necesariamente activos (Metatranscriptómica).
+Aunque existe una buena correspondencia entre la abundancia relativa de genes y transcritos, pero puede haber excepciones. Solo podemos decir lo que potencialmente puede ser expresado.
+
+Por función, se suele referir a los grupos específicos de genes (ortólogos) o las categorías funcionales generales (rutas metabólicas). Se suele utilizar indistintamente para ambos. 
+
+Las categorías funcionales generales (vías) son una serie enlazada de reacciones químicas que se producen dentro de una célula. 
+Estas reacciones son llevadas a cabo por diferentes proteínas/enzimas codificadas en diferentes genes.
+Por lo tanto, las vías están compuestas principalmente por los genes que codifican las reacciones individuales necesarias para llevar a cabo la función general.
+
+El concepto de genes «ortólogos» es de suma importancia en metagenómica, ya que se supone que las secuencias de genes con secuencias muy similares desempeñan la misma función, porque:
+«Los ortólogos son genes de especies diferentes que evolucionaron a partir de un gen ancestral común por especiación».
+Normalmente, los ortólogos conservan la misma función en el curso de la evolución. Así pues, la identificación de ortólogos es fundamental para predecir con fiabilidad la función de los genes en genomas o metagenomas recién secuenciados.
+
+De una muestra ambiental se saca el ADN y se analiza. Dos programas que se utilizan son:
+\begin{itemize}
+\item HUMAn 3: este programa coge las lecturas de ADN o ARN previamente pasadas por el filtro de calidad. Esas secuencias limpias se pasan por MetaPhIAn 2 que marca las especies para un profiling taxonómico. Con la lista de bacterias abundantes va a su propia base de datos ChocoPhIAn para anotar las especies y su frecuencia. Así, sale una tabla de potenciales genes presentes en la muestra. Las que no alinean se pasan por DIAMOND con Blastx. Con la estimación de la abundancia de genes se construye la red metabólica por especie y a nivel de comunidad.
+\item SqueezeMeta: este programa no hace la descontaminación, pero sí limpia las secuencias por calidad. Tiene tres modos de ensamblaje: crossensamblaje de todo, modo secuencial y modo merged. Con los contigs se hace la predicción de genes, anotación funcional y taxonómica, estimación de la abundancia, etc. Hay un programa en R que permite meter el resultado de SqueezeMeta para hacer gráficos bonitos llamado SQMtools. 
+\end{itemize}
+
+En cuanto al ensamblaje en metagenómica, una ventaja es que necesita menos tiempo de computacional a la hora de buscar por similitud. No obstante, previamente se debe ensamblar, siendo bastante costoso. Los genes se pueden anotar cuando las lecturas son cortas y a veces se puede reconstruir genomas, aunque sea parcialmente. No obstante, para las abundancias, se debe volver a mapear. Además, una baja profundidad de lectura y una alta diversidad pueden provocar fallos en los ensambladores. No todas las lecturas proceden del mismo genoma, por lo que es posible que se produzcan quimeras. Algunos organismos/genes se ensamblarán más fácilmente (por ejemplo, los más abundantes), lo que podría dar lugar a un sesgo en la anotación.
+
+En cuanto a la llamada genética:
+En genómica, normalmente se predicen las posiciones de inicio y fin de los genes utilizando un programa de predicción de genes antes de anotarlos.
+En metagenómica, puede dar lugar a menos falsos positivos (las lecturas no génicas pueden producir resultados falsos positivos) y reduce el número de búsquedas de similitud. El problema es que es computacionalmente intensivo (quizás menos que computar todas las lecturas en búsquedas de homología...), no hay un buen conjunto de datos de aprendizaje para decidir cuándo empieza o termina un gen (códigos alternativos) y las lecturas crudas no cubrirán un gen entero, por lo que necesitará ensamblar primero. 
