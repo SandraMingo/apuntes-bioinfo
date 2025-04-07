@@ -112,3 +112,34 @@ MEGAN
 \end{lstlisting}
 
 Con esto se abre el programa de Megan. File > Import from Blast y seleccionamos uno de los viromas en formato BlastTab y modo BlastX. También se debe cargar el la base de datos de MeganMap y se aplica todo. Esto se hace para ambos viromas, y posteriormente File > Compare y seleccionamos ambos. 
+
+%04/04
+\section{Taxonomía completa con Kraken}
+Descargamos Kraken y Pavian, el primero en la terminal y el segundo en RStudio. También debemos descargar la base de datos del viroma. Con kraken, le pasamos la base de datos y las lecturas. El output de Kraken se puede visualizar en Pavian. Debemos abrir los ficheros report.txt y podemos ver los resultados de cada viroma e incluso compararlas. 
+
+\begin{lstlisting}
+conda activate ngs
+conda install -c bioconda kraken2
+
+wget https://genome-idx.s3.amazonaws.com/kraken/k2_viral_20221209.tar.gz
+mkdir k2_viral
+tar -xzf k2_viral_20221209.tar.gz -C k2_viral
+
+# Virome 1
+kraken2 -db k2_viral --paired virome_1_qf_R1.fq.gz virome_1_qf_R2.fq.gz --report virome_1_report.txt > virome_1_k2_output.txt 
+
+# Virome 2
+kraken2 -db k2_viral --paired virome_2_qf_R1.fq.gz virome_2_qf_R2.fq.gz --report virome_2_report.txt > virome_2_k2_output.txt 
+\end{lstlisting}
+
+Para descargar Pavian:
+\begin{lstlisting}
+if (!require(remotes)) { install.packages("remotes") }
+remotes::install_github("fbreitwieser/pavian")
+
+# Run Pavian server
+options(shiny.maxRequestSize=500*1024^2) # Increase max memory available
+pavian::runApp(port=5000)
+\end{lstlisting}
+
+Desde aquí podemos subir los ficheros generados de report.txt, ver los resultados en "Results Overview" y comparar ambos reports en "Comparison". Se puede seleccionar que la comparación sea a nivel de filo, clase, orden, familia, género y especie. 
