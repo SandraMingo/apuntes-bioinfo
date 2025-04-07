@@ -91,9 +91,9 @@ El modelo lineal correspondiente es un hiperplano, con parámetros $\theta = \{ 
 
 El algoritmo de aprendizaje determinará $b$ y $w$ utilizando $D$.
 
-Ejercicio: dado un modelo lineal bidimensional con parámetros $\Theta = \{ b, \vec{w}\}$ con $b = 1$ y $\vec{w} = (1,2)^T$. Computa la salida del modelo para $\x = (1,1)^T$:
+Ejercicio: dado un modelo lineal bidimensional con parámetros $\Theta = \{ b, \vec{w}\}$ con $b = 1$ y $\vec{w} = (1,2)^T$. Computa la salida del modelo para $\vec{x} = (1,1)^T$:
 $$1 + (1 \cdot 1 + 1 \cdot 2) = 4$$
- Computa la salida del modelo para $\x = (-1,0)^T$:
+ Computa la salida del modelo para $\vec{x} = (-1,0)^T$:
  $$1 + (1 \cdot -1 + 0 \cdot 2) = 0$$
 
 \subsubsection{Ecuaciones lineales}
@@ -238,3 +238,97 @@ donde:
 \item $\mathbf{1}$ es un vector columna de unos
 \end{itemize}
 
+\subsection{Resumen: modelos lineales para regresión}
+Un problema de regresión es un problema supervisado con objetivos continuos. Un modelo de regresión sencillo pero útil es el modelo lineal. La predicción es una combinación lineal de las características. Para entrenar el modelo lineal, se suele resolver un problema de optimización. El MSE suele utilizarse para medir la calidad del modelo. Es una elección natural. El problema resultante puede resolverse de forma cerrada utilizando el pseudoinverso de la matriz de datos.
+
+%07/04 - Carlos
+\section{Modelos lineales de clasificación}
+Un problema de clasificación es un problema de aprendizaje supervisado en el que las salidas son discretas. Ejemplos son predecir si un paciente padece o no una determinada enfermedad en función de datos médicos, distinguir la especie de un pez capturado utilizando los datos proporcionados por varios sensores o discernir el tipo de objeto que aparece en una imagen.
+
+Los elementos de un problema de aprendizaje supervisado son:
+\begin{itemize}
+\item Datos: conjunto de pares entrada-salida
+\item Características: vector de atributos (variables independientes/de entrada, covariables...)
+\item Etiquetas: objetivo (variable dependiente, resultado...)
+\item Modelo: asignación del espacio de entrada al de salida
+\item Algoritmo de aprendizaje: procedimiento para obtener un modelo basado en los datos
+\end{itemize}
+
+\subsection{Clasificación binaria lineal}
+El escenario de clasificación más importante es cuando M = 2 (clasificación binaria).
+Si M > 2, existen técnicas de codificación para transformar el problema en varios subproblemas binarios.
+Las clases suelen denominarse C0 y C1, y se representan con una codificación 0/1 (o -1/1). Las etiquetas se transforman en:
+$$t_i = \begin{cases}
+0 \quad \text{if } y_i = \mathcal{C}_0 \\
+1 \quad  \text{if } y_i = \mathcal{C}_1
+\end{cases}
+$$
+
+Los enfoques más simples de clasificación son:
+\begin{itemize}
+\item Ignorar la entrada: modelo constante (normalmente, clase mayoritaria).
+\item Definir la salida como una combinación lineal de las entradas más una transformación: modelo lineal. Es simple, robusto (varianza pequeña), interpretable, fácil de entrenar y fácil de predecir. No obstante, tiene flexibilidad limitada y un ajuste insuficiente (gran sesgo).
+\end{itemize}
+
+Por simplicidad, $\mathcal{X}=\mathbb{R}^{d}$.
+Los datos se convierten en $\mathcal{D}=\{(x_{i},t_{i})\}_{i=1}^{N}$, donde $x_{i}=(x_{i,1},x_{i,2},\ldots,x_{i,d})\in\mathbb{R}^{d}$ y $t_{i}\in\{0,1\}$.
+El modelo lineal correspondiente es un hiperplano, con parámetros $\boldsymbol{\theta}=\{b,\mathbf{w}\}$.
+
+\begin{itemize}
+    \item $b\in\mathbb{R}$ es el término de intercepción o sesgo.
+    
+    \item $\mathbf{w}=(w_{1},w_{2},\ldots,w_{d})\in\mathbb{R}^{d}$ es el vector normal del hiperplano.
+    
+    \item El modelo se define como:
+    \[f_{\boldsymbol{\theta}}(\mathbf{x})=\begin{cases}
+    0 & \text{si } b+\mathbf{w}^{\intercal}\mathbf{x}<0, \\
+    1 & \text{si } b+\mathbf{w}^{\intercal}\mathbf{x}\geq 0.
+    \end{cases}\]
+    
+    \item El hiperplano divide el espacio en dos mitades, una para la clase $\mathcal{C}_{0}$ y la otra para la clase $\mathcal{C}_{1}$.
+\end{itemize}
+
+El \textbf{algoritmo de aprendizaje} determinará $b$ y $\mathbf{w}$ utilizando $\mathcal{D}$.
+
+Ejercicio: dado un modelo de clasificación lineal binario bidimensional con parámetros $\theta = \{b, \vec{w}\}$, con $b = 1$ y $\vec{w} = (1, 2)^T$:
+\begin{itemize}
+\item Calcula la salida del modelo para $\vec{x}_1 = (1,1)$:
+
+$$1 + 1 \cdot 1 + 2 \cdot 1 = 4 \rightarrow f_{\theta}(\vec{x}) = \mathcal{C}_1$$
+
+\item Calcula la salida del modelo para $\vec{x}_2 = (1,-2)$:
+
+$$1 + 1 \cdot 1 + 2 \cdot (-2) = -2 \rightarrow f_{\theta}(\vec{x}) = \mathcal{C}_0$$
+
+\item Calcula la salida del modelo para $\vec{x}_3 = (0,0)$:
+
+$$1 + 1 \cdot 0 + 2 \cdot 0 = 1 \rightarrow f_{\theta}(\vec{x}) = \mathcal{C}_1$$
+\end{itemize}
+
+\subsubsection{Calidad del modelo}
+Se necesita un procedimiento para determinar el sesgo $b$ y el vector $w$, optimizando la calidad del modelo. Hay que definir la calidad del modelo. Normalmente desde dos puntos de vista:
+\begin{itemize}
+\item Ajuste: Un término de aptitud $\mathcal{F_D}(\theta)$ mide lo bien que el modelo se ajusta a los datos de entrenamiento.
+\item Complejidad: Un término de regularización $\mathcal{R}(\theta)$ penaliza la complejidad del modelo
+\end{itemize}
+
+\textbf{Predicción Correcta} Para el $i$-ésimo patrón,
+
+\[c_i = 
+\begin{cases} 
+0 & \text{si } t_i \neq f_0(\mathbf{x}_i) \\ 
+1 & \text{si } t_i = f_0(\mathbf{x}_i) 
+\end{cases}
+= 
+\begin{cases} 
+0 & \text{si } (t_i = 0, b + \mathbf{w}^\intercal \mathbf{x}_i \geq 0) \text{ o } (t_i = 1, b + \mathbf{w}^\intercal \mathbf{x}_i < 0), \\ 
+1 & \text{si } (t_i = 0, b + \mathbf{w}^\intercal \mathbf{x}_i < 0) \text{ o } (t_i = 1, b + \mathbf{w}^\intercal \mathbf{x}_i \geq 0). 
+\end{cases}\]
+
+\textbf{Precisión} Acc$(b, \mathbf{w}) = \mathbb{E}[C] \approx \frac{1}{N} \sum_{i=1}^{N} c_i$.
+
+Ejercicio: dado un modelo de clasificación binario lineal bidimensional con los parámetros $\theta = (b, \vec{w})$ con $b=1$ y $\vec{w} = (1,2)^T$ y los siguientes datos, computa la precisión:
+$$(1,1; 1) \rightarrow 1 + 1 \cdot 1 + 1 \cdot 2 = 4 \rightarrow 1 = 1$$
+$$(1,-2; 0) \rightarrow 1 + 1 \cdot 1 + 2 \cdot -2 = -2 \rightarrow 0 = 0$$
+$$(0,0; 0) \rightarrow 1 + 1 \cdot 0 + 2 \cdot 0 = 1 \rightarrow 1 \neq 0$$
+$$Accuracy = 2/3$$
