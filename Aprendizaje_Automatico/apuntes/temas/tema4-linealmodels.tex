@@ -331,4 +331,107 @@ Ejercicio: dado un modelo de clasificación binario lineal bidimensional con los
 $$(1,1; 1) \rightarrow 1 + 1 \cdot 1 + 1 \cdot 2 = 4 \rightarrow 1 = 1$$
 $$(1,-2; 0) \rightarrow 1 + 1 \cdot 1 + 2 \cdot -2 = -2 \rightarrow 0 = 0$$
 $$(0,0; 0) \rightarrow 1 + 1 \cdot 0 + 2 \cdot 0 = 1 \rightarrow 1 \neq 0$$
-$$Accuracy = 2/3$$
+$$Accuracy = 2/3 \approx 66.67$$
+
+%08/04 - Carlos
+La opción más habitual para evaluar el modelo es la \textbf{precisión}. Es una medida sensata e intuitiva. No es convexa, no es diferenciable y es discontinua.
+Optimizar la precisión es un problema que (en general) no puede abordarse directamente. 
+
+Una idea alternativa podría ser entrenar un \textbf{modelo de regresión lineal} con etiquetas -1/1. La etiqueta predicha se determina tomando el signo de la salida. El problema de esto es que con datos asimétricos, el modelo minimiza el error cuadrático, pudiendo mover la frontera. Se penaliza tener valores demasiado positivos o demasiado negativos, intentando ajustarse siempre a los valores 1 y -1. 
+
+Por tanto, se necesita una medida de calidad diferente que debería ser más fácil de optimizar que la precisión. No debería penalizar los puntos alejados del límite de decisión (pero en el lado correcto). Un enfoque probabilístico puede ser útil. En particular, el marco principal es la regresión logística. El modelo lineal se utiliza para estimar la probabilidad posterior de una clase. Se utiliza una transformación sigmoidea.
+
+Denotando por $\tilde{x} = [1, x]$ y por $\tilde{w} = [b, w]$, las probabilidades posteriores se definen como:
+$$
+p(C_1 \mid \tilde{x}; \tilde{w}) = \sigma(\tilde{w}^T \tilde{x}) = \frac{1}{1 + e^{-\tilde{w}^T \tilde{x}}},
+$$
+$$
+p(C_0 \mid \tilde{x}; \tilde{w}) = 1 - p(C_1 \mid \tilde{x}; \tilde{w}) = 1 - \frac{1}{1 + e^{-\tilde{w}^T \tilde{x}}} = \frac{e^{-\tilde{w}^T \tilde{x}}}{1 + e^{-\tilde{w}^T \tilde{x}}} = \frac{1}{1 + e^{\tilde{w}^T \tilde{x}}} = \sigma(-\tilde{w}^T \tilde{x}).
+$$
+
+\begin{itemize}
+    \item Si $\tilde{w}^T \tilde{x} < 0 \Rightarrow p(C_1 \mid \tilde{x}; \tilde{w}) < 0.5$: Se predice la clase $C_0$.
+    \item Si $\tilde{w}^T \tilde{x} \geq 0 \Rightarrow p(C_1 \mid \tilde{x}; \tilde{w}) \geq 0.5$: Se predice la clase $C_1$.
+\end{itemize}  
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.5\textwidth]{figs/sigmoidal.png}
+\end{figure}  
+
+Ejercicio: dado un modelo de clasificación binario lineal bidimensional con los parámetros $\theta = (b, \vec{w})$ con $b=1$ y $\vec{w} = (1,2)^T$ y los siguientes datos, computa la precisión:
+\begin{itemize}
+\item Probabilidad de $\vec{x}_1$ pertenecer a la clase $\mathcal{C}_1$ para $\vec{x}_1 = (1,1)^T$.
+
+$$1 + 1 \cdot 1 + 2 \cdot 1 = 4$$
+$$1 / (1 + e^{-4}) = 0.98$$
+
+\item Probabilidad de $\vec{x}_2$ pertenecer a la clase $\mathcal{C}_1$ para $\vec{x}_2 = (1,-2)^T$.
+
+$$1 + 1 \cdot 1 + 2 \cdot -2 = -2$$
+$$1 / (1 + e^{2}) = 0.119$$
+
+\item Probabilidad de $\vec{x}_3$ pertenecer a la clase $\mathcal{C}_0$ para $\vec{x}_3 = (0,0)^T$.
+
+$$1 + 1 \cdot 0 + 2 \cdot 0 = 1$$
+$$1 - (1 / (1 + e^{-1}) )= 0.2689$$
+\end{itemize}
+
+\subsubsection{Optimización: Máxima verosimilitud y entropía cruzada}
+
+La verosimilitud de los datos es una elección común para cuantificar la calidad de un modelo probabilístico:
+$$
+\mathcal{L}(\mathcal{D};\tilde{\mathbf{w}}) = \prod_{i=1}^{N} p(t_i|\tilde{\mathbf{x}}_i; \tilde{\mathbf{w}}) = \prod_{i=1}^{N} \underbrace{p(C_0|\tilde{\mathbf{x}}_i; \tilde{\mathbf{w}})^{1-t_i} p(C_1|\tilde{\mathbf{x}}_i; \tilde{\mathbf{w}})^{t_i}}_{\begin{cases} 
+    p(C_0|\tilde{\mathbf{x}}_i; \tilde{\mathbf{w}}) & \text{si } t_i = 0, \\ 
+    p(C_1|\tilde{\mathbf{x}}_i; \tilde{\mathbf{w}}) & \text{si } t_i = 1. 
+\end{cases}}
+$$
+
+El error de Entropía Cruzada (CE) se define como el logaritmo negativo de la verosimilitud:
+$$
+CE(\tilde{\mathbf{w}}) = -\log\mathcal{L}(\mathcal{D};\tilde{\mathbf{w}})
+$$
+$$
+= \sum_{i=1}^{N} \left( -(1 - t_i) \log(p(C_0|\tilde{\mathbf{x}}_i; \tilde{\mathbf{w}})) - t_i \log(p(C_1|\tilde{\mathbf{x}}_i; \tilde{\mathbf{w}})) \right)
+$$
+$$
+= \sum_{i=1}^{N} \left( -(1 - t_i) \log(1 - \sigma(\tilde{\mathbf{w}}^{T}\tilde{\mathbf{x}}_i)) - t_i \log(\sigma(\tilde{\mathbf{w}}^{T}\tilde{\mathbf{x}}_i)) \right).
+$$
+
+Ejercicio: dado un modelo de clasificación binario lineal bidimensional con los parámetros $\theta = (b, \vec{w})$ con $b=1$ y $\vec{w} = (1,2)^T$ y los siguientes datos, computa la precisión:
+$$(1,1; 1) \rightarrow 1 + 1 \cdot 1 + 1 \cdot 2 = 4 $$
+$$p1 = 1 / (1 + e^{-4}) = 0.98$$
+$$p0 = 1 - 0.98 = 0.02$$
+$$\mathcal{L} = (0.98)^1 \cdot (0.02)^0 = 0.98$$
+
+$$(1,-2; 0) \rightarrow 1 + 1 \cdot 1 + 2 \cdot -2 = -2 $$
+$$p1 = 1 / (1 + e^{2}) = 0.119$$
+$$p0 = 1 - 0.119 = 0.881$$
+$$\mathcal{L} = (0.881)^1 \cdot (0.119)^0 = 0.881$$
+
+$$(0,0; 0) \rightarrow 1 + 1 \cdot 0 + 2 \cdot 0 = 1 $$
+$$p1 = 1 / (1 + e^{-1}) = 0.7311$$
+$$p0 = 1 - 0.2689 = 0.2689$$
+$$\mathcal{L} = (0.2689)^1 \cdot (0.7311)^0 = 0.2689$$
+
+$$ML = 0.98 \cdot 0.881 \cdot 0.2689 = 0.23$$
+
+El CE minimizado es el máximo de ML. El algoritmo de aprendizaje para entrenar un modelo de Regresión Logística Lineal consiste en resolver el problema:
+$$\min_{\tilde{\mathbf{w}} \in \mathbb{R}^{d+1}} \left\{ \mathrm{CE}(\tilde{\mathbf{w}}) \right\} = \min_{\tilde{\mathbf{w}} \in \mathbb{R}^{d+1}} \left\{ \sum_{i=1}^N \left( -(1-t_i) \log (1-\sigma(\tilde{\mathbf{w}}^{\intercal} \tilde{\mathbf{x}}_i)) - t_i \log (\sigma(\tilde{\mathbf{w}}^{\intercal} \tilde{\mathbf{x}}_i)) \right) \right\}.$$
+
+Es convexa: no existen mínimos locales. Es diferenciable: los óptimos se caracterizan por los ceros del gradiente.
+
+$$\nabla_{\tilde{\mathbf{w}}} \text{CE}(\tilde{\mathbf{w}})=\sum^N_{i=1} (\sigma (\tilde{\mathbf{w}}^T \tilde{\mathbf{x}}_i) - t_i) \tilde{\mathbf{x}}_i = \mathbf{0}
+$$
+
+El problema es que no siempre se puede igualar el gradiente a 0.
+
+El Descenso Gradiente es un algoritmo de optimización simple (pero útil) que se utiliza a menudo en Aprendizaje Automático para encontrar el mínimo local.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = \textwidth]{figs/gradient-descend-alg.png}
+\end{figure}
+
+El tamaño del paso $\eta^{(t)}$ debe fijarse en cada iteración t. Se trata de una cuestión crucial: Si el tamaño del paso es demasiado pequeño, el algoritmo necesitará demasiadas épocas (iteraciones) para converger y puede quedar atrapado en mínimos locales más fácilmente. Si el tamaño del paso es grande, la convergencia también será lenta. Si el tamaño del paso es demasiado grande, el descenso de gradiente sobrepasará los mínimos y divergirá. En algunos casos, se pueden calcular tamaños de paso óptimos.
+Existen heurísticos que garantizan la convergencia, pero sólo a mínimos locales, y normalmente de forma lenta y zigzagueante.
