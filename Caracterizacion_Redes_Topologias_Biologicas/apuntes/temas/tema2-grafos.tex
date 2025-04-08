@@ -287,6 +287,160 @@ Para diferenciar estas redes de un grafo aleatorio en la escala log-log, ya que 
 Un grafo con 2000 vecinos en el que cada nodo tiene 8 vecinos, ¿cuántas ramas tiene el grafo? 8000. De cada nodo entran y salen 8 ramas. $8 \cdot 2000/2$ porque cada rama se cuenta dos veces, una en cada vecino.
 
 \section{Algoritmos sobre grafos}
-El algoritmo de búsqueda en anchura permite calcular un camino mínimo entre dos nodos de un grafo. Dijkstra es una versión del algoritmo anterior para grafos ponderados. Ambos algoritmos funcionan tanto en grafos dirigidos como no dirigidos. Los algoritmos nos permiten calcular las métricas sobre el grafo.
+El algoritmo de \textbf{búsqueda en anchura} permite calcular un camino mínimo entre dos nodos de un grafo. Dijkstra es una versión del algoritmo anterior para grafos ponderados. Ambos algoritmos funcionan tanto en grafos dirigidos como no dirigidos. Los algoritmos nos permiten calcular las métricas sobre el grafo.
 
 Si los grafos tienen bucles y ramas paralelas, el algoritmo no funciona. 
+
+%08/04 - Carlos
+En el algoritmo de búsqueda en anchura, se marcan los nodos vecinos. Símil con los corredores de la antigua Grecia: las noticias se transmitían por los corredores. Había en una ciudad tantos corredores como ciudades vecinas que tenía una ciudad. Si Atenas está siendo invadida por los turcos, no se necesita ningún corredor que vaya a Atenas. Los corredores de Atenas van a los vecinos, marcándolos como visitados y añadiéndolos en la cola. Una vez terminado, se repite con los vecinos de los vecinos de Atenas, así hasta haber completado el grafo.
+
+El algoritmo de Búsqueda en profundidad permite calcular puntos de articulación de un grafo.
+El algoritmo de Ford-Fulkerson permite calcular cortes mínimos.
+
+\section{Cálculos sobre grafos: NetworkX}
+Existen multitud de herramientas para facilitar el cálculo de las diferentes métricas sobre grafos.
+Algunas herramientas también permiten la visualización de grafos de orden y/o tamaño reducido.
+Las herramientas pueden ser de tipo interactivo o librerías que se pueden emplear sobre lenguajes de programación.
+
+NetworkX es un paquete Python orientado al análisis de grafos. Permite la creación de digrafos, multigrafos y pseudografos. Además incorpora el cálculo de un elevado número de métricas y algoritmos sobre el grafo. Sin embargo, da un soporte muy reducido a la visualización de grafos mediante el paquete Matplotlib.
+
+\textit{La parte práctica se encuentra en la carpeta ejercicios en el fichero nx.ipynb.}
+
+\subsection{Creación de grafos}
+NetworkX permite la creación de grafos mediante tres métodos:
+\begin{itemize}
+\item \textbf{Creación de un grafo vacío al que posteriormente se añaden nodos y ramas}: se pueden usar varias funciones en networkx: \texttt{Graph}, \texttt{DiGraph}, \texttt{MultiGraph}, \texttt{MultiDiGraph}. Para añadir nodos a un grafo existente podemos usar las siguientes funciones del objeto graph: \texttt{add\_node(n)} donde n puede ser cualquier objejo hashable (int, str, estructura, grafo) y \texttt{add\_nodes\_from(container)} donde container puede ser cualquier objeto contenedor (una lista, conjunto, fichero, nodos de otro grafo).
+
+Pregunta: Si H y G son dos grafos creados previamente, ¿Cuál es la diferencia entre H.AddNode(G) y H.AddNodesFrom(G)? H.AddNode(G) agregaría G como un solo nodo al grafo H, considerándose como una entidad individual. Por el contrario, H.AddNodesFrom agrega todos los nodos de G al grafo H como nodos individuales, es decir, cada nodo de G se copia a H.
+
+Para añadir ramas a un grafo existente se puede utilizar \texttt{add\_edge(n1, n2} y si uno de los dos vértices no existe, se añade al grafo, o \texttt{add\_edges\_from(container} donde container puede ser una lista o colección de ramas. Las propiedades nodes y edges del grafo nos devuelven respectivamente la lista de vértices y ramas del grafo.
+
+A cada objeto del grafo (el propio grafo, los vértices o las ramas) se le puede asignar uno o
+varios \textbf{atributos}. Un atributo es un objeto de la forma clave=valor, la clave debe ser un objeto hashable. Los atributos se pueden asignar durante la creación del objeto o una vez creado.
+
+\item \textbf{Creación de un grafo con una topología predefinida}: NetworkX premite la creación de grafos con topologías predefinidas. Los grafos predefinidos están clasificados por categorías, entre otras grafos generales, mallas, grafos aleatorios, árboles, redes sociales, geométricos, comunidades, grafos pequeños, etc.
+
+Para grafos generales, se puede crear un grafo completo (cliqué) con n vértices con \texttt{complete\_graph(n)}. Para crear una cadena con n vértices se utiliza \texttt{path\_graph(n)}. \texttt{cycle\_graph(n)} es lo mismo que el anterior, pero en el cual el primer y último nodo es el mismo. En ambos casos habrá n-1 ramas. \texttt{graph\_atlas(n)} crea un grafo número n del libro An Atlas of Graphs (en el cual el grafo 1 está vacío, el grafo 2 tiene un nodo, el grafo 3 tiene dos nodos pero sin conectar, el grafo 4 tiene dos nodos conectados, etc). 
+
+Las mallas se pueden crear con las funciones \texttt{grid\_2d\_graph(m, n, periodic=false)}, \texttt{grid\_graph} y \texttt{hypercube\_graph(n)}.
+
+Para grafos aleatorios, \texttt{gnp\_random\_graph(n, p)} se crea un grafo con n nodos donde cada una de las posibles ramas del grafo existe con probabilidad p y no estará con probabilidad 1-p.  De media, habrá (p * n * n-1) / 2  ramas. 
+\marginpar[\footnotesize Pregunta examen: gnp random graph vs gnm random graph, ramas en gnp random graph] \
+La función \texttt{gnm\_random\_graph(n, m)} crea un grafo aleatorio con n nodos y m ramas. La topología generada es la misma que en la función gnp, pero es difícil de demostrar.  \texttt{watts\_strogatz\_graph(n, k, p)} crea un grafo de mundo pequeño con n nodos, cada uno conectado a k vecinos, y p la probabilidad de reconexión de cada nodo. Por último, \texttt{barabase\_albert\_graph(n, m)} crea un grafo libre de escala con n nodos y m ramas.
+
+Se puede crear un árbol aleatorio de n nodos con \texttt{random\_tree(n)}. También está la función \texttt{prefix\_tree(path)} para crear un árbol prefijo generado a partir del iterable de listas path.
+
+\item \textbf{Carga de un grafo desde un fichero externo}
+\end{itemize}
+
+\subsection{Importación y exportación de grafos}
+NetworkX permite importar grafos y exportar grafos a un fichero con diferentes formatos, los más usuales son adjacency list, multiline adjacency list, edge list, GEFX y otros formatos como JSON, YAML, Pajek, etc.
+
+En la lista de adyacencia, cada línea del fichero representa la lista de adyacencia de un nodo, el primer elemento es el identificador del nodo y a continuación los identificadores de sus vecinos.
+La lectura y escritura del fichero se realiza mediante las siguientes funciones:
+\begin{itemize}
+\item read\_adjlist(path[, comments, delimiter, …]): Lee el grafo indicado por el fichero path.
+\item write\_adjlist(G, path[, comments, …]): Guarda el grafo G en el fichero indicado por path.
+\item parse\_adjlist(lines[, comments, delimiter, …]): Interpreta las líneas de un grafo representado mediante lista de adyacencia.
+\item generate\_adjlist(G[, delimiter]): Genera una línea del grafo G en formato de lista de adyacencia.
+\end{itemize}
+
+La lista de adyacencia multillinea incluye cada vecino en una línea separada, siendo útil cuando los índices son cadenas. La lectura y escritura del fichero se realiza mediante las siguientes funciones:
+\begin{itemize}
+\item read\_multiline\_adjlist(path[, comments, delimiter, …]): Lee el grafo indicado por el fichero path.
+\item write\_multiline\_adjlist(G, path[, comments, …]): Guarda el grafo G en el fichero indicado por path.
+\item parse\_multiline\_adjlist(lines[, comments, delimiter, …]): Interpreta las líneas de un grafo representado mediante lista de adyacencia multilinea.
+\item generate\_multiline\_adjlist(G[, delimiter]): Genera una línea del grafo G en formato de lista de adyacencia multilinea.
+\end{itemize}
+
+La lista de ramas contiene una línea para cada rama más sus posibles atributos. Una posible línea podría ser \texttt{a b \{'weight':7, 'color':'green'\}}.  La lectura y escritura del fichero se realiza mediante las siguientes funciones:
+\begin{itemize}
+\item read\_edgelist(path[, comments, delimiter, …]): Lee el grafo indicado por el fichero path.
+\item write\_edgelist(G, path[, comments, …]): Guarda el grafo G en el fichero indicado por path.
+\item read\_weighted\_edgelist(path[, comments, delimiter, …]): Lee el grafo ponderado indicado por el fichero path.
+\item write\_weighted\_edgelist(G, path[, comments, …]): Guarda el grafo ponderado G en el fichero indicado por path.
+\item parse\_edgelist(lines[, comments, delimiter, …]): Interpreta las líneas de un grafo representado mediante lista de ramas.
+\item generate\_edgelist(G[, delimiter]): Genera una línea del grafo G en formato de lista de ramas.
+\end{itemize}
+
+\subsection{Información sobre el grafo}
+NetworkX incorpora una serie de funciones que permiten obtener información sobre el propio grafo, los nodos o las ramas. Las principales funciones de \textbf{información sobre el grafo} son:
+\begin{itemize}
+\item degree(G[, nbunch, weight]): Devuelve el grado de un nodo o de un grupo de nodos.
+\item degree\_histogram(G): Devuelve la distribución de grado del grafo.
+\item density(G): Devuelve la densidad del grafo.
+\item info(G[, n]): Devuelve un conjunto de información sobre el grafo G o el nodo n.
+\item is\_directed(G): Devuelve True si el grafo es dirigido.
+\end{itemize}
+
+Las principales funciones de \textbf{información sobre los vértices} son:
+\begin{itemize}
+\item nodes(G) Devuelve un iterator sobre los nodos del grafo.
+\item number\_of\_nodes(G) Devuelve el orden del grafo.
+\item all\_neighbors(graph, node) Devuelve todos los vecinos de un vértice.
+\item non\_neighbors(graph, node) Devuelve los no-vecinos de un vértice.
+\item common\_neighbors(G, u, v) Devuelve los vértices comunes a dos vértices.
+\end{itemize}
+
+Las principales funciones de \textbf{información sobre las ramas} son:
+\begin{itemize}
+\item edges(G[, nbunch]) Devuelve las ramas del grafo entre los vertices indicados en nbunch (todas si no se indica nbunch).
+\item number\_of\_edges(G) Tamaño del grafo.
+\item non\_edges(graph) Devuelve las ramas que no están en el grafo.
+\end{itemize}
+
+Las principales funciones de \textbf{gestión de atributos} son:
+\begin{itemize}
+\item set\_node\_attributes(G, values[, name]) Establece los atributos de un vértice desde un valor o un diccionario de valores.
+\item get\_node\_attributes(G, name) Obtiene los atributos de un vértice
+\item set\_edge\_attributes(G, values[, name]) Establece los atributos de una rama desde un valor o un diccionario de valores.
+\item get\_edge\_attributes(G, name) Obtiene los atributos de una rama
+\end{itemize}
+
+\subsection{Visualización}
+NetworkX permite una visualización muy simple (pero a veces suficiente) del grafo. Cuando se desea una visualización más avanzada se suelen realizar los cálculos necesarios con NetworkX y luego el grafo se exporta a otras herramientas como Gephy o Cytoscape. La visualización siempre debe realizarse de grafos o subgrafos pequeños, los algoritmos de visualización son lentos y poco eficientes.
+
+Las principales primitivas de visualización son:
+\begin{itemize}
+\item draw(G[, pos, ax]): Dibuja el grafo G con Matplotlib, no dibuja colores, ni etiquetas.
+\item draw\_networkx(G[, pos, arrows, with\_labels]): Dibuja el grafo G con Matplotlib, permite añadir etiquetas a los objetos
+\item draw\_networkx\_nodes(G, pos[, nodelist, …]): Dibuja los nodos del grafo G en las posiciones indicadas por pos.
+\item draw\_networkx\_edges(G, pos[, edgelist, …]): Dibuja las ramas del grafo G en las posiciones indicadas por pos.
+\item draw\_networkx\_labels(G, pos[, labels, …]): Dibuja las etiquetas de los nodos del grafo G en las posiciones indicadas por pos.
+\item draw\_networkx\_edge\_labels(G, pos[, …]): Dibuja las etiquetas de las ramas del grafo G en las posiciones indicadas por pos.
+\end{itemize}
+
+NetworkX permite algunos \textbf{layouts} muy simples:
+\begin{itemize}
+\item draw\_circular(G, **kwargs): Layout circular.
+\item draw\_kamada\_kawai(G, **kwargs): Layout dirigido por fuerzas Kamada-Kawai.
+\item draw\_random(G, **kwargs): Layout aleatorio.
+\item draw\_spectral(G, **kwargs): Layout espectral.
+\item draw\_spring(G, **kwargs): Layout de muelle.
+\item draw\_shell(G, **kwargs): Layout tipo concha.
+\end{itemize}
+
+También es posible recuperar la lista de posiciones de los nodos sin pintarlos, las rutinas devuelven un diccionario con las posiciones de cada nodo.
+\begin{itemize}
+\item circular\_layout(G, [, scale, center, dim]): Layout circular.
+\item kamada\_kawai\_layout (G, [, scale, center, dim]): Layout dirigido por fuerzas Kamada-Kawai.
+\item random\_layout (G, [, scale, center, dim]): Layout aleatorio.
+\item spectral\_layout (G, [, scale, center, dim]): Layout espectral.
+\item spring\_layout (G, [, scale, center, dim]): Layout de muelle.
+\item shell\_layout (G, [, scale, center, dim]): Layout tipo concha.
+\item rescale\_layout(pos[, scale]) Devuelve el array de numpy pos reescalado a (-scale, scale) en todos los ejes.
+\end{itemize}
+
+\subsection{Algoritmos}
+NetworkX incluye una cantidad enorme de algoritmos aplicables a grafos (actualmente
+unos 250 algoritmos). Los algoritmos se clasifican por categorías en función del problema que resuelven. NetworkX tiene algoritmos en 50 categorías diferentes. Cada una de estas 50 categorías está a su vez dividida en subcategorías. Las categorías más utilizadas en bioinformática son algoritmos para centralidad, cliqués, clustering, conectividad, k-cores, operadores, caminos mínimos, árboles y algoritmos aproximados (problemas Np completo como el cálculo del betweeness).
+
+\subsubsection{Centralidad}
+La centralidad de grado es la fracción de los nodos con los que está conectado cada nodo. Están las funciones degree\_centrality, in\_degree\_centrality y out\_degree\_centrality. 
+
+La centralidad de carga es similar al betweenness, pero usa un algoritmo diferente propuesto por Newman. Se puede obtener con load\_centrality para nodos y edge\_load\_centrality para las ramas.
+
+El closeness tiene la función closeness\_centrality. El betweenness se puede calcular con varias funciones: betweenness\_centrality, edge\_betweenness\_centrality, betweenness\_centrality\_subset y edge\_betweenness\_centrality\_subset.
+
+\subsubsection{Cliqués}
+Un cliqué es un subgrafo completo, es decir, un subgrafo en el que todos los nodos están unidos con todos. enumerate\_all\_cliques(G) devuelve todos los cliques de un grafo no dirigido. find\_cliques(G) devuelve los cliqués maximales para cada nodo del grafo. make\_max\_clique\_graph devuelve el cliqué maximal del grafo, y graph\_clique\_number el orden del cliqué maximal del grafo.

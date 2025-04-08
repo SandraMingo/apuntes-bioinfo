@@ -1,0 +1,8 @@
+0 1 2 #posible comentario
+1 0 3 4
+2 0 4
+3 1 4 5
+4 1 2 3 6 # otro comentario
+5 3 6 7
+6 4 5 7
+7 5 6
