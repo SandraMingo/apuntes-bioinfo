@@ -198,3 +198,64 @@ En un análisis de ChIP-Seq, no hay un genoma de referencia, por lo que es neces
 El siguiente paso es la búsqueda en distintos tamaños de fragmento, quedándose con el que mejor se adapte y simulando la distribución nula con los datos. Además, se pueden modificar el tamaño efectivo del genoma de referencia e incluir en las salidas adicionales la de "peak summits". 
 
 El resultado es un fichero bed que se debe ordenar según el score. Este fichero se emplea para la búsqueda de los motivos de unión del factor de transcripción. En el fichero bed se incluyen las posiciones del nucleótido donde empieza y donde termina, por lo que debemos aumentar el número en 50 nucleótidos en ambas direcciones (restar 50 a la posición de inicio y sumar 50 a la de fin). De la colección de regiones, se pueden filtrar las 500 entradas más altas y utilizar la herramienta "Extract Genomic DNA" para obtener la secuencia de esas posiciones. Con esto se puede utilizar la herramienta "MEME", obteniendo así los logos. Pulsando la flecha en Submit/Download, podemos buscar ese logo en la base de datos para encontrar otras secuencias iguales recogidas en ella.
+
+%09/04 - Carlos Torroja
+\section{Single Cell RNA-Seq}
+Hasta ahora, para explorar el estado fisiológico de las células era mirar el perfil transcripcional mediante homogeneizados de tejidos. Los cambios se pueden notar, pero no se puede determinar exactamente qué célula ha cambiado. No se pueden asociar cambios transcripcionales a funciones específicas. En experimentos de célula única, sí se puede determinar la abundancia de los tipos celulares, su expresión y cambios. 
+
+\subsection{Consideraciones de diseño experimental}
+Single cell apareció en 2009, pero no fue hasta 2014 cuando empezó a aparecer la tecnología que permitió que fuera asequible y generalizable. Cuando antiguamente se debían separar las células de forma manual, en 2015 se utilizaban nanoburbujas, picowells y finalmente barcoding \textit{in situ}. Esta última es una combinación entre la multiplexación y splitseq, poniendo las células en pocillos donde se permeabilizan permitiendo que entren ciertos adaptadores para empezar a marcar el transcriptoma. Con tres ciclos de separación, es difícil que las células se mantengan en el mismo pool durante los tres ciclos, pudiendo así diferenciarlas. 
+
+Un experimento de single cell se utiliza para identificar poblaciones celulares en un modelo experimental, aumentar el conocimiento de poblaciones celulares ya conocidas o poder comparar poblaciones en distintas condiciones o desarrollos. 
+
+Cuando se prepara un experimento de Single Cell, se deben tener en cuenta muchos aspectos. Primero se debe elegir el tejido del cual obtener la información. La sangre es muy fácil en términos de aislamiento de células, pero otros tejidos pueden tener distintas estrategias para disgregar las células. El diseño es importante para reducir coste, pero con una gran obtención de información útil y precisa. Para ello se requiere de una pregunta clara de lo que se quiere conseguir y conocer la tecnología para reducir errores y sesgos. 
+
+Los principios de experimentación son replicación, randomización y blocking. Cada parte está encaminada a eliminar sesgos y capturar la variabilidad biológica medida. Entre los errores puede haber errores aleatorios que no se pueden controlar y errores sistemáticos que sí son controlables a través del blocking. A la hora de randomización, hay que tener en cuenta los distintos niveles de sampleado. En Single Cell, existe el sampleado de sujeto y un sampleo de células. Dentro de la célula se hace otro sampleo a nivel molecular al no capturar todo el ARN. Tras capturar el ARN, se secuencian fragmentos, por lo que hay otro tipo de sampleado más.
+En algunos casos, el sampleo puede sufrir de sesgos biológicos y en otros técnicos, siendo importante realizar réplicas de ambos tipos. 
+
+Ejemplo: realizamos 48 medidas y debemos medir la expresión de un gen. Hay que ver cómo diseñar el experimento: número de ratones, número de células y número de mediciones por célula. En Single Cell esto es importante porque hay experimentalistas que toman una medida por célula por tener muchas células, pero ahí no se evalúa la variabilidad biológica a nivel de individuo. En  \href{https://www.nature.com/articles/nmeth.3091}{el siguiente paper} se midieron la expresión de un gen con distintas réplicas. Teniendo en cuenta las réplicas animales, celulares y medidas, la varianza total depende de la varianza de estas tres réplicas. Los autores simularon con las distribuciones el experimento en distintas condiciones. En un primer caso, se coge un animal y 48 células, dos animales y 24 células, 4 animales y 12 células, etc. Para cada situación, los autores sacan la variabilidad que les da. Con un solo ratón, no hay variabilidad a nivel de ratón. Conforme se toman más ratones, la variabilidad aumenta hasta llegar a la variabilidad total real estimada antes. Cuando se mide la variabilidad de la media de expresión, al principio las estimaciones son pésimas, y conforme se añaden réplicas biológicas, la variabilidad disminuye. Cuando se realizan 3 mediciones por célula en lugar de 1, la estimación de la media es mayor que en el caso anterior. Es mejor hacer réplicas biológicas en medida de lo posible y no tener en cuenta la variabilidad técnica, ya que está implícita también en la biológica. 
+A la hora de replicar, se deben tener al menos tres réplicas biológicas en las tecnologías ómicas, ya que es cuando el estadístico t disminuye considerablemente. 
+
+Otra pregunta clave es la cantidad a secuenciar. Hay una serie de simulaciones que miden la cantidad de genes diferencialmente expresados obtenidos con la profundidad de las lecturas. Hay veces en las que aumentar la profundidad no afecta a los genes diferencialmente expresados detectados, y es mejor aumentar las réplicas para poder detectar más genes incluso con una profundidad un poco menor. 
+
+En general, no se deben hacer pooles, eso se hace en secuenciación bulk. Si se hacen, se debe comprobar que no estén desbalanceados. Además, deben ser todos del mismo sexo, o al menos estar dos y dos, ya que puede ser importante a la hora de calcular los diferenciales. 
+
+¿Cuántas células se deben secuenciar? Las menos posibles (cada célula cuesta un dinero) con una información la mayor posible. En algunos casos, se separa un tipo celular de interés para poder extraer información más específica (por ejemplo, coger una muestra de corazón y enriquecer los macrófagos para secuenciar solo ese tipo de células). El programa SCOPIT puede ayudar a determinar este número. 
+Con un presupuesto fijo, lo óptimo es secuenciar el máximo número de células con una lectura por célula por gen. 
+
+En conclusión, hay que pensar sobre el diseño experimental antes de empezar a desarrollar el experimento. Hay que intentar tener réplicas, mejor si son biológicas (no deberíamos perder el tiempo con las réplicas técnicas). Se debe reducir el pool lo máximo posible y estimar el número de céluas base mínimo con el conocimiento previo.
+
+\subsection{Librerías}
+Del transcriptoma, con otras librerías se puede obtener también otra información valiosa: modificaciones de histonas, accesibilidad de la cromatina, secuencia del genoma, metilación del ADN, posición espacial, etc.
+
+Cuando se trabaja con un tejido sólido, se trata con una pronasa (mezcla de tripsina y colagenasa), parar la reacción, lavar y triturar la muestra. La sangre no tiene un proceso tan largo, ya que se pueden digerir los eritrocitos y ya. 
+
+Hay dos formas de preparar la librería. Hay un \textbf{método 3’ (scRNA-Seq 3’ end)} en el que se usan beads (perlas) recubiertas con oligos. Cada oligo en la bead tiene una cola poliT para unirse a la cola poliA del mRNA, un código de barra celular (cell barcode) que identifica de qué célula proviene ese mRNA y un UMI (Unique Molecular Identifier), que es una etiqueta única para cada transcripto individual, usada para contar copias de manera precisa (evitando duplicados por PCR). El oligo en la bead actúa como primer. Se une directamente al mRNA por complementariedad (poliT - poliA). Luego, con transcriptasa reversa, se genera cDNA (ADN complementario) a partir del mRNA.
+En cuanto al \textbf{método 5’ (scRNA-Seq 5’ end),} la bead no tiene una cola poliT. El primer inicial (que se une al mRNA) es libre en solución y tiene una cola poliA artificial. Lo que tiene la bead es un TSO (Template Switch Oligo). El primer suelto se une a una región interna del mRNA o al cap del 5’. La transcriptasa reversa copia el mRNA, y cuando llega al final del ARN, hace lo que se llama un template switch: “salta” y comienza a copiar también una secuencia del TSO que está en la bead. Este TSO contiene: un código de barra celular, un UMI y secuencias necesarias para amplificación posterior.
+
+Se pueden usar anticuerpos añadidos a la secuenciación para marcar las células. Los anticuerpos tienen un PCR Handle, un barcode específico del anticuerpo y una secuencia flanqueante. Así, se puede medir la cantidad de proteína en una célula. Cuantos más antígenos de superficie haya, más anticuerpos se unen y más veces se detecta ese barcode. 
+
+ATAC-Seq permite detectar las regiones del genoma activas transcripcionalmente. Utiliza una transposasa que corta el genoma a la vez que le mete secuencias (adaptadores). 
+
+DOGMA-Seq combina la captura del ADN, ARN y proteínas, es decir, ATAC, anticuerpos. 
+
+\subsection{Spatial Single Cell Transcriptomics}
+Recientemente se busca evaluar transcripcionalmente las células en su situación en el tejido. Hay muchas técnicas, pero se dividen en dos: basadas en imagen o basadas en secuenciación.
+
+Las basadas en imagen tienen una resolución subcelular. Mediante una batería de oligos se marcan los transcritos. Los oligos tienen unas secuencias específicas pegadas construidas de forma que, en varios ciclos de secuenciación, con estas secuencias se vea la combinatoria. La sonda se une a la secuencia y por fluorescencia se ven los tránscritos a los que se ha unido. Esto se repite con otras sondas. Por ello, en la generación de oligos, se tiene en cuenta la combinación de las secuencias de hibridación a la sonda. Se captura in situ cuántas moléculas son de un gen específico. 
+
+La detección basada en secuenciación se basa en un slide donde se pegan las secuencias a los microarrays. En cada punto se conoce el barcode que hay, teniendo así un marcador de la posición. Dependiendo de la tecnología, la resolución puede ser de varias células o subcelular. El tejido se pone encima del porta, se permeabiliza y el ARN se pega en el spot. 
+
+Aquellos métodos basados en secuenciación pueden capturar un mayor número de genes. La transcriptómica espacial single-cell permite estudiar la comunicación intercelular en función de los genes expresados y su localización. Las interacciones se pueden buscar en base a su posición, por lo que el nivel de información es mayor y más preciso. 
+
+%Datos
+%Procesamiento de datos
+%Análisis de datos
+%Identificación de tipos celulares
+%Comunicación intercelular
+%Análisis de trayectoria o pseudotiempo, interactoma, reguloma
+
+
+
+
+
