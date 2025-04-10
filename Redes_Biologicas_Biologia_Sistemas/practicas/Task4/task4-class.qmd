@@ -1,0 +1,173 @@
+---
+title: "Task4 - Ley conservación de masa"
+subtitle: "Redes Biológicas y Biología de Sistemas"
+author:   
+  - Sandra Mingo Ramírez
+format: pdf
+lang: es
+---
+
+# Parte 1: Ley de conservación de masas para $NaCO_3 + CaCl_2 \overset{k_1}{\underset{k_2}{\rightleftharpoons}} CaCO_3 + 2NaCl$
+
+```{python}
+from scipy.integrate import odeint
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Definir el sistema de ecuaciones diferenciales
+def differential_equations(y, t, k1, k2):
+    A, B, C, D = y  # A: NaCO3, B: CaCl2, C: CaCO3, D: NaCl
+    dA_dt = -k1 * A * B + k2 * C * D**2
+    dB_dt = -k1 * A * B + k2 * C * D**2
+    dC_dt = k1 * A * B - k2 * C * D**2
+    dD_dt = 2 * (k1 * A * B - k2 * C * D**2)  
+    return [dA_dt, dB_dt, dC_dt, dD_dt]
+
+def mass_conservation_3eq(y, t, k1, k2, b0, a0):
+    A, C, D = y  # A: NaCO3, B: CaCl2, C: CaCO3, D: NaCl
+    dA_dt = -k1 * A * (b0 + A - a0) + k2 * C * D**2
+    dC_dt = k1 * A * (b0 + A - a0) - k2 * C * D**2
+    dD_dt = 2 * (k1 * A * (b0 + A - a0) - k2 * C * D**2)  
+    return [dA_dt, dC_dt, dD_dt]
+
+# Parámetros de reacción
+k_1 = 2.3  # Constante de velocidad directa
+k_2 = 2.5  # Constante de velocidad indirecta
+
+# Concentraciones iniciales
+a_0 = 0.02  # NaCO3
+b_0 = 0.01  # CaCl2
+c_0 = 0.0   # CaCO3
+d_0 = 0.0   # NaCl
+y0 = [a_0, b_0, c_0, d_0]
+y0_ms = [a_0, c_0, d_0]
+
+# Tiempo de integración
+simulation_time = 200  # Tiempo de reacción
+time_points = 1000      # Número de mediciones, puntos en el tiempo
+
+t = np.linspace(0, simulation_time, time_points)
+
+# Resolver ecuaciones diferenciales
+solution = odeint(differential_equations, y0, t, args=(k_1, k_2))
+solution_ms = odeint(mass_conservation_3eq, y0_ms, t, args=(k_1, k_2, b_0, a_0))
+
+# 1
+plt.figure(figsize=(10, 6))
+plt.plot(t, solution[:, 0], label='NaCO$_3$')
+plt.plot(t, solution[:, 1], label='CaCl$_2$')
+plt.plot(t, solution[:, 2], label='CaCO$_3$')
+plt.plot(t, solution[:, 3], label='NaCl', linewidth=2)
+
+plt.xlabel('Tiempo [s]')
+plt.ylabel('Concentración [M]')
+plt.title(f'NaCO$_3$ + CaCl$_2$ $\leftrightarrow$ CaCO$_3$ + 2NaCl')
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+#2
+plt.figure(figsize=(10, 6))
+plt.plot(t, solution_ms[:, 0], label='NaCO$_3$')
+plt.plot(t, solution_ms[:, 1], label='CaCO$_3$')
+plt.plot(t, solution_ms[:, 2], label='NaCl', linewidth=2)
+
+plt.xlabel('Tiempo [s]')
+plt.ylabel('Concentración [M]')
+plt.title(f'NaCO$_3$ + CaCl$_2$ $\leftrightarrow$ CaCO$_3$ + 2NaCl')
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+```
+
+```{python}
+from scipy.integrate import odeint
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Definir el sistema de ecuaciones diferenciales
+def mass_conservation_2eq(y, t, k1, k2, b0, a0, d0):
+    A, C = y  # A: NaCO3, B: CaCl2, C: CaCO3, D: NaCl
+    dA_dt = -k1 * A * (b0 + A - a0) + k2 * C * (d0 + 2 * (a0 - A))**2
+    dC_dt = k1 * A * (b0 + A - a0) - k2 * C * (d0 + 2 * (a0 - A))**2
+    return [dA_dt, dC_dt]
+
+# Parámetros de reacción
+k_1 = 2.3  # Constante de velocidad directa
+k_2 = 2.5  # Constante de velocidad indirecta
+
+# Concentraciones iniciales
+a_0 = 0.02  # NaCO3
+b_0 = 0.01  # CaCl2
+c_0 = 0.0   # CaCO3
+d_0 = 0.0   # NaCl
+y0_ms = [a_0, c_0]
+
+# Tiempo de integración
+simulation_time = 200  # Tiempo de reacción
+time_points = 1000      # Número de mediciones, puntos en el tiempo
+
+t = np.linspace(0, simulation_time, time_points)
+
+# Resolver ecuaciones diferenciales
+solution_ms = odeint(mass_conservation_2eq, y0_ms, t, args=(k_1, k_2, b_0, a_0, d_0))
+
+plt.figure(figsize=(10, 6))
+plt.plot(t, solution_ms[:, 0], label='NaCO$_3$')
+plt.plot(t, solution_ms[:, 1], label='NaCl', linewidth=2)
+
+plt.xlabel('Tiempo [s]')
+plt.ylabel('Concentración [M]')
+plt.title(f'NaCO$_3$ + CaCl$_2$ $\leftrightarrow$ CaCO$_3$ + 2NaCl')
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+from scipy.integrate import odeint
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Definir el sistema de ecuaciones diferenciales
+def mass_conservation_1eq(y, t, k1, k2, b0, a0, d0, c0):
+    A = y  # A: NaCO3, B: CaCl2, C: CaCO3, D: NaCl
+    dA_dt = -k1 * A * (b0 + A - a0) + k2 * (a0 + c0 - A) * (d0 + 2 * (a0 - A))**2
+    return dA_dt
+
+# Parámetros de reacción
+k_1 = 2.3  # Constante de velocidad directa
+k_2 = 2.5  # Constante de velocidad indirecta
+
+# Concentraciones iniciales
+a_0 = 0.02  # NaCO3
+b_0 = 0.01  # CaCl2
+c_0 = 0.0   # CaCO3
+d_0 = 0.0   # NaCl
+y0_ms = [a_0]
+
+# Tiempo de integración
+simulation_time = 200  # Tiempo de reacción
+time_points = 1000      # Número de mediciones, puntos en el tiempo
+
+t = np.linspace(0, simulation_time, time_points)
+
+# Resolver ecuaciones diferenciales
+solution_ms = odeint(mass_conservation_1eq, y0_ms, t, args=(k_1, k_2, b_0, a_0, d_0, c_0))
+
+plt.figure(figsize=(10, 6))
+plt.plot(t, solution_ms[:, 0], label='NaCO$_3$')
+
+plt.xlabel('Tiempo [s]')
+plt.ylabel('Concentración [M]')
+plt.title(f'NaCO$_3$ + CaCl$_2$ $\leftrightarrow$ CaCO$_3$ + 2NaCl')
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.ylim(0, 0.02)
+plt.show()
+```

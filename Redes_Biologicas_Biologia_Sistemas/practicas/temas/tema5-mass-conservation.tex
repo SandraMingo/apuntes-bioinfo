@@ -1,0 +1,100 @@
+%10/04 - David
+\section{Ley de conservación de masas}
+La Ley de Conservación de la Masa o principio de Conservación de la Masa establece que para cualquier sistema cerrado a todas las transferencias de materia y energía, la masa del sistema debe permanecer constante a lo largo del tiempo, ya que la masa del sistema no puede cambiar, por lo que la cantidad no puede ni añadirse ni eliminarse. Por tanto, la cantidad de masa se conserva en el tiempo. Esto nos ayuda a reducir el sistema de ecuaciones. 
+
+Por ejemplo, en las reacciones químicas, la masa de los componentes químicos antes de la reacción es igual a la masa de los componentes después de la reacción. Así, durante cualquier reacción química y procesos termodinámicos de baja energía en un sistema aislado, la masa total de los reactantes, o materiales de partida, debe ser igual a la masa de los productos.
+Esta ley se puede usar para establecer relaciones entre las especies de una reacción dada, de forma que podamos reducir el número de variables de los sistemas.
+
+Si tenemos una solución para el sistema de ecuaciones, se puede escribir un vector con tantas filas como número de especies involucradas de forma que:
+$$AX \xrightarrow{k} BX \quad C \cdot (B - A)^T = 0$$
+$$C_1X_1 + C_2X_2 + \ldots + C_sX_s = constante$$
+
+La constante implica que hay algo que se conserva, concretamente la masa. Para comprobar esto matemáticamente, se puede calcular la derivada, que debería dar 0 para que el resultado sea efectivamente una constante. 
+$$\frac{d[C_1X_1 + C_2X_2 + \ldots + C_sX_s]}{dt} = \frac{d[C_1]X_1}{dt} + \frac{d[C_2]X_2}{dt} + \ldots +  \frac{d[C_s]X_s}{dt}$$
+Como C son valores constantes, se puede multiplicar a la fracción, pudiéndose reescribir como:
+$$[C_1] \frac{dX_1}{dt} + [C_2] \frac{dX_2}{dt} + \cdots + [C_s] \frac{dX_s}{dt}$$
+
+$$= [C_1 \quad C_2 \quad \cdots \quad C_s] \begin{bmatrix}
+\frac{dX_1}{dt} \\
+\frac{dX_2}{dt} \\
+\frac{dX_3}{dt} \\
+\vdots \\
+\frac{dX_s}{dt}
+\end{bmatrix} = [C_1 \quad C_2 \quad \cdots \quad C_s](B-A)^T \cdot K \cdot X^A$$
+
+Como sabemos que $C \cdot (B-A)^T = 0$ por su definición:
+$$= [C_1 \quad C_2 \quad \cdots \quad C_s] \begin{bmatrix}
+\frac{dX_1}{dt} \\
+\frac{dX_2}{dt} \\
+\frac{dX_3}{dt} \\
+\vdots \\
+\frac{dX_s}{dt}
+\end{bmatrix} = 0 \cdot K \cdot X^A = 0$$
+Y se confirma que $C_1X_1 + C_2X_2 + \ldots + C_sX_s = constante$.
+
+\subsection{Ejemplo}
+Se utilizará la reacción $NaCO_3 + CaCl_2 \overset{k_1}{\underset{k_2}{\rightleftharpoons}} CaCO_3 + 2NaCl$.
+
+Como se ha calculado anteriormente $(B-A)^T$ de esta reacción, se puede sustituir:
+$$[C_1 \quad C_2 \quad C_3 \quad C_4] \begin{bmatrix}
+-1 & 1 \\
+-1 & 1 \\
+1 & -1 \\
+2 & -2
+\end{bmatrix} = 0$$
+
+De aquí, se sacan las dos soluciones del sistema:
+$$-C_1 - C_2 + C_3 + 2C_4 = 0$$
+$$C_1 + C_2 - C_3 - 2C_4 = 0$$
+
+Realmente, las dos ecuaciones son iguales pero multiplicadas por -1. Esto se puede simplificar entonces de la siguiente forma:
+$$C_3 + 2C_4 - C_2 = C_1$$
+
+Sustituyendo C1 en la ecuación anterior:
+$$(C_3 + 2C_4 - C_2)X_1 + C_2X_2 + \ldots + C_sX_s = constante$$
+Que organizándolo:
+$$C_3X_1 + 2C_4X_1 - C_2X_1 + C_2X_2 + C_3X_3 + C_4X_4 = constante$$
+
+Como esto es válido para cualquier válido de C2, C3 y C4, se puede suponer que C3 = C4 = 0. Así, la reacción queda en 
+$$-C_2X_1 + C_2X_2 = constante$$ 
+
+Si elegimos arbitrariamente que C2 es igual a 1:
+$$-X_1 + X_2 = constante$$ 
+La constante es cierta a cualquier tiempo, por lo que 
+$$-X_1(t) + X_2(t) = constante$$
+Lo que conocemos son las condiciones iniciales, y esto se corresponde a
+$$-X_1(t) + X_2(t) = -X_1(0) + X_2(0) = constante$$
+$$X_2(t) = X_2(0) + X_1(t) + X_1(0)$$
+
+De esta forma pasamos de 4 ecuaciones diferenciales a 3. 
+$$\frac{dX_1}{dt} = -k_1 X_1 (X_2(0) + X_1 - X_1(0)) + k_2 X_3 X_4^2$$
+$$\frac{dX_3}{dt} = k_1 X_1 (X_2(0) + X_1 - X_1(0)) - k_2 X_3 X_4^2$$
+$$\frac{dX_4}{dt} = 2k_1 X_1 (X_2(0) + X_1 - X_1(0)) - 2k_2 X_3 X_4^2$$
+
+Esto se puede repetir para las demás variables de C:
+$$2C_4X_1 + C_4X_4 = constante \xrightarrow{C_4 = 1} 2X_1 + X_4 = constante$$
+Como es igual a todos los tiempos:
+$$2X_1(t) + X_4(t) = 2X_1(0) + X_4(0)$$
+$$X_4(t) = X_4(0) + 2(X_1(0) - X_1(t))$$
+Y se puede sustituir en las ecuaciones anteriores, pasando ahora de 3 a 2.
+$$\frac{dX_1}{dt} = -k_1 X_1 (X_2(0) + X_1 - X_1(0)) + k_2 X_3 (X_4(0) + 2(X_1(0) - X_1))^2$$
+$$\frac{dX_3}{dt} = k_1 X_1 (X_2(0) + X_1 - X_1(0)) - k_2 X_3 (X_4(0) + 2(X_1(0) - X_1))^2$$
+
+Y con la última variable que faltaba:
+$$C_3X_1 + C_3X_3 = constante \xrightarrow{C_3 = 1} X_1 + X_3 = constante$$
+$$X_1(t) + X_3(t) = X_1(0) + X_3(0)$$
+$$X_3(t) = X_1(0) + X_3(0) - X_1(t)$$
+$$\frac{dX_1}{dt} = -k_1 X_1 (X_2(0) + X_1 - X_1(0)) + k_2 (X_1(0) + X_3(0) - X_1) (X_4(0) + 2(X_1(0) - X_1))^2$$
+
+\newpage
+
+\section{Cinética enzima-sustrato}
+Las enzimas son catalizadores que permiten que aumentan la velocidad de los procesos o reacciones biológicas. 
+
+Para entender cómo las enzimas aceleran las reacciones bioquímicas, introduciremos el concepto de energía libre de Gibbs (originalmente llamada energía disponible): un potencial termodinámico proporcional al máximo trabajo reversible que puede realizar un sistema termodinámico a temperatura y presión constantes.
+$$\Delta G^0 = \Delta H^0 - T \Delta S^0$$
+
+En una gráfica de reacción, independientemente de si es una reacción exotérmica o endotérmica, hay una barrera para que la reacción se produzca. Esta barrera está relacionada con la k. Las reacciones biológicas son muy lentas porque la barrera es muy grande. Las enzimas aumentan la constante de reacción k, disminuyendo la barrera. 
+
+El sustrato s interacciona con una enzima e y se forma un complejo c. Este complejo es inestable y puede deshacerse (sustrato + enzima) de forma reversible, pero también puede deshacerse en un producto y en la enzima.
+$$s + e \overset{k_1}{\underset{k_2}{\rightleftharpoons}} c \xrightarrow{k_3} p + e$$
