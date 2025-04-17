@@ -62,9 +62,9 @@ system2(FastTree,
 
 ## Taxonomic assignation using DADA2
 
-Antiguamente se clasificaban los microorganismos en base a Gram, 16S, etc. Después llegó la genómica, y los científicos se dieron cuenta que había clados enteros que había que reorganizar en cuanto a su genómica. La tinción de Gram es genérica, y la morfología es limitada. Una misma bacteria, dependiendo de las circunstancias ambientales, puede cambiar de forma. Así, hubo una gran reorganización de gran parte de los clados, estando algunas bases de datos desfasadas. Nosotros vamos a usar la verssión 138.1 de la base de datos de Silva, aunque su última actualización fue en 2021. 
+Antiguamente se clasificaban los microorganismos según la tinción de Gram, 16S, etc. Después llegó la genómica, y los científicos se dieron cuenta que había clados enteros que había que reorganizar en cuanto a su genómica. La tinción de Gram es genérica y la morfología es limitada. Una misma bacteria, dependiendo de las circunstancias ambientales, puede cambiar de forma. Así, hubo una gran reorganización de gran parte de los clados, estando algunas bases de datos desfasadas. Nosotros vamos a usar la versión 138.1 de la base de datos de Silva, aunque su última actualización fue en 2021. 
 
-¿Por qué hayy que curar los datos? Cada vez que se añadan datos a una base de datos, hay que revisar los clados. Para determinadas secuencias puede ocurrir que no se llegue a nivel de especie, quedándose en género, orden o incluso reino. La fiabilidad de los resultados depende de la labor de revisión de los miembros de las bases de datos. 
+¿Por qué hay que curar los datos? Cada vez que se añadan datos a una base de datos, hay que revisar los clados. Para determinadas secuencias puede ocurrir que no se llegue a nivel de especie, quedándose en género, orden o incluso reino. La fiabilidad de los resultados depende de la labor de revisión de los miembros de las bases de datos. 
 
 ### Taxonomic assignation with SILVA
 
