@@ -435,3 +435,71 @@ El Descenso Gradiente es un algoritmo de optimización simple (pero útil) que s
 
 El tamaño del paso $\eta^{(t)}$ debe fijarse en cada iteración t. Se trata de una cuestión crucial: Si el tamaño del paso es demasiado pequeño, el algoritmo necesitará demasiadas épocas (iteraciones) para converger y puede quedar atrapado en mínimos locales más fácilmente. Si el tamaño del paso es grande, la convergencia también será lenta. Si el tamaño del paso es demasiado grande, el descenso de gradiente sobrepasará los mínimos y divergirá. En algunos casos, se pueden calcular tamaños de paso óptimos.
 Existen heurísticos que garantizan la convergencia, pero sólo a mínimos locales, y normalmente de forma lenta y zigzagueante.
+
+%22/04 - Carlos
+\section{Modelos lineales regulados}
+\subsection{Introducción}
+Ejercicio: dado un modelo tridimensional con los siguientes datos, define un modelo lineal $\{b, w_1, w_2, w_3\}$ con el menor MSE posible. ¿Se puede obtener una predicción perfecta?
+$$(1,0,1; 2) \rightarrow 1 + 0 + 1 = 2$$
+$$(1,1,1;3) \rightarrow 1 + 1 + 1 = 3$$
+Es posible obtener una predicción perfecta, y hay varias posibilidades. Primero, se pueden evaluar todos los parámetros por igual con el mismo peso, o un parámetro se puede compensar con los demás. 
+
+La complejidad del modelo se debe controlar, ya que no todas las entradas o características van a ser relevantes. Por tanto, un modelo basado en un subconjunto de características parece ser una opción sensible.
+
+\subsubsection{Sesgo y varianza}
+Suponemos un problema de regresión. Las entradas y salidas se relacionan con la ecuación $y = f^*(\vec{x}) + \epsilon$, siendo $f^*$ la función perfecta a la que no tenemos acceso. El modelo debe intentar de aproximar la función verdadera: $f \approx f^*$. La distancia entre ambas funciones se formaliza como \textbf{sesgo}. Un sesgo pequeño se puede conseguir con modelos muy flexibles y con muchos parámetros. No obstante, el modelo depende de una muestra particular de entrenamiento, $f_{\mathcal{D}}$. El modelo debe ser estable para distintos datasets $\mathcal{D}$ y $\mathcal{D}'$, de forma que $f_{\mathcal{D}} \approx f_{\mathcal{D}`}$. La estabilidad se define como \textbf{varianza}. Una varianza pequeña se consigue con modelos simples con pocos parámetros. Así, se encuentra un \textbf{trade-off}:
+\begin{itemize}
+\item \textbf{Error debido al sesgo:} diferencia entre la predicción esperada del modelo y el valor correcto a predecir.
+\item \textbf{Error debido a la varianza:} variabilidad de la predicción del modelo para un punto de datos dado.
+\end{itemize}
+
+La regularización suele denotar el conjunto de técnicas que intentan mejorar las estimaciones desviándolas de sus valores basados en la muestra hacia valores que se consideran más "físicamente plausibles". La varianza del modelo se reduce a expensas de un sesgo potencialmente mayor.
+
+\subsubsection{Sobreajuste y subajuste}
+En el sobreajuste, el modelo resultante es excesivamente complejo para describir los datos estudiados. Se puede dar con un número limitado de datos de entrenamiento o una máquina de aprendizaje demasiado compleja (muchos parámetros libres). La varianza será grande y el sesgo pequeño.
+
+En el subajuste, el modelo resultante es demasiado simple para describir los datos estudiados. Puede darse cuando la máquina de aprendizaje es demasiado rígida. El sesgo es grande y varianza pequeña.
+
+La regularización viene buen cuando hay más entradas que patrones, ya que hay que asumir algo del modelo. Esto se debe a varios estimadores óptimos. Desde el punto de vista computacional, evita las inestabilidades numéricas y se evita el sobreajuste. Finalmente, el modelo sencillo mejora la parsimonia e interpretabilidad. 
+
+\subsubsection{Aprendizaje regulado}
+El aprendizaje regularizado consiste en modelos entrenados optimizando funciones objetivo de la forma:
+$$\mathcal{S} = \mathcal{E_D} + \gamma \mathcal{R}$$
+
+El término principal de la función objetivo es un término de error $\mathcal{E_D}$. Representa lo bien que el modelo se ajusta a los datos de entrenamiento $\mathcal{D}$, por ejemplo el error cuadrático medio (MSE) en regresión y la log verosimilitud negativa en clasificación. El término adicional es un término de regularización $\mathcal{R}$. Penaliza la complejidad del modelo con varios propósitos: evitar el sobreajuste, introducir conocimiento previo, y cumplir ciertas propiedades deseables. $\gamma$ es un parámetro de regularización, siendo responsable del equilibrio entre precisión y complejidad. Un $\gamma$ bajo favorece el sobreajuste. 
+
+\subsection{Funciones reguladas}
+Existen diferentes funciones de regularización $\mathcal{R}(\theta)$ que asignan a cada conjunto de parámetros $\theta$ una medida de su complejidad. Dependiendo de la función elegida, cambiará el efecto sobre $\theta$. La influencia de las funciones de regularización es especialmente clara en los modelos lineales:
+\begin{itemize}
+\item Cada coeficiente de w corresponde a una característica de entrada.
+\item Si wi = 0, se ignora la característica i-ésima.
+\item Si wi = wj, la característica i-ésima es similar a la característica j-ésima.
+\end{itemize}
+
+\subsubsection{$\ell_2$ norm}
+Término clásico, conocido como regularización de Tikhonov, corresponde a la suma de los cuadrados de las entradas:
+$$\mathcal{R}(\vec{w}) = ||\vec{w}||^2_2 = \sum^d_{i=1} w_i^2$$
+
+Controla la complejidad del modelo, siendo diferenciable y fácil de optimizar. Desplaza las entradas hacia 0.
+
+Ejercicio: Dados los siguientes modelos lineales tridimensionales, computa su $\ell_2$ norma cuadrada para comprobar cuál es más simple en base a este criterio.
+$$\{w_1 = 1, w_2 = 1, w_3 = 1\} \rightarrow 1^2 + 1^2 + 1^2 = 3$$
+$$\{w_1 = 3, w_2 = 0, w_3 = 0\} \rightarrow 3^2 + 0^2 + 0^2 = 9$$
+$$\{w_1 = 2, w_2 = 2, w_3 = 0\} \rightarrow 2^2 + 2^2 + 0 = 8 $$
+Así, el primer modelo es el más simple y el segundo el más complejo.
+
+\subsubsection{$\ell_1$ norm}
+Corresponde a la suma de los valores absolutos de las entradas:
+$$\mathcal{R}(\vec{w}) = ||\vec{w}||_1 = \sum^d_{i=1} |w_i|$$
+
+Controla la complejidad del modelo. El valor absoluto es no-diferenciable alrededor de 0, por lo que este término es más complicado de optimizar.  Empuja las entradas hacia cero obligando a que algunas de ellas sean idénticamente cero. Refuerza la dispersión.
+
+Ejercicio: Dados los siguientes modelos lineales tridimensionales, computa su $\ell_1$ norma para comprobar cuál es más simple en base a este criterio.
+$$\{w_1 = 1, w_2 = 1, w_3 = 1\} \rightarrow 1 + 1 + 1 = 3$$
+$$\{w_1 = 3, w_2 = 0, w_3 = 0\} \rightarrow 3 + 0 + 0 = 3$$
+$$\{w_1 = 2, w_2 = 2, w_3 = 0\} \rightarrow 2 + 2 + 0 = 4 $$
+Así, el tercer modelo es el más complejo.
+
+\subsection{Modelos lineales regulados}
+
+\subsection{Resumen}
