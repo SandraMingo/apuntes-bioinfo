@@ -1,0 +1,7 @@
+echo "source $HOME/cellranger.v6.1.1.cluster.source; cellranger count --id=GSE128639_10XGenomics \
+                   --libraries=GSE128639_10XGenomics_Sample_fastqs.csv \
+                   --transcriptome=refdata-gex-GRCh38-2020-A \
+                   --feature-ref=GSE128639_10XGenomics_HTORefTable_feature_ref.csv \
+                   --chemistry=threeprime --localcores=40 --localmem=96 --disable-ui --nosecondary --no-bam" | \
+                   qsub -P prod -N "GSE128639_10XGenomics.refdata-gex-GRCh38-2020-A" -h -pe pthreads 40 -A "U_Bioinformatica" -l h_vmem=3G \
+                   -o GSE128639_10XGenomics.refdata-gex-GRCh38-2020-A.log -e GSE128639_10XGenomics.refdata-gex-GRCh38-2020-A.err

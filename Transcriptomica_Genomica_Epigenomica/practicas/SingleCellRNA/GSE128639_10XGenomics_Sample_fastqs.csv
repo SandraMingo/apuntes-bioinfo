@@ -1,0 +1,4 @@
+fastqs,sample,library_type
+HTOlib,GSE128639hto,Custom
+ADTlib,GSE128639adt,Antibody Capture
+GEXlib,GSE128639gex,Gene Expression

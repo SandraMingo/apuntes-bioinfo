@@ -1,0 +1,18 @@
+{
+    "analysis": null,
+    "antibody_analysis": "/data3/ctorroja/Projects_SC/U_Bioinformatica/HumanBM_CiteSeq/CellRanger.Quantification/GSE128639_10XGenomics/outs/antibody_analysis",
+    "cloupe": null,
+    "crispr_analysis": null,
+    "feature_reference": "/data3/ctorroja/Projects_SC/U_Bioinformatica/HumanBM_CiteSeq/CellRanger.Quantification/GSE128639_10XGenomics/outs/feature_reference.csv",
+    "filtered_feature_bc_matrix": "/data3/ctorroja/Projects_SC/U_Bioinformatica/HumanBM_CiteSeq/CellRanger.Quantification/GSE128639_10XGenomics/outs/filtered_feature_bc_matrix",
+    "filtered_feature_bc_matrix_h5": "/data3/ctorroja/Projects_SC/U_Bioinformatica/HumanBM_CiteSeq/CellRanger.Quantification/GSE128639_10XGenomics/outs/filtered_feature_bc_matrix.h5",
+    "metrics_summary": "/data3/ctorroja/Projects_SC/U_Bioinformatica/HumanBM_CiteSeq/CellRanger.Quantification/GSE128639_10XGenomics/outs/metrics_summary.csv",
+    "molecule_info": "/data3/ctorroja/Projects_SC/U_Bioinformatica/HumanBM_CiteSeq/CellRanger.Quantification/GSE128639_10XGenomics/outs/molecule_info.h5",
+    "possorted_genome_bam": null,
+    "possorted_genome_bam_index": null,
+    "probe_set": null,
+    "raw_feature_bc_matrix": "/data3/ctorroja/Projects_SC/U_Bioinformatica/HumanBM_CiteSeq/CellRanger.Quantification/GSE128639_10XGenomics/outs/raw_feature_bc_matrix",
+    "raw_feature_bc_matrix_h5": "/data3/ctorroja/Projects_SC/U_Bioinformatica/HumanBM_CiteSeq/CellRanger.Quantification/GSE128639_10XGenomics/outs/raw_feature_bc_matrix.h5",
+    "target_panel": null,
+    "web_summary": "/data3/ctorroja/Projects_SC/U_Bioinformatica/HumanBM_CiteSeq/CellRanger.Quantification/GSE128639_10XGenomics/outs/web_summary.html"
+}

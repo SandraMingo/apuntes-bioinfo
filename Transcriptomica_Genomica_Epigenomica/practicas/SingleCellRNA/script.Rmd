@@ -1,0 +1,186 @@
+---
+title: "Stuart2019"
+author: "Sandra"
+output: html_document
+date: "2025-04-23"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r , echo=FALSE}
+projectPath <- file.path("C:/Users/Sandra/Documents/GitHub/apuntes-bioinfo/Transcriptomica_Genomica_Epigenomica/practicas/SingleCellRNA/")
+analysisDir <- "SC.Analysis"
+analysisPath <- file.path(projectPath,analysisDir)
+outputDir <- "SC.Analysis.GSE128639"
+outputPath <- file.path(analysisPath, outputDir)
+dataDir <- "GSE128639_10XGenomics/outs"
+dataPath <- file.path(projectPath, dataDir)
+
+setwd(projectPath)
+
+prefix <- "GSE128639.RNA"
+
+install.packages("BiocManager")
+BiocManager::install(c("scran", "scuttle", "biomaRt"), type="binary")
+install.packages(c("Seurat", "gtools"), type="binary")
+
+library(Seurat)
+library(scuttle)
+library(scran)
+library(biomaRt)
+library(tidyverse)
+library(gtools)
+library(Matrix)
+library(RColorBrewer)
+color.list <- RColorBrewer::brewer.pal(12, "Paired")
+color.list <- c(color.list, RColorBrewer::brewer.pal(12, "Set3"))
+
+```
+
+# Load CellRanger Quantification
+
+Vamos a subsamplear 4.000-5.000 células (porque tenemos 8 Gb de RAM) para recrear la carpeta FeatureMatrix. 
+```{r}
+counts <- Read10X(file.path(dataPath, "filtered_feature_bc_matrix"), gene.column = 1)
+counts$`Gene Expression` #sparse matrix
+counts$`Antibody Capture` #sparse, pero la mayoría tiene datos en muchas células
+counts$Custom #sparse, pero solo 10 en lugar de 30.000, porque se hicieron 10 alícuotas
+
+selected_cells <- sample(x = colnames(counts$`Gene Expression`), 
+                         size = 5000, 
+                         replace = FALSE)
+length(selected_cells)
+head(selected_cells)
+
+counts <- lapply(counts, function(x) {return(x[, selected_cells])})
+counts$`Gene Expression` #tenemos 36.000 genes, pero 5.000 células
+```
+
+Recrear sparse matrix
+
+```{r}
+features <- read_tsv(file.path(dataPath, "filtered_feature_bc_matrix", "features.tsv.gz"))
+head(features)
+
+counts_rbind <- do.call(rbind, counts[c(1,3,2)]) #se seleccionan los elementos de la lista de counts en el orden especificado al ser el orden que queremos recrear. Con rbind se irá juntando 
+
+dir.create(file.path(dataPath, "sampled_feature_bc_matrix"))
+
+writeMM(obj = counts_rbind, 
+        file = gzfile(file.path(dataPath, "sampled_feature_bc_matrix", 
+        "matrix.mtx.gz")))
+
+file.copy(
+  from = file.path(dataPath, "filtered_feature_bc_matrix", "features.tsv.gz"),
+  to = file.path(dataPath, "sampled_feature_bc_matrix", "features.tsv.gz")
+)
+
+write_tsv(selected_cells, 
+          file = gzfile(file.path(dataPath, "sampled_feature_bc_matrix", "barcodes.tsv.gz")), 
+          col_names = FALSE)
+
+counts <- counts_rbind <- NULL
+gc()
+```
+
+```{r}
+counts <- Read10X(file.path(dataPath, "sampled_feature_bc_matrix"), gene.column = 1)
+lapply(counts, dim)
+```
+
+# Create singleCellExperiment
+
+Se filtran las células con mala calidad para eliminar aquellas que han muerto antes de tiempo y de las cuales se ha capturado su ARN (potencialmente esto ocurre con las células con muchos genes mitocondriales).
+
+```{r}
+sce <- SingleCellExperiment(assays = list(counts = counts$`Gene Expression`))
+sce
+
+
+adt <- SingleCellExperiment(assays = list(counts = counts$`Antibody Capture`))
+adt
+
+hto <- SingleCellExperiment(assays = list(counts = counts$Custom))
+hto
+
+# añadir experimentos siempre y cuando las células sean las mismas
+altExps(sce) <- list(ADT = adt, HTO = hto)
+sce
+
+sce@colData@rownames
+```
+
+# Load gene metadata from BioMart
+Nos cargamos los metadatos de los genes con la librería biomart.
+```{r}
+mart <- useEnsembl(biomart = "genes",
+                   dataset = "hsapiens_gene_ensembl",
+                   version = 98) #la versión de la referencia depende del experimento 
+
+attrList <- listAttributes(mart)
+
+genesMetadata <- getBM(
+  attributes = c(
+    "external_gene_names",
+    "hgnc_symbol",
+    "ensembl_gene_id",
+    "gene_biotype",
+    "chromosome_name",
+    "start_position",
+    "end_position",
+    "strand",
+    "description"
+  ),
+  uniqueRows = TRUE, mart = mart, verbose = FALSE)
+
+sum(duplicated(genesMetadata$ensembl_gene_id)) 
+# 7
+
+genesMetadata <- genesMetadata %>%
+  filter(!grepl("^CHR_", chromosome_name)) #quitar genes en cromosomas alternativos
+
+sum(duplicated(genesMetadata$ensembl_gene_id))
+# 3
+
+genesMetadata[duplicated(genesMetadata$ensembl_gene_id),]
+
+genesMetadata <- genesMetadata %>%
+  filter(!duplicated(genesMetadata$ensembl_gene_id))
+
+sum(duplicated(genesMetadata$ensembl_gene_id))
+# 0
+
+sum(duplicated(genesMetadata$external_gene_name))
+# 1211, se les va a poner un nombre único
+
+genesMetadata <- genesMetadata %>%
+  mutate(uniq_name = make.names(external_gene_name, unique = TRUE))
+
+sum(duplicated(genesMetadata$uniq_name))
+# 0
+
+dim(genesMetadata)
+# 60623 10
+#En Ensembl hay más genes anotados. No son los 36.000 de antes porque se había realizado un prefiltrado de genes (se quitan los pseudogenes, genes ribosomales, microRNAs, cosas que no son poli-A), que es lo que debemos hacer ahora con la referencia
+```
+
+```{r}
+genesMetadataInExperiment <- genesMetadata %>%
+  filter(ensembl_gene_id %in% rownames(sce))
+
+genesMetadataInExperiment <- genesMetadataInExperiment %>%
+  mutate(geneId = ensembl_gene_id) %>% 
+  column_to_rownames(geneId)
+
+dim(genesMetadataInExperiment)
+# 36601 10
+
+rowData(sce) <- DataFrame(genesMetadataInExperiment[rownames(sce),])
+
+sce
+```
+

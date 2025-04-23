@@ -1,0 +1,9 @@
+for r in SRR8758323 SRR8758324 SRR8758325 SRR8758326 SRR8758327 SRR8758328; \
+ do echo $r; \
+ echo "source ~/miniconda3.v4.12.cluster.source; conda activate sra; \
+  prefetch ${r} -O ${r} && \
+  fasterq-dump ${r}/${r} -O ${r} -e 8 && \
+  rm -r ${r}/${r} && \
+  gzip ${r}/*.fastq" | \
+ qsub -P prod -N "dump_${r}" -pe pthreads 8 -h; \
+done

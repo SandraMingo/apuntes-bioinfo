@@ -1,0 +1,66 @@
+{
+    "__mem_gb": 8,
+    "__threads": 1,
+    "__vmem_gb": 11,
+    "feature_reference": "/data3/ctorroja/Projects_SC/U_Bioinformatica/HumanBM_CiteSeq/CellRanger.Quantification/GSE128639_10XGenomics_HTORefTable_feature_ref.csv",
+    "force_cells": null,
+    "full_check": true,
+    "r1_length": null,
+    "r2_length": null,
+    "recovered_cells": null,
+    "reference_path": "/data3/genomes/Homo_sapiens/CellRanger/refdata-gex-GRCh38-2020-A",
+    "sample_def": [
+        {
+            "fastq_id": null,
+            "fastq_mode": "ILMN_BCL2FASTQ",
+            "gem_group": null,
+            "lanes": null,
+            "library_type": "Custom",
+            "read_path": "/data3/ctorroja/Projects_SC/U_Bioinformatica/HumanBM_CiteSeq/CellRanger.Quantification/HTOlib",
+            "sample_indices": [
+                "any"
+            ],
+            "sample_names": [
+                "GSE128639hto"
+            ],
+            "subsample_rate": null,
+            "target_set": null,
+            "target_set_name": null
+        },
+        {
+            "fastq_id": null,
+            "fastq_mode": "ILMN_BCL2FASTQ",
+            "gem_group": null,
+            "lanes": null,
+            "library_type": "Antibody Capture",
+            "read_path": "/data3/ctorroja/Projects_SC/U_Bioinformatica/HumanBM_CiteSeq/CellRanger.Quantification/ADTlib",
+            "sample_indices": [
+                "any"
+            ],
+            "sample_names": [
+                "GSE128639adt"
+            ],
+            "subsample_rate": null,
+            "target_set": null,
+            "target_set_name": null
+        },
+        {
+            "fastq_id": null,
+            "fastq_mode": "ILMN_BCL2FASTQ",
+            "gem_group": null,
+            "lanes": null,
+            "library_type": "Gene Expression",
+            "read_path": "/data3/ctorroja/Projects_SC/U_Bioinformatica/HumanBM_CiteSeq/CellRanger.Quantification/GEXlib",
+            "sample_indices": [
+                "any"
+            ],
+            "sample_names": [
+                "GSE128639gex"
+            ],
+            "subsample_rate": null,
+            "target_set": null,
+            "target_set_name": null
+        }
+    ],
+    "targeting_method": null
+}

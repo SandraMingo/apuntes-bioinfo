@@ -1,0 +1,4 @@
+barcode,library_type,umi_corrected_reads,Fraction Corrected Reads,Fraction Total Reads
+TACTTGTGTAAAGTCA-1,Antibody Capture,105284,0.655,0.0
+TGAAAGAAGGTGGGTT-1,Antibody Capture,72206,0.606,0.0
+TTATGCTGTCCTCCAT-1,Antibody Capture,545909,0.794,0.002

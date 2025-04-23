@@ -248,14 +248,40 @@ La detección basada en secuenciación se basa en un slide donde se pegan las se
 
 Aquellos métodos basados en secuenciación pueden capturar un mayor número de genes. La transcriptómica espacial single-cell permite estudiar la comunicación intercelular en función de los genes expresados y su localización. Las interacciones se pueden buscar en base a su posición, por lo que el nivel de información es mayor y más preciso. 
 
-%Datos
-%Procesamiento de datos
-%Análisis de datos
+%23/04 - Carlos Torroja
+Cada librería requiere de una longitud diferente.
+
+\subsection{Procesamiento y análisis de datos}
+\subsubsection{Alineamiento y cuantificación}
+R2 se anota con el barcode de la célula y UMI de R1, y desde entonces se utiliza solo R2. Se mapea al genoma con STAR. Para los siguientes pasos de recuento de UMI sólo se tienen en cuenta las alineaciones compatibles con transcripciones asociadas a un único gen. En la cuantificación de UMIs, se tiene una combinación entre barcode, UMI y gen. Las combinaciones idénticas se colapsan a una copia al tratarse de duplicados de PCR, y se computa así los UMI por gen por célula.
+
+Un UMI está asociado a una molécula de mRNA. Se puede observar el mismo UMI unido a distintos framentos del mismo mRNA. Estos fragmentos distintos se deben a la fragmentación enzimática en la amplificación de PCR. Todos los UMIs idénticos se han originado de la misma molécula de mRNA individual.
+
+\subsubsection{Detección de células}
+Las beads están vacías en su mayoría. Para no provocar que dos células juntas estén anotadas, pudiendo mezclarse los tránscritos, se espacian las células con beads. El bead captura el RNA que se amplifica posteriormente. Se debe discernir cuando la burbuja está vacía y cuando no. Una vez con las células cuantificadas, se evalúa la cantidad de UMIs detectados en cada una. Esto se hace en dos pasos. Primero se coloca un punto de corte en el que los recuentos por celda descienden drásticamente. En las células de menor rendimiento se elabora un modelo del fondo basado en los propios datos y las células se llaman cuando difieren sustancialmente de ese modelo. 
+
+Los datos de single-cell son muy escasos, y la correlación entre réplicas es muy pobre, al contrario que en secuenciación bulk. 
+
+\subsection{Práctica Comprehensive integration of single-cell data}
+Se utilizarán los datos de \href{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE128639}{GSE128639 en GEO}. Se analizaron muestras de sangre que se incubaron con ADT (anticuerpos). De ahí se tomaron alícuotas y se incubaron con tags de anticuerpos (HTO). Se realizaron pools de las alícuotas, se capturaron las células, se extrajo el RNA y se generó el cDNA. Con eso se prepararon 3 librerías: expresión génica, captura de anticuerpo (ADT) y los tags HTO. Esto se secuencia y se procesa para cuantificar.
+
+Recibimos un fastq de cada una de las tres librerías. Con la herramienta cellranger se realiza la cuantificación. También se podría ver la cromatina abierta con otros protocolos. 
+
+\begin{lstlisting}[language=bash]
+cellranger count --id=GSE128639_10XGenomics \
+	--libraries=GSE128639_10XGenomics_Sample_fastqs.csv \
+	--transcriptome=refdata-gex-GRCh38-2020-A \
+	--feature-ref=GSE128639_10XGenomics_HTORefTable_feature_ref.csv \
+	--chemistry=threeprime --localcores=40 --localmem=96 --disable-ui --nosecondary --no-bam
+\end{lstlisting}
+
+La salida es una serie de tablas, generando así la sparse matrix. En la matrix market, cada posición está definida por tres números (coordenada x, y y el valor; posición, célula y contaje). Esto se combina con los barcodes y las características para que la sparse matrix contenga el ID del gen y su contaje. 
+
+El resultado se cellranger se puede ver en un HTML (carpeta prácticas > SingleCellRNA > GSE12839 \_10XGenomics > outs > web\_summary.html). El resto de la práctica se realiza en R (carpeta prácticas > SingleCellRNA > script.Rmd).
+
 %Identificación de tipos celulares
 %Comunicación intercelular
 %Análisis de trayectoria o pseudotiempo, interactoma, reguloma
-
-
 
 
 
