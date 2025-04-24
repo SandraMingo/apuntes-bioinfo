@@ -58,4 +58,49 @@ Cuando bajan los niveles de nitrógeno, se activa una cascada de genes incluyend
 
 De esta forma, hay activación local e inhibición a grandes distancias tanto de forma temprana como tardía. Cuando la distancia entre dos heterocistos se hace grande, el gradiente del inhibidor baja lo suficiente como para permitir la activación del activador. Según se produce el nuevo heterocisto, se produce de nuevo el inhibidor para que no se formen otros a su alrededor. 
 
+%25/03 - Saúl Ares
+\newpage
+\section{Más allá del modelo SIR: modelo SCIR, SIR con confinamiento (o cuidadosos)}
+Cuando llegó el Covid en marzo del 2020, se analizaban los datos de personas que dieron positivo en los tests. Se mostraban las curvas de infección y de muerte, siendo las primeras más ruidosas. Al comparar la curva de infecciones y de muertes a lo largo del tiempo, se pueden ver las "olas" de infección. Al principio, un número relativamente bajo de casos conllevaba a un número elevado de muertes, cuando la segunda ola tenía muchos más casos diagnosticados y menos muertes. 
+
+\subsection{Modelado en epidemiología}
+Las epidemias han existido siempre. La viruela causó 300 millones de muertes solo en el siglo XX, y eso que se erradicó en 1980. Las vacunas surgieron en Europa en el siglo XVIII. Concretamente las chicas lecheras contraían una versión suave de la viruela, siendo luego inmunes. Esto se debía a su contacto estrecho con la viruela vacuna, protegiéndolas de la viruela humana. Por ello, se probó a utilizar el pus de la viruela vacuna en humanos, conocido como "variolación". 
+
+Analizando los datos, ¿merece la pena vacunarse? Esto se lo preguntó Daniel Bernoulli y realizó las siguientes suposiciones: un individuo se infecta con una tasa q y, una vez infectado, muere con probabilidad p. Una vez recuperado, nunca se vuelve a infectar. Así:
+\begin{itemize}
+\item $m(t)$ es la probabilidad de morirse por otras causas
+\item $S(t)$ número de individuos susceptibles
+\item $R(t)$ número de individuos recuperados
+\end{itemize}
+Con esto se desarrollaron estas funciones:
+$$\dot{S} = -qS - m(t)S$$
+$$\dot{R} = q(1 - p)S - m(t)R$$
+
+Esto se validó con los datos obtenidos de nacimientos y muertes. Antes de la implementación de la variolación, la esperanza de vida era de 26 años y 7 meses, mientras que con la variolación ascendió a 29 años y 8 meses.
+
+\subsection{Modelo SIR}
+Actualmente se trabaja con el modelo SIR: susceptible, infectado y recuperado/retirado:
+$$S \xrightarrow{\beta} I \xrightarrow{\gamma} R$$
+
+Con esto se definieron las siguientes funciones:
+$$\dot{S} = - \beta (I/N) S$$
+$$\dot{I} = \beta (I/N) S - \gamma I $$
+$$\dot{R} = \gamma I$$
+$$R_0 \equiv \beta / \gamma$$
+
+Checklist para crear modelos epidemiológicos:
+\begin{itemize}
+\item Es mi modelo capaz de captar la dinámica pasada de la pandemia? En caso afirmativo, tengo que demostrarlo sin ambigüedades
+\item ¿Se pueden ajustar los datos con parámetros efectivos elegidos adecuadamente?
+En caso afirmativo, ¿puedo asignar un significado preciso a los valores de ajuste?
+\item ¿Cuál es el error asociado a esos parámetros? Porque HAY un error
+\item ¿Puede proyectarse el ajuste hacia el futuro? Antes de sacar respuestas demasiado confiadas:
+\begin{itemize}
+\item ¿Cuál es el error asociado a la predicción? Este ejercicio TIENE que hacerse.
+\item ¿Pueden asignarse los parámetros efectivos a valores empíricos reales?
+\item ¿Son otros modelos mejores o peores? ¿Por qué?
+\end{itemize}
+\end{itemize}
+
+Los factores que afectan a la predictabilidad es la calidad de los datos, la idoneidad del modelo y la incertidumbre intrínseca del modelo.
 \end{document}
