@@ -1,0 +1,152 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+projectPath <- file.path("C:/Users/ctorroja/Desktop/scMaster/2024_BioInfoUAMMaster/SingleCell/Stuart2019")
+outputPath <- file.path(projectPath,"output")
+dir.create(outputPath)
+
+dataPath <- file.path(projectPath,"GSE128639_10XGenomics/outs")
+
+setwd(projectPath)
+
+```
+
+```{r}
+BiocManager::install(c("scran","scuttle","biomaRt"), type = "binary")
+install.packages(c("Seurat","tidyverse","gtools"), type = "binary")
+```
+
+```{r}
+library(Seurat)
+library(scuttle)
+library(scran)
+library(biomaRt)
+library(tidyverse)
+library(gtools)
+library(Matrix)
+library(RColorBrewer)
+color.list <- RColorBrewer::brewer.pal(12,"Paired")
+color.list <- c(color.list,RColorBrewer::brewer.pal(12,"Set3"))
+```
+
+# Load CellRanger Quantification
+
+```{r}
+counts <- Read10X(
+  file.path(dataPath,"filtered_feature_bc_matrix"),
+  gene.column = 1)
+
+selectedCells <- sample(x = colnames(counts$`Gene Expression`),
+                        size = 5000,
+                        replace = F)
+
+counts <- lapply(counts, function (x) {return(x[,selectedCells])})
+
+counts <- do.call(rbind,counts[c(1,3,2)])
+
+features <- read_tsv(file.path(dataPath,"filtered_feature_bc_matrix","features.tsv.gz"))
+
+dir.create(file.path(dataPath,"sampled_feature_bc_matrix"))
+
+writeMM(obj = countsnew, 
+        file = gzfile(file.path(dataPath,"sampled_feature_bc_matrix","matrix.mtx.gz")))
+
+file.copy(
+  from = file.path(dataPath,"filtered_feature_bc_matrix","features.tsv.gz"),
+  to = file.path(dataPath,"sampled_feature_bc_matrix","features.tsv.gz"))
+
+write_tsv(data.frame(selectedCells),
+          file = gzfile(file.path(dataPath,"sampled_feature_bc_matrix","barcodes.tsv.gz")),
+          col_names = F)
+
+counts <- countsnew <- NULL
+gc()
+```
+
+```{r}
+counts <- Read10X(file.path(dataPath,"sampled_feature_bc_matrix"),
+                  gene.column = 1)
+lapply(counts, dim)
+```
+
+# Create SingleCellExperiment
+
+```{r}
+sce <- SingleCellExperiment(
+  assays = list(counts = counts$`Gene Expression`),
+)
+
+adt <- SingleCellExperiment(
+  assays = list(counts = counts$`Antibody Capture`)
+)
+
+hto <- SingleCellExperiment(
+  assays = list(counts = counts$Custom)
+)
+
+altExps(sce) <- list(ADT = adt, HTO = hto)
+
+```
+
+# Load Gene Metadata from BioMart
+
+```{r}
+
+mart <- useEnsembl(biomart = 'genes',
+                   dataset = "hsapiens_gene_ensembl",
+                   version = 98)
+
+genesMetadata <- getBM(
+  attributes = c(
+    "external_gene_name"
+    ,"hgnc_symbol"
+    ,"ensembl_gene_id"
+    ,"gene_biotype"
+    ,"chromosome_name"
+    ,"start_position"
+    ,"end_position","strand"
+    ,"description"
+  ),
+  uniqueRows=T, 
+  mart = mart,
+  verbose = F)
+
+sum(duplicated(genesMetadata$ensembl_gene_id))
+
+genesMetadata <- genesMetadata %>%
+  filter(!grepl("^CHR_",chromosome_name))
+
+sum(duplicated(genesMetadata$ensembl_gene_id))
+
+genesMetadata[duplicated(genesMetadata$ensembl_gene_id),]
+
+genesMetadata <- genesMetadata %>%
+  filter(!duplicated(genesMetadata$ensembl_gene_id))
+
+sum(duplicated(genesMetadata$external_gene_name))
+
+genesMetadata <- genesMetadata %>%
+  mutate(uniq_name = make.names(external_gene_name,unique = T))
+
+sum(duplicated(genesMetadata$uniq_name))
+
+dim(genesMetadata)
+```
+
+```{r}
+
+genesMetadataInExperiment <- genesMetadata %>%
+  filter(ensembl_gene_id %in% rownames(sce))
+
+genesMetadataInExperiment <- genesMetadataInExperiment %>%
+  mutate(geneId = ensembl_gene_id) %>% 
+  column_to_rownames("geneId")
+
+rowData(sce) <- DataFrame(genesMetadataInExperiment[rownames(sce),])
+
+sce
+```
+
