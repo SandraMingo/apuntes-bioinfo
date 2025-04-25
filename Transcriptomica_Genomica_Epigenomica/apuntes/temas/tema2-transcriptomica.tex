@@ -279,6 +279,16 @@ La salida es una serie de tablas, generando así la sparse matrix. En la matrix 
 
 El resultado se cellranger se puede ver en un HTML (carpeta prácticas > SingleCellRNA > GSE12839 \_10XGenomics > outs > web\_summary.html). El resto de la práctica se realiza en R (carpeta prácticas > SingleCellRNA > script.Rmd).
 
+%25/04 - Carlos Torroja
+\subsection{Filtrado}
+A pesar de que CellRanger funcione bien para dar células reales, hay veces en las que el experimento no ha salido del todo bien y pueden quedarse todavía células no reales residuales en los datos, por lo que se deben filtrar. 
+
+Se filtran células con pocos counts. Dependiendo del experimento y de las células, se establecen los umbrales, pero se suele hacer un poco "a ojo". El filtrado se ha ejecutado en la carpeta de prácticas.
+
+Tras el filtrado se realiza el demultiplexado. Lo más habitual es hacer la misma normalización que con RNA-Seq con TPMs. No obstante, hay también otros métodos. Por ejemplo, se puede normalizar por pooles. Aleatoriamente, se coge un determinado número de células y se suman sus counts. Así, cada célula está representada en distintos pooles con distintas células, generando un perfil. Estos pooles se normalizan con un pool total hecho con todas las células. Para cada célula quedan distintos pooles, que se representan en sistemas de ecuaciones que se pueden resolver obteniendo los factores de normalización. Esto se parece mucho a la división por counts totales, pero está algo más protegido a la cantidad de genes en cada célula. Esta normalización es así más robusta. 
+
+Realizaremos esto en código, siguiendo con el script. 
+
 %Identificación de tipos celulares
 %Comunicación intercelular
 %Análisis de trayectoria o pseudotiempo, interactoma, reguloma

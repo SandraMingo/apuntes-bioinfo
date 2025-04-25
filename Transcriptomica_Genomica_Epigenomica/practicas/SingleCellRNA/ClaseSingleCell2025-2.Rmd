@@ -1,0 +1,635 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+projectPath <- file.path("C:/Users/ctorroja/Desktop/scMaster/2024_BioInfoUAMMaster/SingleCell/Stuart2019")
+outputPath <- file.path(projectPath,"output")
+dir.create(outputPath)
+
+dataPath <- file.path(projectPath,"GSE128639_10XGenomics/outs")
+
+setwd(projectPath)
+
+```
+
+```{r eval=FALSE, include=FALSE}
+BiocManager::install(c("scran","scuttle","biomaRt"), type = "binary")
+install.packages(c("Seurat","tidyverse","gtools"), type = "binary")
+```
+
+```{r}
+library(Seurat)
+library(scuttle)
+library(scran)
+library(biomaRt)
+library(tidyverse)
+library(gtools)
+library(Matrix)
+library(RColorBrewer)
+library(ggridges)
+library(UpSetR)
+
+color.list <- RColorBrewer::brewer.pal(12,"Paired")
+color.list <- c(color.list,RColorBrewer::brewer.pal(12,"Set3"))
+```
+
+# Load CellRanger Quantification
+
+```{r eval=FALSE, include=FALSE}
+counts <- Read10X(
+  file.path(dataPath,"filtered_feature_bc_matrix"),
+  gene.column = 1)
+
+selectedCells <- sample(x = colnames(counts$`Gene Expression`),
+                        size = 5000,
+                        replace = F)
+
+counts <- lapply(counts, function (x) {return(x[,selectedCells])})
+
+counts <- do.call(rbind,counts[c(1,3,2)])
+
+features <- read_tsv(file.path(dataPath,"filtered_feature_bc_matrix","features.tsv.gz"))
+
+dir.create(file.path(dataPath,"sampled_feature_bc_matrix"))
+
+writeMM(obj = countsnew, 
+        file = gzfile(file.path(dataPath,"sampled_feature_bc_matrix","matrix.mtx.gz")))
+
+file.copy(
+  from = file.path(dataPath,"filtered_feature_bc_matrix","features.tsv.gz"),
+  to = file.path(dataPath,"sampled_feature_bc_matrix","features.tsv.gz"))
+
+write_tsv(data.frame(selectedCells),
+          file = gzfile(file.path(dataPath,"sampled_feature_bc_matrix","barcodes.tsv.gz")),
+          col_names = F)
+
+counts <- countsnew <- NULL
+gc()
+```
+
+```{r}
+counts <- Read10X(file.path(dataPath,"sampled_feature_bc_matrix"),
+                  gene.column = 1)
+lapply(counts, dim)
+```
+
+# Create SingleCellExperiment
+
+```{r}
+sce <- SingleCellExperiment(
+  assays = list(counts = counts$`Gene Expression`),
+)
+
+adt <- SingleCellExperiment(
+  assays = list(counts = counts$`Antibody Capture`)
+)
+
+hto <- SingleCellExperiment(
+  assays = list(counts = counts$Custom)
+)
+
+altExps(sce) <- list(ADT = adt, HTO = hto)
+
+```
+
+# Load Gene Metadata from BioMart
+
+```{r}
+
+mart <- useEnsembl(biomart = 'genes',
+                   dataset = "hsapiens_gene_ensembl",
+                   version = 98)
+
+genesMetadata <- getBM(
+  attributes = c(
+    "external_gene_name"
+    ,"hgnc_symbol"
+    ,"ensembl_gene_id"
+    ,"gene_biotype"
+    ,"chromosome_name"
+    ,"start_position"
+    ,"end_position","strand"
+    ,"description"
+  ),
+  uniqueRows=T, 
+  mart = mart,
+  verbose = F)
+
+sum(duplicated(genesMetadata$ensembl_gene_id))
+
+genesMetadata <- genesMetadata %>%
+  filter(!grepl("^CHR_",chromosome_name))
+
+sum(duplicated(genesMetadata$ensembl_gene_id))
+
+genesMetadata[duplicated(genesMetadata$ensembl_gene_id),]
+
+genesMetadata <- genesMetadata %>%
+  filter(!duplicated(genesMetadata$ensembl_gene_id))
+
+sum(duplicated(genesMetadata$external_gene_name))
+
+genesMetadata <- genesMetadata %>%
+  mutate(uniq_name = make.names(external_gene_name,unique = T))
+
+sum(duplicated(genesMetadata$uniq_name))
+
+dim(genesMetadata)
+```
+
+```{r}
+
+genesMetadataInExperiment <- genesMetadata %>%
+  filter(ensembl_gene_id %in% rownames(sce))
+
+genesMetadataInExperiment <- genesMetadataInExperiment %>%
+  mutate(geneId = ensembl_gene_id) %>% 
+  column_to_rownames("geneId")
+
+rowData(sce) <- DataFrame(genesMetadataInExperiment[rownames(sce),])
+
+sce
+```
+# Annotate Genes
+
+```{r}
+
+genesMetadataInExperiment <- genesMetadata %>%
+  filter(ensembl_gene_id %in% rownames(sce))
+
+rownames(sce) <- genesMetadataInExperiment[match(rownames(sce),genesMetadataInExperiment$ensembl_gene_id),"uniq_name"]
+
+HBBGenes <- genesMetadataInExperiment %>%
+  filter(grepl("hemoglobin",description,ignore.case = T))
+
+IGGenes <- genesMetadataInExperiment %>%
+  filter(grepl("^IG_\\w*",gene_biotype,perl=T,ignore.case = T))
+
+TRGenes <- genesMetadataInExperiment %>%
+  filter(grepl("^TR_\\w*",gene_biotype,perl=T,ignore.case = T))
+
+MTGenes <- genesMetadataInExperiment %>%
+  filter(chromosome_name == "MT")
+
+RBRGenes <- genesMetadataInExperiment %>% 
+  filter(gene_biotype == "rRNA")
+
+G2MGenes <- genesMetadataInExperiment %>%
+  filter(external_gene_name %in% cc.genes$g2m.genes)
+
+SGenes <- genesMetadataInExperiment %>%
+  filter(external_gene_name %in% cc.genes$s.genes)
+
+```
+
+# Normalization
+
+## Normalization Factors
+
+```{r}
+clusters <- sce %>%
+  quickCluster(min.size = 1000)
+
+# sce <- sce %>% computePooledFactors()
+pooledSizeFactors <- sce %>%
+  pooledSizeFactors(
+    clusters = clusters,
+    assay.type = "counts",
+  )
+
+# sce <- sce %>% computeLibraryFactors()
+librarySizeFactors <- sce %>%
+  librarySizeFactors()
+```
+
+```{r}
+plot(pooledSizeFactors,librarySizeFactors)
+```
+
+# Normalize Data
+
+```{r}
+sce <- logNormCounts(sce,size.factors = pooledSizeFactors)
+
+# Centered Log Ratio
+clr <- function(x) {
+          return(log1p(x = x / (expm1(x = sum(log1p(x = x[x > 0]), na.rm = TRUE) / length(x = x)))))
+}
+
+# A special
+assay(altExp(sce,"HTO"),"logcounts") <- clr(assay(altExp(sce,"HTO"),slot = "counts"))
+
+assay(altExp(sce,"ADT"),"logcounts") <- clr(assay(altExp(sce,"ADT"),slot = "counts"))
+# 
+# ModelNegativeADTnorm(cell_protein_matrix = assay(altExp(sce,"adt"),slot = "counts"), 
+#                                 denoise.counts = TRUE,
+#                                 use.isotype.control = FALSE)
+```
+
+# Compute QC Stats
+
+```{r}
+sce <- sce %>%
+  addPerCellQC(
+    subsets = list(
+      MT = MTGenes$uniq_name
+      # ,RBR = RBRGenes$uniq_name
+      ,HBB = HBBGenes$uniq_name
+      ,IG = IGGenes$uniq_name
+      ,TR = TRGenes$uniq_name
+    )
+    ,percent.top = c(50,500)
+    ,use_altexps = T
+  )
+
+sce <- addPerFeatureQC(
+  sce
+)
+
+rowData(sce)$is_feature_control <- rownames(rowData(sce)) %in% c(MTGenes$uniq_name,RBRGenes$uniq_name,HBBGenes$uniq_name,IGGenes$uniq_name,TRGenes$uniq_name)
+
+altExp(sce,"ADT") <- addPerFeatureQC(
+  altExp(sce,"ADT")
+)
+altExp(sce,"ADT") <- addPerCellQC(
+  altExp(sce,"ADT")
+)
+
+altExp(sce,"HTO") <- addPerFeatureQC(
+  altExp(sce,"HTO")
+)
+altExp(sce,"HTO") <- addPerCellQC(
+  altExp(sce,"HTO")
+)
+```
+
+## Explore QCs
+
+```{r, fig.asp=1.8}
+
+scnames <- sample(colnames(sce),200)
+
+dc <- as.data.frame(as.matrix(assay(sce,"logcounts"))[,scnames]) %>%
+  mutate(Gene = rownames(as.matrix(assay(sce,"logcounts")))) %>%
+  pivot_longer(cols = -Gene,names_to = "Cell",values_to = "Exprs")
+
+dc <- dc %>% filter(Exprs>0)
+# dc$Sample <- factor(colData(sce)[dc$Cell,"Sample"])
+dc$Sample <- "BMMCells"
+dc$Features <- colData(sce)[dc$Cell,"detected"]
+
+# Relevel Cell by Sample Type
+dc$Cell <- factor(dc$Cell,levels=unique(dc$Cell[order(dc$Sample,dc$Cell)]))
+
+g1 <- ggplot(dc,aes(y=Cell,x=Exprs)) +
+  geom_density_ridges(aes(fill=Sample)) +
+  xlab("Gene Expression") +
+  scale_fill_manual(values = color.list) +
+  theme(legend.position = "top",legend.direction = "horizontal"
+        ,axis.text = element_text(size = 6))
+
+g2 <- ggplot(dc,aes(x=Cell,fill=Sample)) +
+  geom_bar(stat = "count") +
+  ylab("Detected Genes") +
+  scale_fill_manual(values = color.list) +
+  coord_flip() +
+  theme(legend.position = "none",legend.direction = "horizontal"
+        ,axis.text.y = element_blank(),axis.title.y = element_blank())
+
+g3 <- ggplot(dc,aes(x=Cell,y=Exprs,fill=Sample)) +
+  geom_bar(stat = "sum") +
+  ylab("Total Counts") +
+  scale_fill_manual(values = color.list) +
+  coord_flip() +
+  theme(legend.position = "none",legend.direction = "horizontal"
+        ,axis.text.y = element_blank(),axis.title.y = element_blank())
+
+g4 <- ggplot(dc %>% filter(Exprs > 0) %>% group_by(Cell,Sample) %>% summarise(Mean = mean(Exprs)),aes(x=Cell,y=Mean,fill=Sample)) +
+  geom_bar(stat = "identity") +
+  ylab("Mean Gene Exp") +
+  scale_fill_manual(values = color.list) +
+  coord_flip() +
+  theme(legend.position = "none",legend.direction = "horizontal"
+        ,axis.text.y = element_blank(),axis.title.y = element_blank())
+
+p <- g2 + g3 + g4
+
+g1 + p
+
+```
+
+# Filtering
+
+```{r}
+df <- as.data.frame(colData(sce))
+```
+
+## Filtering by sequencing depth
+
+```{r}
+minDepth <- 1500
+maxDepth <- 50000
+```
+
+To minimize the amount of low quality cells and improve posterior normalization and analysis we have applied a minimum of normalized counts per cell of `r minDepth` and a maximum of `r maxDepth`.
+
+```{r }
+
+### Adjust minDepth
+df %>%
+  ggplot(aes(x=sum)) +
+    geom_density(stat = "density",alpha=.5) +
+    scale_fill_manual(values = color.list) +
+    geom_vline(xintercept = minDepth, color="red") +
+    geom_vline(xintercept = maxDepth, color="red") +
+    coord_cartesian(xlim=c(0,maxDepth*1.1)) +
+    ggtitle("Sequencing Depth Density Plot") +
+    theme(legend.position = "none")
+
+df %>%
+  arrange(sum) %>%
+  summarise(CumSum_Counts=cumsum(sum),
+            total_counts=sum) %>%
+  ggplot(aes(x=total_counts,y=CumSum_Counts)) +
+  geom_point() +
+  geom_vline(xintercept = minDepth, color="red") +
+  geom_vline(xintercept = maxDepth, color="red") +
+  coord_cartesian(xlim=c(0,maxDepth*1.1)) +
+  ggtitle("Sequencing Depth Density Plot") +
+  theme(legend.position = "none")
+
+```
+
+
+```{r}
+########### Filter By Total Counts ############
+sce$filter_by_total_counts <- sce$sum > minDepth & sce$sum < maxDepth
+
+table(sce@colData[,c("filter_by_total_counts")])
+
+```
+
+## Filtering by genes detected
+
+```{r}
+minGenesDetected <- 600
+```
+
+
+we have applied also a minimum gene detection filter of `r minGenesDetected` genes.
+
+```{r }
+
+df %>%
+  ggplot(aes(x=detected)) +
+  geom_density(stat="density",alpha=.5) +
+  scale_fill_manual(values = color.list) +
+  geom_vline(xintercept = minGenesDetected, color="red") +
+  ggtitle("Genes Detected Density Plot") +
+  theme(legend.position = "none")
+
+df %>%
+  arrange(detected) %>%
+  summarise(CumSum_Features=cumsum(detected),
+            total_features=detected) %>%
+  ggplot(aes(x=total_features,y=CumSum_Features)) +
+  geom_point() +
+  geom_vline(xintercept = minGenesDetected, color="red") +
+  ggtitle("Genes Detected Cummulative Plot") +
+  theme(legend.position = "none")
+
+```
+
+
+```{r}
+########## Filter By Detected Genes ###########
+sce$filter_by_expr_features <- sce@colData$detected > minGenesDetected
+
+table(sce$filter_by_expr_features)
+
+```
+
+## Filter by MT content
+
+```{r}
+
+maxMT <- 15
+
+```
+
+A maximum of `r maxMT`% of MT content has been used to reduce the amount of low quality cells.
+
+```{r }
+df %>%
+  ggplot(aes(x=subsets_MT_percent,y="Sample")) +
+  geom_density_ridges(aes(fill="Sample"),alpha=0.5) +
+  scale_fill_manual(values = color.list) +
+  geom_jitter(height = 0.2, alpha = 0.01) +
+  geom_vline(xintercept = maxMT, color="red") +
+  ggtitle("MT Content Density Plot") +
+  theme(legend.position = "none")
+
+```
+
+```{r}
+########## Filter By Detected Genes ###########
+sce$filter_by_MT_features <- sce$subsets_MT_percent < maxMT
+
+table(sce$filter_by_MT_features)
+
+```
+
+
+## Filter by Gene Expression Complexity
+
+```{r}
+
+maxPct <- 65
+
+```
+
+Cells with high levels of reads in just a few genes have been filtered. `r maxPct`% of reads in the top 50 genes.
+
+```{r }
+
+df %>%
+  ggplot(aes(x=percent.top_50,y="Sample")) +
+  geom_density_ridges(aes(fill="Sample")) +
+  geom_jitter(height = 0.2, alpha = 0.01) +
+  geom_vline(xintercept = maxPct, color="red") +
+  scale_fill_manual(values = color.list) +
+  ggtitle("UMIs in Top 50 Genes Density Plot") +
+  theme(legend.position = "none")
+
+```
+
+```{r}
+########## Filter By Detected Genes ###########
+sce$filter_by_Top50 <- sce$percent.top_50 < maxPct
+
+table(sce$filter_by_Top50)
+
+```
+
+## Filter by HBB Gene Set Expression
+
+```{r}
+
+maxHBB <- 0.2
+
+```
+
+In case we've got some erythrocytes or excessive contamination from their lysis we have removed cells with more than `r maxHBB`% reads in HBB genes.
+
+```{r }
+
+df %>%
+  ggplot(aes(x=subsets_HBB_percent,y="Sample")) +
+  geom_density_ridges(aes(fill="Sample")) +
+  geom_jitter(height = 0.2, alpha = 0.01) +
+  geom_vline(xintercept = maxHBB, color="red") +
+  scale_fill_manual(values = color.list) +
+  ggtitle("HBB Content Density Plot") +
+  theme(legend.position = "none")
+```
+
+```{r}
+########## Filter By Detected Genes ###########
+sce$filter_by_HBB_features <- sce$subsets_HBB_percent < maxHBB
+
+table(sce$filter_by_HBB_features)
+```
+
+## HTO Content
+
+```{r}
+
+minHTO <- 100
+
+```
+
+We have filtered out also cells with less than `r minHTO` UMIs in the hashtags to improve sample calling.
+
+```{r }
+df %>%
+  ggplot(aes(x=altexps_HTO_sum)) +
+    geom_density(stat = "density",aes(fill = "Sample"),alpha=.5) +
+    scale_fill_manual(values = color.list) +
+    geom_vline(xintercept = minHTO, color="red") +
+    coord_cartesian(xlim=c(0,maxDepth*1.1)) +
+    ggtitle("HashTag Counts Density Plot") +
+    theme(legend.position = "none")
+
+df %>%
+  arrange(altexps_HTO_sum) %>%
+  summarise(CumSum_Counts=cumsum(altexps_HTO_sum),
+            Sample="Sample",HTO_counts=altexps_HTO_sum) %>%
+  ggplot(aes(x=HTO_counts,y=CumSum_Counts,color=Sample)) +
+  geom_point() +
+  geom_vline(xintercept = minHTO, color="red") +
+  ggtitle("HashTag Counts Cummulative Plot") +
+  theme(legend.position = "none")
+
+```
+
+```{r}
+########## Filter By Detected Genes ###########
+sce$filter_by_HTO_features <- sce$altexps_HTO_sum > minHTO
+
+table(sce@colData[,c("filter_by_HTO_features")])
+
+```
+
+## ADT Content
+
+```{r}
+
+minADT <- 100
+
+```
+
+We have filtered out also cells with less than `r minHTO` UMIs in the hashtags to improve sample calling.
+
+```{r }
+df %>%
+  ggplot(aes(x=altexps_ADT_sum)) +
+  geom_density(stat = "density",aes(fill = "Sample"),alpha=.5) +
+  scale_fill_manual(values = color.list) +
+  geom_vline(xintercept = minADT, color="red") +
+  coord_cartesian(xlim=c(0,maxDepth*1.1)) +
+  ggtitle("Antibody Counts Density Plot") +
+  theme(legend.position = "none")
+
+df %>%
+  arrange(altexps_ADT_sum) %>%
+  summarise(CumSum_Counts=cumsum(altexps_ADT_sum),
+            Sample="Sample",ADT_counts=altexps_ADT_sum) %>%
+  ggplot(aes(x=ADT_counts,y=CumSum_Counts,color=Sample)) +
+  geom_point() +
+  geom_vline(xintercept = minADT, color="red") +
+  ggtitle("Antibody Counts Cummulative Plot") +
+  theme(legend.position = "none")
+
+```
+
+```{r}
+########## Filter By Detected Genes ###########
+sce$filter_by_ADT_features <- sce$altexps_ADT_sum > minADT
+
+table(sce$filter_by_ADT_features)
+```
+
+## Filtering Summary
+
+```{r }
+
+######### Set Manual Filtering ##########
+sce$manualFilter <- (
+  sce$filter_by_expr_features &
+  sce$filter_by_total_counts &
+  sce$filter_by_MT_features &
+  sce$filter_by_HBB_features &
+  sce$filter_by_Top50 &
+  sce$filter_by_HTO_features &
+  sce$filter_by_ADT_features
+)
+
+########### %DropOut vs MT Features ###########
+df <- as.data.frame(colData(sce)) %>%
+  dplyr::select(sum,detected,
+                filter_by_expr_features,
+                filter_by_total_counts,
+                filter_by_Top50,
+                filter_by_HTO_features,
+                filter_by_ADT_features,
+                filter_by_MT_features,
+                filter_by_HBB_features,
+                manualFilter)
+
+df <- df %>%
+  pivot_longer(cols = contains("filter",ignore.case = T),
+               names_to = "Filter",
+               values_to = "PASS")
+
+df %>%
+  ggplot(aes(x=log10(sum),y=detected)) +
+  geom_point(aes(color=PASS)) +
+  facet_wrap("Filter")
+
+```
+
+```{r}
+table(sce$manualFilter)
+```
+
+```{r}
+df <- as.data.frame(colData(sce)) %>%
+  dplyr::select(contains("filter_by")) %>%
+  mutate_all(.funs = ~ !.) %>%
+  mutate_all(.funs = as.integer)
+
+upset(df)
+```
+
