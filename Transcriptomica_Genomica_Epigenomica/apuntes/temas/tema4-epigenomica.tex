@@ -241,7 +241,69 @@ Una vez con la secuencia, el resto de los análisis son bastante triviales. Se h
 
 Factores que afectan a la precisión de los resultados son el proceso de bisulfitado (no todas las citosinas se van a convertir en uracilo) y el alineamiento, que dependiendo del método puede ser más complejo. 
 
-\subsubsection{Ejercicio: generación de datos sintéticos de bisulfito}
+%30/04 - Enrique
+Cuando se obtiene un 25\% de metilación en una determinada posición, esto se debe a que es una media de toda la población de células. Cada célula está o no metilada, pero al poder haber células que lo estén y otras que no, al calcular la media pueden salir promedios de metilación. 
+
+Con un porcentaje de metilación de una citosina, se puede hacer un análisis de metilación diferencial entre las muestras. Otra aproximación sería juntar citosinas cerca o relativamente cerca y ver su promedio de metilación. Esto es lo que hace ChromHMM, coge todo el cromosoma y lo divide en ventanas. 
+
+\subsection{Implicaciones de la epigenómica}
+Los mecanismos epigenéticos pueden guardar relación con algunas patologías, como pudo ser adrenoleucodistrofía descrita en 1996 ("Cerebral Adrenoleukodystrophy (ALD) in Only One of Monozygotic Twins with an Identical ALD Genotype)". EL gen agouti se describió por primera vez en 1913 y determina el color del pelo en mamíferos. Ratones con un genotipo idéntico mostraban distinto fenotipo. Los ratones con el gen inactivo tienen un pelaje amarillo, tienen un mayor tamaño y diabetes, mientras que ratones con el gen activo tienen el pelaje marrón, son más pequeños y no muestran patologías. La inactivación del gen se debía a la metilación del promotor debido a deficiencias en el ácido fólico durante el embarazo.
+
+Las modificaciones epigenéticas se pueden desarrollar también por la nutrición (supervivientes de hambrunas) y estrés (supervivientes de atentados, holocausto, etc). 
+
+A nivel de metilación, se pueden hacer varios tipos de estudios:
+\begin{itemize}
+\item Casos vs controles: existen muchas cohortes, pero no se pueden controlar bien los confounders ambientales y genéticos.
+\item Familias: se pueden estudiar cómo se heredan los factores genéticos, pero hay pocas cohortes en las que las familias permitan tomar muestras de todos.
+\item Monozigóticos discordantes: hermanos gemelos con la misma genética, pero con distintas características (uno tiene diabetes y el otro no, etc). 
+\item Prospectivos longitudinales: estos son los más complicados, pero los más interesantes al poder establecerse causalidad. Son muy lentos y difíciles de establecer y financiar. 
+\end{itemize}
+
+Generalmente se trabaja con secuenciación en bulk. En metilación, en algunos casos puede haber diferencias muy claras y en otras diferencias más sutiles. Que una cosa no sea estadísticamente significativa no significa que biológicamente no sea significativo. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.5\textwidth]{figs/met.png}
+\end{figure}
+
+Además, dependiendo de la visualización, unos cambios pueden parecer más o menos sutiles (véase gen ZG16 de la siguiente imagen):
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/met-vis.png}
+\end{figure}
+
+\subsection{Ejercicio: generación de datos sintéticos de bisulfito}
 Queremos crear 150.000 lecturas direccionales de bisulphite-seq de 70 pares de base con aproximadamente 50\% CpG. 
 
 \texttt{./Sherman -l 70 -n 150000 --genome\_folder ./ --CG 50 --CH 2 -e 0.5 > bisulphite-in-silico.txt}
+
+El siguiente paso es alinear y extraer la metilación. Las lecturas generadas eran direccionales:
+
+\texttt{bsmap -a simulated.fastq -d chr1.fa > bsmap\_directional.sam}
+
+Para poder ejecutar el siguiente código, hay que crear un nuevo entorno con Python 2.7, instalar samtools y descargar el \href{https://github.com/dpryan79/Answers/tree/master/biostars_112049}{fichero methratio de este repositorio}.
+
+\texttt{./methratio.py --ref=chr1.fa --out=bsmap\_directional.txt bsmap\_directional.sam}
+
+\section{Organización tridimensional de la cromatina}
+\subsection{Análisis de regiones accesibles}
+Hay varias técnicas para estudiar las regiones accesibles del genoma: ChIP-Seq acoplado a ADN o a histonas, DNase-seq y FAIRE-seq. La DNase-seq secuencia la DNasa I, mientras que FAIRE-Seq hace un crosslinking de las proteínas y el ADN, se fragmenta y se separa el ADN libre del ADN ligado a histonas mediante fenol-cloroformo. 
+
+Dnase-seq, FAIRE-seq y ATAC-seq permiten identificar regiones accesibles de la cromatina donde no se encuentran nucleosomas
+
+MNaseq permite identificar regiones donde se posicionan los nucleosomas, aunque esta técnica se utiliza poco.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/epig-seqs.png}
+\end{figure}
+
+\subsection{Compactación del genoma}
+Dentro de la célula, el genoma se compacta en unos ovillos intra-tad, los cuales se agrupan formando inter-tads. Los tads se organizan en territorios cromosómicos, permitiendo el contacto entre los distintos cromosomas. Por tanto, no se puede pensar de forma lineal en cuanto a genómica. 
+
+Los cromosomas largos suelen encontrarse en la periferia del núcleo, y los recursos de transcripción se concentran en zonas específicas. Los genes que se transcriben suelen estar colocalizados. 
+
+Los TADs (topologically associated domains) se muestran como triángulos en los mapas HiC. Los TAD se correlacionan con muchas características genómicas lineales: modificaciones de las histonas, expresión génica coordinada, asociación con la lámina y calendario de replicación del ADN. Las interacciones enhancer-promotor parecen estar limitadas principalmente dentro de un TAD.
+
+Dentro de los TADs se dividen los compartimentos A y B compuestos por genes activos e inactivos respectivamente. 

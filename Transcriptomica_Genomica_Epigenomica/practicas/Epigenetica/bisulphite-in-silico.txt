@@ -1,4 +1,0 @@
-Now reading in and storing sequence information of the genome specified in: ./Downloads/
-
-chr chr1 (249250621 bp)
-
