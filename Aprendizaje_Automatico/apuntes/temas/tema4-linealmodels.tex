@@ -492,7 +492,7 @@ Así, el primer modelo es el más simple y el segundo el más complejo.
 Corresponde a la suma de los valores absolutos de las entradas:
 $$\mathcal{R}(\vec{w}) = ||\vec{w}||_1 = \sum^d_{i=1} |w_i|$$
 
-Controla la complejidad del modelo. El valor absoluto es no-diferenciable alrededor de 0, por lo que este término es más complicado de optimizar.  Empuja las entradas hacia cero obligando a que algunas de ellas sean idénticamente cero. Refuerza la dispersión.
+Controla la complejidad del modelo. El valor absoluto es no-diferenciable alrededor de 0, por lo que este término es más complicado de optimizar.  Empuja las entradas hacia cero obligando a que algunas de ellas sean idénticamente cero. Refuerza la dispersión (sparsity).
 
 Ejercicio: Dados los siguientes modelos lineales tridimensionales, computa su $\ell_1$ norma para comprobar cuál es más simple en base a este criterio.
 $$\{w_1 = 1, w_2 = 1, w_3 = 1\} \rightarrow 1 + 1 + 1 = 3$$
@@ -500,6 +500,183 @@ $$\{w_1 = 3, w_2 = 0, w_3 = 0\} \rightarrow 3 + 0 + 0 = 3$$
 $$\{w_1 = 2, w_2 = 2, w_3 = 0\} \rightarrow 2 + 2 + 0 = 4 $$
 Así, el tercer modelo es el más complejo.
 
+%05/05 - Carlos Alaíz
 \subsection{Modelos lineales regulados}
+El problema de optimización para entrenar un modelo regularizado puede formularse como:
+$$
+\min_{\boldsymbol{\theta}} \left\{\mathcal{E}_{\mathcal{D}}(\boldsymbol{\theta}) + \gamma\mathcal{R}(\boldsymbol{\theta})\right\}.
+$$
+
+Existe una equivalencia entre este modelo sin restricciones y la siguiente formulación con restricciones:
+$$
+\min_{\boldsymbol{\theta}} \left\{\mathcal{E}_{\mathcal{D}}(\boldsymbol{\theta})\right\} \text{ s.t. } \mathcal{R}(\boldsymbol{\theta}) \leq c.
+$$
+
+En el caso de un modelo de regresión lineal:
+$$
+\min_{\mathbf{w}\in\mathbb{R}^{d}} \left\{||\mathbf{y}-\mathbf{X}\mathbf{w}||_{2}^{2} + \gamma\mathcal{R}(\mathbf{w})\right\} \equiv \min_{\mathbf{w}\in\mathbb{R}^{d}} \left\{||\mathbf{y}-\mathbf{X}\mathbf{w}||_{2}^{2}\right\} \text{ s.t. } \mathcal{R}(\mathbf{w}) \leq c.
+$$
+
+En caso de un modelo de clasificación lineal:
+$$
+\min_{\mathbf{w}\in\mathbb{R}^{d}} \left\{\mathrm{CE}(\mathbf{w}) + \gamma\mathcal{R}(\mathbf{w})\right\} \equiv \min_{\mathbf{w}\in\mathbb{R}^{d}} \left\{\mathrm{CE}(\mathbf{w})\right\} \text{ s.t. } \mathcal{R}(\mathbf{w}) \leq c.
+$$
+
+\subsubsection{Regresión de Ridge}
+Este modelo lineal utiliza la regularización de Tikhonov ($\ell_2$):
+$$
+\mathcal{R}(\mathbf{w}) = \frac{1}{2} \|\mathbf{w}\|_2^2 = \frac{1}{2} \sum_{i=1}^d \mathbf{w}_i^2.
+$$
+
+\textbf{Función objetivo:}
+$$
+S(\mathbf{w}) = \text{MSE}(\mathbf{w}) + \frac{\gamma}{2} \|\mathbf{w}\|_2^2.
+$$
+
+Las propiedades clave son:
+\begin{itemize}
+    \item \textbf{Control de complejidad:} La regularización suaviza los pesos $\mathbf{w}$.
+    \item \textbf{Robustez ante ruido:} Para una entrada con ruido $\mathbf{x} + \epsilon$:
+    $$ \mathbf{w}^\top (\mathbf{x} + \epsilon) \approx \mathbf{w}^\top \mathbf{x}, $$
+    ya que $|\mathbf{w}^\top \epsilon| \leq \|\mathbf{w}\|_2 \|\epsilon\|_2 \approx 0$.
+    \item \textbf{Sin estructura:} Todos los pesos contribuyen al modelo (no hay selección de características).
+    \item \textbf{Convexidad:} El problema es diferenciable y convexo.
+\end{itemize}
+
+Con el modelo creado, se debe entrenar y optimizar para hacer los pesos más pequeños posibles.
+
+\begin{align*}
+\min_{\mathbf{w} \in \mathbb{R}^d}~\bigg\{\frac{1}{2}\|\mathbf{y}-\mathbf{X}\mathbf{w}\|_2^2 + \frac{\gamma}{2}\|\mathbf{w}\|_2^2\bigg\}.
+\end{align*}
+
+Para encontrar la solución de $w$ de optimización se debe derivar e igualar a 0.
+
+\begin{align*}
+\nabla_\mathbf{w}S(\mathbf{w})|_{\mathbf{w}=\mathbf{w}^*}=0 
+&\implies -\mathbf{X}^{\intercal}(\mathbf{y}-\mathbf{X}\mathbf{w}^*)+\gamma\mathbf{w}^*=0 \\
+&\implies -\mathbf{X}^{\intercal}\mathbf{y}+\mathbf{X}^{\intercal}\mathbf{X}\mathbf{w}^*+\gamma\mathbf{w}^*=0 \\
+&\implies (\mathbf{X}^{\intercal}\mathbf{X}+\gamma\mathbf{I})\mathbf{w}^*=\mathbf{X}^{\intercal}\mathbf{y} \\
+&\implies \boxed{\mathbf{w}^*=(\mathbf{X}^{\intercal}\mathbf{X}+\gamma\mathbf{I})^{-1}\mathbf{X}^{\intercal}\mathbf{y}}.
+\end{align*}
+
+\subsubsection{Modelo de Lasso}
+Este modelo lineal utiliza como regularizador la norma $\ell_1$:
+
+$$\mathcal{R}(\mathbf{w}) = \|\mathbf{w}\|_1 = \sum_{i=1}^d |w_i|.$$
+
+\textbf{Función objetivo}:
+$$S(\mathbf{w}) = \text{MSE}(\mathbf{w}) + \gamma \|\mathbf{w}\|_1.$$
+
+Las características clave son:
+\begin{itemize}
+    \item \textbf{Selección automática/implícita de características:}  
+          Algunos coeficientes $w_i$ se vuelven exactamente cero, descartando características irrelevantes.
+    \item \textbf{Prevención de sobreajuste:}  
+          Reduce la complejidad del modelo eliminando variables innecesarias.
+    \item \textbf{Propiedades matemáticas:}  
+          El problema es convexo pero no diferenciable en $w_i = 0$, por lo que no se puede optimizar fácilmente.
+\end{itemize}
+
+\subsubsection{Elastic-Net}
+Este modelo lineal combina las ventajas de la norma $\ell_1$ con las de la norma $\ell_2$. Es más estable que Lasso en la selección de características.
+El regularizador es una combinación de ambos:
+$$
+\mathcal{R}(\mathbf{w}) = \|\mathbf{w}\|_1 + \frac{\gamma_2}{2} \|\mathbf{w}\|_2^2.
+$$
+
+La función objetivo resulta:
+$$
+S(\mathbf{w}) = \text{MSE}(\mathbf{w}) + \gamma_1 \|\mathbf{w}\|_1 + \frac{\gamma_2}{2} \|\mathbf{w}\|_2^2.
+$$
+El problema es convexo pero no diferenciable por tener la norma $\ell_1$ de Lasso.
+
+\subsection{Resumen}
+\begin{itemize}
+\item La regularización suele ser necesaria en problemas reales para controlar la complejidad o inducir estructura.
+\item Los modelos regularizados se entrenan minimizando tanto un término de error como un término de regularización.
+\item Existen diferentes opciones para las funciones de regularización, dos de las más importantes son:
+\begin{itemize}
+\item La norma $\ell_2$, que controla la complejidad.
+\item La norma $\ell_1$, que controla la complejidad e induce la dispersión (sparsity; simplificación del vector eliminando las características que sean 0).
+\end{itemize}
+\item Los modelos lineales regularizados resultantes son:
+\begin{itemize}
+\item Regresión Ridge, basada en la norma $\ell_2$.
+\item Lasso, basado en la norma $\ell_1$.
+\item Elastic-Net, basado en la combinación de los dos regularizadores.
+\end{itemize}
+\end{itemize}
+
+\section{Modelos no lineales y SVMs}
+
+\subsection{Introducción: limitaciones de modelos lineales}
+Los modelos lineales se basan en una hipótesis sólida sobre los datos:
+\begin{itemize}
+\item Regresión: existe una relación lineal entre los datos de entrada y los de salida.
+\item Clasificación: las clases son linealmente separables.
+\end{itemize}
+
+Si dicha relación es real, son una buena opción, pero la flexibilidad de los modelos lineales es muy limitada. El número de grados de libertad corresponde al número de características de entrada $d$. Son suficientemente complejos si $d$ es grande, o si el número de patrones $N$ es pequeño. En muchas situaciones, su hipótesis subyacente no es cierta y su expresividad no es suficiente.
+
+No siempre es fácil determinar si los modelos lineales son apropiados o no para un conjunto de datos concreto. En un contexto multidimensional, no basta con representar gráficamente el conjunto de datos. Incluso si $N >> d$, puede que exista una relación lineal quizás enmascarada por el ruido. Aunque $d >> N$, tal vez haya mucho ruido y la dimensión efectiva sea pequeña. Siempre es una buena idea empezar con un modelo lineal y comprobar el rendimiento.
+
+\subsection{Modelos lineales generalizados}
+La idea clave es, en lugar de construir el modelo sobre las características originales, ampliar los datos de forma no lineal. 
+
+Se utiliza un mapeo no lineal $\phi: \mathbb{R}^d \to \mathbb{R}^D$.
+
+Se construye un modelo lineal usando como patrones $\phi(x_i)$ en lugar de $x_i$.
+
+Formalmente, el modelo se convierte en:
+$$f(x) = w^T \phi(x) = \sum_{i=1}^D w_i \phi_i(x),$$
+con $w \in \mathbb{R}^D$ y $x \in \mathbb{R}^d$, donde $\phi_i : \mathbb{R}^d \to \mathbb{R}$ es la $i$-ésima componente del mapeo $\phi$.
+
+Ejercicio: dado los siguientes dados de entrada ($x_i = 1, 4$), computa las características extendidas para el mapeo $\phi(x) = (x, x^2, \sqrt{x})$:
+$$x = 1 \rightarrow 1, 1^2, \sqrt{1} = (1, 1, 1)$$
+$$x = 4 \rightarrow 4, 4^2, \sqrt{4} = (4, 16, 2)$$
+
+Computa la salida de un modelo lineal generalizado definido con el mapeo anterior y los pesos $\{w_1 = 1, w_2 = 1, w_3 = 2\}$:
+$$w_1 \cdot x + w_2 \cdot x^2 + w_3 \cdot \sqrt{x}$$
+$$x = 1 \rightarrow 1 \cdot 1 + 1 \cdot 1 + 2 \cdot 1 = 4$$
+$$x = 4 \rightarrow 1 \cdot 4 + 1 \cdot 16 + 2 \cdot 2 = 24$$
+
+\subsubsection{Matriz de datos y optimización}
+
+La matriz de datos se convierte en $\Phi \in \mathbb{R}^{N \times D}$:
+$$ \Phi = 
+\begin{pmatrix}
+\phi_1(x_1) & \phi_2(x_1) & \cdots & \phi_D(x_1) \\
+\phi_1(x_2) & \phi_2(x_2) & \cdots & \phi_D(x_2) \\
+\vdots & \vdots & \ddots & \vdots \\
+\phi_1(x_N) & \phi_2(x_N) & \cdots & \phi_D(x_N)
+\end{pmatrix} $$
+
+Por tanto, el resultado del problema de optimización es:
+$$\min_{w \in \mathbb{R}^D} \left\{ \frac{1}{2} \|y - \Phi w\|_2^2 \right\},$$
+
+con la solución:
+$$w^* = (\Phi^\top \Phi)^{-1} \Phi^\top y$$
+
+El mapeo será crucial para el rendimiento del modelo.
+
+\subsubsection{Construcción de características}
+Las características son cuidadosamente elaboradas por expertos (es decir, se crean características nuevas "a mano"). Si existen conocimientos de expertos, este enfoque puede mejorar el rendiminedo. Así, el modelo no depende (necesariamente) de $d$ o $N$, sino de la naturaleza del problema. No obstante, se requiere de conocimientos de expertos y una intuición sobre el problema, lo cual es difícil para $d$ grandes.
+
+\subsubsection{Conjunto de funciones básicas}
+Otro enfoque consiste en definir un mapeo suficientemente general para cualquier problema. Existe un conjunto de funciones de base: polinómicas, gaussianas, sigmoidales, de Fourier, wavelets, splines...
+Entre las ventajas se incluye que es un método automático y no requiere ningún conocimiento experto ni intuición. No obstante, el número de funciones base requeridas crece rápidamente debido a la maldición de la dimensionalidad, puede generar una elevada redundancia, y la dimensión resultante D puede ser mucho mayor de lo necesario.
+
+\subsubsection{Otros enfoques de extensión de características}
+En las \textbf{funciones adaptativas básicas}, el mapeo también se aprende y se adapta automáticamente a los datos. Un ejemplo de esto es en las redes neuronales.
+
+Otro enfoque es el truco de Kernel, en el que no es necesario conocer explícitamente $\phi$.
+
+\subsection{Regresión Kernel Ridge}
+
+\subsection{Clasificadores de vectores de soporte}
+
+\subsection{Regresión por vectores de soporte}
+
+\subsection{Máquinas de vectores soporte no lineales (SVMs)}
 
 \subsection{Resumen}
