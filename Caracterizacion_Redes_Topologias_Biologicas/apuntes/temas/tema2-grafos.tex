@@ -442,5 +442,62 @@ La centralidad de carga es similar al betweenness, pero usa un algoritmo diferen
 
 El closeness tiene la función closeness\_centrality. El betweenness se puede calcular con varias funciones: betweenness\_centrality, edge\_betweenness\_centrality, betweenness\_centrality\_subset y edge\_betweenness\_centrality\_subset.
 
+%06/05 - Carlos Aguirre
 \subsubsection{Cliqués}
 Un cliqué es un subgrafo completo, es decir, un subgrafo en el que todos los nodos están unidos con todos. enumerate\_all\_cliques(G) devuelve todos los cliques de un grafo no dirigido. find\_cliques(G) devuelve los cliqués maximales para cada nodo del grafo. make\_max\_clique\_graph devuelve el cliqué maximal del grafo, y graph\_clique\_number el orden del cliqué maximal del grafo.
+
+\subsubsection{Clustering}
+La función \texttt{triangles} calcula el número de triángulos del grafo. También está \texttt{transitivity}, que calcula la fracción de los triángulos que existen en G sobre el total del triángulos posibles. La función clustering calcula el índice de clusterización para un conjunto de nodos, y average\_clustering el índice de clusterización del grafo. 
+
+\subsubsection{Conectividad}
+Para grafos no dirigidos, is\_connected devuelve True si el grafo es conexo. Number\_connected\_components devuelve el número de componentes conexas, y connected\_components los componentes conexos del grafo. node\_connected\_component da el componente conexo al que pertenece un nodo.
+
+Para grafos dirigidos, pueden tener una conectividad fuerte (cualquier nodo se puede alcanzar desde cualquier otro nodo) o débil (cualquier nodo se puede alcanzar desde cualquier otro nodo al duplicar cada rama del grafo). Esto se mide con is\_strongly\_connected y con is\_weakly\_connected. También se pueden ver los componentes conexos del grafo (strongly\_connected\_components y weakly\_connected\_components) y su número.
+
+\subsubsection{K-cores}
+Un k-core es un subgrafo maximal tal que el grado de todos sus nodos es k o mayor. 
+\marginpar[\footnotesize Pregunta examen: algo de k-cores entra seguro] \
+El cálculo de k-cores se emplea para la creación de jerarquías de proteínas. core\_number devuelve el número de core de cada nodo del grafo, es decir, el máximo k para todos los k cores que contienen al nodo. k\_core devuelve el k-core de mayor k del grafo.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/kcore.jpg}
+\end{figure}
+
+\subsubsection{Operadores}
+complement(G) devuelve el grafo complemento de G, y reverse(G[, copy]) el inverso del grafo dirigido G. compose(G, H) devuelve el grafo G compuesto con H, es decir, une los conjuntos de vértices y ramas de ambos grafos, los grafos no tienen por qué ser disjuntos. union(G, H[, rename, name]) devuelve la unión de G y H, ambos grafos deben ser disjuntos. intersection(G, H) devuelve un grafo que contiene solo
+los nodos que están a la vez en G y H. difference(G, H)Devuelve un grafo con las ramas que están en G pero no en H.
+
+\subsubsection{Caminos mínimos}
+Para grafos ponderados:
+\begin{itemize}
+\item shortest\_path(G[, source, target, weight]) calcula el camino más corto entre dos nodos dados.
+\item all\_shortest\_paths(G, source, target[, weight]) calcula todos los caminos mínimos en el grafo entre source y target.
+\item shortest\_path\_length(G[, source, target, weight]) calcula la longitud del camino mínimo entre dos nodos dados.
+\item average\_shortest\_path\_length(G[, weight]) calcula la el camino mínimo promedio del grafo(parámetro L).
+\item has\_path(G, source, target) devuelve True si existe un camino entre source y target.
+\item dijkstra\_path(G, source, target[, weight]) calcula el camino ponderado más corto entre source y target.
+\item dijkstra\_path\_length(G, source, target[, weight]) calcula la longitud del camino ponderado más corto entre source y target.
+\item dijkstra\_predecessor\_and\_distance(G, source) calcula el camino ponderado más corto y los predecesores desde source.
+\item single\_source\_dijkstra(G, source[, target, …]) calcula el camino ponderado más corto y las distancias desde source.
+\item single\_source\_dijkstra\_path(G, source[, …]) calcula el camino ponderado más corto desde source.
+\item single\_source\_dijkstra\_path\_length(G, source) calcula las distancias desde source.
+\end{itemize}
+
+Para grafos no ponderados:
+\begin{itemize}
+\item single\_source\_shortest\_path(G, source[, cutoff]) calcula el camino más corto entre source y el resto de nodos del grafo.
+\item single\_source\_shortest\_path\_length(G, source) calcula la longitud del camino más corto entre source y el resto de nodos alcanzables del grafo.
+\item all\_pairs\_shortest\_path(G[, cutoff]) calcula el camino más corto entre todas las parejas de nodos del grafo.
+\item all\_pairs\_shortest\_path\_length(G[, cutoff]) calcula la longitud del camino más corto entre todas las parejas de nodos del grafo.
+\end{itemize}
+
+\subsubsection{Algoritmos aproximados}
+Muchos de los algoritmos vistos en las anteriores secciones son terriblemente lentos y otros incluso no se implementan por su enorme lentitud. Para solucionar este problema se recurre a algoritmos aproximados:
+\begin{itemize}
+\item max\_clique(G) encuentra el máximo cliqué 
+\item average\_clustering(G[, trials]) estima el coeficiente de clustering C.
+\item k\_components(G, min\_density=0.95) una k-componente es una componente que necesita eliminar al menos k nodos para desconectarse.
+\item all\_pairs\_node\_connectivity(G, nbunch=None, cutoff=None) la conectividad entre dos nodos es el mínimo número de nodos que es necesario remover para desconectarlos.
+\item astar\_path(G, source, target[, heuristic, …]) devuelve el camino más corto entre source y target según el algoritmo A*
+\end{itemize}
