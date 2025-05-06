@@ -662,6 +662,7 @@ El mapeo será crucial para el rendimiento del modelo.
 \subsubsection{Construcción de características}
 Las características son cuidadosamente elaboradas por expertos (es decir, se crean características nuevas "a mano"). Si existen conocimientos de expertos, este enfoque puede mejorar el rendiminedo. Así, el modelo no depende (necesariamente) de $d$ o $N$, sino de la naturaleza del problema. No obstante, se requiere de conocimientos de expertos y una intuición sobre el problema, lo cual es difícil para $d$ grandes.
 
+%06/05 - Carlos Alaíz
 \subsubsection{Conjunto de funciones básicas}
 Otro enfoque consiste en definir un mapeo suficientemente general para cualquier problema. Existe un conjunto de funciones de base: polinómicas, gaussianas, sigmoidales, de Fourier, wavelets, splines...
 Entre las ventajas se incluye que es un método automático y no requiere ningún conocimiento experto ni intuición. No obstante, el número de funciones base requeridas crece rápidamente debido a la maldición de la dimensionalidad, puede generar una elevada redundancia, y la dimensión resultante D puede ser mucho mayor de lo necesario.
@@ -672,8 +673,150 @@ En las \textbf{funciones adaptativas básicas}, el mapeo también se aprende y s
 Otro enfoque es el truco de Kernel, en el que no es necesario conocer explícitamente $\phi$.
 
 \subsection{Regresión Kernel Ridge}
+La regresión Ridge aplicada sobre un espacio de características extendido se formula como:
+$$\min_{\mathbf{w}\in\mathbb{R}^{D}}\left\{\frac{1}{2}\|\mathbf{y}-\mathbf{\Phi}\mathbf{w}\|_{2}^{2}+\frac{\gamma}{2}\|\mathbf{w}\|_{2}^{2}\right\}$$
+
+Un caso particular es el modelo lineal generalizado.
+
+La Regresión Ridge admite una \textbf{formulación dual}. 
+Resulta que la solución puede expresarse utilizando únicamente productos escalares entre los vectores.
+
+La solución estándar de Regresión Ridge puede usarse para resolver el problema de optimización:
+
+$$w^* = (\Phi^T \Phi + \gamma I)^{-1} \Phi^T y.$$
+
+Procedimiento:
+\begin{itemize}
+\item Definir el mapeo $\phi : \mathbb{R}^d \to \mathbb{R}^D$.
+\item Transformar explícitamente la matriz de datos de $X \in \mathbb{R}^{N \times d}$ a $\Phi \in \mathbb{R}^{N \times D}$.
+\item Resolver el problema estándar de Regresión Ridge invirtiendo una matriz $D \times D$.
+\item Predecir usando $(w^*)^T \phi(x)$.
+\end{itemize}
+
+Una solución alternativa puede derivarse mediante una formulación restringida del problema y la Dualidad Lagrangiana.
+
+\subsubsection{Problema dual: dualidad lagrangiana}
+
+La dualidad Lagrangiana puede utilizarse para obtener un problema alternativo en la Regresión Ridge con Kernel.  
+El punto de partida es una formulación restringida del problema original:
+
+$$\min_{\mathbf{w} \in \mathbb{R}^D} \left\{ \frac{1}{2} \| \mathbf{y} - \Phi \mathbf{w} \|_2^2 + \frac{\gamma}{2} \| \mathbf{w} \|_2^2 \right\} \equiv \min_{\mathbf{w} \in \mathbb{R}^D} \left\{ \frac{1}{2 \gamma} \sum_{i=1}^N e_i^2 + \frac{1}{2} \| \mathbf{w} \|_2^2 \right\} \text{s.a. } e_i = y_i - \mathbf{w}^T \phi (\mathbf{x}_i)$$
+
+Mediante la dualidad Lagrangiana, el problema restringido es equivalente al siguiente problema dual:
+$$\max_{\alpha \in \mathbb{R}^N} \left\{ D(\alpha) \right\} = \max_{\alpha \in \mathbb{R}^N} \left\{ -\frac{\gamma}{2} \| \alpha \|_2^2 - \frac{1}{2} \alpha^T \Phi \Phi^T \alpha + \alpha^T \mathbf{y} \right\}$$
+
+La solución se caracteriza por los ceros del gradiente, y puede relacionarse con la solución primal:
+$$\nabla_\alpha D(\alpha) \bigg|_{\alpha^*} = \gamma \alpha^* - \Phi \Phi^T \alpha^* + \mathbf{y} = 0 \implies \begin{cases}
+\alpha^* & = (\Phi \Phi^T + \gamma I_N)^{-1} \mathbf{y}, \\
+\mathbf{w}^* & = \sum_{i=1}^N \alpha_i^* \phi (\mathbf{x}_i).
+\end{cases}$$
+
+La formulación dual conduce a un enfoque alternativo. La formulación dual puede ser más conveniente computacionalmente cuando el número de muestras $N$ es menor que la dimensión del espacio de características $D$, ya que evita operar directamente en un espacio de alta dimensión.
+
+Procedimiento:
+\begin{enumerate}
+\item Definir el mapeo $\phi : \mathbb{R}^d \to \mathbb{R}^D$.
+\item Transformar explícitamente la matriz de datos de $X \in \mathbb{R}^{N \times d}$ a $\Phi \in \mathbb{R}^{N \times D}$.
+\item Resolver el problema dual de Kernel Ridge Regression invirtiendo una matriz $N \times N$:
+$$ \alpha^* = (\Phi \Phi^T + \gamma I_N)^{-1} y $$
+\item Reconstruir la solución primal:
+$$ w^* = \Phi^T \alpha^* $$
+\item Realizar predicciones usando:
+$$ (w^*)^T \phi(x) $$
+\end{enumerate}
+
+\subsubsection{Truco del núcleo (kernel)}
+La solución del problema dual es:
+$$\boldsymbol{\alpha}^{*} = \left(\boldsymbol{\Phi}\boldsymbol{\Phi}^{\mathsf{T}} + \gamma\mathbf{I}_{N}\right)^{-1}\mathbf{y}$$
+
+Los datos solo aparecen en forma de $\mathbf{K} = \boldsymbol{\Phi}\boldsymbol{\Phi}^{\mathsf{T}} \in \mathbb{R}^{N \times N}$, donde cada elemento se define como:
+$$k_{i,j} = \mathcal{K}(\mathbf{x}_{i}, \mathbf{x}_{j}) = \boldsymbol{\phi}(\mathbf{x}_i)^{\mathsf{T}}\boldsymbol{\phi}(\mathbf{x}_j)$$
+
+La función $\mathcal{K}: \mathbb{R}^{d} \times \mathbb{R}^{d} \rightarrow \mathbb{R}$ se conoce como \textbf{función kernel}.
+Esta función calcula el producto interno en un espacio de Hilbert determinado.
+Nota importante: La función kernel puede definirse directamente, sin necesidad de una forma explícita para $\boldsymbol{\phi}$.
+
+Queríamos obtener $\alpha$ para obtener $w$ y poder calcular el modelo para hacer predicciones. Así, el hiperplano primal puede recuperarse como:
+$$\mathbf{w}^* = \boldsymbol{\Phi}^\top \boldsymbol{\alpha}^* = \sum_{i=1}^N \alpha_i^* \boldsymbol{\phi}(\mathbf{x}_i)$$
+
+La predicción se realiza mediante:
+$$f(\mathbf{x}) = (\mathbf{w}^*)^\top \boldsymbol{\phi}(\mathbf{x}) = \sum_{i=1}^N \alpha_i^* \boldsymbol{\phi}(\mathbf{x}_i)^\top \boldsymbol{\phi}(\mathbf{x}) = \sum_{i=1}^N \alpha_i^* \mathcal{K}(\mathbf{x}_i, \mathbf{x})$$
+
+No es necesario calcular explícitamente $\mathbf{w}^*$, y no se requiere conocer $\boldsymbol{\phi}$ directamente, basta con conocer la función kernel $\mathcal{K}$. Así, tras haber calculado $\alpha$, cada vez que tengamos un dato nuevo se puede incorporar directamente con la matriz \textbf{K}.
+
+Procedimiento:
+\begin{enumerate}
+    \item \textbf{Definir la función kernel}:
+    $$\mathcal{K} : \mathbb{R}^d \times \mathbb{R}^d \to \mathbb{R}$$
+    
+    \item \textbf{Resolver el problema dual}:
+    Invertir una matriz $N \times N$ en la Regresión Ridge dual.
+    
+    \item \textbf{Realizar predicciones}:
+    $$f(\mathbf{x}) = \sum_{i=1}^{N} \alpha_i^* \mathcal{K}(\mathbf{x}_i, \mathbf{x})$$
+    \end{enumerate}
+
+El cálculo de $\mathcal{K}$ debe ser \textbf{eficiente}, y no debe requerir la aplicación explícita del mapeo $\phi$.
+
+\subsubsection{Construcción de funciones de Kernel}
+Una función kernel $\mathcal{K} : \mathbb{R}^d \times \mathbb{R}^d \to \mathbb{R}$ es una función simétrica y definida positiva.
+
+Dados dos kernels $\mathcal{K}_1(\mathbf{x}, \mathbf{x}')$ y $\mathcal{K}_2(\mathbf{x}, \mathbf{x}')$, y $c \in \mathbb{R}$, se pueden definir nuevos kernels mediante:
+\begin{itemize}
+    \item $\mathcal{K}_1(\mathbf{x}, \mathbf{x}') + c$
+    \item $c\mathcal{K}_1(\mathbf{x}, \mathbf{x}')$, para $c > 0$
+    \item $\mathcal{K}_1(\mathbf{x}, \mathbf{x}') + \mathcal{K}_2(\mathbf{x}, \mathbf{x}')$
+    \item $\mathcal{K}_1(\mathbf{x}, \mathbf{x}')\mathcal{K}_2(\mathbf{x}, \mathbf{x}')$
+\end{itemize}
+
+Ejemplos de kernels comunes:
+\begin{itemize}
+    \item \textbf{Lineal}:
+    \begin{align*}
+        \mathcal{K}(\mathbf{x}, \mathbf{x}') &= \mathbf{x}^T\mathbf{x}' \\
+        \mathcal{K}(\mathbf{x}, \mathbf{x}') &= c + \mathbf{x}^T\mathbf{x}' \\
+        \mathcal{K}(\mathbf{x}, \mathbf{x}') &= (\mathbf{x} - \boldsymbol{\mu})^T\boldsymbol{\Sigma}^{-1}(\mathbf{x}' - \boldsymbol{\mu})
+    \end{align*}
+    
+    \item \textbf{Polinomial} (grado $d$): $ \mathcal{K}(\mathbf{x}, \mathbf{x}') = (\mathbf{x}^T\mathbf{x}' + c)^d $
+    
+    \item \textbf{Gaussiano (RBF)}:
+    $ \mathcal{K}(\mathbf{x}, \mathbf{x}') = \exp\left(-\gamma\|\mathbf{x} - \mathbf{x}'\|_2^2\right) $
+    
+    \item \textbf{Exponencial}:
+    $ \mathcal{K}(\mathbf{x}, \mathbf{x}') = \exp\left(-\gamma\|\mathbf{x} - \mathbf{x}'\|_2\right) $
+    
+    \item Otros kernels: Gamma Exponencial, Sigmoide, Matérn, Kernel Periódico...
+\end{itemize}
+
+La selección del kernel (y sus hiperparámetros) debe realizarse cuidadosamente según el problema específico.
 
 \subsection{Clasificadores de vectores de soporte}
+\subsubsection{Múltiples hiperparámetros}
+Las máquinas de vectores soporte (SVM) surgen en el marco de los problemas de clasificación linealmente separables. Existen múltiples hiperplanos que separan perfectamente los datos, aunque elgunos de ellos generalizarán mejor que otros.
+En el caso de la regresión logística, un enfoque probabilístico selecciona el mejor hiperplano, pero se pueden utilizar otras interpretaciones geométricas.
+
+\subsubsection{Margen de un modelo lineal}
+La intuición geométrica puede formalizarse con el concepto de \textbf{margen}.
+
+El \textbf{margen} en un problema de clasificación binaria linealmente separable se define como la distancia entre el hiperplano y el punto de datos más cercano:
+$$m = \min_{1 \leq i \leq N} \left\{ \frac{|\mathbf{w}^\intercal \mathbf{x}_i + b|}{\|\mathbf{w}\|_2} \right\}$$
+
+Cuando el problema es linealmente separable y considerando $y_i \in \{-1, 1\}$, el margen puede expresarse alternativamente como:
+$$m = \min_{1 \leq i \leq N} \left\{ \frac{y_i(\mathbf{w}^\intercal \mathbf{x}_i + b)}{\|\mathbf{w}\|_2} \right\}$$
+
+\begin{itemize}
+    \item $\mathbf{w}$: Vector normal al hiperplano de separación
+    \item $b$: Término de sesgo (bias)
+    \item $\|\mathbf{w}\|_2$: Norma euclídea del vector $\mathbf{w}$
+    \item $y_i$: Etiqueta de clase ($-1$ o $1$)
+\end{itemize}
+
+Ejercicio: dado un modelo de clasificación lineal bidimensional con pesos $\{b = 0, w_1 = 1, w_2 = 0\}$ y el siguiente dataset, computa las distancias entre cada punto y el hiperplano usando $|\mathbf{w^tx}_i + b| / ||\mathbf{w}||_2$ y el margen del modelo. Como la norma de \textbf{w} es 1, se podría simplificar.
+$$-1, -1; -1 \rightarrow (-1 \cdot 1) + (-1 \cdot 0) + 0 = -1 < 0 \checkmark \rightarrow d = |-1|/1 = 1 $$
+$$-2, 1; -1 \rightarrow (-2 \cdot 1) + (1 \cdot 0) + 0 = -2  < 0 \checkmark \rightarrow d = |-2|/1 = 2$$
+$$1, 0; 1 \rightarrow (1 \cdot 1) + (0 \cdot 0) + 0 = 1  > 0 \checkmark \rightarrow d = |1|/1 = 1$$
+El modelo sí separa las dos clases. El margen del modelo es 1 (la distancia mínima calculada). 
 
 \subsection{Regresión por vectores de soporte}
 
