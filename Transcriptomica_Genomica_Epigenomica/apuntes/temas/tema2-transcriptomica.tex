@@ -289,6 +289,61 @@ Tras el filtrado se realiza el demultiplexado. Lo más habitual es hacer la mism
 
 Realizaremos esto en código, siguiendo con el script. 
 
+%07/05 - Carlos Torroja
+El filtrado de células de baja calidad ayuda a mejorar la agrupación eliminando fuentes de variación no deseadas. Filtros típicos utilizados:
+\begin{itemize}
+\item Recuentos: Los recuentos bajos reducen la capacidad de perfilar la expresión génica. Los recuentos altos pueden indicar multipletes (varias células capturadas en la misma.
+\item Genes: Un nivel bajo de genes detectados puede indicar problemas en la viabilidad celular
+o problemas químicos particulares. Los niveles altos pueden indicar también multipletes (varias células capturadas en la misma gota/pocillo).
+Precaución: Varios tipos de células tienen niveles particularmente bajos de genes, como
+los neutrófilos. Además, varios tipos celulares tienen niveles particularmente altos de genes, como las
+Células madre o indiferenciadas.
+\item Genes mitocondriales:
+En situaciones en las que una célula está muriendo o hay un problema con la química, el ARNm se degrada o es más sensible que el ARN de los genes mitocondriales y éstos se vuelven dominantes en el perfil. Niveles elevados de ARN MT indican células de baja calidad (células moribundas o captura de baja calidad). Precaución: Los filtros deben ajustarse según la biología en estudio. Las células musculares tienen altos niveles de MT.
+\item Genes HBB: 
+Hay experimentos que involucran vasos con eritrocitos que podrían contaminar la muestra. Los eritrocitos tienen altos niveles de ARN HBB y algunos otros ARN y son muy sensibles y fáciles de lisar. Pueden liberar su contenido y aumentar el ARN de fondo hasta el punto de que una gota/pocillo vacío puede considerarse una célula. Las células HBB de alto contenido suelen eliminarse a menos que sean biológicamente relevantes.
+\item Complejidad genética:
+La idea es detectar aquellas células que teniendo muchas lecturas, y suficientes genes detectados, aún tienen muy pocos genes con la mayoría de las lecturas. Esas células son también de muy baja calidad y normalmente reflejan un problema de captura de ARN o una célula moribunda.
+\item Contenido del hashtag:
+Cuando hay varias muestras agrupadas en el experimento y etiquetadas con anticuerpos/hashtags, también se recomienda un filtro de hashtags.
+\end{itemize}
+
+La idea es reducir el número de genes a los más relevantes para aumentar la eficiencia. Obviamente, eliminaremos todos los genes con recuentos 0 en todo el experimento, pero a veces también es bueno eliminar algunos que sólo se detectan en unas pocas células. Esto dependerá del número total de células del experimento y de la cantidad mínima de células que se espera que formen parte de un cluster. En muchos casos no sabemos si vamos a tener pequeños clusters relevantes. Así que, para empezar, basta con eliminar los que estén presentes en no más de 10 células. Más adelante se puede aumentar o reducir el filtro
+
+\subsection{Demultiplexado del hashtag}
+Se pueden procesar varias muestras en un experimento marcando las células de cada muestra con un anticuerpo contra un antígeno de membrana ubicuo. Esto reduce los costes de captura y preparación de bibliotecas. Las bibliotecas Hashtag de muestras (Ab-barcode de muestras) se preparan junto con las bibliotecas de ARNm, pero independientemente de ellas, una vez que se ha producido y amplificado el ADNc. Las bibliotecas Hashtag se secuencian junto con las bibliotecas derivadas de ARNm y las secuencias de ambas bibliotecas se demultiplexan basándose en el sistema de código de barras de muestras de Illumina.
+
+La secuencia R2 se anota con el código de barras celular y las UMI de R1. R2 se asignan a las secuencias Hashtag utilizadas para etiquetar cada muestra. Los recuentos se generan del mismo modo que los genes: combinación única UMI/Código de barras/Hashtag. Sólo se conservan los códigos de barras de células detectadas basados en la expresión de genes. Se genera un modelo de fondo para cada hashtag basado en la expresión de todos los hashtags menos el de mayor expresión en cada célula. Los hashtags significativamente alejados de este modelo de fondo se consideran detectados. De este modo, las células se etiquetan en función de los hashtags detectados.
+
+\subsection{Normalización y escalado}
+Hay muchos modelos de normalización. En general se puede utilizar el más básico para obtener la información, pero hay otros que son más sofisticados.
+
+La normalización en muestras en bulk se basa en el hecho de que la mayoría de los genes no cambian entre réplicas y condiciones.
+En los experimentos con SC ocurre casi lo contrario. La mayoría de los genes detectados son diferentes entre células. Además, la expresión de los genes a cualquier nivel depende en gran medida de la profundidad de secuenciación de la célula.
+
+El escalado se realiza generalmente después de la selección de los genes más variables.
+
+\subsection{PCA}
+Se utiliza la PCA para mantener la variabilidad del experimento, pero reduciendo los features. Esta reducción de dimensionalidad se puede hacer lineal (PCA), pero también de forma no lineal. Lo más común es realizar un UMAP, aplanando el espacio de dimensiones. Las distancias están deformadas; si los elementos se tocan, sí tienen relación, pero si no, la relación no depende de la distancia mayor o menor que tenga.
+
+Antes de clusterizar se transforman los datos, transformando un grafo en el que es más fácil encontrar las combinaciones de células. 
+El objetivo es definir en el espacio multidimensional qué células están próximas entre sí: encontrar los vecinos de cada célula. Todos los análisis posteriores, clustering, reducción de dimensionalidad, trayectorias, etc., dependen de este conjunto de vecinos encontrado para cada célula.
+
+En los primeros pasos se calcula la distancia entre células. Para mejorar la eficiencia se aplica un kernel de densidad para reducir la cantidad de distancias a calcular. Se seleccionan los K vecinos más próximos (KNN; k-nearest neighbours) y a partir de ahí se construye un gráfico de vecinos más próximos compartidos (SNN; shared nearest neighbours). En este grafo se aplican los algoritmos para clusterizar.
+
+La clusterización trata de encontrar comunidades locales de nodos muy relacionados. Hay varios algoritmos disponibles. El más utilizado es el clustering basado en Louvain y la última mejora de Leiden. Las comunidades se definen mediante un parámetro de resolución. Cuanto mayor sea la resolución, más subdivididas estarán las comunidades. El parámetro de resolución es arbitrario y aquí se necesita un poco de interpretación biológica para refinar los clusters automatizados.
+
+\subsection{Búsqueda de marcadores}
+El objetivo es definir los genes más relevantes que definen un clúster. La prueba compara la expresión media de todos los genes de un cluster concreto con la expresión media del resto. Varios clusters pueden compartir genes marcadores. Pueden aplicarse varios métodos.
+
+Sin embargo, los métodos más robustos son:
+\begin{itemize}
+\item Wilcoxon: Una prueba no paramétrica que es robusta a la distribución subyacente de los datos aunque no muy potente.
+\item  MAST: un modelo lineal generalizado de dos partes que modela simultáneamente la tasa de expresión sobre el fondo de varios transcritos y la media de expresión positiva. Este modelo puede adaptarse a diseños complejos.
+\end{itemize}
+
+También se puede calcular la expresión diferencial entre pares de clústeres y entre condiciones.
+
 %Identificación de tipos celulares
 %Comunicación intercelular
 %Análisis de trayectoria o pseudotiempo, interactoma, reguloma

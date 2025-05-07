@@ -35,6 +35,7 @@ library(biomaRt)
 library(tidyverse)
 library(gtools)
 library(Matrix)
+library(ggridges)
 library(RColorBrewer)
 color.list <- RColorBrewer::brewer.pal(12, "Paired")
 color.list <- c(color.list, RColorBrewer::brewer.pal(12, "Set3"))
@@ -71,24 +72,23 @@ counts_rbind <- do.call(rbind, counts[c(1,3,2)]) #se seleccionan los elementos d
 dir.create(file.path(dataPath, "sampled_feature_bc_matrix"))
 
 writeMM(obj = counts_rbind, 
-        file = gzfile(file.path(dataPath, "sampled_feature_bc_matrix", 
-        "matrix.mtx.gz")))
+        file = gzfile(file.path(dataPath,"sampled_feature_bc_matrix","matrix.mtx.gz")))
 
 file.copy(
-  from = file.path(dataPath, "filtered_feature_bc_matrix", "features.tsv.gz"),
-  to = file.path(dataPath, "sampled_feature_bc_matrix", "features.tsv.gz")
-)
+  from = file.path(dataPath,"filtered_feature_bc_matrix","features.tsv.gz"),
+  to = file.path(dataPath,"sampled_feature_bc_matrix","features.tsv.gz"))
 
-write_tsv(selected_cells, 
-          file = gzfile(file.path(dataPath, "sampled_feature_bc_matrix", "barcodes.tsv.gz")), 
-          col_names = FALSE)
+write_tsv(data.frame(selected_cells),
+          file = gzfile(file.path(dataPath,"sampled_feature_bc_matrix","barcodes.tsv.gz")),
+          col_names = F)
 
 counts <- counts_rbind <- NULL
 gc()
 ```
 
 ```{r}
-counts <- Read10X(file.path(dataPath, "sampled_feature_bc_matrix"), gene.column = 1)
+counts <- Read10X(file.path(dataPath,"sampled_feature_bc_matrix"),
+                  gene.column = 1)
 lapply(counts, dim)
 ```
 
@@ -97,15 +97,18 @@ lapply(counts, dim)
 Se filtran las células con mala calidad para eliminar aquellas que han muerto antes de tiempo y de las cuales se ha capturado su ARN (potencialmente esto ocurre con las células con muchos genes mitocondriales).
 
 ```{r}
-sce <- SingleCellExperiment(assays = list(counts = counts$`Gene Expression`))
-sce
+sce <- SingleCellExperiment(
+  assays = list(counts = counts$`Gene Expression`),
+  mainExpName = "RNA"
+)
 
+adt <- SingleCellExperiment(
+  assays = list(counts = counts$`Antibody Capture`)
+)
 
-adt <- SingleCellExperiment(assays = list(counts = counts$`Antibody Capture`))
-adt
-
-hto <- SingleCellExperiment(assays = list(counts = counts$Custom))
-hto
+hto <- SingleCellExperiment(
+  assays = list(counts = counts$Custom)
+)
 
 # añadir experimentos siempre y cuando las células sean las mismas
 altExps(sce) <- list(ADT = adt, HTO = hto)
@@ -119,7 +122,7 @@ Nos cargamos los metadatos de los genes con la librería biomart.
 ```{r}
 mart <- useEnsembl(biomart = "genes",
                    dataset = "hsapiens_gene_ensembl",
-                   version = 98) #la versión de la referencia depende del experimento 
+                   version = 99) #la versión de la referencia depende del experimento 
 
 attrList <- listAttributes(mart)
 
@@ -156,7 +159,7 @@ sum(duplicated(genesMetadata$ensembl_gene_id))
 # 0
 
 sum(duplicated(genesMetadata$external_gene_name))
-# 1211, se les va a poner un nombre único
+# 34, se les va a poner un nombre único
 
 genesMetadata <- genesMetadata %>%
   mutate(uniq_name = make.names(external_gene_name, unique = TRUE))
@@ -165,10 +168,9 @@ sum(duplicated(genesMetadata$uniq_name))
 # 0
 
 dim(genesMetadata)
-# 60623 10
+# 60676 10
 #En Ensembl hay más genes anotados. No son los 36.000 de antes porque se había realizado un prefiltrado de genes (se quitan los pseudogenes, genes ribosomales, microRNAs, cosas que no son poli-A), que es lo que debemos hacer ahora con la referencia
 ```
-
 ```{r}
 genesMetadataInExperiment <- genesMetadata %>%
   filter(ensembl_gene_id %in% rownames(sce))
@@ -177,26 +179,36 @@ genesMetadataInExperiment <- genesMetadataInExperiment %>%
   mutate(geneId = ensembl_gene_id) %>% 
   column_to_rownames("geneId")
 
+rowData(sce)$ensembl_gene_id <- rownames(sce)
+
+df <- as.data.frame(rowData(sce))
+
+df <- df %>%
+  left_join(genesMetadataInExperiment, by = c("ensembl_gene_id")) %>%
+  mutate(uniq_name = ifelse(
+    is.na(uniq_name),ensembl_gene_id,uniq_name)) %>%
+  as.data.frame()
+
+rownames(df) <- df$ensembl_gene_id
+
+rowData(sce) <- DataFrame(df)
+
+rowData(sce)$strand <- NULL
+
 dim(genesMetadataInExperiment)
-# 36601 10
-
-rowData(sce) <- DataFrame(genesMetadataInExperiment[rownames(sce),])
-
-sce
+# 36591 10
 ```
-
 # Annotate Genes
 
 ```{r}
 
-#df <- as.data.frame(rowData(sce))
+# df <- as.data.frame(rowData(sce))
 
-genesMetadataInExperiment <- genesMetadata %>%
-  filter(ensembl_gene_id %in% rownames(sce))
-
-#rownames(sce) <- genesMetadataInExperiment[match(rownames(sce),genesMetadataInExperiment$ensembl_gene_id),"uniq_name"]
-#esto es demasiado engorroso y vamos a hacer una alternativa más sencilla
 rownames(sce) <- rowData(sce)$uniq_name
+
+# genesMetadataInExperiment[match(rownames(sce),genesMetadataInExperiment$ensembl_gene_id),"uniq_name"]
+
+table(rownames(sce) %in% genesMetadata$ensembl_gene_id)
 
 HBBGenes <- genesMetadataInExperiment %>%
   filter(grepl("hemoglobin",description,ignore.case = T))
@@ -741,17 +753,33 @@ myGenes <- !rownames(scef) %in% c(MTGenes$uniq_name,
                                  RBRGenes$uniq_name)
 myCells <- scef$manualFilter
 
-seuratSC <- CreateSeuratObject(counts = assay(scef, "counts")[myGenes,], 
-                               data = assay(scef, "logcounts")[myGenes,])
-seuratSC <- seuratSC %>%
-  AddMetaData(metadata = as.data.frame(colData(scef)))
+scef <- scef[myGenes,]
 
-head(seuratSC@assays$RNA@cells@.Data)
+seuratSC <- as.Seurat(scef
+                      , counts = "counts"
+                      , data = "logcounts"
+                      , project = "Stuart2019"
+)
 
-seuratSC@assays$ADT <- CreateAssayObject(key = "adt_",
-                                         counts = assay(altExp(scef, "ADT"), "counts"))
-seuratSC@assays$HTO <- CreateAssayObject(key = "hto_", 
-                                         counts = assay(altExp(scef, "HTO"), "counts"))
+# seuratSC <- CreateSeuratObject(
+#   counts = assay(scef,"counts"),
+#   data = assay(scef,"logcounts"))
+# 
+# seuratSC <- seuratSC %>%
+#   AddMetaData(
+#     metadata = as.data.frame(colData(scef))
+#     )
+# 
+# seuratSC@assays$ADT <- CreateAssayObject(
+#   key = "adt_",
+#   counts = assay(altExp(scef,"ADT"),"counts")
+# )
+# 
+# seuratSC@assays$HTO <- CreateAssay5Object(
+#   key = "hto_",
+#   counts = assay(altExp(scef,"HTO"),"counts"),
+#   data = assay(altExp(scef,"HTO"),"logcounts")
+# )
 
 seuratSC
 ```
@@ -760,7 +788,9 @@ seuratSC
 ```{r}
 Seurat::Assays(seuratSC)
 ```
-
+```{r}
+DefaultAssay(seuratSC)
+```
 ```{r}
 seuratSC@assays
 ```
@@ -775,13 +805,15 @@ Normalizamos el assay de HTO para ver de qué alícuota venía cada célula.
 DefaultAssay(seuratSC) <- "HTO"
 
 seuratSC <- seuratSC %>%
-  NormalizeData( #normalización
+  NormalizeData(
     assay = "HTO",
     normalization.method = "CLR",
-    margin = 1) %>%
-  HTODemux( #demultiplexado
+    margin = 1)
+
+seuratSC <- seuratSC %>%
+  HTODemux(
     assay = "HTO",
-    positive.quantile = 0.99)
+    positive.quantile = 0.95)
 
 table(seuratSC$HTO_classification.global)
 ```
@@ -841,11 +873,12 @@ seuratSC <- seuratSC %>%
     assay = "ADT",
     normalization.method = "CLR",
     margin = 2) %>%
-  ScaleData()
+  ScaleData() #nunca se hace con toda la batería de la matriz de expresión
 ```
 
 ```{r}
 rownames(seuratSC)
+#devuelve los anticuerpos
 ```
 
 
@@ -858,3 +891,611 @@ seuratSC %>%
   )
 ```
 
+## Detect Doublets and remove them
+
+```{r}
+#BiocManager::install("scDblFinder", binary=TRUE)
+#update? NO
+library(scDblFinder)
+DefaultAssay(seuratSC) <- "RNA" #en función de perfiles tradicionales de genes
+
+sce <- scDblFinder(as.SingleCellExperiment(seuratSC),knownDoublets = seuratSC$HTO_classification.global == "Doublet",)
+
+seuratSC <- as.Seurat(sce
+                      , counts = "counts"
+                      , data = "logcounts")
+
+```
+
+```{r}
+table(seuratSC$scDblFinder.class,seuratSC$HTO_classification.global)
+```
+No ha funcionado muy allá... 1300 genes que eran dobletes no se han caracterizado como tal. Por eso se hacen varias rondas de búsqueda de doublets.
+
+```{r}
+DefaultAssay(seuratSC) <- "ADT"
+p1 <- seuratSC %>%
+  FeatureScatter(
+    "CD3",
+    "CD14",
+    group.by = "scDblFinder.class"
+  )
+
+p2 <- seuratSC %>%
+  FeatureScatter(
+    "CD3",
+    "CD14",
+    group.by = "HTO_classification.global"
+  )
+
+p1 + p2 + patchwork::plot_layout(ncol = 2)
+```
+
+## Remove Doublets
+
+```{r}
+seuratSC <- seuratSC[,seuratSC$scDblFinder.class == "singlet"]
+```
+
+## Normalize and Scale CITE-Seq/Ab-Seq Data
+
+```{r}
+DefaultAssay(seuratSC) <- "ADT"
+```
+
+```{r}
+seuratSC <- seuratSC %>%
+  NormalizeData(
+    assay = "ADT",
+    normalization.method = "CLR",
+    margin = 2) %>%
+  ScaleData()
+```
+
+## Normalize Transcriptome Data
+Técnicamente ya hemos normalizado previamente, pero no pasa nada. Nos cargamos la normalización por pooles porque vamos a reemplazar la matriz.
+
+```{r}
+DefaultAssay(seuratSC) <- "RNA"
+```
+
+```{r}
+
+seuratSC <- seuratSC %>%
+  NormalizeData(
+    assay = "RNA",
+    normalization.method = "LogNormalize" #este es el básico
+  ) %>%
+  FindVariableFeatures(
+    assay = "RNA",
+    nfeatures = 2000, #2000 es un estándar, pero depende un poco de la complejidad del experimento. Si solo hay linfocitos T, la variabilidad será poca y se debería bajar el número para no introducir ruido de problemas técnicos
+    selection.method = "vst", # or mvp, pero este es más manual al indicar el nivel de expresión y variabilidad
+    verbose = F) %>%
+  ScaleData() #importante hacer después de la selección de los genes
+
+```
+
+```{r}
+seuratSC@assays$RNA@var.features
+#lista de features
+
+seuratSC@assays$RNA@scale.data
+```
+
+```{r}
+# BiocManager::install('glmGamPoi', type="binary")
+seuratSC <- seuratSC %>%
+  SCTransform( #normaliza y selecciona variable genes transformando los datos
+    assay = "RNA",
+    conserve.memory = T,
+    variable.features.n = 2000,
+    new.assay.name = "SCT"
+  )
+```
+
+```{r}
+seuratSC@assays$SCT@data
+```
+```{r}
+# Get the list of most var genes from lognorm data
+DefaultAssay(seuratSC) <- "RNA"
+vgvst <- seuratSC %>% VariableFeatures(
+  assay = "RNA",
+  selection.method = "vst"
+)
+
+# Get the list of most var genes from SCTnorm data
+DefaultAssay(seuratSC) <- "SCT"
+vgsct <- seuratSC %>% VariableFeatures(
+  assay = "SCT"
+)
+
+# Get the list of proteins from ADT data
+vgadt <- rownames(seuratSC@assays$ADT)
+
+sum(vgvst %in% vgsct)
+#496
+```
+
+```{r}
+features <- c("nFeature_RNA","nCount_RNA","subsets_MT_percent","altexps_ADT_percent","altexps_HTO_percent","percent.top_50")
+
+VlnPlot(subset(seuratSC,HTO_classification.global == "Singlet")
+        ,features = features
+        ,group.by = "HTO_classification"
+        ,cols = color.list
+        ,ncol = 4
+        ,pt.size = 0
+        ,combine = F
+        )
+```
+
+```{r}
+seuratSC <- seuratSC %>%
+  RunPCA(
+    assay = "RNA",
+    npcs = 50,
+    features = vgvst,
+    reduction.name = "pca",
+    reduction.key = "PC_",
+    verbose = F
+  ) %>%
+  RunPCA(
+    assay = "SCT",
+    npcs = 50,
+    features = vgsct,
+    reduction.name = "SCTpca",
+    reduction.key = "SCTPC_",
+    verbose = F
+  ) %>%
+  RunPCA(
+    assay = "ADT",
+    npcs = 50,
+    features = vgadt,
+    reduction.name = "ADTpca",
+    reduction.key = "ADTPC_",
+    verbose = F
+  )
+```
+
+## QC PCAs
+
+### CC Module on PCAs
+
+#### Compute Cell Cycle Scores
+
+```{r }
+#listas de genes que intervienen en las fases S y G2M
+this.s.genes <- rownames(seuratSC)[rownames(seuratSC) %in% SGenes$uniq_name]
+
+this.g2m.genes <- rownames(seuratSC)[rownames(seuratSC) %in% G2MGenes$uniq_name]
+
+```
+
+```{r}
+seuratSC <- seuratSC %>%
+  CellCycleScoring(
+    assay = "RNA",
+    s.features = this.s.genes,
+    g2m.features = this.g2m.genes) %>%
+ AddModuleScore(
+   assay = "RNA",
+   features = list(cc.Score = c(this.g2m.genes,this.s.genes)),
+   name = "CC.Score")
+#clasifica las células en base a si están en la fase S o G2M por la lista de genes
+#esto se suele hacer si se clusteriza un conjunto de células en proliferación y se quiere evitar que se clasifiquen por el ciclo celular en el que están
+#el score se va a utilizar para eliminar ese efecto de células proliferativas vs no proliferativas
+```
+
+#### Compute Enrichment of CC genes in PC componets
+
+Evaluar cómo de enriquecido está el componente de la PCA en genes proliferativos. Luego se quiere quitar esa componente del clustering para que no tenga efecto.
+
+```{r}
+# Get All PC Embeddings (coordenadas de la PCA)
+df <- Embeddings(seuratSC,reduction = "pca")
+
+# Add Metadata
+df <- cbind(df,seuratSC@meta.data)
+
+# Sample Data for plotting purposes.
+df <- df[sample(nrow(df),size = min(1000,length(Cells(seuratSC)))),]
+
+head(df)
+```
+
+```{r}
+# Get list of all CC genes
+ccGenesVars <- c(SGenes$uniq_name,G2MGenes$uniq_name)
+
+# Filter to those in our single cell object (quizás no tenemos todos los genes, y queremos solo aquellos que estén en nuestra lista de variable genes)
+ccGenesVars <- ccGenesVars[ccGenesVars %in% VariableFeatures(seuratSC, assay = "RNA")]
+
+# Compute enrichment of PC loadings of CC gene set
+unloadings <- data.frame(
+  cc = colMeans(abs(seuratSC@reductions$pca@feature.loadings[ccGenesVars,1:30]))/colMeans(abs(seuratSC@reductions$pca@feature.loadings[,1:30]))
+  ) %>%
+  mutate(PC = rownames(.)) %>%
+  mutate(PC = factor(PC,levels = mixedsort(PC)))
+```
+
+```{r}
+#install.packages("circlize", type="binary")
+#library(circlize)
+pairs(df[,paste0("PC_",1:30)]
+      , row1attop = F
+      , gap = 0.25
+      , pch = 19
+      , cex = 0.5
+      , col = colorRamp2(
+        breaks = c(min(df$CC.Score1),mean(df$CC.Score1),max(df$CC.Score1)),
+        colors = c("blue","yellow","red"))(df$CC.Score1)
+      )
+ # RColorBrewer::brewer.pal(3,"Spectral")
+```
+
+```{r}
+unloadings %>%
+  ggplot(aes(x=PC,y=cc)) +
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_text(angle = 90))
+
+```
+
+## Variability across PCs
+
+```{r}
+seuratSC %>%
+  ElbowPlot(ndims = 30,reduction = "pca")
+```
+Como mucho se cogerían 20 componentes para tener toda la variabilidad necesaria. De ellas, se quitarían después aquellas que tengan mucha influencia del ciclo celular.
+
+```{r}
+seuratSC %>%
+  ElbowPlot(ndims = 30,reduction = "ADTpca")
+```
+Aquí se usarían todos porque son poquitos anticuerpos.
+
+
+```{r}
+seuratSC %>%
+  ElbowPlot(ndims = 30,reduction = "SCTpca")
+```
+Aquí se volverían a usar alrededor de 20 componentes.
+
+# Clustering and Dimensionality Reduction
+
+```{r}
+seuratSC <- seuratSC %>%
+  FindNeighbors(
+    assay = "RNA",
+    reduction = "pca",
+    dims = 1:20,
+    features = vgvst,
+    k.param = 20,
+    force.recalc = T,
+    graph.name = c("RNA_nn","RNA_snn"),
+  ) %>%
+  FindNeighbors(
+    assay = "ADT",
+    reduction = "ADTpca",
+    dims = 1:20,
+    features = vgadt,
+    k.param = 20,
+    force.recalc = T,
+    graph.name = c("ADT_nn","ADT_snn"),
+  ) %>%
+  FindNeighbors(
+    assay = "SCT",
+    reduction = "SCTpca",
+    dims = 1:20,
+    features = vgsct,
+    k.param = 20,
+    force.recalc = T,
+    graph.name = c("SCT_nn","SCT_snn"),
+  )
+```
+
+```{r}
+seuratSC <- seuratSC %>%
+  FindClusters(
+    assay = "RNA",
+    graph.name = "RNA_snn",
+    resolution = c(0.1,0.25,0.5,0.75,1),
+  ) %>%
+  FindClusters(
+    assay = "ADT",
+    graph.name = "ADT_snn",
+    resolution = c(0.1,0.25,0.5,0.75,1),
+  ) %>%
+  FindClusters(
+    assay = "SCT",
+    graph.name = "SCT_snn",
+    resolution = c(0.1,0.25,0.5,0.75,1),
+  )
+```
+
+
+```{r}
+seuratSC <- seuratSC %>%
+  RunUMAP(
+    assay = "RNA",
+    reduction = "pca", #también se podría hacer sobre el grafo, pero depende de tener Python con una librería (reticulate para hacerlo desde R mismo pero con acceso a Python)
+    dims = 1:16,
+    min.dist = 0.3,
+    spread = 1,
+    n.neighbors = 30L,
+    metric = "cosine", # euclidean para los grafos, y para UMAP valen los dos
+    reduction.name = "RNAumap",
+    reduction.key = "RNAUMAP_"
+  ) %>%
+  RunUMAP(
+    assay = "ADT",
+    reduction = "ADTpca",
+    dims = 1:16,
+    min.dist = 0.3,
+    spread = 1,
+    n.neighbors = 30L,
+    metric = "cosine", # euclidean
+    reduction.name = "ADTumap",
+    reduction.key = "ADTUMAP_"
+  ) %>%
+  RunUMAP(
+    assay = "SCT",
+    reduction = "SCTpca",
+    dims = 1:16,
+    min.dist = 0.3,
+    spread = 1,
+    n.neighbors = 30L,
+    metric = "cosine", # euclidean
+    reduction.name = "SCTumap",
+    reduction.key = "SCTUMAP_"
+  )
+```
+
+## Clustering based on LogNorm
+
+```{r}
+p1 <- DimPlot(seuratSC,
+        reduction = "RNAumap",
+        group.by = "RNA_snn_res.0.5",
+        label = T,
+        cols = color.list) +
+  theme(legend.position = "none")
+
+p2 <- DimPlot(seuratSC,
+        reduction = "SCTumap",
+        group.by = "SCT_snn_res.0.5",
+        label = T,
+        cols = color.list)+
+  theme(legend.position = "none")
+
+p3 <- DimPlot(seuratSC,
+        reduction = "ADTumap",
+        group.by = "ADT_snn_res.0.5",
+        label = T,
+        cols = color.list)
+
+p1 + p2 + p3 + patchwork::plot_layout(ncol = 3)
+```
+La numeración es distinta para cada grafo (el 1 del RNAUMAP no es el 1 del SCTUMAP), y se da en función del tamaño del cluster.
+
+
+## Clustering based on SCT
+
+```{r}
+p1 <- DimPlot(seuratSC,
+        reduction = "RNAumap",
+        group.by = "SCT_snn_res.0.5",
+        label = T,
+        cols = color.list) +
+  theme(legend.position = "none")
+
+p2 <- DimPlot(seuratSC,
+        reduction = "SCTumap",
+        group.by = "SCT_snn_res.0.5",
+        label = T,
+        cols = color.list)+
+  theme(legend.position = "none")
+
+p3 <- DimPlot(seuratSC,
+        reduction = "ADTumap",
+        group.by = "SCT_snn_res.0.5",
+        label = T,
+        cols = color.list)
+
+p1 + p2 + p3 + patchwork::plot_layout(ncol = 3)
+```
+
+## Clustering based on ADT
+
+```{r}
+p1 <- DimPlot(seuratSC,
+        reduction = "RNAumap",
+        group.by = "ADT_snn_res.0.5",
+        label = T,
+        cols = color.list) +
+  theme(legend.position = "none")
+
+p2 <- DimPlot(seuratSC,
+        reduction = "SCTumap",
+        group.by = "ADT_snn_res.0.5",
+        label = T,
+        cols = color.list)+
+  theme(legend.position = "none")
+
+p3 <- DimPlot(seuratSC,
+        reduction = "ADTumap",
+        group.by = "ADT_snn_res.0.5",
+        label = T,
+        cols = color.list)
+
+p1 + p2 + p3 + patchwork::plot_layout(ncol = 3)
+```
+
+## Different Resolutions
+
+```{r}
+df <- Embeddings(seuratSC, reduction = "RNAumap")
+dnames <- colnames(df)
+df <- cbind(df,seuratSC@meta.data)
+```
+
+```{r}
+df %>%
+  select(contains(c("RNAUMAP","RNA_snn"))) %>%
+  pivot_longer(cols = contains("RNA_snn"),names_to = "Resolution",values_to = "Cluster") %>%
+  ggplot(aes_string(x=dnames[1],y=dnames[2],color = "Cluster")) +
+           geom_point() +
+           scale_color_manual(values = color.list) +
+           facet_wrap("Resolution") +
+           theme_classic()
+```
+
+# Cluster annotation
+
+```{r}
+library(SingleR) #librería para clasificar células en base a perfiles ya conocidos (bases de datos en R)
+dbImm <- celldex::DatabaseImmuneCellExpressionData()
+moImm <- celldex::MonacoImmuneData()
+
+cellannot <- SingleR(
+  clusters=NULL
+  , test = Seurat::Assays(seuratSC,slot = "RNA")@data
+  , ref = dbImm #matriz con el tipo celular y los distintos perfiles en base al tejido
+  , labels = dbImm$label.fine
+  , genes = "de"
+  , quantile = 0.8
+  , fine.tune = T
+  , tune.thresh = 0.05
+  , sd.thresh = 1
+)
+```
+
+```{r}
+colnames(cellannot) <- paste0("dbImm_",colnames(cellannot))
+df <- cbind(df,cellannot)
+```
+
+```{r}
+df %>%
+  select(contains(c("RNAUMAP","dbImm"))) %>%
+  pivot_longer(cols = contains("labels"),names_to = "Label",values_to = "CellType") %>%
+  ggplot(aes_string(x=dnames[1],y=dnames[2],color = "CellType")) +
+           geom_point() +
+           scale_color_manual(values = color.list) +
+           facet_wrap("Label") +
+           theme_classic()
+```
+
+```{r}
+cellannot <- SingleR(
+  clusters=NULL
+  , test = Seurat::Assays(seuratSC,slot = "RNA")@data
+  , ref = moImm
+  , labels = moImm$label.fine
+  , genes = "de"
+  , quantile = 0.8
+  , fine.tune = T
+  , tune.thresh = 0.05
+  , sd.thresh = 1
+)
+```
+
+```{r}
+colnames(cellannot) <- paste0("moImm_",colnames(cellannot))
+df <- cbind(df,cellannot)
+```
+
+```{r}
+df %>%
+  select(contains(c("RNAUMAP","moImm"))) %>%
+  pivot_longer(cols = contains("labels"),names_to = "Label",values_to = "CellType") %>%
+  ggplot(aes_string(x=dnames[1],y=dnames[2],color = "CellType")) +
+           geom_point() +
+           scale_color_manual(values = c(color.list,color.list)) +
+           facet_wrap("Label") +
+           theme_classic()
+```
+
+```{r}
+seuratSC@meta.data <- cbind(seuratSC@meta.data,df[,c("dbImm_labels","moImm_labels")])
+```
+
+```{r}
+DimPlot(seuratSC,
+        reduction = "RNAumap",
+        group.by = "dbImm_labels",
+        cols = color.list)
+```
+
+# Multimodal Clustering based on WNN
+
+Misma célula con distinta información: RNA y anticuerpos. Se genera un grafo de neighbours en base a los vecinos de uno y de otro. 
+```{r}
+seuratSC <- seuratSC %>%
+  FindMultiModalNeighbors(
+    reduction.list = list("pca", "ADTpca"),  #se juntan anticuerpos y genes
+    dims.list = list(1:20, 1:20), #componentes a usar
+    modality.weight.name = "RNA.weight"
+  ) %>%
+  FindClusters(
+    graph.name = "wsnn",
+    algorithm = 3,
+    resolution = 0.5,
+    verbose = FALSE) %>%
+  RunUMAP(
+    nn.name = "weighted.nn",
+    reduction.name = "wnn.umap",
+    reduction.key = "wnnUMAP_")
+
+```
+
+```{r}
+DimPlot(seuratSC, reduction = 'wnn.umap', group.by = "wsnn_res.0.5", label = TRUE, repel = TRUE, label.size = 2.5,cols = color.list)
+```
+
+# Find Markers for each cluster
+
+```{r}
+#install.packages('devtools')
+#devtools::install_github('immunogenomics/presto')
+
+Idents(seuratSC) <- "RNA_snn_res.0.5"
+myMarkers <- seuratSC %>%
+  FindAllMarkers(
+    assay = "RNA",
+    slot = "data",
+    min.pct = 0.3, #solo se evalúan las células que compartan el 30%
+    logfc.threshold = 0.5,
+    test.use = "wilcox" #es el que está por defecto y es seguro al ser no paramétrico
+  )
+```
+
+```{r fig.height=14}
+myTopMarkers <- myMarkers %>%
+  group_by(cluster) %>%
+  filter(p_val_adj < 0.05) %>%
+  top_n(25,wt = avg_log2FC)
+
+seuratSC %>%
+  ScaleData(assay = "RNA",
+            features = myTopMarkers$gene) %>%
+  DoHeatmap(
+    features = myTopMarkers$gene,
+    group.by = "RNA_snn_res.0.5",
+    group.colors = color.list,
+    # slot = "data",
+    assay = "RNA",
+    draw.lines = T
+  )
+```
+Es posible que el cluster 7 sean dobletes o células muertas porque no hay nada que destaque. 
+Los clústers 0 y 1 son similares en su patrón, por lo que se podrían fusionar.
+
+```{r}
+DimPlot(seuratSC, reduction = "RNAumap", group.by = c("RNA_snn_res.0.5", "HTO_classification.global"))
+```
+
+
+Efectivamente se ve que donde se encuentra el cluster 7 se encuentra un grupo de dobletes.
