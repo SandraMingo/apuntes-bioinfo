@@ -1,0 +1,25 @@
+%08/05 - Carlos Aguirre
+\chapter{Grafos libres de escala, ataques a redes y aplicaciones}
+\section{Grafos libres de escala}
+En los grafos libres de escala, no hay longitud característica. Algunos parámetros siguen una distribución por ley de potencias, y existe un cutoff.
+
+Una red de mundo pequeño es aquella con un índice de clusterización de la red regular y un camino característico como una red aleatoria. 
+
+Una red libre de escala tiene una distribución libre de escala del grado de los nodos. Así, pintarlo en escala log-log, sale una recta.
+
+Estas redes son muy comunes en el mundo real: internet, redes sociales y redes biológicas. En estas redes existen hubs, y son robustas frente a ataques aleatorios, aunque frágiles frente a ataques calculados (si se puede elegir, elegiríamos el hub y nos lo cargamos entero).
+
+\subsection{Modelo de Barabasi y Albert} 
+Hasta ahora, todos los métodos de red son estáticas, la construcción de la red no cambia. Las redes libres de escala son dinámicas: crecen conforme pasa el tiempo y tienen una conexión preferencial, es decir, los nodos nuevos se unen a aquellos que estén muy conectados. La topología es el subproducto de la dinámica de la red. 
+
+\textbf{Crecimiento}: Los grafos aleatorios y de mundo pequeño parten de número fijo de nodos. Los grafos libres de escala parten de un número pequeño de nodos y se van añadiendo a la red.
+
+\textbf{Conexión preferencial}: La probabilidad de conexión en grafos
+aleatorios y de mundo pequeño
+es independiente de grado del nodo. En mundo real, nodos muy conectados tienden a atraer a los nuevos nodos: la probabilidad depende del grado. 
+
+\textbf{Algoritmo:}
+Se parte de un número pequeño de nodos (m0). En cada paso de tiempo, se añade un nodo con m ramas. La probabilidad de conexión a un nodo va según su grado. La probabilidad de conexión es:
+$$\prod(k_i) = \frac{k_i}{\sum_i k_i}$$
+
+Tanto el crecimiento como la conexión preferencial son características necesarias para generar una red libre de escala. Si se elimina alguna de las dos, la red resultante no se parece a una red libre de escala. Si se elimina la conexión preferencial, sale una distribución exponencial negativa, que no es una libre de escala. Si se elimina el crecimiento, sale una ley no estacionaria; hay un momento en el que parece una libre de escala, pero termina divergiendo a una Poisson.

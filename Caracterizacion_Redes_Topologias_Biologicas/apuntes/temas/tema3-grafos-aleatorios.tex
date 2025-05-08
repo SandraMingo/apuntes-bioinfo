@@ -74,18 +74,54 @@ Un caso particular de grafos regulares son las mallas (grids) donde cada nodo se
 
 En las mallas monodimensionales, el índice de clusterización es de 0.75, el camino característico es $|V|/\langle k \rangle$, y la distribución del grado de los nodos es una delta en el valor $\langle k \rangle$. Es decir tanto L como C son más grandes de lo que correspondería en el grafo aleatorio equivalente y la distribución de grado se puede ver como el límite cuando la varianza tiende a 0.
 
+%08/05 - Carlos Aguirre
 \section{Redes de mundo pequeño}
-En 1998 Watts y Strogatz (Nature, 1998) proponen un modelo de red dependiente de un parámetro p. Este modelo interpola entre un grafo regular y un grafo aleatorio. Se colocan inicialmente los nodos en un anillo y cada nodo se conecta con los 2k vecinos a izquierda y derecha.
+En 1998 Watts y Strogatz (Nature, 1998) proponen un modelo de red dependiente de un parámetro p, que es distinto al parámetro p de las redes aleatorias. 
+\marginpar[\footnotesize Buena pregunta de 1 punto] \
+En redes aleatorias, significa la existencia de las ramas, pero aquí es la probabilidad de reasignación o recolocación de cada una de las ramas que ya tiene el grafo. 
+ Este modelo interpola entre un grafo regular y un grafo aleatorio. Se colocan inicialmente los nodos en un anillo y cada nodo se conecta con los 2k vecinos a izquierda y derecha.
 
 Para cada rama de este grafo, con probabilidad p se decide si la rama se modifica o no.
-Si la rama se modifica, se elige un nuevo nodo al azar con probabilidad uniforme. Se evitan ramas dobles y
-autoconexiones. Este proceso produce pNk atajos en el grafo.
+Si la rama se modifica, se elige un nuevo nodo al azar con probabilidad uniforme. Se evitan ramas dobles y autoconexiones. Este proceso produce pNk atajos en el grafo.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width = 0.5\textwidth]{figs/grafos.png}
 \end{figure}
 
-El método de Watts y Strogatz puede producir grafos no conexos. Un método alternativo propuesto por Newman consiste en añadir de forma aleatoria un número pequeño de ramas sobre el sustrato inicial.
+El método de Watts y Strogatz puede producir grafos no conexos. Un método alternativo propuesto por Newman consiste en añadir de forma aleatoria un número pequeño de ramas sobre el sustrato inicial (duplicación y manteniendo la rama original).
 
 \subsection{Sustrato inicial}
+Como sustrato inicial se suele tomar un grid monodimensional cumpliendo las siguientes condiciones:
+$$N \gg k \gg \log(N)$$
+Cada nodo esta conectado con sus 2k vecinos a izquierda y derecha.
+
+Así, el grafo siempre será conexo ($k \gg \log(N)$) y disperso ($N \gg k$). 
+
+\subsection{Sustratos bi-conexos}
+Un grafo conexo tiene un camino que une cualquier par de nodos. Una red biconexa es aquella que para cualquier par de nodos tiene al menos dos caminos que los unen. Por ejemplo, un anillo es una red biconexa porque se puede llegar por la izquierda y por la derecha. Las redes biológicas suelen ser biconexas, pero no todas lo son. Calcular tres o más caminos es un problema NP completo - buscar uno es fácil mediante un algoritmo en anchura y buscar dos se puede hacer con el algoritmo de Tarjan.
+
+El modelo de red original de Watts y Strogatz tiene el mismo número de componentes biconexas que los grafos regulares. Las redes reales suelen tener un número mayor de componentes biconexas (p. ej. redes de comunicaciones o muchas redes biológicas).
+
+Los grafos de mundo pequeño tienen el mismo índice de clusterización que un grafo aleatorio regular con el mismo número de ramas y nodos. Camino característico de un grafo aleatorio con el mismo número de nodos y ramas.
+
+El modelo anterior permite crear redes de tipo Mundo-pequeño con un número elevado de componentes bi-conexas. El sustrato inicial es un grafo regular pero con un numero elevado de componentes biconexas. Presenta una transición a aleatorio similar a la de los anillos.
+
+\subsection{Sustratos dirigidos y ponderados}
+El modelo original de Watts y Strogatz no contempla la posibilidad de grafos con dirección y peso. Existen redes en la naturaleza donde aparecen la direccionalidad y el peso (redes neuronales, redes sociales, redes de interacción, etc).
+
+\subsection{Parámetros}
+El procedimiento de Watts y Strogatz sobre el sustrato inicial produce una transición en el comportamiento del camino característico y del índice de clusterización. Ambos dos han de pasar de valores altos propios del grafo regular a valores pequeños propios del grafo aleatorio.
+
+En una malla monodimensional $L = O(N)$ y $C = O(1)$. En un grafo aleatorio: $L = O(\log(N))$ y $C = 0 = p$.
+
+Watts y Strogatz observaron que la transición en el comportamiento de los valores era diferente para el
+caso de camino característico L y para el índice de clusterización C. El camino característico presentaba la transición de régimen mucho antes que el índice de clusterización.
+
+Cuando se consideran otros sustratos tales como grafos bi-conexos o grafos con dirección peso también se puede observar el mismo fenómeno en el comportamiento de C y L. Además las propiedades iniciales del grafo (bi-conectividad, dirección, peso) no se pierden durante la transición
+
+L no empieza a decrecer hasta que $p > 1/Nk$ (es decir hasta que no aparece al menos un atajo). Por tanto, el valor de p para el cual se entra en la zona de mundo pequeño es dependiente de N y k. Para una probabilidad fija p, existe un valor N' tal que $L = O(N)$ si$ N < N'$ y $L=O(\log(N))$ sin $N > N'$. Se puede demostrar el valor de p que para un valor fijo de N y k produce la transición de L es $p = 1/kN$.
+
+La distribución del grado de los nodos debe pasar de una delta (vale 1 en 0 y 0 en todos los demás) en el grado medio de cada nodo (2k) a una distribución de Poisson.
+
+La distribución espectral (de la matriz de autovalores) también sufre una transición en función de p.
