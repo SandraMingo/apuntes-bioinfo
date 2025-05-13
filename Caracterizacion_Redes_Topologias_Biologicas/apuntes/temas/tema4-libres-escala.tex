@@ -23,3 +23,87 @@ Se parte de un número pequeño de nodos (m0). En cada paso de tiempo, se añade
 $$\prod(k_i) = \frac{k_i}{\sum_i k_i}$$
 
 Tanto el crecimiento como la conexión preferencial son características necesarias para generar una red libre de escala. Si se elimina alguna de las dos, la red resultante no se parece a una red libre de escala. Si se elimina la conexión preferencial, sale una distribución exponencial negativa, que no es una libre de escala. Si se elimina el crecimiento, sale una ley no estacionaria; hay un momento en el que parece una libre de escala, pero termina divergiendo a una Poisson.
+
+Al igual que un grafo aleatorio, tiene un camino característico e índice de clusterización bajo. La diferencia radica en la distribución de grado: una red aleatoria tiene una de Poisson, y la libre de escala ley de potencias.
+
+¿Una red puede ser libre de escala y de mundo pequeño a la vez? Sí, nada lo impide, mientras cumpla con las tres condiciones, puede ser las dos cosas a la vez. Para ser libre de escala debe tener una distribución recta si se pinta en escala log-log, un camino característico como un grafo aleatorio y un índice de clusterización como un grafo regular, ambos con el mismo número de nodos y ramas. Las redes biológicas suelen ser ambos.
+
+%13/05 - Carlos Aguirre
+\section{Ataques a redes}
+Un ataque es un conjunto de objetos de la red (nodos y/o ramas) que son deshabilitados o eliminados de la red. El objetivo de un ataque dado (consciente) es producir el máximo daño posible en términos de conectividad de la red.
+
+La conectividad (resistencia) de un grafo después de un ataque se puede definir de diferentes
+maneras. Número de nodos que se desconectan de un nodo fuente determinado (server networks). Orden de la componente conexa con mayor número de nodos. La eficiencia (daño) de un algoritmo de ataque para un grafo dado es la inversa de la resistencia del grafo ante dicho ataque.
+
+Para modelizar una red atacable se necesita un conjunto de nodos, un conjunto de ramas, una función de coste y una función de importancia. La función de coste indica cuánto le cuesta (en términos económicos,
+computacionales, etc) eliminar el elemento a un posible enemigo. 
+La función de importancia indica laimportancia del nodo entendida en cómo es de malo que otros nodos de la red queden desconectados de este nodo.
+
+El coste de un ataque dado es la suma de los costes de los elementos eliminados del grafo. La importancia de un conjunto de nodos es la suma de las importancias de los nodos del conjunto. Puede que la suma no sea real, pero es un supuesto con el que se trabaja como generalización. 
+
+Para un grafo dado, definimos el core (núcleo) del grafo como la componente conexa con mayor importancia (no necesariamente el más grande). Definimos el daño producido en una red como la suma de las importancias de los elementos que no pertenecen al núcleo del grafo después del ataque. La resistencia de la red a un ataque se define como la importancia del núcleo.
+
+\subsection{Ataques óptimos}
+El problema de un ataque óptimo se puede definir ahora en los siguientes términos:
+Problema OPT\_ATTACK: Dada una red sin servidor CN y dos valores constantes C y D ¿ existe un ataque A tal que C(A) <= C y D(A) >= D ? Esto es un problema NP-Completo.
+
+Buscamos ataques que producen el máximo daño posible al mínimo con el mínimo coste posible. El problema de encontrar si tal ataque existe es NP-Completo incluso en el caso más simple de grafos no dirigidos, ramas no eliminables, coste idéntico en todos los nodos e idéntica importancia en todos los nodos.
+
+\subsection{NP-Completitud}
+Los problemas NP-Completos son problemas que verifican dos condiciones:
+\begin{itemize}
+\item Es muy costoso calcular una solución.
+\item Si nos presentan una posible solución, es fácil comprobar si esa solución verifica las condiciones del problema.
+\end{itemize}
+Esto implica que los problemas NP-Completos son adecuados para soluciones aproximadas
+
+\subsection{Ataques mediante algoritmos aproximados}
+Existen distintos métodos de ataque con algoritmos aproximados.
+
+El \textbf{método browniano} es como un random walk en el grafo. En cada instante de tiempo se permite moverse a uno u otro vecino. Esto se repite durante muchas etapas. Si el grafo tiene sesgo estructural (una topología no aleatoria; small world o libre de escala), no se pasará por los elementos el mismo número de veces. Se ataca aquel nodo por el que más veces se haya pasado. 
+
+El \textbf{método de los cortes mínimos} busca hacer el máximo daño con el menor coste. Esto tiene el problema de encontrar el corte mínimo, ya que es un problema NP-Completo. Por tanto, no se hace el corte mínimo del grafo, sino entre dos nodos del grafo. Esto se puede hacer con un algoritmo de corte mínimo y flujo máximo. El corte mínimo del grafo siempre es menor o igual que el corte mínimo entre dos nodos, pero es muy difícil de encontrar. Por ello se suelen coger los nodos del diámetro para calcularlo.
+
+Los fallos aleatorios eliminan a cada determinado tiempo un elemento del grafo, nodo o rama. Este ataque tiene una complejidad del orden del número de nodos ($O(n)$). 
+
+El método de grado máximo elimina aquel nodo que tenga el grado más alto, funcionando muy bien en los grafos libres de escala. El betweenness detecta elementos importantes en la red, y es lo que se utiliza aquí. Esto tiene una complejidad computacional de $O(n^2)$.
+
+NetworkX no tiene funciones para ataques, por lo que tocaría picar código.
+
+\subsection{Topologías}
+Un ataque dado tiene diferentes eficiencias en diferentes tipos de grafos. Esto significa que antes de seleccionar un algoritmo de ataque usualmente es una buena idea saber que tipo de grafo vamos a atacar y seleccionar la mejor estrategia de ataque para ese tipo de grafo.
+
+En redes biológicas, el ataque que más se utiliza es el método de cortes mínimos. El segundo es el de k-cores.
+
+Las redes de mundo pequeño se deben atacar mediante caminos mínimos. Un grafo regular aguanta un poco menos que las de mundo pequeño los ataques de caminos mínimos. Un grafo libre de escala aguanta en su totalidad el ataque aleatorio, pero son igualmente sensibles a ataques de caminos mínimes y de grado máximo. Un grafo aleatorio aguanta bastante bien los ataques al no tener sesgo estructural, pero es algo más sensible al ataque por caminos mínimos. Una red jerárquica también se derrumba con un ataque por caminos mínimos.
+
+\section{Aplicaciones}
+%Esto no entra en el examen
+\subsection{Click - algoritmo de clustering}
+Click es un algoritmo de clustering aplicado al análisis de expresiones genéticas diseñado por Sharan y Shamir. Click también ha sido utilizado para clustering de conjuntos de datos de proteínas (ProtoMap). El algoritmo Click no hace ninguna suposición previa sobre la estructura, tamaño o número de clústers. El grafo (ponderado) es partido de forma recursiva usando cortes mínimos.
+
+En Click, cada nodo puede ser:
+\begin{itemize}
+\item Una expresión genética representada mediante un número real que contiene n medidas del elemento (usualmente mediante un valor medio): expresiones de mRNA en diferentes condiciones o intensidades de hibridación de cDNA bajo diferentes oligos.
+\item Datos de similitud: un valor de similitud entre dos secuencias de proteínas.
+\end{itemize}
+Dos nodos se conectan si según un coeficiente de similitud que se obtiene a partir de los valores de los nodos.
+
+El problema de clustering consiste en partir el conjunto V de vértices de un grafo en k conjuntos disjuntos de vértices tal que la unión de todos ellos es V. Dado un clustering, dos nodos del grafo son amigos si pertenecen al mismo clúster. Para comprobar la calidad del clustering se definen dos medidas: separación entre clústers y homogeneidad de cada clúster.
+
+La dificultad está en ver si un conjunto de vértices son un clúster o no.
+
+El cálculo de cortes mínimos en grafos ponderados es muy costoso. Para obtener el corte mínimo se aplica un algoritmo de corte mínimo s-t $O(|V||E|^{2/3})$ en el grafo no ponderado resultante de
+hacer todos los pesos 1. Los algoritmos de corte mínimo s-t consisten en buscar el corte mínimo que conecta dos nodos s y t dados. Los nodos s y t se eligen tal que su distancia coincida con el diámetro del grafo.
+
+\subsection{ProtoMap}
+ProtoMap es un proyecto dedicado a la clasificación de secuencias de proteínas y jerarquización de familias de proteínas. Cada vértice es una secuencia y el peso de cada rama es un coeficiente de similitud entre las proteínas.
+
+El particionado de la red se realiza de forma similar a Click, pero usando un criterio diferente para decidir de un grupo de nodos representa un clúster. Los clústers se obtienen buscando grupos de nodos altamente conectados entre sí. Los autores aplicaron el método a la base de datos SWISS-PROT. 
+
+\subsection{Redes de interacción}
+Cada nodo del grafo es una proteína. Una rama significa una interacción entre ambas proteínas. Las redes se construyen mediante los módulos de reconocimiento de péptidos y el uso de la técnica de phage-display. Dos proteínas se enlazan si ambas poseen ligandos preferidos por un determinado módulo de reconocimiento de péptidos.
+
+Un k-core de un grafo G es un subgrafo G’ tal que el grado de cada nodo de G’ es al menos k. Un k-core puede contener k+1,k+2,...k+jcores. Este algoritmo produce una \textbf{jerarquía de subgrafos} basándose en el k de los k-cores obtenidos para cada posible k.
+
+Para una red aleatoria similar en tamaño al dominio SH3 el tamaño medio del mayor kcore era k=4.01. Los autores suponen que este 6-core representa un simple compuesto. Los resultados obtenidos se intersectan con los datos de interacción obtenidos con otras técnicas (two-hybrid). Las interacciones más significativas predichas por el algoritmo se comprueban en vivo.
