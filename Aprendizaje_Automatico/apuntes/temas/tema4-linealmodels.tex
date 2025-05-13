@@ -818,8 +818,232 @@ $$-2, 1; -1 \rightarrow (-2 \cdot 1) + (1 \cdot 0) + 0 = -2  < 0 \checkmark \rig
 $$1, 0; 1 \rightarrow (1 \cdot 1) + (0 \cdot 0) + 0 = 1  > 0 \checkmark \rightarrow d = |1|/1 = 1$$
 El modelo sí separa las dos clases. El margen del modelo es 1 (la distancia mínima calculada). 
 
+%13/05 - Carlos Alaíz
+La idea es encontrar un hiperplano que maximice m. 
+El hiperplano definido por ($\vec{w}, b$) es el mismo que el definido por ($c\vec{w}, cb$), para $c > 0$. Debe aplicarse algún tipo de normalización, y hay dos enfoques diferentes: Fijar la norma de w o hacer que los puntos más cercanos pertenezcan a los hiperplanos de apoyo ($\vec{w}^T \vec{x} + b = \pm 1$).
+$$y_i(\mathbf{w}^\intercal\mathbf{x}_i + b) \geq 1$$
+$$m = \frac{1}{\|\mathbf{w}\|_2}$$
+
+\subsubsection{Clasificador de vectores de soporte de margen duro}
+El problema de clasificación se define para problemas de clasificación binaria de la siguiente forma: 
+
+$$
+\max_{\mathbf{w} \in \mathbb{R}^d} \left\{ \frac{1}{\|\mathbf{w}\|_2} \right\} 
+\equiv 
+\min_{\mathbf{w} \in \mathbb{R}^d} \left\{ \frac{1}{2} \|\mathbf{w}\|_2^2 \right\}$$
+
+sujeto a:
+$$y_i(\mathbf{w}^\top \mathbf{x}_i + b) \geq 1, \quad \text{for } 1 \leq i \leq N$$
+
+o alternativamente:
+$$
+\text{s.t. } 
+\begin{cases}
+y_i(\mathbf{w}^\top \mathbf{x}_i + b) \geq 1, \\
+1 \leq i \leq N.
+\end{cases}$$
+Para poder hacer esto, el problema debe ser linealmente separable.
+
+La función objetivo es convexa y diferenciable. El problema tiene restricciones lineales. Puede resolverse utilizando la dualidad lagrangiana. Las variables duales se relacionan con las primarias como:
+$$\vec{w} = \sum^N_{i = 1} \alpha_iy_i\vec{x}_i$$
+
+El problema dual resultante es:
+$$\max_{\alpha \in \mathbb{R}^N} \left\{ -\frac{1}{2} \alpha^\top \tilde{\mathbf{X}}\tilde{\mathbf{X}}^\top \alpha + \alpha^\top \mathbf{1} \right\}$$
+sujeto a:
+$$\begin{cases} 
+\alpha^\top \mathbf{y} = 0, \\ 
+\alpha \geq \mathbf{0}, 
+\end{cases}$$
+
+que es equivalente a:
+$$\min_{\alpha \in \mathbb{R}^N} \left\{ \frac{1}{2} \alpha^\top \tilde{\mathbf{X}}\tilde{\mathbf{X}}^\top \alpha - \alpha^\top \mathbf{1} \right\}$$
+sujeto a:
+$$\begin{cases} 
+\alpha^\top \mathbf{y} = 0, \\ 
+\alpha \geq \mathbf{0}. 
+\end{cases}$$
+
+Esto es un problema cuadrático restringido para el cual hay varios algoritmos ad hoc que lo resuelven. Los datos solo aparecen como productos internos, y como consecuencia de la dualidad lagrangiana, hay dos casos:
+\begin{itemize}
+\item Si $\alpha_i > 0, y_i(\vec{w}^\intercal \vec{x}_i + b = 1$, este punto sobre el hiperplano de apoyo es un vector de apoyo.
+\item Si $\alpha_i = 0, y_i(\vec{w}^\intercal \vec{x}_i + b \geq 1$, este punto no tiene ningún impacto sobre el modelo.
+\end{itemize}
+Este modelo es sparse en cuanto a los patrones de entrenamiento.
+
+\subsubsection{Clasificador de vectores de soporte de margen blando}
+
+La mayoría de los problemas no son linealmente separables. Incluso si lo son (por ejemplo, porque d es grande), puede que no sea conveniente clasificar perfectamente los datos. Esto puede dar lugar a un sobreajuste. Los clasificadores de vectores de soporte de margen suave (SM-SVC) permiten errores de entrenamiento introduciendo variables slack (variables de holgura). Estas variables cuantifican la violación del margen de cada patrón. Las restricciones se modifican a $y_i(\vec{w}^\intercal \vec{x}_i + b) \geq 1 - \xi_i$, siendo $\xi_i \geq 0$ la distancia al hiperplano de soporte correspondiente. Las variables slack se penalizan para que sean lo más pequeñas posible.
+
+\begin{align*}
+\min_{\substack{\mathbf{w}\in\mathbb{R}^d \\ b\in\mathbb{R} \\ \boldsymbol{\xi}\in\mathbb{R}^N}} &
+\left\{\frac{1}{2}\|\mathbf{w}\|_2^2 + C\sum_{i=1}^N \xi_i\right\} \\
+\text{s.t.} &
+\begin{cases}
+y_i(\mathbf{w}^{\intercal}\mathbf{x}_i + b) \geq 1 - \xi_i, \\
+\xi_i \geq 0, \\
+1 \leq i \leq N.
+\end{cases}
+\end{align*}
+
+Este problema se define para problemas de clasificación binaria. No es necesario que el problema sea linealmente separable. El hiperparámetro C controla el equilibrio entre precisión y complejidad.
+
+De forma equivalente, se puede escribir el problema sin restricciones de la siguiente forma:
+$$
+\min_{\begin{subarray}{c}
+    \mathbf{w} \in \mathbb{R}^d \\ 
+    b \in \mathbb{R}
+\end{subarray}} 
+\left\{ 
+    \frac{1}{2} \|\mathbf{w}\|_2^2 + C \sum_{i=1}^{N} \left[1 - y_i(\mathbf{w}^\intercal \mathbf{x}_i + b)\right]_+ 
+\right\}$$
+donde $|\chi|_+$ denota la parte positiva (función bisagra). La medida resultante se conoce como función de pérdida bisagra.
+
+Ejercicio: dado un modelo de clasificación bidimensional con los pesos $\{b = 0, w_1 = 0.25, w_2 = -0.5\}$ y los siguientes datos, indicar si el modelo separa las dos clases.
+$$(-1, -1; -1) \rightarrow 0 + (0.25 \cdot -1) + (-0.5 \cdot -1) = 0.25 \rightarrow 1 \neq -1$$
+$$(-2, 1; -1) \rightarrow 0 + (0.25 \cdot -2) + (-0.5 \cdot 1) = -1 \rightarrow -1 \checkmark$$
+$$(1, 0; 1) \rightarrow 0 + (0.25 \cdot 1) + (-0.5 \cdot 0) = 0.25 \rightarrow 1 \checkmark$$
+Las dos clases no se separan bien, ya que el primer conjunto de datos no predice la salida correcta.
+
+Computar la función de pérdida de bisagra para cada patrón usando $|1 - y_i(\vec{w}^\intercal \vec{x}_i + b)|_+$:
+$$(-1, -1; -1) \rightarrow |1 - (-1)(0.25 \cdot (-1) -0.5 \cdot (-1) + 0)|_+ = 1 + 1 \cdot 0.25 = 1.25$$
+$$(-2, 1; -1) \rightarrow |1 - (-1)(0.25 \cdot (-2) -0.5 \cdot 1 + 0)|_+ = 1 + 1 \cdot -1 = 0$$
+$$(1, 0; 1) \rightarrow |1 - 1(0.25 \cdot 1 -0.5 \cdot 0 + 0)|_+ = 1 - 1 \cdot 0.25 = 0.75$$
+
+Para la optimización de los clasificadores de vectores soporte con margen blando se calcula
+\begin{align*}
+\min_{\substack{\mathbf{w} \in \mathbb{R}^d \\ 
+                  b \in \mathbb{R} \\
+                  \boldsymbol{\xi} \in \mathbb{R}^N}} 
+&\left\{
+    \frac{1}{2}\|\mathbf{w}\|_2^2 + C \sum_{i=1}^N \xi_i
+\right\} \\
+\text{s.t.} \quad
+& y_i(\mathbf{w}^{\mathsf{T}}\mathbf{x}_i + b) \geq 1 - \xi_i, \\
+& \xi_i \geq 0, \\
+& 1 \leq i \leq N.
+\end{align*}
+
+El problema resultante dual es:
+\begin{align*}
+\min_{\boldsymbol{\alpha} \in \mathbb{R}^N} &\;\; 
+\left\{
+    \frac{1}{2}\boldsymbol{\alpha}^{\mathsf{T}}\widetilde{\mathbf{X}}\widetilde{\mathbf{X}}^{\mathsf{T}}\boldsymbol{\alpha} - \boldsymbol{\alpha}^{\mathsf{T}}\mathbf{1}
+\right\} \\
+\text{s.t.} &\;\; 
+\begin{cases} 
+    \boldsymbol{\alpha}^{\mathsf{T}}\mathbf{y} = 0, \\
+    0 \leq \alpha_i \leq C \quad \forall i = 1,\ldots,N.
+\end{cases}
+\end{align*}
+
+Se trata de nuevo de un problema cuadrático restringido. Los coeficientes duales tienen una cota superior adicional C. Si C es mayor que un valor determinado, se recupera el SVC de margen duro. Existen diferentes algoritmos ad hoc para resolverlo. Los datos sólo aparecen en forma de productos internos. Como consecuencia de la dualidad Lagrangiana, se cumplen las condiciones:
+$$\alpha_i \big(1 - \xi_i - y_i (\mathbf{w}^\top \mathbf{x}_i + b)\big) = 0 \quad \text{y} \quad \beta_i \xi_i = 0, \quad \text{para } i = 1, \ldots, N$$
+
+\begin{itemize}
+    \item Si $\alpha_i = 0$, entonces $y_i (\mathbf{w}^\top \mathbf{x}_i + b) \geq 1$ y el punto no influye en el modelo.
+    
+    \item Si $0 < \alpha_i < C$, entonces $y_i (\mathbf{w}^\top \mathbf{x}_i + b) = 1$ (vectores de soporte).
+    
+    \item Si $\alpha_i = C$, entonces $y_i (\mathbf{w}^\top \mathbf{x}_i + b) = 1 - \xi_i \leq 1$ (vectores con error).
+    
+    \item El modelo es \textbf{disperso} en términos de los patrones de entrenamiento (solo los vectores soporte contribuyen).
+\end{itemize}
+
 \subsection{Regresión por vectores de soporte}
+Los modelos de clasificación de vectores de soporte (SVC) tienen ciertas propiedades deseables:
+\begin{itemize}
+\item Pueden entrenarse mediante un problema dual.
+\item Son dispersos en términos de patrones de entrenamiento.
+\item Controlan de forma natural la complejidad.
+\end{itemize}
+
+Estas propiedades motivan su extensión a un entorno de regresión. El origen de estas buenas propiedades provienen de maximizar el margen (minimizar la complejidad del modelo) y tener un término de error disperso. Para extender esto a un marco de regresión, se hace parcialmente en (Kernel) Ridge Regression y se necesita una nueva función de pérdida.
+
+\subsubsection{Pérdida insensible de $\epsilon$}
+La pérdida insensible de $\epsilon$ de un modelo lineal sobre un patrón se define como:
+$$|\mathbf{w}^\intercal \mathbf{x} + b - y|_\epsilon = \max\bigl\{0, |\mathbf{w}^\intercal \mathbf{x} + b - y| - \epsilon\bigr\}.
+$$
+Los errores más pequeños que $\epsilon$ se ignoran, y los más grandes se penalizan linealmente. Esto evita el sobreajuste ignorando los errores pequeños, pero el hiperparámetro $\epsilon$ se debe ajustar.
+
+Ejercicio: dado un modelo de regresión lineal bidimensional con los pesos $\{b = 0, w_1 = 1, w_2 = 1\}$ y los siguientes datos, computa la predicción para cada patrón.
+$$(-1, -1; -1.9) \rightarrow 0 + 1 \cdot (-1) + 1 \cdot (-1) = -2$$
+$$(-2, 1; -1) \rightarrow 0 + 1 \cdot (-2) + 1 \cdot 1 = -1 \checkmark$$
+$$(1, 0; 2) \rightarrow 0 + 1 \cdot 1 + 1 \cdot 0 = 1$$
+Ahora se computa la pérdida insensible de $\epsilon$ para cada patrón utilizando $\max\bigl\{0, |\mathbf{w}^\intercal \mathbf{x} + b - y| - \epsilon\bigr\}$ con $\epsilon = 0.25$.
+$$(-1, -1; -1.9) \rightarrow -2 -(-1.9) = 0.1 < 0.25 \rightarrow \epsilon_i = 0$$
+$$(-2, 1; -1) \rightarrow -1 - (-1) = 0 < 0.25 \rightarrow \epsilon_i = 0 $$
+$$(1, 0; 2) \rightarrow 1 - 2 = 1 > 0.25 \rightarrow \epsilon_i = 1 - 0.25 = 0.75$$
+Hay un 0.25 del error que se ignora. Si es más pequeño, se ignora, si el error es mayor, se resta 0.25 a lo que se ha equivocado el modelo 
+
+El Regresor de Vectores Soporte (SVR) se define como la solución del problema:
+$$\min_{\begin{subarray}{c}
+    \mathbf{w} \in \mathbb{R}^d \\
+    b \in \mathbb{R}
+\end{subarray}}
+\left\{
+    \frac{1}{2} \|\mathbf{w}\|_2^2 + C \sum_{i=1}^{N} |\mathbf{w}^{\intercal} \mathbf{x}_i + b - y_i|_\epsilon
+\right\}$$
+
+Que equivale a la formulación con variables de holgura:
+
+\begin{align*}
+\min_{\begin{subarray}{c}
+    \vec{w} \in \mathbb{R}^d \\
+    b \in \mathbb{R} \\
+    \vec{\xi}, \vec{\xi}^* \in \mathbb{R}^N
+\end{subarray}}
+&\quad \left\{
+    \frac{1}{2} \|\vec{w}\|_2^2 + C \sum_{i=1}^{N} (\xi_i + \xi_i^*)
+\right\} \\
+\text{s.a.} \quad &
+\begin{cases}
+    \vec{w}^{\intercal} \vec{x}_i + b - y_i \leq \epsilon + \xi_i, \\
+    y_i - \vec{w}^{\intercal} \vec{x}_i - b \leq \epsilon + \xi_i^*, \\
+    \xi_i, \xi_i^* \geq 0, \\
+    1 \leq i \leq N.
+\end{cases}
+\end{align*}
+
+donde:
+\begin{itemize}
+    \item $\vec{w}$ es el vector de pesos
+    \item $b$ es el término de sesgo
+    \item $\xi_i$, $\xi_i^*$ son variables de holgura
+    \item $C$ es el parámetro de penalización
+    \item $\epsilon$ define la zona insensible
+\end{itemize}
+
+El problema dual resultante es:
+
+$$\min_{\boldsymbol{\alpha}, \boldsymbol{\alpha}^* \in \mathbb{R}^N} 
+\left\{ 
+\frac{1}{2} (\boldsymbol{\alpha}^* - \boldsymbol{\alpha})^\top \mathbf{X}\mathbf{X}^\top (\boldsymbol{\alpha}^* - \boldsymbol{\alpha}) 
++ \epsilon (\boldsymbol{\alpha}^* + \boldsymbol{\alpha})^\top \mathbf{1} 
+- (\boldsymbol{\alpha}^* - \boldsymbol{\alpha})^\top \mathbf{y} 
+\right\}
+$$
+sujeto a:
+$$
+\begin{cases}
+(\boldsymbol{\alpha}^* - \boldsymbol{\alpha})^\top \mathbf{1} = 0, \\
+0 \leq \alpha_i, \alpha_i^* \leq C \quad \forall i = 1,\ldots,N.
+\end{cases}$$
+
+El hiperplano primal se recupera como:
+$$\mathbf{w} = \sum_{i=1}^{N} (\alpha_i - \alpha_i^*) \mathbf{x}_i.$$
+
+Propiedades Clave:
+\begin{itemize}
+    \item Es un \textbf{problema cuadrático con restricciones}.
+    \item Existen diferentes algoritmos especializados para resolverlo.
+    \item Los datos solo aparecen en forma de \textbf{productos internos}.
+\end{itemize}
+
+Como consecuencia de la dualidad Lagrangiana:
+\begin{itemize}
+    \item Si $\alpha_i - \alpha_i^* = 0$, el punto está dentro del tubo $\epsilon$-insensible y no afecta al modelo.
+    \item En caso contrario, el punto está fuera del tubo (o en el borde) y es un \textbf{vector soporte}.
+\end{itemize}
 
 \subsection{Máquinas de vectores soporte no lineales (SVMs)}
-
-\subsection{Resumen}
+Los modelos lineales no son suficientes en muchos problemas. En los problemas de optimización para entrenar SVM, los datos sólo aparecen como productos internos. Además, la predicción para un nuevo punto de datos, $\vec{w}^\intercal \vec{x} + b$, también se puede calcular utilizando sólo productos internos. Las SVM pueden extenderse a un marco no lineal utilizando un mapeo $\phi: \real^d \rightarrow \real^D$. Gracias al truco del kernel, en lugar de definir explícitamente $\phi$, se utiliza una función kernel $\mathcal{K}: \real^d \times \real^d \rightarrow \real$. La selección del kernel, y sus hiperparámetros, es crucial. Una de las opciones más comunes es el kernel RBF $\mathcal{K}(\vec{x}, \vec{x'}) = \exp(-\gamma ||\vec{x} - \vec{x'}||_2^2)$. Los patrones $\vec{x}_i$ se sustituyen por $\phi (\vec{x}_i)$. La matriz $\vec{XX}^\intercal$ se sustituye por la matriz kernel $\vec{K} = \Phi \Phi^\intercal$.
