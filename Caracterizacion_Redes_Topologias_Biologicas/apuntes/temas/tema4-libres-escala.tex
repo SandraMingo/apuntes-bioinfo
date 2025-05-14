@@ -35,9 +35,8 @@ Un ataque es un conjunto de objetos de la red (nodos y/o ramas) que son deshabil
 La conectividad (resistencia) de un grafo después de un ataque se puede definir de diferentes
 maneras. Número de nodos que se desconectan de un nodo fuente determinado (server networks). Orden de la componente conexa con mayor número de nodos. La eficiencia (daño) de un algoritmo de ataque para un grafo dado es la inversa de la resistencia del grafo ante dicho ataque.
 
-Para modelizar una red atacable se necesita un conjunto de nodos, un conjunto de ramas, una función de coste y una función de importancia. La función de coste indica cuánto le cuesta (en términos económicos,
-computacionales, etc) eliminar el elemento a un posible enemigo. 
-La función de importancia indica laimportancia del nodo entendida en cómo es de malo que otros nodos de la red queden desconectados de este nodo.
+Para modelizar una red atacable se necesita un conjunto de nodos, un conjunto de ramas, una función de coste y una función de importancia. La función de coste indica cuánto le cuesta (en términos económicos, computacionales, etc) eliminar el elemento a un posible enemigo. 
+La función de importancia indica la importancia del nodo entendida en cómo es de malo que otros nodos de la red queden desconectados de este nodo.
 
 El coste de un ataque dado es la suma de los costes de los elementos eliminados del grafo. La importancia de un conjunto de nodos es la suma de las importancias de los nodos del conjunto. Puede que la suma no sea real, pero es un supuesto con el que se trabaja como generalización. 
 
@@ -55,7 +54,7 @@ Los problemas NP-Completos son problemas que verifican dos condiciones:
 \item Es muy costoso calcular una solución.
 \item Si nos presentan una posible solución, es fácil comprobar si esa solución verifica las condiciones del problema.
 \end{itemize}
-Esto implica que los problemas NP-Completos son adecuados para soluciones aproximadas
+Esto implica que los problemas NP-Completos son adecuados para soluciones aproximadas.
 
 \subsection{Ataques mediante algoritmos aproximados}
 Existen distintos métodos de ataque con algoritmos aproximados.
@@ -75,7 +74,7 @@ Un ataque dado tiene diferentes eficiencias en diferentes tipos de grafos. Esto 
 
 En redes biológicas, el ataque que más se utiliza es el método de cortes mínimos. El segundo es el de k-cores.
 
-Las redes de mundo pequeño se deben atacar mediante caminos mínimos. Un grafo regular aguanta un poco menos que las de mundo pequeño los ataques de caminos mínimos. Un grafo libre de escala aguanta en su totalidad el ataque aleatorio, pero son igualmente sensibles a ataques de caminos mínimes y de grado máximo. Un grafo aleatorio aguanta bastante bien los ataques al no tener sesgo estructural, pero es algo más sensible al ataque por caminos mínimos. Una red jerárquica también se derrumba con un ataque por caminos mínimos.
+Las redes de mundo pequeño se deben atacar mediante caminos mínimos. Un grafo regular aguanta un poco menos que las de mundo pequeño los ataques de caminos mínimos. Un grafo libre de escala aguanta en su totalidad el ataque aleatorio, pero son igualmente sensibles a ataques de caminos mínimos y de grado máximo. Un grafo aleatorio aguanta bastante bien los ataques al no tener sesgo estructural, pero es algo más sensible al ataque por caminos mínimos. Una red jerárquica también se derrumba con un ataque por caminos mínimos.
 
 \section{Aplicaciones}
 %Esto no entra en el examen

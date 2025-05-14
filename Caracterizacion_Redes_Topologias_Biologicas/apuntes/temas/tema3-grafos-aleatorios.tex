@@ -24,7 +24,7 @@ Erdös y Rényi descubrieron que las propiedades Q aparecían de forma repentina
 
 \subsection{Subgrafos}
 La primera propiedad que estudiaron fue la aparición de subgrafos. Por ejemplo, a que probabilidad crítica p casi todo grafo G contiene un árbol de orden 3. 
-La probabilidad crítica $p_c(N)$ de encontrar algunos subgrafos es:
+La probabilidad crítica $p_c(N)$ de encontrar algunos subgrafos se ve en la imagen:
 \begin{figure}
 \centering
 \includegraphics[width = 0.7\textwidth]{figs/prob-critica.png}
@@ -37,14 +37,12 @@ Un cliqué de 5 aparece con una Z de -0.5.
 Para que haya un cliqué de orden 5 es obligatorio que haya un ciclo de orden 5. Por tanto, teniendo N = 1000 nodos, solo habría que calcular la probabilidad de un cliqué: $1000^{-1/2} = 0.031$.
 
 \subsection{Clusters}
-Un subgrafo aislado y conexo es un
-cluster. Erdös y Rényi demostraron que la estructura de clusters de un grafo
-cambia abruptamente cuando el grado medio (número de ramas dividido entre el número de nodos) se acerca a 1.
+Un subgrafo aislado y conexo es un cluster. Erdös y Rényi demostraron que la estructura de clusters de un grafo cambia abruptamente cuando el grado medio (número de ramas dividido entre el número de nodos) se acerca a 1.
 $$\langle k \rangle = \frac{\frac{N \cdot (N-1)}{2} \cdot p}{N} = \frac{p \cdot (N-1)}{2} \xrightarrow{N \to \infty} p\frac{N}{2}$$
 
-Si el grado medio <k> está entre 0 y 1, casi todos los clusters son árboles (en su mayor parte) o clusters que contienen un solo ciclo. El número de clusters es de orden N-n (número de nodos menos número de ramas), y el cluster mayor es un árbol de tamaño proporcional a N. 
+Si el grado medio $\langle k \rangle$ está entre 0 y 1, casi todos los clusters son árboles (en su mayor parte) o clusters que contienen un solo ciclo. El número de clusters es de orden N-n (número de nodos menos número de ramas), y el cluster mayor es un árbol de tamaño proporcional a N. 
 
-Si el grado medio <k> es mayor que 1, la estructura anterior cambia completamente. Aparece un cluster gigante con [1-f(<k>)]N nodos donde f es una función que decae exponencialmente de 1 a 0 cuando x va a infinito. Los demás clusters pertenecen a árboles con Nf(<k>) nodos.
+Si el grado medio $\langle k \rangle$ es mayor que 1, la estructura anterior cambia completamente. Aparece un cluster gigante con [1-f($\langle k \rangle$)]N nodos donde f es una función que decae exponencialmente de 1 a 0 cuando x va a infinito. Los demás clusters pertenecen a árboles con Nf($\langle k \rangle$) nodos.
 
 \subsection{Distribución de grado}
 El grado de cada nodo sigue una distribución binomial. La distribución del grado de los nodos sigue una distribución de Poisson. 
