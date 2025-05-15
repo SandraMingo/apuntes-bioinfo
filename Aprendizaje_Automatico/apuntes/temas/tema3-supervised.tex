@@ -272,8 +272,8 @@ $$p(\text{ojos marrones}|\text{pelo rubio}) = \frac{10}{30}$$
 En un problema con dos clases ($C_1$ y $C_2$) se cumple que:
 $$p(C_1|x) + p(C_2|x) = 1$$
 Esto se debe a que, según la regla de Bayes:
-$$p(C_1|x) = \frac{p(x|C_1) p(C_1}{p(x)}$$
-$$p(C_2|x) = \frac{p(x|C_2) p(C_2}{p(x)}$$
+$$p(C_1|x) = \frac{p(x|C_1) p(C_1)}{p(x)}$$
+$$p(C_2|x) = \frac{p(x|C_2) p(C_2)}{p(x)}$$
 Sumando ambas probabilidades:
 $$p(C_1|x) + p(C_2|x) = \frac{p(x|C_1) \cdot p(C_1) + p(x|C_2) \cdot p(C_2)}{p(x)} = \frac{p(x)}{p(x)} = 1$$
 
@@ -474,7 +474,7 @@ El principio de máxima verosimilitud elige el modelo que maximice la probabilid
 
 \begin{align*}
 \hat{\theta}_{ML} &= arg max_{\theta}  \hspace{1cm} p(\mathcal{D} | \theta) = \prod^N_{i=1} p(\vec{x}_i|\theta) \\
-&= arg max_{\theta} \hspace{1cm} p(\mathcal{D} | \theta) = \sum^N_{i=1} p(\vec{x}_i|\theta)
+&= arg max_{\theta} \hspace{1cm} \log p(\mathcal{D} | \theta) = \sum^N_{i=1} \log p(\vec{x}_i|\theta)
 \end{align*}
 
 Para estimar los parámetros, se utiliza la máxima verosimilitud, eligiendo la media y varianza para ello. Los valores de los parámetros que maximizan la probabilidad de los datos es mediante los estimadores de máxima verosimilitud, que es la media empírica y la varianza empírica.
