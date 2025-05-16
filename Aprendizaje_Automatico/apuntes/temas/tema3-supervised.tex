@@ -501,7 +501,7 @@ $$\mu = \frac{1}{N} \sum^N_{i=1} x_i$$
 En múltiples dimensiones, en lugar de tener una varianza, hay una matriz de covarianzas. Esto se puede ver mejor en el notebook de MaximumLikelihoodGaussian (carpeta ejercicios).
 
 \paragraph{Sobreajuste}
-El principio de máxima verosimilitud puede llevar a un \textbf{sobreajuste severo} cuando hay pocos datos. El sobreajuste $p(x|\hat{\theta}_{ML}$ captura propiedades de los datos que no generaliza bien. Esto se traduce en que la probabilidad para los datos de entrenamiento es muy alta, pero para datos nuevos muy baja. Por ejemplo, si en una distribución gausiana solo tenemos un valor observado, el estimador de la media que maximiza la probabilidad es el mismo. La media se pondría donde está la observación, y la varianza sería 0, ya que la diferencia entre la media y nuestro dato es 0. Esto se traduce en que la gaussiana es muy picuda y se centra en el dato observado. Si la varianza es 0, la probabilidad de los datos observados es infinita (siendo esto lo mejor que hay). Esto parece muy bueno según el principio de máxima verosimilitud. No obstante, para un dato nuevo, la densidad de probabilidad de un dato nuevo, diferente al dato observado, sería 0. 
+El principio de máxima verosimilitud puede llevar a un \textbf{sobreajuste severo} cuando hay pocos datos. El sobreajuste $p(x|\hat{\theta}_{ML})$ captura propiedades de los datos que no generaliza bien. Esto se traduce en que la probabilidad para los datos de entrenamiento es muy alta, pero para datos nuevos muy baja. Por ejemplo, si en una distribución gaussiana solo tenemos un valor observado, el estimador de la media que maximiza la probabilidad es el mismo. La media se pondría donde está la observación, y la varianza sería 0, ya que la diferencia entre la media y nuestro dato es 0. Esto se traduce en que la gaussiana es muy picuda y se centra en el dato observado. Si la varianza es 0, la probabilidad de los datos observados es infinita (siendo esto lo mejor que hay). Esto parece muy bueno según el principio de máxima verosimilitud. No obstante, para un dato nuevo, la densidad de probabilidad de un dato nuevo, diferente al dato observado, sería 0. 
 
 \begin{figure}[h]
 \centering
@@ -657,7 +657,7 @@ $$p(x \mid \mathcal{D}) = \int p(x \mid \theta) p(\theta \mid \mathcal{D}) d\the
 
 \subsubsection{Selección de modelos bayesianos}
 La distribución posterior bayesiana también es útil para realizar la selección de modelos sin tener que recurrir a la validación cruzada. Obtenemos la probabilidad posterior de cada modelo utilizando la regla de Bayes:
-$$p(m \mid \mathcal{D} = \frac{p(\mathcal{D} \mid m) p(m)}{p(\mathcal{D})} = \frac{p(\mathcal{D} \mid m) p(m)}{\sum_{m \in \mathcal{M}} p(m, \mathcal{D})}$$
+$$p(m \mid \mathcal{D}) = \frac{p(\mathcal{D} \mid m) p(m)}{p(\mathcal{D})} = \frac{p(\mathcal{D} \mid m) p(m)}{\sum_{m \in \mathcal{M}} p(m, \mathcal{D})}$$
 
 Si la probabilidad a priori sobre los modelos es uniforme, simplemente elegimos el modelo con la probabilidad marginal más alta:
 $$p(\mathcal{D} \mid m) = \int p(\mathcal{D} \mid \theta) p(\theta \mid m) d\theta$$
@@ -770,8 +770,12 @@ $$p(symmetry = yes \mid malignant) = 1/5 = 0,2$$
 $$p(symmetry = yes \mid benign) = 5/9 = 0,6$$
 
 Multiplicando estos valores por el prior, ya tenemos el numerador para Bayes. Para el denominador hay que poner lo mismo sumado a la probabilidad de la clase contraria:
-$$p(malignant) \cdot p(area = large \mid malignant) \cdot p(smoothness = medium \mid malignant) \cdot (symmetry = yes \mid malignant) = 0,0115$$
-$$p(benign) \cdot p(area = large \mid benign) \cdot p(smoothness = medium \mid benign) \cdot (symmetry = yes \mid benign) = 0,0213$$
+\begin{align*}
+& p(\text{malignant}) \cdot p(\text{area} = \text{large} \mid \text{malignant}) \\
+& \quad \cdot p(\text{smoothness} = \text{medium} \mid \text{malignant}) \cdot p(\text{symmetry} = \text{yes} \mid \text{malignant}) = 0.0115 \\
+& p(\text{benign}) \cdot p(\text{area} = \text{large} \mid \text{benign}) \\
+& \quad \cdot p(\text{smoothness} = \text{medium} \mid \text{benign}) \cdot p(\text{symmetry} = \text{yes} \mid \text{benign}) = 0.0213
+\end{align*}
 
 $$p(malignant \cdot \vec{x}_new) = \frac{0,0115}{0,0115 + 0,0213} = 0,35$$
 $$p(benign \cdot \vec{x}_new) = \frac{0,0213}{0,0115 + 0,0213} = 0,65$$
