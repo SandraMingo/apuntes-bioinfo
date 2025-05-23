@@ -660,7 +660,7 @@ $$w^* = (\Phi^\top \Phi)^{-1} \Phi^\top y$$
 El mapeo será crucial para el rendimiento del modelo.
 
 \subsubsection{Construcción de características}
-Las características son cuidadosamente elaboradas por expertos (es decir, se crean características nuevas "a mano"). Si existen conocimientos de expertos, este enfoque puede mejorar el rendiminedo. Así, el modelo no depende (necesariamente) de $d$ o $N$, sino de la naturaleza del problema. No obstante, se requiere de conocimientos de expertos y una intuición sobre el problema, lo cual es difícil para $d$ grandes.
+Las características son cuidadosamente elaboradas por expertos (es decir, se crean características nuevas "a mano"). Si existen conocimientos de expertos, este enfoque puede mejorar el rendimiento. Así, el modelo no depende (necesariamente) de $d$ o $N$, sino de la naturaleza del problema. No obstante, se requiere de conocimientos de expertos y una intuición sobre el problema, lo cual es difícil para $d$ grandes.
 
 %06/05 - Carlos Alaíz
 \subsubsection{Conjunto de funciones básicas}
@@ -865,8 +865,8 @@ $$\begin{cases}
 
 Esto es un problema cuadrático restringido para el cual hay varios algoritmos ad hoc que lo resuelven. Los datos solo aparecen como productos internos, y como consecuencia de la dualidad lagrangiana, hay dos casos:
 \begin{itemize}
-\item Si $\alpha_i > 0, y_i(\vec{w}^\intercal \vec{x}_i + b = 1$, este punto sobre el hiperplano de apoyo es un vector de apoyo.
-\item Si $\alpha_i = 0, y_i(\vec{w}^\intercal \vec{x}_i + b \geq 1$, este punto no tiene ningún impacto sobre el modelo.
+\item Si $\alpha_i > 0, y_i(\vec{w}^\intercal \vec{x}_i + b) = 1$, este punto sobre el hiperplano de apoyo es un vector de apoyo.
+\item Si $\alpha_i = 0, y_i(\vec{w}^\intercal \vec{x}_i + b) \geq 1$, este punto no tiene ningún impacto sobre el modelo.
 \end{itemize}
 Este modelo es sparse en cuanto a los patrones de entrenamiento.
 
@@ -970,9 +970,9 @@ $$(-1, -1; -1.9) \rightarrow 0 + 1 \cdot (-1) + 1 \cdot (-1) = -2$$
 $$(-2, 1; -1) \rightarrow 0 + 1 \cdot (-2) + 1 \cdot 1 = -1 \checkmark$$
 $$(1, 0; 2) \rightarrow 0 + 1 \cdot 1 + 1 \cdot 0 = 1$$
 Ahora se computa la pérdida insensible de $\epsilon$ para cada patrón utilizando $\max\bigl\{0, |\mathbf{w}^\intercal \mathbf{x} + b - y| - \epsilon\bigr\}$ con $\epsilon = 0.25$.
-$$(-1, -1; -1.9) \rightarrow -2 -(-1.9) = 0.1 < 0.25 \rightarrow \epsilon_i = 0$$
-$$(-2, 1; -1) \rightarrow -1 - (-1) = 0 < 0.25 \rightarrow \epsilon_i = 0 $$
-$$(1, 0; 2) \rightarrow 1 - 2 = 1 > 0.25 \rightarrow \epsilon_i = 1 - 0.25 = 0.75$$
+$$(-1, -1; -1.9) \rightarrow |-2 -(-1.9)| = 0.1 < 0.25 \rightarrow \epsilon_i = 0$$
+$$(-2, 1; -1) \rightarrow |-1 - (-1)| = 0 < 0.25 \rightarrow \epsilon_i = 0 $$
+$$(1, 0; 2) \rightarrow |1 - 2| = 1 > 0.25 \rightarrow \epsilon_i = 1 - 0.25 = 0.75$$
 Hay un 0.25 del error que se ignora. Si es más pequeño, se ignora, si el error es mayor, se resta 0.25 a lo que se ha equivocado el modelo 
 
 El Regresor de Vectores Soporte (SVR) se define como la solución del problema:

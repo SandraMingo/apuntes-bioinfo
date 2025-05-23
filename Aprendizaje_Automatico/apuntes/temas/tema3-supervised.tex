@@ -874,7 +874,7 @@ En el momento en que un camino no esté bloqueado, ya no podemos decir que haya 
 \end{itemize}
 
 \section{Análisis discriminante}
-Como hemos dicho antes, es poco probable que en la práctica se cumpla la hipótesis Naive de Bayes .Una red bayesiana permite simplificar este supuesto y conduce a un modelo de probabilidad más flexible cuando se trabaja con atributos categóricos. En el caso de los atributos continuos, una distribución gaussiana multivariante permite tener en cuenta las dependencias entre los atributos.
+Como hemos dicho antes, es poco probable que en la práctica se cumpla la hipótesis Naive de Bayes. Una red bayesiana permite simplificar este supuesto y conduce a un modelo de probabilidad más flexible cuando se trabaja con atributos categóricos. En el caso de los atributos continuos, una distribución gaussiana multivariante permite tener en cuenta las dependencias entre los atributos.
 
 \subsection{Distribución gaussiana multivariante}
 Esto permite introducir algo más flexible que la hipótesis Naive de Bayes. Las entradas de la diagonal representan la varianza de cada componente. Las entradas fuera de la diagonal son las dependencias entre variables. Si son negativas, es que existe correlación negativa entre variables. Cuando recibe el valor 0, es que no hay dependencias. 
@@ -941,7 +941,7 @@ Este clasificador tiene un hiperparámetro que indica lo que se encogen los cent
 
 QDA tiene fronteras más flexibles al ser parábolas en comparación con las fronteras lineales de LDA. No obstante, es más propenso al sobreaprendizaje con un peor error de generalización.
 
-\item Imagina que aplicas QDA a un problema de clasificación con más atributos que datos. La matriz es singular y no inverda. ¿Qué técnicas se pueden utilizar para resolver este problema?
+\item Imagina que aplicas QDA a un problema de clasificación con más atributos que datos. La matriz es singular y no inversa. ¿Qué técnicas se pueden utilizar para resolver este problema?
 
 Se puede utilizar la estimación máxima a posteriori y ajustar $\lambda$ que interpola entre una matriz igual a la de identidad y una matriz diagonal. Esta es una de las soluciones. Otra solución sería coger la diagonal, quedando así Naive Bayes. También se podrían forzar las matrices de covarianza para que fueran iguales (y por tanto, compartidas).
 \end{enumerate}
@@ -975,7 +975,7 @@ De esta forma, la densidad se puede aproximar como:
 $$f(x) \approx \frac{\text{number of samples in region}}{\text{total number of samples}} \cdot \frac{1}{\text{volume of the region}} = \frac{\kappa}{N} \frac{1}{V}$$
 
 Esto se debe estimar para cada etiqueta de clase. Si hacemos esto, para la estimación de la distribución condicional queda:
-$$p(\vec{x} \mid \mathcal{C}_k) \approx \frac{N_k(\vec{x}}{N_k V(\vec{x})}$$
+$$p(\vec{x} \mid \mathcal{C}_k) \approx \frac{N_k(\vec{x})}{N_k V(\vec{x})}$$
 Este estimador es para la distribución condicional, y se utiliza en la regla de Bayes para las probabilidades posteriores:
 $$p(y_i = \mathcal{C}_k \mid \vec{x}) = \frac{N_k (\vec{x})}{\sum_{k'} N_{k'}(\vec{x})} = \frac{N_k(\vec{x})}{\kappa}$$
 
