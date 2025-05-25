@@ -185,11 +185,11 @@ En problemas de regresión, las métricas comunes incluyen:
 \item \textbf{Error cuadrático medio (MSE)}:
 $$MSE = \mathbb{E}[(h(\vec{X}; \Theta) - Y)^2] \approx \frac{1}{N} \sum^N_{n = 1}(h(\vec{x}_n;\Theta) - y_n)^2$$
 
-\item \textbf{Error absoluto medio (MAE)}:
+\item \textbf{Error cuadrático medio normalizado (NMSE)}:
 $$NMSE = \frac{MSE}{Var}$$
 $$Var = \frac{1}{N} \sum^N_{n = 1} (y_n - \bar{y})^2$$
 
-\item \textbf{Error cuadrático medio normalizado (NMSE)}:
+\item \textbf{Error absoluto medio (MAE)}:
 $$MAE = \mathbb{E}[|h(\vec{X};\Theta) - Y|] \approx \frac{1}{N} \sum^N_{n = 1} |h(\vec{x}_n; \Theta) - y_n|$$
 \end{itemize}
 
