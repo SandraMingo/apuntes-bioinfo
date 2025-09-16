@@ -1,0 +1,69 @@
+\documentclass{config/apuntes}
+
+\title{Análisis de Imagen Biomédica}
+\author{Sandra Mingo Ramírez}
+\date{2025/26}
+\acronym{AIBM}
+
+\usepackage[all]{nowidow}
+\usepackage{listing}
+\usepackage{color}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{soul}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{
+  frame=tb,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\usepackage{tocloft}
+
+\advance\cftchapnumwidth 0.9em\relax
+\advance\cftsecnumwidth 0.6em\relax
+\advance\cftsubsecindent 0.5em\relax
+\advance\cftsubsecnumwidth 0.5em\relax
+\begin{document}
+
+\begin{abstract}
+En las ciencias biomédicas no solo se recogen datos; en ocasiones se generan imágenes que posteriormente se deben analizar y de las que se debe extraer información comprensiva. 
+El análisis de imagen biomédica es el proceso de examinar y extraer información útil de imágenes biomédicas, como resonancias magnéticas, tomografías computarizadas (TC) o ecografías, para facilitar diagnósticos, monitorear el progreso de enfermedades y desarrollar nuevas técnicas de diagnóstico y tratamiento. El prefijo "bio" se refiere a la fase preclínica, siendo así las imágenes de modelos animales fundamentalmente.
+\end{abstract}
+
+\pagestyle{plain}
+
+\maketitle
+
+\tableofcontents
+
+%2 profesores y 2 invitados
+%3 aplicaciones: microscopía, PET y resonancia magnética
+% 60 % examen -> convocatoria en enero,
+% 15 % Moodle
+% 25 % pequeños trabajos
+
+% Programación en Matlab - versión gratuita para estudiantes, 
+% Octave alternativa gratuita a Matlab
+
+\input{temas/tema1-imageproc.tex}
+
+\end{document}
