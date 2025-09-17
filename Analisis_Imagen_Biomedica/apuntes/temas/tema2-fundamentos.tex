@@ -1,0 +1,196 @@
+%17/09 - Álvaro García
+\chapter{Fundamentos imagen biomédica}
+\section{Percepción visual}
+\subsection{Fenómeno de la luz}
+Una fuente de luz \textbf{monocromática} emite radiación predominantemente en una única \textbf{longitud de onda} (o frecuencia), percibida como un color puro. Un ejemplo característico es el láser. Por el contrario, la luz \textbf{policromática} está compuesta por una mezcla de múltiples longitudes de onda, como la luz solar o la de una bombilla LED blanca.
+
+Existen dos tipos de fuentes luminosas:
+\begin{itemize}
+\item \textbf{Fuentes Primarias o Emisivas:} Generan su propia luz mediante procesos de excitación de átomos o moléculas (ej.: el Sol, una bombilla, un LED).
+\item \textbf{Fuentes Secundarias o Reflectantes:} No generan luz propia, sino que reflejan total o parcialmente la luz que reciben de una fuente primaria (ej.: la Luna, un libro, la mayoría de los objetos que nos rodean). Casi todo lo que vemos son fuentes secundarias.
+\end{itemize}
+
+\subsection{Sistema visual humano}
+El proceso de la visión comienza cuando la luz entra en el ojo y es proyectada sobre la \textbf{retina}, donde los \textbf{fotorreceptores} la captan y la convierten en señales electroquímicas (proceso de \textbf{transducción}). Estas señales se transmiten a través del \textbf{nervio óptico} al cerebro, donde se interpretan para generar la percepción visual.
+
+Desde un punto de vista óptico, el ojo humano es análogo a una cámara fotográfica:
+\begin{itemize}
+\item \textbf{Lente:} El cristalino (junto con la córnea y los humores acuoso y vítreo) se encarga de enfocar la luz, proyectando una imagen nítida sobre la retina. Su forma se ajusta en un proceso llamado acomodación.
+\item \textbf{Diafragma}: El iris (la parte coloreada) actúa como un diafragma, controlando el tamaño de la pupila para regular la cantidad de luz que entra en el ojo.
+\item \textbf{Sensor}: La retina equivale al sensor de una cámara (CCD/CMOS). Es una capa de tejido sensible a la luz ubicada en la parte posterior del ojo.
+\end{itemize}
+
+La retina contiene dos tipos principales de fotorreceptores:
+\begin{itemize}
+\item \textbf{Bastones}: Altamente sensibles a la intensidad lumínica (luminancia), pero no al color. Son responsables de la visión escotópica (visión en condiciones de baja iluminación). Se concentran en la periferia de la retina, siendo muy sensibles al movimiento.
+\item \textbf{Conos}: Menos sensibles que los bastones, pero especializados en la percepción del color (visión fotópica, en condiciones de alta iluminación). Se concentran en la fóvea, la zona central de la retina de máxima agudeza visual. Existen tres tipos, cada uno con un pico de sensibilidad a diferentes longitudes de onda: rojo (larga), verde (media) y azul (corta).
+\end{itemize}
+
+La capacidad del ojo tiene limitaciones físicas. La \textbf{resolución espacial} (capacidad para discernir detalles finos) y la \textbf{resolución temporal} (capacidad para discernir eventos rápidos) son finitas debido al número limitado de fotorreceptores y a su tiempo de respuesta.
+
+La \textbf{agudeza visual} es la capacidad de distinguir entre dos puntos separados. Si la separación angular entre ellos es superior a \textbf{1 minuto de arco} (1/60 de grado), estimulan fotorreceptores y fibras nerviosas diferentes, por lo que el cerebro los percibe como entidades distintas. Si la separación es menor, ambos puntos estimulan el mismo receptor, y el cerebro percibe una \textbf{mezcla aditiva espacial (MAE)}, fusionándolos en un solo estímulo de color.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = \textwidth]{figs/mae.png}
+\caption{Ilustración del principio de la mezcla aditiva espacial. Puntos de color suficientemente pequeños y cercanos se perciben como un color uniforme.}
+\end{figure}
+
+Este principio es fundamental en tecnologías de visualización como las pantallas de televisión y monitores, donde la imagen se forma mediante \textbf{píxeles} compuestos por subpíxeles rojos, verdes y azules (triadas de colores) cuya separación es inferior al umbral de agudeza visual.
+
+La \textbf{memoria visual} o persistencia retiniana es una propiedad por la cual la excitación de los fotorreceptores no cesa instantáneamente tras desaparecer el estímulo, sino que continúa enviando señales al cerebro durante un breve periodo. La integración de impulsos luminosos consecutivos da lugar a la sensación de continuidad, un fenómeno conocido como \textbf{mezcla aditiva temporal (MAT)} o persistencia retiniana.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = \textwidth]{figs/mat.png}
+\caption{Ilustración del principio de la mezcla aditiva temporal. Estímulos discretos sucesivos se perciben como un continuo si la frecuencia es suficientemente alta.}
+\end{figure}
+
+Si el intervalo entre impulsos es mayor de aproximadamente 40-50 ms (equivalente a 20-25 Hz), se percibe un parpadeo o \textit{flicker} molesto. Por debajo de este umbral, la respuesta al nuevo estímulo se suma a la anterior, creando una sensación de flujo continuo. Esto explica por qué una secuencia de imágenes estáticas (fotogramas) a una velocidad superior a 25 fps (fotogramas por segundo) se percibe como movimiento continuo. El umbral exacto varía con la luminancia y el campo visual estimulado.
+
+\subsection{Luz}
+La visión de los objetos no emisivos se debe a la reflexión (y en algunos casos, a la transmisión) de la luz que incide sobre ellos. La intensidad de la luz reflejada ($L$, luminancia) que llega al ojo depende de la intensidad de la luz incidente ($E$, iluminancia, medida en lux) y de las propiedades reflectivas del material ($R$).
+
+En términos generales, se puede modelar como:
+$$C_R(X, V, geom, t, \lambda) = E(X, t, \lambda).r(V, geom, \lambda)$$
+
+Donde:
+$R(V, \text{geom}, \lambda)$ es la reflectancia del material, que depende del ángulo de visión ($V$), la geometría de la superficie (si es rugosa/difusa o lisa/especular) y la longitud de onda ($\lambda$). Un objeto parece de un color porque absorbe selectivamente ciertas longitudes de onda y refleja otras.
+
+Existen dos modelos de síntesis de color:
+\begin{itemize}
+\item \textbf{Síntesis Aditiva}: Propia de las fuentes de luz primarias. Los colores se crean sumando diferentes longitudes de onda de luz. La suma de los colores primarios aditivos (Rojo, Verde, Azul - RGB) en su máxima intensidad produce la percepción de blanco. Ej.: pantallas, monitores.
+\item \textbf{Síntesis Sustractiva}: Propia de los pigmentos y materiales (fuentes secundarias). Los colores se crean porque el material absorbe (sustrae) ciertas longitudes de onda de la luz blanca incidente y refleja otras. Los colores primarios sustractivos son Cian, Magenta y Amarillo (CMY). La "suma" teórica de los tres absorbería toda la luz, produciendo negro. Ej.: pintura, impresión.
+\end{itemize}
+
+\subsection{Percepción de luminancia y color}
+El sistema visual humano opera en tres regímenes de visión según el nivel de iluminación:
+\begin{itemize}
+\item \textbf{Visión Escotópica}: Activada en condiciones de muy baja iluminación (noche). Dominada por los bastones. No permite la percepción del color (visión en escala de grises) y tiene una baja agudeza visual.
+\item \textbf{Visión Fotópica}: Activada en condiciones de alta iluminación (día). Dominada por los conos. Permite la percepción del color y una alta agudeza visual.
+\item \textbf{Visión Mesópica}: Régimen intermedio (amanecer, atardecer, iluminación tenue). Participan tanto bastones como conos. La percepción del color y la agudeza visual son intermedias.
+Los colores y nuestros conos no son puros. Los conos verdes absorben más que los conos rojos y azules. Nuestro cerebro recibe la información de los tres sensores y los integra para percibir un color u otro. 
+\end{itemize}
+
+La respuesta espectral de los tres tipos de conos se solapa. El cerebro deduce el color percibido (\textbf{crominancia}) a partir de la \textbf{señal tricromática} comparada que envían estos tres tipos de receptores. La crominancia se describe mediante dos atributos:
+\begin{itemize}
+\item \textbf{Tono:} el color en sí mismo.
+\item \textbf{Saturación:} la pureza o intensidad del color.
+\end{itemize}
+
+Por otro lado, la \textbf{luminancia} se refiere a la cantidad de luz medida físicamente (en candelas/$m^2$), que se percibe subjetivamente como \textbf{brillo} en una escala de grises.
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = \textwidth]{figs/perception.png}
+\caption{Representación de la percepción visual, desglosando la información en componentes de luminancia (brillo) y crominancia (tono y saturación).}
+\end{figure}
+
+\subsection{Brillo}
+El brillo es la percepción subjetiva de la luminancia. El sistema visual es extraordinariamente adaptable, capaz de funcionar en un rango de aproximadamente $10^{10}$ niveles de intensidad lumínica mediante el proceso de adaptación (ajuste de la sensibilidad retinal según la luminancia media del entorno).
+
+La percepción del brillo es relativa, no absoluta. Depende críticamente del contraste entre un objeto y su fondo o entorno inmediato (Ley de Weber-Fechner). El ojo es mucho más sensible a las variaciones de luminancia (bordes, movimientos) que a los valores constantes.
+
+No existe una medida física directa del brillo, ya que es una experiencia perceptiva compleja. En condiciones de alta luminancia (visión fotópica), el ojo tiene una mayor agudeza para discernir objetos claros sobre fondos oscuros. En condiciones de baja luminancia (visión escotópica o mesópica), la sensibilidad cambia, y puede resultar más fácil discernir objetos de luminancia media. 
+
+Dado que la percepción del brillo es relativa, su evaluación debe considerar necesariamente el entorno. La \textbf{evaluación del contraste} es, por tanto, la medición cuantitativa de la diferencia percibida en luminancia (brillo) entre un objeto de interés (por ejemplo, un texto) y su fondo inmediato. Esta diferencia se expresa comúnmente como una razón de contraste (por ejemplo, 4:1, 7:1), que se calcula dividiendo la luminancia relativa de la parte más clara entre la de la parte más oscura. Un contraste alto asegura que la información sea discernible para el sistema visual, lo que es un principio crítico en disciplinas como el diseño de interfaces, la señalética y la accesibilidad web, garantizando que el contenido sea legible para usuarios con diversas capacidades visuales o en condiciones de iluminación variables.
+
+\section{Captura de imágenes}
+\subsection{Sistema de adquisición}
+Los elementos funcionales fundamentales de un sistema de adquisición de imágenes son: el \textbf{sistema óptico} (o grupo óptico), el \textbf{sensor de imagen} (con sus distintas tecnologías y características) y la etapa de \textbf{procesamiento de la señal} (que convierte la información cruda del sensor en una imagen o señal de vídeo utilizable).
+
+En una cámara, la exposición —la cantidad de luz que alcanza el sensor— se controla mediante dos mecanismos principales:
+\begin{itemize}
+\item El \textbf{obturador} controla la duración de la exposición (el intervalo de tiempo durante el cual la luz incide en el sensor).
+\item El \textbf{diafragma} controla la intensidad de la luz que entra a través de la lente, ajustando el tamaño de la abertura.
+\item El tercer elemento crucial es el propio \textbf{sensor}, compuesto por materiales fotosensibles (fotodiodos) que convierten la energía de los fotones (luz) en una señal eléctrica (carga).
+\end{itemize}
+
+\subsection{Modelo de cámara puntual \textit{pin hole}}
+El modelo de cámara estenopeica o \textit{pinhole} es el modelo más simple de formación de imágenes. Sus componentes esenciales son:
+\begin{itemize}
+\item Un \textbf{centro de proyección} (el orificio estenopeico o \textit{pinhole}).
+\item Una \textbf{distancia focal} ($f$), que es la distancia entre el centro de proyección y el plano de la imagen.
+\item Un \textbf{plano de imagen} donde se forma la imagen proyectada.
+\end{itemize}
+
+Debido a la propagación rectilínea de la luz, la imagen formada en el plano es \textbf{invertida} (tanto vertical como horizontalmente). La principal ventaja de este modelo es que toda la escena está enfocada sin necesidad de un sistema de enfoque; la profundidad de campo es infinita.
+
+Sin embargo, existe un compromiso (\textit{trade-off}) crítico en el tamaño del orificio:
+\begin{itemize}
+\item Si el orificio es demasiado grande, cada punto de la escena proyecta un pequeño círculo de confusión (\textit{circle of confusion}) en el plano de imagen, resultando en una imagen desenfocada debido a la superposición de estos círculos.
+\item Si el orificio es demasiado pequeño, el fenómeno de la difracción de la luz se vuelve significativo. La luz se dispersa al pasar por la pequeña abertura, provocando que los puntos de la imagen se difuminen entre sí y se pierda definición y nitidez. Existe, por tanto, un tamaño de orificio óptimo que minimiza la combinación de estos dos efectos adversos.
+\end{itemize}
+
+\subsection{Color}
+Los sensores de imagen (CCD o CMOS) son inherentemente \textbf{monocromáticos}; solo pueden medir la intensidad de la luz, no su longitud de onda (color). Para capturar imágenes en color, se emplean diversas estrategias que implican la separación de la luz en sus componentes espectrales:
+
+\begin{itemize}
+\item \textbf{Sistema de 3 Sensores (3-CCD/3-CMOS):} Utiliza un prisma dicroico para dividir la luz incidente en sus tres componentes espectrales primarias (rojo, verde y azul). Cada haz de color se dirige hacia un sensor dedicado. Este sistema ofrece la máxima calidad y fidelidad de color, ya que cada píxel de la imagen final se genera con información de intensidad completa para los tres canales. Su principal desventaja es el alto coste y la complejidad mecánica.
+\item \textbf{Filtro de Color Rotativo:} Se coloca un filtro de color (rojo, verde o azul) giratorio delante de un único sensor. La cámara captura secuencialmente un fotograma para cada color primario. Este método es más económico que el de 3 sensores, pero introduce graves inconvenientes: baja calidad de color (especialmente con objetos en movimiento, que producen artefactos de \textit{ghosting}), una tasa de captura efectiva menor y la necesidad de una iluminación constante durante la rotación.
+\item \textbf{Matriz de Filtros de Color (CFA - \textit{Color Filter Array}):} Es el método más común en cámaras consumer y profesionales. Consiste en un mosaico de microfiltros coloreados, depositado directamente sobre la superficie del sensor, donde cada filtro corresponde a un único fotodiodo (píxel). Cada píxel del sensor captura únicamente la intensidad de una componente de color (R, G o B). El patrón más utilizado es el filtro de Bayer (desarrollado por Bryce Bayer en Kodak, 1976), que utiliza un 50\% de filtros verdes, un 25\% de rojos y un 25\% de azules, imitando la mayor sensibilidad del ojo humano al verde.
+\begin{figure}[h]
+\centering
+\includegraphics[width = \textwidth]{figs/filtro-bayer.png}
+\end{figure}
+La principal limitación de los CFA es que la resolución espacial de color es inferior a la resolución nominal del sensor. Para generar una imagen en color completa (donde cada píxel tenga valores R, G y B), es necesario aplicar un algoritmo de interpolación cromática o \textit{demosaicing}. Este proceso estima los componentes de color faltantes en cada píxel basándose en la información de los píxeles vecinos, lo que puede introducir artefactos como el \textit{moiré} o falseado de color (\textit{color aliasing}).
+\end{itemize}
+
+\section{Representación de imágenes}
+\subsection{La imagen digital}
+Una imagen digital es una representación bidimensional de una escena que ha sido \textbf{muestreada espacialmente y cuantificada en amplitud}. Esto significa que está definida en:
+\begin{itemize}
+\item Un dominio espacial discreto: un número finito de posiciones (píxeles) organizadas en una rejilla regular (matriz M×N).
+\item Un rango de valores discreto: las intensidades solo pueden tomar un conjunto finito de valores (generalmente potencias de 2).
+\end{itemize}
+
+El \textbf{píxel} (elemento de imagen) es la unidad mínima de información espacial en una imagen digital. Cada píxel almacena un valor (o un conjunto de valores) que representa la intensidad luminosa y/o el color capturado por el sensor en esa posición específica. Así, una imagen digital puede representarse matemáticamente como una matriz de valores numéricos.
+
+\subsection{True Color}
+El término True Color se refiere a un método de representación de color que utiliza una codificación directa de los componentes cromáticos, típicamente capaz de representar más de 16 millones de colores distintos.
+
+Es crucial hacer una distinción conceptual:
+\begin{itemize}
+\item \textbf{Imagen en Escala de Grises (Luminancia):} Se almacena un único valor por píxel, que representa la luminancia (la medida física de la intensidad de la luz), no la percepción subjetiva del brillo. Con una profundidad de 8 bits por píxel (bpp), se pueden representar 256 ($2^8$) niveles de gris, donde 0 suele representar el negro absoluto y 255 el blanco máximo.
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.6\textwidth]{figs/true-color-mono.png}
+\end{figure}
+
+\item \textbf{Imagen True Color a Color}: Utiliza tres canales independientes (generalmente Rojo, Verde y Azul - RGB). Cada canal tiene una profundidad de 8 bits, resultando en un total de 24 bits por píxel (8 + 8 + 8). Esto permite representar $2^24 = 16.777.216$ colores distintos. Este tipo de imagen no es una matriz bidimensional simple, sino una estructura tridimensional de tamaño M×N×3, a menudo conceptualizada como "un cubo de información" donde cada "capa" corresponde a un canal de color.
+\end{itemize}
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/true-color-tri.png}
+\end{figure}
+
+\subsection{Resolución vs definición}
+La \textbf{resolución de la imagen (Pixel Dimensions}) se refiere al número absoluto de píxeles que componen la imagen en sus dimensiones de ancho y alto (e.g., 1920×1080 px). Es un atributo intrínseco del archivo digital y determina la cantidad de detalle espacial que la imagen contiene. El usuario puede seleccionarla durante la captura o el post-procesado (remuestreo).
+
+La \textbf{Definición o Densidad de Píxeles (PPI - \textit{Pixels Per Inch} / DPI - \textit{Dots Per Inch})} es una medida de densidad que relaciona la resolución en píxeles con un tamaño físico real. Indica cuántos píxeles (PPI para pantallas) o puntos de tinta (DPI para impresión) hay en una pulgada lineal. Este valor define cómo de grandes o pequeños se verán los píxeles al reproducir la imagen en un dispositivo de salida (monitor, impresora). Está intrínsecamente ligado a la calidad del proceso de captura (óptica, sensor) y a las técnicas de procesamiento (interpolación, submuestreo) utilizadas.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/resolucion-definicion.png}
+\end{figure}
+
+\subsection{Profundidad}
+La profundidad de color se mide en bits por píxel (bpp) y determina cuánta información puede almacenar cada píxel, es decir, cuántos colores o tonos de gris diferentes puede representar una imagen.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/profundidad.png}
+\end{figure}
+
+Aprovechando la menor sensibilidad del sistema visual humano a la información de color (crominancia) en comparación con la información de luminancia, se han desarrollado formatos que permiten comprimir imágenes reduciendo selectivamente los datos de color. Una alternativa al almacenamiento True Color (24 bpp) son las \textbf{imágenes indexadas}. En lugar de almacenar los tres valores RGB para cada píxel, se utiliza una paleta de colores o tabla de búsqueda (Color Look-Up Table - CLUT o Color Map). Esta paleta es un array de hasta 256 entradas (para 8 bpp) donde cada entrada contiene un color RGB de 24 bits.
+La imagen en sí misma no almacena colores, sino índices (valores de 0 a 255) que apuntan a una posición en la paleta. Esto reduce drásticamente el tamaño del archivo. Se almacena una matriz de M×N de 8 bits (los índices) y una pequeña tabla auxiliar de 256×3 bytes (la paleta), en lugar de tres matrices de M×N de 8 bits.
+No obstante, limita la imagen a un máximo de 256 colores simultáneos ($2^{nbits}$), lo que puede producir posterización (\textit{banding}) en imágenes con degradados suaves o muchas variaciones de color. Es ideal para gráficos con áreas planas de color.
+
+\subsection{Formatos}
+Hay muchos formatos de imagen:
+\begin{itemize}
+\item Sin compresión: BMP, RAW, PPM
+\item Compresión sin pérdidas: PNG, GIF, TIFF
+\item Compresión con pérdidas: JPEG, TIFF
+\end{itemize}
