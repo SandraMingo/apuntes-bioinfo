@@ -1,5 +1,5 @@
 
-img = niftiread('C:\Users\Sandra\Documents\GitHub\apuntes_bioinfo\Analisis_Imagen_Biomedica\scripts\image_reading\Template_LPS_sl2_corrected.nii.gz');
+img = niftiread('.\Template_LPS_sl2_corrected.nii.gz');
 
 % Rotate the image 90 degrees counterclockwise
 J = imrotate(img, -90, 'bilinear', 'crop');
