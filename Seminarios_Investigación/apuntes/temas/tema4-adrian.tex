@@ -1,0 +1,39 @@
+%03/10 - Adrián
+\section{Introduction to the use of GitHub and its applications in bioinformatics}
+\textbf{Adrián Martín Segura - IMDEA Nutrición}
+
+GitHub Pages allows to host websites for free.
+
+Git is an open-source version control system, a software to track the changes in code, manage files and directories and revert the changes. Git Bash is an easy way to use git on Windows. GitHub is an online hosting service, the cloud for git. 
+
+The advantage of GitHub is to be able to have different versions and merge them into a common one. Basic GitHub terms: 
+\begin{itemize}
+\item Clone: making a local copy of a repository
+\item Commit: register the changes from a file
+\item Pull: take the main branch to the local copy
+\item Push: take the recent commits to the main branch of the remote from the local copy
+\end{itemize}
+
+If you clone a repository, you create a local copy. If you are not the owner of the repo, you have to ask permition every time you want to push (pull request). If you do a fork, you create a remote copy to your GitHub.
+
+\begin{lstlisting}[language = bash]
+cd route/to/your/directory
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/username/repo_name.git
+git push -u origin main
+
+git clone https://github.com/username/repo_name.git
+
+git branch branch_name 
+git checkout branch_name
+# Alternativa en un comando: git checkout -b branch_name
+
+git branch
+nano README.md
+git add README.md
+git commit -m "Update README via terminal"
+git push
+\end{lstlisting}
