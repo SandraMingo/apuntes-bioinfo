@@ -1,0 +1,38 @@
+%03/10 - Álvaro
+\section{Personalized medicine: An achievable challenge to tackle with AI}
+\textbf{Álvaro Serrano - CNIC}
+
+Dentro de la medicina personalizada está la farmacogenómica, que es el estudio de cómo los genes de un individuo determinan su respuesta a fármacos y generar tratamientos individualizados (fármaco adecuado en dosis adecuada). Así, se busca conseguir mejores resultados con menos efectos secundarios. 
+
+En el CNIC hay un caso de estudio del receptor ADRB1 betaadrenérgico. Se une a catecolaminas e inicia la cascada de señalización. Hay diversos fármacos betabloqueantes que modulan su actividad. Se diferencian por su selectividad, afinidad y si modifican el cambio conformacional que da lugar a la señal. El único que produce un cambio de conformación es el metropolol. 
+
+El receptor tiene mutaciones descritas, como Arg389Gly. Los individuos con esta mutación, que no siempre es patogénica, tienen un receptor más activo que va a señalizar mejor cuando se une la catecolamina al producir el cambio conformacional. 
+
+A día de hoy se utiliza virtual screening. Antiguamente se tenían placas gigantes y robots que iban poniendo librerías de fármacos en los pocillos para ver si los fármacos tenían función. El virtual screening simula eso con métodos computacionales. La ventaja es que no hay limitaciones físicas y se pueden testar miles de moléculas. Se encuentran compuestos prometedores que sí se prueban en un laboratorio de forma reducida. Así se reducen costes, tiempo y animales de experimentación. 
+
+Dentro del virtual screening, atendiendo al conocimiento de la proteína y del ligando, se diferencian las aproximaciones centradas en el ligando, aproximaciones centradas en la estructura y aproximaciones de novo. 
+
+En general, los pasos a seguir son:
+\begin{enumerate}
+\item Preparar la molécula diana, obtener la estructura tridimensional con PDB, etc.
+\item Preparar el ligando, obtener su estructura tridimensional (en las bases de datos suelen estar bidimensionales o incluso unidimensionales)
+\item Docking molecular, ver cómo encajan estas estructuras, evaluar las posiciones y hacer un ranking
+\item Elaborar una lista de hits con moléculas en un rango determinado (para poder administrarlo) que son susceptibles de ser un fármaco y estudiar sus propiedades farmacocinéticas y fisicoquímicas.
+\end{enumerate}
+
+Teniendo el ligando original, se codifica utilizando descriptores moleculares, una huella que va a codificar las propiedades que tienen. Así se permite buscar de forma eficiente en las librerías de compuestos al permitir filtrar. 
+
+En la aproximación basada en estructura, se busca determinar la cavidad en la que van a interaccionar las drogas. Primero se caracterizan y luego se sacan los compuestos para realizar el docking molecular. Se predice la afinidad, energía y demás mediante herramientas como AlphaFold. Características de la proteína como volumen, polaridad, puentes de hidrógeno, orientación de cadenas laterales y SASA permiten buscar características complementarias de los fármacos para obtener candidatos. 
+
+La etapa final del virtual screening es la simulación de dinámica molecular. Al final, cuando se hace una etapa de docking, se obtiene una imagen fija, pero no se sabe si el sistema es termodinámicamente estable. Por ello se ve cómo evoluciona el sistema en el tiempo en base a propiedades fisicoquímicas. Se puede calcular la constante de disociación para ver la concentración a la que se produce la interacción y la cantidad del fármaco que se tiene que suministrar al paciente. 
+
+¿Qué pasa si en estos pasos de virtual screening se introducen distintas inteligencias artificiales o modelos de aprendizaje profundo? Desde 2018, estas herramientas han pasado de predecir estructuras con una precisión del 70\% a un 99\% con respecto al PDB. Esto supuso que se le diera el premio Nobel a los creadores de AlphaFold en 2024. 
+
+AlphaFold aprende de la evolución, lo que quiere decir que procesa las estructuras del PDB y realiza alineamientos múltiples de secuencia. De ellos, infiere coevolución, ve residuos que van a mantenerse en posiciones concretas a lo largo de la evolución. Esto se representa con una matriz que relaciona la coevolución con la distancia de los aminoácidos, y sobre eso genera unas restricciones geométricas. Con una red neuronal de atención genera las proteínas. El evoformer coge la información del MSA y las restricciones geométricas. Sobre el MSA, utilizando la red neuronal, aprende patrones que le sirven para inferir con otras secuencias las restricciones. El módulo triangular self-attention genera nuevas distancias para generar una estructura 3D. El IPA mantiene las relaciones internas para que sean independientes a las coordinadas absolutas. Por último, se reciclan las predicciones para volver a alimentar la red y crear restricciones más precisas.
+
+No solo nos interesa la estructura de la proteína, si no la interacción entre proteínas o entre proteína y el fármaco. Boltz2 es una herramienta que permite predecir un complejo con perturbación de energía libre. Los métodos de perturbación de energía libre clásicos hacían una simulación en un espacio con propiedades fisicoquímicas que ya se conocían. Boltz2 aprende las reglas de perturbación para ser capaz de predecir la interacción. Este método duplica la precisión de otros métodos basados en ML. La IA nos está permitiendo, desde una secuencia de aminoácidos de una proteína y la secuencia unidimensional de un fármaco, la estructura tridimensional del complejo y sus interacciones. 
+
+Conociendo la cavidad, se puede crear el fármaco dentro. Para ello se utilizan distintos tipos de arquitectura: VAE, GAN y modelos de difusión. VAE genera variaciones sobre el input original. De esta forma, saca moléculas que varían entre sí. GAN genera dos redes, una que genera formas aleatorias y otra que selecciona las buenas. Los modelos de difusión son los que mejor funcionan, pero más costosos son computacionalmente. Sobre conjuntos conocidos se aplica ruido que va difuminando y quitando ruido para generar nuevas moléculas. Es el que mejor resultado está dando. Otros modelos son conjuntos, modelando la interacción directamente en lugar de tener un módulo para la proteína y otro para los fármacos.
+
+Esto abre la puerta a la medicina personalizada a través de la farmacogenómica. Hay varios artículos recientes en los que se han descrito proteínas y fármacos mediante IA. 
+
