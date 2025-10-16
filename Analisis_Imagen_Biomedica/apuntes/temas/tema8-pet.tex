@@ -1,0 +1,141 @@
+%16/10 - Júlia Baguña Torres
+\chapter{Aplicaciones en la Tomografía por Emisión de Protones}
+\section{Fundamentos físicos de la imagen PET}
+La imagen médica nuclear para la medicina de precisión implica el uso de trazadores (radiofármacos) para evaluar las funciones corporales y para diagnosticar enfermedades. Dentro de las imágenes médicas nucleares están PET (\textit{Positron Emission Tomography}) y SPECT (\textit{Single-Photon Emission Computed Tomography}). Estas técnicas dan información sobre la distribución de un radiofármaco, pudiendo detectar enfermedades en fases más tempranas que otras que miden el cambio anatómico estructural que suelen aparecer más tarde en la enfermedad. Como van dirigidas a dianas moleculares, tienen una alta sensibilidad, no son invasivas, a tiempo real, imágenes 3D y a nivel de todo el cuerpo, proporcionan información funcional y metabólica, se puede adquirir en distintos puntos de tiempo (adquisición longitudinal) y permite la cuantificación.
+
+La imagen médica nuclear permite la detección de la enfermedad, estadificación, caracterización molecular, monitorización del efecto terapéutico, desarrollo y optimización de nuevos fármacos y theranostics (mira lo que tratas y trata lo que ves).
+
+En medicina nuclear, el concepto central es el radiofármaco o trazador adminsitrado. El trazador es un agente de contraste que debe cumplir con tres principios:
+El trazador se administra en cantidades traza, una concentración muy pequeña a nivel picomolar para poder visualizar un proceso fisiopatológico pero sin perturbarlo. El trazador se utiliza para medir parámetros fisiológicos de un sistema conocido, debe ser específico. Para obtener información funcional se requiere la cuantificación absoluta de su concentración. 
+
+El trazador suele estar formado por dos entidades. El vector molecular dirige el trazador a la diana molecular, pudiendo ser una molécula pequeña, péptido, anticuerpo, fármaco, célula, etc. Por otra parte está el radionúclido, que es la señal que se detecta. La vida media de un radioisótopo es el tiempo en el que pierde la mitad de su radiación. Además, los radiofármacos pueden tener distintos tipos de emisión. Los radionúclidos que se utilizan para radioterapia dirigida suelen emitir $\alpha$ y $\beta$, mientras que los $\gamma$ se suelen utilizar para el diagnóstico. 
+
+En SPECT, se utilizan radioisótopos que emiten radiación gamma directamente. Los detectores son cámaras gamma con estructuras de colimadores. Para ubicar el lugar de emisión, se utilizan los colimadores para filtrar las emisiones en un ángulo o localización determinada. Al hacerlo así, se pierden varios eventos en la misma detección, por lo que es menos sensible que PET. Las cámaras gamma van girando alrededor del paciente para capturar las imágenes 2D que en la reconstrucción posterior se convierte en 3D con la emisión del paciente. Como las cámaras se van moviendo y el campo de visión es relativamente pequeño, es difícil detectar radiación a tiempo real. No obstante, estos radioisótopos gamma suelen emitir radiación gamma de distintas energías, pudiendo así detectar ventanas de energías específicas (por ejemplo para varios fármacos). 
+
+El PET está basado en la detección de positrones emitidos por el radioisótopo. El positrón viaja una corta distancia y se suele encontrar con un electrón del tejido. Se produce un evento de aniquilación que causa dos rayos gamma en sentido opuesto. Los detectores son redondos alrededor de todo el cuerpo, por lo que no es necesario que se muevan y la sensibilidad es mucho mayor.  
+
+\section{Radiotrazadores}
+Uno de los trazadores más utilizados es FDG o fluorodeoxiglucosa. Este trazador es un análogo de la glucosa, pudiendo así comportarse igual que la glucosa en los dos primeros pasos de la glucólisis. Se fosforila dentro de la célula y queda así atrapada. El trazador se utiliza al ser un análogo de la actividad glucolítica y proliferativa de la célula. Los tumores tienen una alta capacidad glucolítica, siendo así un método fiable para captar órganos que no procesan la glucosa de forma normal o enfermedades metabólicas. 
+
+Las modalidades anatómicas de imagen miden modalidades anatómicas del tejido. En TAC, se mide la capacidad de absorción de los rayos X. En la resonancia magnética, se mide la densidad de protones y cómo afectan distintas secuencias a perfusión, difusión, etc. En PET, cada vóxel representa la concentración del trazador administrado en unidades de kilobequerelio/mL. Estas medidas se convierten posteriormente en parámetros fisiológicos relacionados con el proceso biológico o biomarcador de interés.
+
+\section{Métodos de reconstrucción y pre-procesamiento de imagen PET}
+
+Hay muchos factores que afectan a la calidad PET, por lo que es necesario hacer un control de calidad de los datos PET. Hay factores asociados al momento de preadquisición de la imagen, adquisición y postadquisición de la imagen.
+
+\subsection{Pre-reconstrucción de la imagen}
+Es importante tener una aproximación precisa de la dosis inyectada. La dosis inyectada se mide con un activímetro, necesitando una buena cross-calibración entre el activímetro y el detector. Es importante escoger una dosis adecuada. Si se inyecta poca cantidad, habrá una baja resolución espacial y mucho ruido de fondo, teniendo una baja reproducibilidad en la cuantificación. Si la dosis es muy alta, quizás se superan los umbrales del escáner PET y llegar a un punto de saturación de la imagen, causando artefactos. Por otro lado se debe optimizar el tiempo de escaneo para asegurar que se registren suficientes eventos. Un tiempo demasiado breve tendrá pocas cuentas y una imagen ruidosa, pero un tiempo excesivo tiene un alto coste y el paciente estará incómodo. Por ello se debe hacer una precalibración para ajustar el escáner a la escala del activímetro. Hay que tener siempre en cuenta el decaimiento del radioisótopo, el tiempo transcurrido entre la inyección y la adquisición. 
+
+\subsection{Reconstrucción de imagen PET}
+La reconstrucción es el proceso mediante el cual se convierten los datos crudos de las proyecciones adquiridas a la imagen 3D de la distribución del radiotrazador. La calidad de la imagen PET depende de:
+\begin{itemize}
+\item Contraste: intensidad de la imagen
+\item Resolución: nivel de detalle de la imagen
+\item Ruido: homogeneidad de la imagen
+\end{itemize}
+
+Los parámetros de reconstrucción afectarán a la calidad global. Hay dos tipos de métodos de reconstrucción: analíticos e iterativos. El \textbf{algoritmo analítico} se llama retroproyección filtrada, y todas las proyecciones se filtran para generar el objeto original. Este método es rápido y preciso para objetos de geometría simple y tiene pocos requisitos computacionales. No obstante, puede causar artefactos de línea o estrella, pérdida de resolución y correcciones físicas son difíciles de implementar. La \textbf{reconstrucción iterativa} suele partir de una estimación del objeto inicial, la cual se va refinando en sucesivas iteraciones en las que se compraran las proyecciones estimadas con las proyecciones reales. La resolución final es mejor y se pueden implementar las correcciones físicas, pero la reconstrucción es lenta y convergencia no uniforme, además de tener altos requisitos computacionales. 
+
+Los métodos iterativos pueden tener un distinto número de iteraciones o subsets. Números insuficientes producen imágenes suavizadas y de bajo contraste, mientras que un valor demasiado alto tendrá una resolución espacial extrema e imágenes ruidosas.
+
+Las correcciones físicas de la imagen PET son:
+\begin{itemize}
+\item \textbf{Atenuación}: absorción de los rayos gamma por parte del tejido a través del efecto fotoeléctrico o dispersadas fuera del ángulo del anillo de detección. En humanos se puede llegar a perder el 50-75\% de señal si no se aplica la corrección.
+\item \textbf{Dispersión (scatter):} los rayos gamma pueden colisionar con una partícula cargada, perder parte de su energía y cambiar de dirección para cuando llega al detector. El impacto de la dispersión se corrige muy bien si se corrige la atenuación.
+\item \textbf{Randoms:} detección dentro de la misma ventana de tiempo de 2 rayos gamma individuales, generando una falsa coincidencia.
+\end{itemize}
+
+En la práctica clínica habitual suele haber modelos híbridos, imágenes de PET junto con imágenes de resonancia o TAC. Este corregistro permite tener una referencia anatómica y una segmentación más precisa de órganos y tejidos.
+Hay un corregistro con algoritmos de software (rígido, afín, no rígido y deformable), con marcadores fiduciales, basado en puntos anatómicos y con gating.
+
+El PET es una imagen bastante ruidosa, teniendo que aplicar filtros después de la reconstrucción (nunca antes). Estos filtros ayudan a definir las estructuras anatómicas, aunque se deben evitar con pocos eventos.
+
+\section{Métodos de cuantificación}
+La cuantificación de la imagen PET también puede verse afectada por el método de análisis escogido: órgano a segmentar, información a obtener, si está bien delimitado el tejido. 
+
+\subsection{Efecto de volumen parcial}
+PET no se caracteriza por tener una resolución buena. Generalmente se observa un efecto de derrame en el que la actividad de los vóxeles se derrama sobre las estructuras adyacentes. Se subestima la concentración de actividad en la estructura (disminuye) y se incrementa la captación en las estructuras adyacentes. Este efecto se ve agravado cuando en un vóxel hay una mezcla de estructuras. Además, hay movimientos del paciente que afectan a la resolución de la imagen.
+
+\subsection{Volúmenes de interés (VOIs) manualmente delinados en PET}
+Para estimar la concentración de trazador en un nódulo linfático: ¿Es una buena estrategia dibujar un VOI en el nódulo y extraer la concentración de actividad media? No, porque al ser una estructura tan pequeña, habrá un efecto de volumen parcial terrible. Es difícil definir los límites anatómicos en una imagen PET. Los límites del VOI no afectan al valor de actividad máximo dentro del mismo. El valor máximo dentro de un VOI es muy sensible al ruido.
+Solución: Dibujar un pequeño VOI dentro de la zona más “caliente” (radioactivo) de la región de interés.
+
+Para ciertos tejidos, se puede estimar la concentración media del trazador siempre que la señal sea homogénea, la región sea mucho más grande que la resolución del escáner y que los límites anatómicos estén claros.
+
+\subsection{VOIs delinados mediante thresholding}
+Este método consiste en la segmentación semi-automática seleccionando vóxels por encima de un valor predeterminado o umbral ($0.25 \cdot max$, $0.5 \cdot max$, etc). Este método permite una buena estimación de la concentración media de la actividad, pero para definir el valor límite óptimo se requiere de una pre-calibración del escáner.
+
+\subsection{VOIs delinados en imágenes anatómicas}
+En sistemas híbridos, segmentación directa sobre la imagen anatómica coregistrada con el PET (CT, MRI). Estas modalidades permiten una delinación del VOI precisa y una estimación robusta de la concentración media, pero es dependiente de la resolución espacial de la modalidad anatómica, y no es aplicable a todos los tejidos.
+
+\subsection{VOIs delineados usando plantillas anatómicas}
+Se usan plantillas anatómicas (atlas) con VOIs predefinidas. Se utiliza generalmente para PET cerebral.
+Permite rotación, translación y transformación no rígida, pero estas plantillas no se suelen usar para todos los órganos al ser deformable y no poder usarse en regiones blandas. En el caso del cerebro, como está protegido por el cráneo, sí se puede utilizar este método.
+
+\subsection{Segmentación next-generation con IA}
+Hay métodos con inteligencia artificial que permiten segmentar de forma más rápida y objetiva. Se extraen múltiples parámetros de cuantificación y un análisis multimodal. 
+
+\subsection{Cuantificación}
+La concentración del trazador administrado no es equivalente al proceso fisiológico relacionado. El proceso biológico está directamente relacionado con la concentración de trazador específicamente unido a células o biomarcadores moleculares (receptores, enzimas, transportadores, etc.)
+
+Concentración específica de trazador $\neq$ concentración total de trazador
+
+Habrá una fracción de trazador en sangre, trazador libre en el tejido, captación no específica del trazador, captación específica del trazador, metabolitos radioactivos asociados al trazador.
+
+La señal PET es proporcional a la captación específica del trazador en trazadores altamente específicos, o cuando la concentración libre del trazador en tejido o la concentración del trazador en sangre son muy bajos. En cualquier caso, esto es información desconocida para nuevos trazadores. 
+
+\subsection{PET dinámico y modelaje farmacocinético}
+Para estudiar un trazador nuevo se realiza un estudio de PET dinámico. Se utiliza una adquisición larga y se generan imágenes con un binning temporal específico para estimar la concentración del trazador a lo largo de un periodo de tiempo.
+
+El modelaje cinético utiliza la información de las TACs pero también de la concentración libre de trazador en sangre disponible en función del tiempo (\textbf{función input}). La concentración de trazador en sangre en función del tiempo generalmente se estima directamente de la sangre (muestreo arterial). En el proceso de imagen dinámica se le pone al paciente una cánula y de ahí se van sacando durante el escáner muestras de sangre que se separan en fracciones plasmática y analizar la muestra plasmática por cromatografía líquida de high performance. 
+
+Hay otros métodos menos invasivos para estimar la función input:
+\begin{itemize}
+\item A partir de sangre venosa
+\item Derivada de la imagen si es que hay un vaso sanguíneo visible en la imagen
+\item Basados en estudios poblacionales, aunque no tienen en cuenta la variabilidad interindividual 
+\item Basada en un tejido de referencia
+\end{itemize}
+
+\section{Modelaje farmacocinético}
+Toda la información se debe combinar para obtener la concentración de trazador específica. El problema es que hay muchas constantes cinéticas, teniendo así riesgo de sobreajuste. 
+
+\subsection{Modelo de 1 compartimento de tejido}
+En este caso se considera un compartimento del tejido, que es el del trazador específicamente unido.  La aproximación es que la concentración libre e inespecífica es 0. Mediante constantes diferenciales se pueden estimar las constantes de entrada y salida. 
+
+\subsection{Modelo de 2 compartimentos de tejido}
+Es otra simplificación del modelo general. Se puede medir el potencial de unión mediante las constantes de entrada y salida. Es el patrón más utilizado, especialmente en receptores cerebrales. 
+
+Sobre este modelo se puede asumir que el trazador no puede salir como ocurría con FDG.
+
+\subsection{Modelos de tejido de referencia}
+Se utilizan las curvas tiempo-actividad de un tejido de referencia que no expresa el biomarcador de interés. No se extraen muestras de sangre.
+
+\section{Imagen PET dinámica vs estática}
+Para obtener información cuantitativa, se debe escanear siempre de forma dinámica. Es una información necesaria de tener y en ningún caso se pueden hacer extrapolaciones de resultados de cuantificación a parámetros fisiológicos sin PET dinámico.
+
+En algunos casos se ha logrado partir de una imagen PET estática y sacar medidas cuantitativas, como el procentaje de dosis inyectada o SUV (standardized uptake value).
+
+\subsection{Standardised uptake value}
+$$SUV = \frac{\text{Activity voxel concentration in VOI}}{\text{injected dose / patient weight}}$$
+
+El SUV se puede equiparar con la concentración de trazador unido específicamente a su diana en el caso de trazadores altamente específicos y cuando la concentración libre del trazado en tejido y cuando la concentración del trazador en sangre son muy bajas. Esta medida no deja de ser semicuantitativa.
+
+Se puede utilizar un SUV ratio del SUV del tejido / SUV referencia como alternativa siempre que exista una región de referencia que tenga una señal homogénea, sin captación específica del trazador y que permita la delineación de VOIs suficientemente grandes.
+
+\section{Puntos clave}
+La cuantificación de imágenes PET es el resultado de un proceso complejo que incluye la adquisición de datos, su reconstrucción, el análisis de imagen y el modelaje cinético.
+
+Para garantizar que la estimación de la concentración del trazador es precisa:
+\begin{itemize}
+\item Inyectar la cantidad de actividad óptima y escoger el protocolo de escaneo adecuado
+\item Aplicar el protocolo de reconstrucción óptimo y aplicar las correcciones de datos pertinentes
+\item Optimizar el método de análisis de imagen para obtener la información deseada
+\end{itemize}
+
+Para garantizar que se está cuantificando la concentración de trazador específicamente unida a la diana de interés:
+\begin{itemize}
+\item Se deben realizar estudios dinámicos de PET y aplicar el modelo cinético adecuado
+\item Se recomienda obtener la función input arterial
+\item En caso de no ser posible, se puede considerar aplicar modelos de tejido de referencia o métodos estáticos
+\end{itemize}
