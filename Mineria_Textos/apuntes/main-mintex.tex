@@ -1,0 +1,60 @@
+\documentclass{config/apuntes}
+
+\title{Minería de Textos}
+\author{Sandra Mingo Ramírez}
+\date{2025/26}
+\acronym{AIBM}
+
+\usepackage[all]{nowidow}
+\usepackage{listing}
+\usepackage{color}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{soul}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{
+  frame=tb,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\usepackage{tocloft}
+
+\advance\cftchapnumwidth 0.9em\relax
+\advance\cftsecnumwidth 0.6em\relax
+\advance\cftsubsecindent 0.5em\relax
+\advance\cftsubsecnumwidth 0.5em\relax
+\begin{document}
+
+\begin{abstract}
+La minería de textos, también conocida como minería de datos de texto, es el proceso de transformar texto no estructurado en un formato estructurado para identificar patrones significativos y nuevos conocimientos. Puede utilizar la minería de textos para analizar vastas colecciones de materiales textuales para capturar conceptos clave, tendencias y relaciones ocultas.
+\end{abstract}
+
+\pagestyle{plain}
+
+\maketitle
+
+\tableofcontents
+
+\input{temas/tema1-lenguaje.tex}
+
+
+\end{document}
