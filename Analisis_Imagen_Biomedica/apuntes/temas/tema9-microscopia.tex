@@ -1,0 +1,10 @@
+%conda activate microscopy_training
+%21/10 - Miguel Molina
+\chapter{Microscopía}
+La segmentación semántica divide los píxeles en función de la clase a la que pertenecen. La segmentación de instancia busca caracterizar cada uno de los objetos aunque pertenezcan a la misma clase. 
+
+Los métodos más tradicionales son el thresholding (se pone un umbral para separar objetos de fondo) y la detección de bordes de Canny. Este procedimiento incluye varias etapas para detectar los bordes de forma robusta y después aplicar un filtrado. 
+
+Los métodos de Machine Learning producidos en los últimos años son mejores que los métodos tradicionales, pero son más complejos. Se requieren datos de train y test, además del ground truth. El pixel classifier calcula unas características para cada píxel. A partir de unas anotaciones manuales, es capaz de segmentar las clases dadas. Cellpose y $\mu$-SAM son otros dos algoritmos de deep learning que permiten segmentar. 
+
+Las clases de objetos se pueden descubrir mediante clustering, un tipo de aprendizaje no supervisado.
