@@ -34,3 +34,19 @@ Las glosas son definiciones de texto humano que ayudan a entender el significado
 Los supersenses es una categoría de palabras  donde va indicando si algo es un acto, animal, artefacto, atributo, cuerpo, etc. Son unas superclases que pueden venir bien para la desambigüación.
 
 WordNet permite encadenar las relaciones entre palabras para crear cadenas y llegar a una clase o palabra raíz. También nos proporciona clases de tipo instancia, como suele ocurrir con las ciudades. Con esto se podría construir un grafo para extraer toda la información de un documento. 
+
+%27/10 
+\section{Desambigüación del sentido de las palabras}
+La desambiguación del sentido de las palabras (WSD) es la tarea de determinar qué sentido de una palabra se está utilizando en un contexto concreto. Tiene una larga trayectoria en la lingüística computacional y muchas aplicaciones. Busca proporcionar respuesta a preguntas como: «bat care» (¿El usuario es un vampiro? ¿O solo quiere jugar al béisbol?) o en traducción automática: traducción de «bat» como «murciélago» (animal) o «bate» (bate de béisbol) en español. Se ha utilizado como herramienta para evaluar modelos lingüísticos.
+
+Hay varias aproximaciones:
+\begin{itemize}
+\item Basadas en el léxico: la idea es desambigüar algunas palabras mediante aprendizaje automático por el contexto.
+\item Basado en todo el texto: en un lexicón con las diferentes acepciones (como Wordnet) se toma todo el texto y se busca la concordancia global, no palabra por palabra. Mapea las palabras input a los sinsets de WordNet, empezando por aquellas palabras con un solo sinset.
+\end{itemize}
+
+Hay que buscar líneas base. Algunos algoritmos cogen el \textbf{sentido más frecuente} para una palabra, escogiendo la acepción más comúnmente utilizada para cada palabra. Para WordNet esto se corresponde a la primera acepción, ya que está ordenado de mayor a menor frecuencia. Otra aproximación es un algoritmo con \textbf{un sentido por discurso}. Si todos los documentos o el discurso habla de animales, "bass" se vinculará al pez y no a la guitarra.
+
+El \textbf{algoritmo de Lesk} se queda con la acepción en cuya glosas aparezcan palabras que también aparezcan en el texto que se quiera analizar. Esto se podría vincular también con las aproximaciones anteriores. Otros algoritmos utilizan embeddings, que son significados de palabras, y los muestra en un espacio n-dimensional. Así, se escogerá aquella acepción que se encuentre más cerca del vector de las demás palabras del texto. 
+
+La Wikipedia es una fuente de información gigantesca. Saber si una palabra está vinculada con otra, se puede utilizar la glosa de la acepción, pero quizás es demasiado corta. Por ello, se puede ir a la Wikipedia y utilizar su contenido para desambigüar. 
