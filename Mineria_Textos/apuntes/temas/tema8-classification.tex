@@ -1,0 +1,28 @@
+%29/10 - Paco Jurado
+\chapter{Clasificación de texto y minería de opiniones}
+\section{Introducción}
+La clasificación de un texto asigna categorías, conocidas como clases, a textos. Esto puede ser análisis de sentimientos, respuesta a preguntas, clasificación de diálogos, fake news, identificación de autorías, identificación del idioma, identificación de spam. 
+
+Una de las clasificaciones que se puede hacer es la minería de opinión o análisis de sentimiento para analizar las evaluaciones o emociones de personas acerca de entidades como productos, servicios, organizaciones, etc. Así se puede extraer la orientación positiva, negativa o neutra expresada hacia un objeto. Algunas palabras son indicadores muy potentes de las opiniones, como "genial" o "patético".  
+
+\section{Clasificador Naive Bayes}
+Naive Bayes es un clasificador probabilístico. Devuelve un argumento que maximiza la clase. Este tipo de clasificadores funciona bien cuando las clases están bien separadas: opiones polarizadas, emails spam o verídicos, etc. Para no construir una red bayesiana, basta con una versión simplificada donde sólo se tienen las palabras identificadas vinculadas a la probabilidad. Se multiplican las probabilidades. Si aparece x palabra, aumenta la probabilidad de que se esté hablando de forma positiva/negativa. 
+
+$$c_{NB} = \argmax_{c \in C} P(c) \prod_{i \in positions} P(w_i \mid c)$$
+$$c_{NB} = \argmax_{c \in C} \log P(c) + \sum_{i \in positions} \log P(w_i \mid c)$$
+
+Aunque la clasificación de texto Naive Bayes estándar puede funcionar bien para el análisis de sentimientos, generalmente se emplean algunos pequeños cambios que mejoran el rendimiento.
+En primer lugar, para la clasificación de sentimientos (y otras tareas de clasificación de texto), parece importar más si una palabra aparece o no que su frecuencia. Por mucho que en una review digan que "x fue horrible, y fue horrible, z fue horrible", eso no lo hace más horrible.  Por lo tanto, a menudo mejora el rendimiento recortar el recuento de palabras en cada documento a 1. Esto se conoce como Naive Bayes binario.
+
+También se debe tratar la negación (me gusta esta peli vs no me gusta esta peli). Una vez que aparece una negación o partícula negativa, el resto de la frase se pone un prefijo para crear un vocabulario negativo adicional. Para ello hay que tener en cuenta si luego hay contraposiciones ("el servicio fue malo, PERO la comida estaba rica").
+
+\section{Análisis afectivo}
+El análisis afectivo busca identificar la emoción, sentimiento, actitud que se puede encontrar en el texto. Esto lo utilizan mucho los psicólogos. 
+
+\section{Análisis de emociones}
+El análisis de emociones busca encontrar las emociones. Según el modelo de Ekman, hay 6 emociones: sorpresa, alegría, enfado, miedo, disgusto y tristeza. Estas son las 6 emociones básicas a partir de las cuales surgen modelos como Plutchik. 
+
+No obstante, puede que haya grados de las emociones. Se juega en 3 dimensiones: valencia, arousal y dominancia. La más interesante es arousal, que es la intensidad que la emoción provoca en el estímulo. 
+
+\section{Léxico de sentimientos}
+Cuando no hay suficientes datos etiquetados, se pueden utilizar lexicones de sentimientos, que son palabras preanotadas con sentimientos positivos o negativos. Algunos populares con General Inquirer, LIWC, Opinion lexicon y MPQA subjectivity lexicon. NRC tiene muchos lexicones. Uno es EmoLex, que define 8 emociones básicas, pero también está VAD que asigna los valores de Valence, Arousal y Dominance a 20.000 palabras. 
