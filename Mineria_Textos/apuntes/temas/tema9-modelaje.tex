@@ -1,0 +1,84 @@
+%05/11 - Iván Cantador
+\chapter{Modelaje de lenguaje}
+\section{Problema del modelaje de lenguaje}
+\subsection{Modelaje de lenguaje}
+El modelaje de lenguaje es, dado un texto, ¿cuál es la siguiente palabra que vendría después de ese texto? Una vez que tenemos un modelo de lenguaje grande, se puede añadir una capa que permita la especialización, como sequence-to-sequence. Principalmente hay dos tipos: iniciales basados en N-grama y los neuronales.
+
+Queremos modelos que sean capaces de decidir dado un texto, probabilidades para el resto de palabras y decidir qué palabra viene a continuación. Así funciona ChatGPT: coge el texto de entrada y estima las probabilidades de la siguiente palabra. Con esa palabra, estima la siguiente, y así hasta que decide parar. Recientemente se ha incrementado, permitiendo leer documentos para aumentar el contexto y enriquecer la pregunta, pero sigue generando palabra por palabra. 
+
+Estos modelos tienen muchas aplicaciones: completar texto (búsqueda de Google), corrección de errores (Grammarly), reconocimiento de voz (Alexa, Siri), traducción automática (DeepL), OCR (optical character recognition; reconocer texto) y reconocimiento de texto escrito a mano, etc. Hoy en día estamos ya muy acostumbrados a usarlos, pero hace unos años esto era impensable: resumen de textos, respuesta a preguntas, sistemas de diálogos...
+
+\subsection{Modelos de lenguaje probabilísticos}
+Los modelos probabilísticos computan la probabilidad de una oración dada una secuencia de palabras y computar así la probabilidad de la siguiente palabra. Estas probabilidades las aprende el modelo procesando distintos corpus o textos. Dependiendo de los documentos usados, los modelos serán unos u otros. GPT es un modelo generalista que recibió artículos de Wikipedia, foros de internet, trozos de código, etc. 
+
+Para computar la probabilidad conjunta se usa la regla de la cadena:
+$$P(W) = P(w^n_1) = P(w_1, w_2, w_3, \ldots, w_n) = P(w_1) P(w_2 \mid w_1) P(w_3 \mid w_1, w_2) \ldots P(w_n \mid w_1, \ldots, w_{n-1})$$
+
+$$P(W) = \prod_i P(w_i \mid w_1, \ldots, w_{i-1}) = \prod_i P(w_i \mid w_1^{i-1})$$
+
+Para estimar la probabilidad, se puede contar y dividir, pero esto no es abarcable al haber muchas posibles oraciones en un texto. Por tanto, se puede simplificar: en lugar de estimar la oración entera, solo se estima una palabra con las dos-tres palabras anteriores, no toda la frase. 
+
+A la hora de modelar, se usa la asunción de Markov: "The future behavior of a dynamical system only depends on its recent history". En un modelo de Markov de nivel-k, el siguiente estado solo depende de los estados k más recientes:
+$$P(W) \approx \prod_i P(w_i \mid w_{i-k}, \ldots, w_{i-1}) = \prod_i P(w_i \mid w_{i-k}^{i-1})$$
+
+\section{Modelos lingüísticos N-gramas}
+Los N-gramas son los modelos que tienen en cuenta las N-palabras anteriores del texto. Un unigrama solo tiene en cuenta la palabra anterior, bigrama las dos anteriores, trigrama 3 palabras, y así sucesivamente. Para cada una de las versiones se puede definir la tarea particular. 
+
+%No hay que aprenderse las fórmulas, no las va a preguntar
+
+Considerar para una palabra las 1,2,3 palabras anteriores quizás no captura las palabras más importantes de la sentencia, que es la limitación más grande de estos modelos, la no captura de las dependencias a larga distancia. Por ejemplo: "The computer which I had just put into the server room on the fifth floor crashed". El sujeto es el ordenador, pero tiene muchas palabras entre el verbo. 
+
+\subsection{Estimación de las probabilidades del N-grama}
+La estimación de las probabilidades se puede hacer simplemente contando, siguiendo la estimación de maximum likelihood (MLE). Para contar, se utiliza un símbolo de start (<s>) y final (</s>).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/bigrama.png}
+\end{figure}
+
+Generalmente habrá muchos 0 porque no todas las palabras pueden ir detrás de cualquier otra. Se cuentan los bigramas y se normalizan dividiéndolos por el conteo de los unigramas de la palabra dada. Como multiplicar muchos números aumenta el coste computacional y puede dar lugar a errores, se suelen sumar los logaritmos de las probabilidades (en inglés generalmente el neperiano, pero da igual). Esto mejora la eficiencia y evita el underflow numérico. 
+
+\subsection{Evaluación de modelos de lenguaje}
+Un modelo de lenguaje tiene varias formas de evaluarse:
+\begin{itemize}
+\item \textbf{Evaluación extrínseca:} El modelo se implementa en una aplicación y se mide lo que gusta y mejora. Para traducción automática, se utiliza un traductor y se ve si el resultado es bueno. 
+\item \textbf{Evaluación intrínseca:} Se utilizan métricas para obtener una evaluación independiente de una aplicación. La más importante es la perplexidad (perplexity). Teniendo un modelo de lenguaje que recibe un texto y genera otro, se mide cómo de cercano es al test. El \textit{juego de Shannon} le proporciona frases incompletas y el modelo debe completarla. La medida de \textit{perplejidad} se mide como la inversa de la probabilidad del texto de salida, de forma que cuanto mayor es la probabilidad, menor la perplejidad (y cuanto menor, mejor). Como pueden tratarse valores numéricos muy pequeños, se suele calcular como su raíz. Los valores dependen del corpus, por lo que habría que evaluar varios modelos con un mismo corpus para poder establecer qué modelo es mejor en comparación (el que obtenga un menor valor de perplejidad). Que un modelo obtenga un valor X con un corpus no significa que sea bueno ni malo, debe ser en comparación con el mismo corpus. Para experimentos piloto se suele usar la perplejidad al no ser una medida muy interpretable.
+\end{itemize}
+
+Otro problema es el de las palabras desconocidas, que no aparecen en el corpus. Su probabilidad será de 0, y genera el problema de división por 0. Esto se soluciona con un carácter especial (UNK de unknown), se va al conjunto de test, se selecciona un conjunto finito y si se encuentran palabras del training que no están se reemplazan por unknown. Con eso se estiman las probabilidades con unknown como si fuera una palabra más. En la realidad actual con modelos de redes neuronales, no se emplean palabras, sino subpalabras condensadas en prefijos, sufijos, lemas, etc. 
+
+\subsection{Suavizado}
+Para las probabilidades 0 se utiliza un smoothing, un suavizado de probabilidades. Se calculan las pseudocuentas, sumando 1 a todos los N-gramas para que no haya probabilidades 0. Así, aunque se reduzca la probabilidad de N-gramas vistos en comparación con las cuentas reales, las diferencias relativas se mantienen y los cálculos se permiten. 
+
+\section{Modelos de lenguaje de redes neuronales}
+El problema de los modelos N-gramas son las dependencias a larga distancia por dependencias semánticas o sintácticas. Estas no se pueden capturar con los modelos de N-gramas, se deben usar modelos basados en redes neuronales (concretamente redes neuronales profundas). 
+
+Esencialmente, los modelos de lenguaje neuronales tienen dos componentes: la red neuronal (la arquitectura que se usa) y los embeddings. Una palabra se convierte en un embedding, un vector de números. Se trabaja así con vectores de números reales enteros. Los vectores o embeddings, si se generan bien, son componentes que tienen una dimensión. Se calculan solos, y una palabra tendrá x dimensiones o números. Se puede comprobar que capturan muchas cosas, como relaciones semánticas entre las palabras. Se puede visualizar en dos dimensiones aplicando PCA. Por ejemplo, con palabras como hombre, mujer, rey y reina, las palabras se muestran en el espacio bidimensional, estando hombre-mujer y rey-reina cercanas en el espacio. Además, la diferencia de ambos vectores será muy similar. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/embeddings.png}
+\end{figure}
+
+Estos modelos no necesitan suavizado, pueden manejar contextos más grandes, pueden generalizar mejor, tienen mayor precisión, pero son más lentos de entrenar. 
+
+Hay dos tipos principales de modelos de lenguaje neuronales: Feed-Forward Neural Network y Recurrent Neural Network.
+
+\subsection{Feed-Forward Neural Network}
+Una red neuronal tiene varias capas para realizar distintas transformaciones. Se reciben varios inputs y se transforman según la neurona para generar una salida. Inicialmente se definen capas de neuronas (los modelos profundos tienen muchas capas), como mínimo 2: una de salida y una oculta que está entre la de entrada y salida. Cada neurona tiene las entradas de la capa anterior y genera una salida que alimenta a las neuronas de arriba. Cada arquitectura es diferente, pero esa es la base general. En el fondo, lo que ocurre es que las entradas tienen unos pesos que se deben aprender. Las neuronas tienen transformaciones que buscan aproximar una función que se desconoce. A base de proporcionar ejemplos, se van modificando los pesos y el modelo aprende. Al terminar el entrenamiento, la red queda fijada y se puede usar. 
+
+En nuestro caso, dada una secuencia, queremos predecir la siguiente palabra. Cada palabra tienen un embedding, los cuales se pueden dar a la red de neuronas al ser vectores de números. A la hora de haber establecido los pesos, al dar una entrada, la salida son unos números que indican probabilidades de las palabras del vocabulario. Cada neurona de salida es una palabra del vocabulario. Una neurona tendrá la probabilidad máxima, y será esa palabra la que se prediga. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/ffnn.png}
+\end{figure}
+
+En realidad, hay un paso intermedio anterior a los embeddings llamado one-hot. Sólo se activa la posición de la palabra en la que estamos (la palabra del vocabulario se pone en 1, el resto son 0). Las palabras generan los vectores one-hot que generan los pesos, por lo que los embeddings se convierten en los pesos. 
+
+Durante el entrenamiento, la red se inicializa de forma aleatoriamente. Se le pasan tres palabras (los modelos reales tienen unas ventanas de contexto de miles de palabras), se generan los vectores one-hot y se obtiene una salida aleatoria que será errónea. Se genera una función de pérdida/coste que mide si se ha acertado o no. Los pesos se ajustan así de arriba a abajo, modificándose por descenso por gradiente. Conforme se va entrenando el modelo, los pesos se van modificando cada vez menos al estar más ajustados.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/ffnn2.png}
+\end{figure}

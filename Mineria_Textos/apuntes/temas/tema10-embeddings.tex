@@ -1,0 +1,73 @@
+%05/11 - Iván Cantador
+\chapter{Word Embeddings}
+\section{Semántica de vectores}
+\subsection{Significado, similitud, relación de palabras}
+Previamente hemos visto WordNet, un tesauro que muestra la relación y significado de las palabras con los sinsets. Esto es de forma explícita, pero también es posible hacerlo de forma implícita con vectores semánticos. 
+
+Las palabras suelen tener pocos sinónimos, pero los significados de las palabras pueden llevar a palabras relacionadas sin que sean sinónimos. La similitud de las palabras (dicho de forma abstracta) es la que persiguen los modelos de lenguaje. 
+
+La asociación de palabras es una forma de relacionar el significado de dos palabras distinto de la similitud, como puede ser café y taza. Una forma de relación es en base al campo semántico, conjuntos de palabras que cubren un cierto dominio: hospital, cirujano, enfermero, anestesista, bisturí, etc. 
+
+Las representaciones distribuidas buscan el significado de una palabra en su uso en el lenguaje, es decir, en función del contexto en el que se usa. La hipótesis distribucional dice que las palabras que ocurren en contextos similares tienen significados similares. Para implementar esta idea, se utiliza la semántica vectorial que satisfacen lo anterior: vectores similares representarán palabras con significados similares. El aprendizaje de los vectores se obtiene en base a la distribución de las palabras en los textos, siendo así un aprendizaje auto-supervisado. 
+
+Ejemplo: ¿qué es el ongchoi? No sabemos lo que es, pero en algún momento hemos escuchado frases con ongchoi: el ongchoi está muy rico salteado con ajillo, el ongchoi está delicioso con arroz, las hojas de ongchoi se pueden usar para salsas saladas. Además, hemos visto frases con estructuras similares pero sin ongchoi: "espinacas salteadas con ajillo y arroz", "los tallos y hojas de acelgas están deliciosas", "col rizada y otras hojas saladas". De esa forma, podemos intuir que el ongchoi será un tipo de vegetal comestible. Esto emula cómo aprendemos los humanos a hablar. 
+
+Los embeddings son los vectores que asociamos a los significados de las palabras. Este concepto de embedding se suele usar para vectores densos (no hay ceros, la dimensión suele ser más pequeña que todo el vocabulario); luego están los vectores dispersos. 
+
+\subsection{Palabras como vectores}
+Los embeddings son los vectores densos que representan el significado de palabras en NLP y permiten modelar la similitud de palabras. Si los embeddings han capturado el significado correcto, las palabras se agrupan en el espacio en base a su significado: los adjetivos negativos por un lado, los positivos por otro, etc. 
+
+Para establecer la similitud se puede usar el producto escalar o normalizado por coseno del ángulo. El coseno de dos ángulos es el producto escalar dividido por el módulo de los dos vectores. El producto escalar es el multiplicando sus componentes correspondientes y sumando los resultados. El módulo es el sumatorio de los cuadrados de los componentes de un vector y tomando su raíz. El coseno puede ser entre 0 y 1 y representa lo cerca o lejos que están los vectores.
+
+\subsection{Tipos de vectores de palabras y embeddings}
+Los vectores pueden ser sparse o dense. Cuando los vectores son sparse, el vector es muy grande y tiene muchos 0. Los densos son más pequeños y no tienen 0. Dentro de los embeddings densos están los estáticos (vectores fijos para cada palabra del vocabulario) y contextualizados (vectores de una palabra son diferentes en distintos contextos). 
+
+Los embeddings densos generalizan mejor, son más fácil de usar y capturan mejor la sinonimia y otras relaciones. Por tanto, funcionan mejor. 
+
+\section{Sparse word vectors}
+\subsection{Pesando palabras en un vector}
+Los vectores o modelos distribucionales se basan en matrices de coocurrencia que puede ser:
+\begin{itemize}
+\item \textbf{Matriz término-documento}: primero se definió como parte del modelo vector space. Las filas son palabras, y las columnas obras de Shakespeare (por ejemplo), y en cada celda está la suma de las veces que aparece una determinada palabra en cada obra o documento. En recuperación de información, se buscan los documentos en los que aparece una palabra en base a un ranking de mayor a menor, buscando así qué documento se parece más a la consulta. 
+\item \textbf{Matriz término-término}: tanto las filas como las columnas son el vocabulario, y se cuentan las coocurrencias de cada par de palabras en un documento con un tamaño de ventana x (por ejemplo, tres palabras a la izquierda y tres a la derecha de la palabra central a analizar). La ventana se recorre por todos los textos. Esta forma de contar crea vectores de palabras muy grandes y muchas celdas son 0. 
+\end{itemize}
+
+Estas dos matrices solo tienen las frecuencias de las palabras. No obstante, palabras demasiado frecuentes (determinantes, conjunciones, artículos) no suelen ser muy informativas sobre el contexto de una palabra. Esto da lugar a la paradoja de la frecuencia. 
+
+\subsection{Term frequency-inverse document frequency (TF-IDF)}
+TF-IDF es otra forma de ponderar. El peso que se le da a un término en el documento no es solo la frecuencia del término en el documento, sino que se multiplica por el término IDF, que es la inversa del número de documentos en el que aparece el término. Así, las palabras que aparecen en todos los documentos reciben un valor de 0 (no proporcionan información sobre el contexto). 
+$$w_{t,d} = f_{t,d} \cdot idf_{t} = \log_{10}(\text{count}(t,d) + 1) \cdot  \log_{10}(\frac{N}{df_t})$$
+
+La matriz de TF-IDF se puede usar para calcular la similitud de dos términos mediante el coseno de los ángulos de los vectores o de dos documentos con el coseno de los ángulos de los centroides de los vectores de los documentos. El vector de un documento se puede calcular de varias formas.
+
+\section{Static word embeddings}
+\subsection{Word2vec}
+El embedding denso Word2vec fue un hito en NLP. Es estático, por lo que una palabra tiene siempre el mismo vector independiente del contexto. La idea que plantea es que, en lugar de contar las palabras que aparecen cerca de otra, se busca predecir sin importar los rendimientos de los clasificadores. Usa el concepto de ventana de $\pm 2$ e intenta predecir para cada una de las palabras del contexto contra la palabra central y está o no en el contexto (clase positiva o negativa). El punto clave es asumir que las palabras van a ser vectores y que la similitud de los vectores va a permitir definir la probabilidad. Cuanto más similar sea el vector, más probable es que se encuentre en el contexto. La similitud va definida por el produto escalar (no por el coseno), simplificando así los cálculos. Se define directamente la probabilidad positiva con la sigmoide o función logística.
+
+$$P(+ \mid w,c) = \sigma (\mathbf{c} \cdot \mathbf{w}) = \frac{1}{1 + \exp (-\mathbf{c} \cdot \mathbf{w})}$$
+
+Para un contexto de x palabras, se asume que el contexto de las palabras es independiente y se puede multiplicar sus probabilidades o sumar la log-probabilidad.
+
+$$P(+ \mid w,c_{1:L}) = \prod^L_{i = 1} \sigma (\mathbf{c_i} \cdot \mathbf{w})$$
+$$\log P(+ \mid w,c_{1:L}) = \sum^L_{i = 1} \log \sigma (\mathbf{c_i} \cdot \mathbf{w})$$
+
+Para la tarea de clasificación, el modelo guarda dos embeddings por cada palabra: el embedding de input (diana) y output (contexto). Así, el modelo aprende las palabras de la clase positiva y de la clase negativa (las palabras que están y que no están en el contexto). Inicialmente da vectores aleatorios, va recorriendo el texto en forma de ventana y va estimando lo bien y mal que estima una palabra con las palabras de dentro y de fuera de la ventana. Define una función de pérdida y, dada una palabra w con ejemplos positivos o negativos, el modelo asigna una probabilidad de w con un caso positivo y k-casos negativos. Busca maximizar ese producto de probabilidades, por lo que toma el menos logaritmo de dicha función. La idea es ir ajustando los pesos para minimizar el error utilizando gradientes descendientes.
+
+A la hora de modificar los pesos, dado albaricoque, con una palabra de contexto como mermelada, se ajustan los vectores input y output para que se parezcan, pero al tener casos negativos elegidos aleatoriamente, también se busca que las palabras que no aparezcan en el contexto en las funciones input y output se alejen. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/word2vec.png}
+\end{figure}
+
+\subsection{FastText}
+FastText es una adaptación de Word2vec que trabaja a nivel de subpalabra. Define n-gramas constituyentes. Para n=3, where se traduce a <wh, whe, her, ere, re>. Estos tokens se procesan como una palabra más. <> ayuda a detectar principio y final de palabra. Hacer eso permite encontrar palabras con la misma raíz léxica (cualquier verbo conjugado) desconocidas al no estar presentes en el corpus de entrenamiento. El embedding de una palabra será la suma de los embeddings de todos los tokens que componen la palabra. 
+
+\section{Concerning word embeddings}
+Los embeddings se pueden visualizar en el espacio para ver las palabras más similares, usar un algoritmo de clustering o proyectar los vectores en dos dimensiones. De esta forma se pueden ver las relaciones:
+\begin{itemize}
+\item Relación de paralelogramo: rey es a reina lo que hombre es a mujer.
+\item Patrones de distancias, diferencias por ser singular-plural o comparativo-superlativo.
+\end{itemize}
+
+Esto puede conllevar a que haya sesgos que vienen de los datos: si se utiliza hombre es a programador lo que mujer es a, el programa puede dar ama de casa. Otro ejemplo: father - doctor + mother = nurse.  Otro sesgo es frente a ciertos grupos sociales: nombres afro-americanos muestran un mayor valor de coseno con palabras desagradrables, mientras que nombres europeos-americanos tienen un coseno más alto con palabras agradables.
