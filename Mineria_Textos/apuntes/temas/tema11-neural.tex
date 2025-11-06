@@ -1,0 +1,113 @@
+%06/11 - Iván Cantador
+\chapter{Redes neuronales para procesamiento de lenguaje natural}
+\section{Redes neuronales}
+Una red neuronal es un conjunto de neuronas conectadas que de manera general suelen dividirse en capas. Normalmente, las capas son consecutivas, aunque puede haber variantes. Dependiendo de la arquitectura, una neurona puede conectarse con todas las neuronas de la siguiente capa (full connected). Una neurona coge las entradas que recibe y multiplica cada una de ellas por su peso (combinación lineal de las entradas) y aplica una función de activación (función sigmoide, aunque también hay otras alternativas). Esa función normaliza o estandariza a unos valores acotados, para que los valores de salida estén en un rango (por ejemplo, entre 0 y 1). Para ver la salida de una neurona, depende de las transformaciones hechas en las neuronas que han producido esos valores de entrada en la capa anterior. De esta forma, se busca definir una función para la que se está entrenando la red. 
+
+Se pueden clasificar todas las tareas de lenguaje natural en:
+\begin{itemize}
+\item \textbf{Clasificación de secuencias}: darle una etiqueta a un texto, como si tiene polaridad de opinión positiva o negativa, si un correo es spam o no, clasificar la temática de una notifica en varias categorías, etc.
+\item \textbf{Etiquetado de tokens (sequence labeling/tagging):} no se clasifica el texto completo, sino los tokens individuales. Por ejemplo, PoS tagging o reconocimiento de entidades nombradas. Se utiliza la estrategia BIO, BLoc, entre otras. 
+\item \textbf{Modelado del lenguaje}: se puede utilizar para cualquiera de las demás. Dado un texto, busca estimar la siguiente palabra. 
+\item \textbf{Sequence to sequence:} dado un texto, se genera otro. Esto es lo que utilizan los chatbots, traducción automática, resumen de un texto, etc.
+\end{itemize}
+
+Las redes neuronales permiten abordar todas estas tareas de NLP.
+
+\subsection{Redes feed forward}
+\paragraph{Clasificación de secuencias} 
+Tenemos una red de una capa oculta y una capa de salida. En la capa de salida, cada una de las neuronas está asociada a una categoría. Por ejemplo, para el análisis de sentimiento, la capa de salida tendrá tres neuronas: una para asociaciones positivas, negativas y neutras. Todas las capas intermedias son las capas ocultas. Las conexiones tienen un vector de pesos, los cuales forman una matriz en cada paso entre capas. En este caso, la clasificación de textos tradicional (antes de los embeddings) se hacía definiendo unas características variables que describen los textos. En el ejemplo se han usado como características el número de palabras, el número de palabras positivas y el número de palabras de negación. Hay muchas características lingüísticas que se pueden elegir y procesar en los textos. La transformación puede ser sigmoide, ReLU (unidad lineal rectificada) o cualquier otra transformación no lineal. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/ffnn-sentiment.png}
+\end{figure}
+
+En lugar de usar características escogidas manualmente, se pueden usar embeddings y realizar un pooling. Así, las características se aprenden de los datos.
+
+\paragraph{Modelado de lenguaje} 
+En lugar de usar un embedding d-dimensional, se utiliza un vector one-hot, el embedding y la matriz de pesos interna. Además, se utiliza una ventana en el texto que se va deslizando.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/ffnn-modeling.png}
+\end{figure}
+
+Se debe definir la función de coste que permita el autoaprendizaje del entrenamiento. La función se define en base a lo que proceda, pero la opción por defecto es cross-entropy. 
+$$L_{CE} (\hat{y}, y) = - \log p(y \mid x) = - [y \log \hat{y} + (1 - y) \log (1 - \hat{y})]$$
+Si la clase es 1 y predecimos ($\hat{y}$) 1, el error que sale es de 0 + 0 = 0. Si son diferentes $y$ y $\hat{y}$, el error que da es 1. Por tanto, esto se puede usar para ver si el modelo se confunde. Esto se puede extrapolar a muchas clases o componentes y sumar el resultado de esta función de coste. 
+
+\subsection{Redes recurrentes}
+En los modelos de N-gramas, no se consideran las largas distancias ni el contexto completo. La red neuronal feed forward sí puede capturar el contexto grande al usar sliding window, pero la naturaleza secuencial del lenguaje se pierde, por lo que aparecieron las redes neuronales recurrentes. La neurona no solo recibe la entrada de la capa anterior, sino que ahora recibe también como entrada su salida anterior (del input anterior anterior). Lo que haya pasado antes, se tiene en cuenta a la hora de los cálculos. Así se realimenta. La arquitectura general es igual, teniendo las distintas neuronas y capas, pero la neurona tiene ese añadido. El problema es que los cálculos se deben hacer de forma secuencial, por lo que estas redes son lentas. Tiene un parámetro o peso más por neurona que debe aprender la red. 
+
+La red se representa también unrolled representando su evolución a lo largo del tiempo. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/unrolled-rnn.png}
+\end{figure}
+
+\paragraph{Sequence labeling} 
+Los inputs son los word embeddings, y los outputs las probabilidades de etiquetas. El hecho de tener en cuenta la salida anterior permite reforzar ciertas opciones. Por ejemplo, si la palabra anterior es un nombre propio, esto refuerza que la palabra siguiente sea un verbo. 
+
+\paragraph{Modelado de lenguaje}
+Se pueden definir las probabilidades condicionales de las palabras en función de la estructura recurrente. La función de coste se define por una ventana. Cada vez que pasa un token por la red, se da un error. Al terminar, para predecir la siguiente palabra, el error tiene en cuenta los errores previos de toda la ventana (promediando los errores para los diferentes tokens). Una vez que la red está construida, se puede ir generando texto automáticamente. 
+
+\paragraph{RNNs apiladas}
+Una RNN apilada contiene muchas redes en las que el output de una capa sirve como input de otra capa. Así, unas capas pueden capturar información sintáctica y las siguientes información semántica. Si se establecen bien los parámetros, pueden mejorar, pero el tiempo de entrenamiento empieza a ser bastante elevado. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/rnn-stacked.png}
+\end{figure}
+
+\paragraph{RNNs bidireccionales}
+Una red bidireccional considera todo el input en las dos direcciones para aumentar la predicción. Se concatenan las representaciones de las dos redes recurrentes. No están en cascada las dos redes; sus salidas se concatenan.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/rnn-bidireccional.png}
+\end{figure}
+
+\paragraph{Manejo avanzado del contexto}
+Aunque las RNN tengan acceso a toda la secuencia que precedía, se suele dar mayor relevancia a las partes más recientes. No obstante, hay casos en los que se debe retener la información distante: "The flights the airline was cancelling were full". Para ello se crearon las \textbf{LSTM} que manejan las tareas de mantener el contexto relevante a lo largo del tiempo. Aprenden a olvidar la información que ya no se necesita y recordar la información que se necesita para decisiones a futuro. Estas redes tienen unidades neuronales especializadas, por lo que su coste es aún mayor.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/lstm.png}
+\end{figure}
+
+\subsection{Modelo encoder-decoder}
+Se coge una red recurrente a la que se le van pasando entradas y genera una salida llamada contexto. Ese contexto se usa como entrada para otra red (que también puede ser recurrente) para otra tarea. Esta estructura se llama encoder-decoder y se puede utilizar para tareas sequence-to-sequence. Así, el input primero se codifica en una representación contextualizada que se pasa al decoder para generar la secuencia output. Este modelo se puede implementar también por LSTM, no solo RNN. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/encoder-decoder.png}
+\end{figure}
+
+Al igual que antes, se puede medir el error. Cada ejemplo de entrenamiento es una tupla de secuencias pareadas concatenadas por un token de separación. Se entrena el decodificador para la tarea, ajustando los pesos. Esto, aunque interesante, presenta un cuello de botella: hacemos que el decoder dependa todo del estado final. Si el estado final es capaz de representar todo el input bien, no hay problema, pero si comete un error o no consigue resumir todo en un vector final, se pierden los estados intermedios. Para esto, se hace la \textbf{atención}, un punto clave de los transformer. 
+
+En el decodificador, cada estado no tiene solo en cuenta el contexto, sino que va a influir en todos los contextos previos y cada uno de ellos ponderado. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/attention.png}
+\end{figure}
+
+\section{Word embeddings contextualizados y modelos de lenguaje pre-entrenados}
+\subsection{Embeddings contextualizados}
+Los modelos estáticos asignan un embedding fijo para cada palabra, independientemente del contexto o significado. Ejemplos son Word2Vec, GloVe y FastText. Como el significado de una palabra se puede inferir de la frase en la que aparece, se puede generar un embedding contextualizado. 
+
+ELMo fue el primer modelo preentrenado que produce embeddings contextualizados. Más tarde se creó BERT, un transformer para realizar la tarea. Ambos son de código abierto y revolucionaron el área.
+
+\subsection{ELMo}
+ELMo se baesa en una red de dos capas biLSTM (una RNN apilada). Es del 2018 y representó el avance más grande en NLP. Fue el primer modelo de lenguaje que permitió la contextualización, mejorando así el rendimiento.
+Es un stack de LSTM bidireccionales. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{figs/elmo.png}
+\end{figure}
+
+La tarea para la que se entrena, al ser bidireccional, no es predecir la siguiente palabra, sino abordar la tarea de la predicción de la palabra enmascarada. De un texto, se escogen algunas palabras y se ocultan, y es el modelo el que debe inferir esas palabras que faltan o se han modificado. 
+
+Que un modelo esté preentrenado significa que el modelo ya está construido, que alguien lo ha construido con un corpus, pero que se puede especializar en una tarea concreta mediante \textit{fine-tuning}. La más básica del ajuste fino es conectar el modelo con unas capas de lo que se quiere especializar. La definición de coste se define para las capas añadidas; las otras están congeladas y sólo se modifica lo nuevo. 
