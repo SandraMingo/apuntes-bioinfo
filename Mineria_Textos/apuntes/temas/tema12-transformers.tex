@@ -1,0 +1,135 @@
+%12/11 - Iván Cantador
+\chapter{Transformers y modelos grandes de lenguaje}
+\section{Transformers}
+\subsection{Arquitectura}
+Un transformer es la arquitectura estándar para construir modelos grandes de lenguaje (large language models, LLMs). Se trata de una red neuronal con una estructura específica que incluye un mecanismo llamado \textbf{self-attention} (autoatención) o \textbf{multi-head attention} (atención multi-nivel).  
+
+La atención es una forma de crear representaciones contextuales del significado de un token al integrar la información de los tokens adyacentes. Así, permiten recibir contextos muy grandes.
+Un transformer tiene 3 partes:
+\begin{itemize}
+\item Codificación de la entrada: transformar una palabra a un embedding. Habrá varios embeddings por palabra, siendo principalmente 3: uno de la palabra en sí, uno asociado a la posición de la palabra en la oración y otro asociado a la oración en la que se encuentra. 
+\item Stack de bloques de transformers: cada bloque es una red multicapa, con una capa de atención multi-nivel, redes feedforward y capas de normalización. 
+\item Cabeza de modelaje de lenguaje: aprende la tarea del modelado del lenguaje. En función de la función de coste, se propaga todo el error por gradiente hacia abajo.
+\end{itemize}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/transformer-arquitectura.png}
+\end{figure}
+
+\paragraph{Bloque transformer}
+Un bloque transformer tiene varias capas, principalmente 4: capa de autoatención, normalización, feedforward, normalización. También hay conexiones residuales para llevar la información de capas previas y que no se pierda. 
+
+\subsection{Autoatención}
+En el transformer, la atención es el mecanismo que pondera y combina las representaciones de otros tokens anteriores apropiados en el contexto desde la capa anterior para construir la representación de un token en la capa actual.
+
+La autoatención permite al transformer extraer y utilizar directamente información de contextos arbitrariamente grandes sin necesidad de pasarla por conexiones recurrentes intermedias como en las RNN.
+Al procesar cada token de la secuencia de entrada, el modelo presta atención a todos los tokens hasta el actual, incluido este. Así, las operaciones se pueden paralelizar.
+
+La idea es la comparación de un token de interés $x_i$ con otros tokens $x_j$ de forma que se revele su relevancia en el contexto actual.
+
+Los transformers permiten crear una forma más sofisticada de representar cómo las palabras pueden contribuir a la representación de entradas más largas. Tienen en cuenta tres funciones que desempeña cada incrustación de entrada durante el proceso de autoatención:
+\begin{itemize}
+\item consulta $q_i$ = como el elemento actual en el que se centra la atención al compararlo con todas las entradas anteriores.
+\item clave $k_i$ = como una entrada anterior que se compara con el foco de atención actual
+\item valor $v_i$ = como un valor de un elemento anterior que se utiliza para calcular la salida del foco de atención actual
+\end{itemize}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/selfattention.png}
+\caption{Supongamos que $x_3$ es la query. De hecho, es el único cuyo $q$ va hacia arriba. Se compara con las key-words de las anteriores, se divide por $d_k$ para normalizar. Así, la comparativa entre keywords y values es la que genera los alphas, comparando una palabra con las anteriores. Por las conexiones residuales, los values $v$ también suben para combinar esa información contextual. }
+\end{figure}
+
+En lugar de tener una cabeza, los transformers suelen ser multi-head. Esto permite capturar relaciones sintácticas y semánticas, ya que las palabras en una oración pueden relacionarse entre ellas en distintas formas de manera simultánea.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/multihead.png}
+\end{figure}
+
+\subsection{Input embeddings}
+Dada una secuencia de N tokens, la matriz de input de un transformer tiene la forma $[N \times d]$ y tiene un embedding para cada palabra en el contexto. El transformer modela el orden de los tokens sin recurrencia o convolución al combinar los embeddings de las palabras de los tokens con los embeddings de las posiciones.
+
+Los valores de embedding posicional se calculan mediante funciones sinusoidales, que ayudan a capturar las relaciones inherentes entre las posiciones (por ejemplo, la posición 4 está más estrechamente relacionada con la posición 5 que con la posición 17). Así modulan los pesos en base al orden, aprender las relaciones entre las posiciones.
+
+\subsection{Modelaje de lenguaje}
+La siguiente capa de modelaje es feedforward normal que coge la última capa del último bloque de transformer, el último estado, para pasarlo a la cabeza del modelado de lenguaje. Se aplican nuevos pesos para obtener la probabilidad de las palabras. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/language-model-head.png}
+\end{figure}
+
+\subsection{Modelado de lenguaje enmascarado}
+La función de coste se genera en base a la tarea. En BERT se utiliza autoatención bidireccional con capas full-connected. En este caso, se busca modelar el lenguaje enmascarado, es decir, quitar o cambiar una palabra del contexto y predecir cuál era. Así, busca aprender y entender el lenguaje con la distribución de las palabras. BERT tiene dos tareas: modelaje del lenguaje enmascarado y predicción de la siguiente oración. Combina 3 embeddings: de palabra, posición y segmento. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.9\textwidth]{figs/bert-embeddings.png}
+\end{figure}
+
+Una vez que tenemos el modelo, se ajusta el modelo preentrenado mediante fine-tuning para la tarea que necesitemos y con un corpus que queramos (biomédico, etc). El modelo original de BERT tenía 768 capas ocultas, 12 capas de bloques de transformers con 12 cabezas cada una. Así, tenía 100 millones de pesos que aprender.
+
+El modelo se presenta con una serie de oraciones del corpus de entrenamiento, donde se selecciona una muestra aleatoria (15 \%) de palabras de cada oración de entrenamiento para el aprendizaje. Una palabra elegida se utiliza de una de estas tres maneras:
+\begin{itemize}
+\item Se sustituye por «[máscara]», un token de vocabulario único (80 \%).
+\item Se sustituye por otra palabra del vocabulario, seleccionada aleatoriamente en función de las probabilidades unigramáticas (10 \%).
+\item Se deja sin cambios (10 \%).
+\end{itemize}
+
+El separador sirve no solo para aprender la palabra enmascarada, sino para predecir si dos oraciones consecutivas están realmente relacionadas o no (next sentence prediction). Así, en el corpus se le metieron 50\% de parejas de oraciones positivas y 50\% negativas o seleccionadas aleatoriamente. 
+
+Se ha visto que hasta tres capas interiores capturan información distinta para la tarea y conviene que la salida sea la media de esas últimas 4 capas del modelo.
+
+\subsection{Preentrenamiento y fine-tuning}
+A partir de un corpus grande se construyen los modelos preentrenados. Muchos de estos modelos son públicos y se pueden descargar. Sus pesos están congelados, no se modifican, pero se pueden ajustar para crear una capa extra que sí se modifica para una tarea concreta. 
+
+En general, el ajuste fino se hace añadiendo una nueva red que se aprende para la tarea. Por ejemplo, para análisis de sentimiento, se entrena para eso. Al pasar los datos, se empiezan a generar salidas y se miden los errores, los cuales se propagan hasta el final de esa capa nueva, lo demás está congelado. 
+
+\section{Modelos grandes de lenguaje (LLMs)}
+Un LLM es un transformer en general, pudiendo ser un bloque de encoder o de decoder. Así, el encoder procesa el input y el decoder genera el output. BERT es solo un encoder, mientras que GPT es solo decoder. Otros, como T5, tienen ambos módulos. Así, un LLM puede ser encoder, decoder o encoder-decoder. 
+
+\subsection{Preentrenamiento de LLMs}
+El preentrenamiento hace referencia a la construcción de los modelos de lenguaje (normalmente basados en transformers) sobre varios corpus grandes. Durante el preentrenamiento se cogen los corpus crudos, los cuales se filtran por su calidad. Dependiendo de las clases que haya se busca quitar duplicidad de oraciones, etc. Conviene también revisar la privacidad, quitando u ocultando nombres propios, aspectos de género, etc. A continuación se tokeniza para trocear una secuencia (oraciones se dividen en palabras, lemas, etc. Cuando se tokeniza para crear un modelo, para usar el modelo, se debe usar el mismo tokenizador. 
+
+\subsection{Ajuste fino de LLMs}
+El ajuste fino es el proceso de ajustar los parámetros de un modelo preentrenado para mejorar su rendimiento en un dominio o aplicación específicos. Implica volver a entrenar el modelo preentrenado en un conjunto de datos específico, lo que permite que el modelo se adapte a una tarea específica. Por ejemplo, un modelo para generar diagnósticos médicos precisos podría ajustarse con precisión en un conjunto de datos de registros médicos, probando su rendimiento en tareas de diagnóstico médico. 
+
+El ajuste fino ayuda al modelo a especializarse en un dominio concreto, al tiempo que conserva sus capacidades generales de comprensión del lenguaje. Se trata de un tipo de aprendizaje por transferencia en el que el modelo se vuelve a entrenar con nuevos datos, con algunas o todas las capas preentrenadas configuradas para ser actualizables, lo que permite al modelo ajustar los pesos de dichas capas a una nueva tarea; los pesos de las capas restantes se mantienen «congelados» (es decir, sin cambios).
+
+El ajuste fino eficiente de parámetros busca reducir el número de parámetros entrenables, manteniendo un buen rendimiento del modelo.
+\begin{itemize}
+\item Ajuste del adaptador: introducen módulos pequeños (adaptadores) entre las capas que se entrenan mientras que los parámetros originales del modelo se quedan congelados.
+\item Ajuste del prefijo: se añaden vectores específicos de la tarea (prefijos) al input del modelo.
+\item Low Rank Adaptation: aplica modificaciones low-rank a los parámetros del modelo preentrenado.
+\end{itemize}
+
+\subsection{Prompting de LLMs}
+Uno de los aspectos principales por los que los LLM han sido tan populares
+y útiles es el hecho de que son accesibles para los humanos a través de conversaciones en lenguaje natural. El prompting se refiere a proporcionar entradas en lenguaje natural (consultas o indicaciones; \textbf{prompts}) a un LLM para guiar su generación de respuestas basadas en el lenguaje.
+
+Un prompt efectivo utiliza un lenguaje claro y conciso, con contexto e información base necesaria, incluyendo instrucciones específicas o guías, incorporando inputs de ejemplos y outputs deseados y anticipando posibles desafíos.
+
+El prompting se suele referir también como el aprendizaje in-context (ICL). Permite adaptar la capacidad del LLM a generalizar a situaciones nuevas modificando sus respuestas durante la conversaciones. Hay distintas técnicas para hacer esto:
+\begin{itemize}
+\item Zero-shot learning: utilizando solo la descripción de la tarea
+\item Few-shot learning: se dan algunas demostraciones o ejemplos de las salidas deseadas
+\item Chain-of-thought (CoT) prompting: guían el modelo por una serie de prompts interconectados, manteniendo un contexto coherente. 
+\end{itemize}
+
+\subsection{Extensiones de LLMs}
+Aunque los LLM preentrenados son potentes, tienen limitaciones como alucinaciones, conocimientos obsoletos y lagunas de razonamiento. Aumentar los LLM con mecanismos externos mejora su fiabilidad, escalabilidad y adaptabilidad.
+\begin{itemize}
+\item \textbf{Generación aumentada por recuperación (RAG):} inyectar conocimientos externos en tiempo real durante la inferencia para mejorar la precisión factual. Primero se hace un proceso de retrieval de documentos, se indexan y se añade como contexto a la pregunta. 
+\item \textbf{Sistemas multiagente basados en LLM (MAS basados en LLM):} uso de múltiples LLM que trabajan juntos para mejorar el razonamiento, la resolución de tareas y la toma de decisiones
+\end{itemize}
+ 
+Entre las ventajas de la ampliación de LLM se encuentran la mejora de la precisión y reducción de las alucinaciones, la posibilidad de ejecutar tareas dinámicas y especializadas y la mejora de la escalabilidad sin necesidad de volver a entrenar.
+
+\paragraph{Retrieval-Augmented Generation}
+RAG mejora los LLM al incorporar la obtención de conocimiento externo. La consulta suele derivar a los documentos, los cuales se procesan, trocean en chunks y esos fragmentos de los documentos crean una query extendida al incorporarse a la pregunta inicial. Esto permite proporcionar ya conocimientos de dominio específico, reduciendo así las alucinaciones y mejorar la salida. Esto se suele usar para responder a preguntas con datos a tiempo real, aplicaciones legales, médicas o científicas que requieran una precisión muy fáctica y chatbots. 
+
+\paragraph{Sistemas multiagentes}
+Utilizan múltimes LLMs que interaccionan entre sí para resolver tareas complejas de forma más eficiente. Mejoran la escalabilidad y modularidad, permitiendo la especialización entre agentes y mejorando la toma de decisiones por colaboración. Se suelen utilizar como asistentes de investigación autónomos, para resolver problemas de forma colaborativa en programación y diseño y para la toma de decisiones y creación de flujos de trabajo en empresas.
+
