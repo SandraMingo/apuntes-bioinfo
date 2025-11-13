@@ -1,0 +1,161 @@
+%13/11 - Kostadin 
+\chapter{Aplicaciones de Sistemas de Minería de Texto en Biología (Bio-NLP)}
+\section{Sobre Bio-PNL y Bio-NLP}
+Los sistemas de minería de texto son conjunto de modelos que describen cómo la comunicación influye en la experiencia subjetiva y se ve influida por ella. A partir de estos modelos se generan técnicas mediante la secuenciación de diversos aspectos de los mismos con el fin de cambiar las representaciones internas de una persona. La programación neurolingüística se ocupa de los patrones o la programación creados por las interacciones entre el cerebro, el lenguaje y el cuerpo, que producen comportamientos tanto eficaces como ineficaces.
+
+Se necesita el reconocimiento y normalización de entidades biológicas para que una misma enfermedad se llame siempre igual y poder recuperar la información pertinente a ella. Posteriormente hay que asociar las entidades entre distintos textos para completar la información. Por ejemplo, hay que asociar las interacciones entre moléculas, material genético, proteínas, medicamentos, etc. El ránking de los genes se refiere a poner los genes de mayor a menor importancia. 
+
+Bio-PNL probablemente se refiere a Bio-Programación Neurolingüística, que combina la Programación Neurolingüística (PNL) con un enfoque en cómo las emociones, los pensamientos y el lenguaje afectan al cuerpo y la salud. Utiliza técnicas de PNL para comprender e influir en la conexión entre la mente y el cuerpo, con el objetivo de mejorar el bienestar a través de cambios en la percepción, la actitud y el comportamiento. Este enfoque se aplica al desarrollo personal, la salud y la terapia.
+
+Las decisiones de acción se toman a nivel límbico. En todos los reptiles y mamíferos, y también en los seres humanos. Por lo tanto, es cierto que las emociones son muy importantes para nuestras decisiones. Tan importantes como el razonamiento. Por lo tanto, la simulación de las emociones puede dar al programa informático un aspecto similar al humano. Es fácil de conseguir.
+
+A medida que aumenta la confianza en la IA y se vuelve moderno utilizarla, probablemente predominará la confianza en los sistemas totalmente artificiales. Y probablemente será muy conservadora. Se trata de una «veracidad» basada únicamente en el texto, no en la realidad. Es mejor tener esto en cuenta, especialmente si trabajamos en ámbitos punteros, por ejemplo, como científicos.
+
+Confiamos en páginas web si llevan mucho tiempo establecidas y no tienen errores ortográficos. A pesar de creer que los chats hacen algo, van a hacer que creamos más y más y que no creamos lo que no coincida con ello. Por eso, Bio-PNL probablemente sea una errata y sea Bio-NLP (o Bio-PLN en español).
+
+El procesamiento del lenguaje natural biológico (BioNLP) es la aplicación del procesamiento del lenguaje natural (NLP) para extraer, analizar e interpretar información de textos y datos biológicos y médicos. Utiliza técnicas computacionales para comprender datos no estructurados, como artículos de investigación, notas clínicas y secuencias genómicas, y los convierte en información estructurada para el descubrimiento de conocimientos, la búsqueda avanzada y la obtención de información clínica. Las aplicaciones clave son:
+\begin{itemize}
+\item \textbf{Análisis de la literatura médica:} BioNLP ayuda a manejar el gran volumen de artículos científicos y literatura al identificar los términos, gaps en la investigación y descubrimientos clave. No obstante, esto es algo realmente secundario.
+\item \textbf{Extracción de datos clínicos:} Se extraen datos estructurados de notas y reportes clínicos como la información del paciente, diagnóstico, procedimientos, medicaciones y síntomas.
+\item \textbf{Genómica y bioinformática:} Las técnicas de NLP se adaptan para analizar las secuencias biológicas como ADN, ARN y proteínas, ayudando a entender su estructura y función.
+\item \textbf{Descubrimiento de conocimiento:} Al procesar una gran cantidad de textos, BioNLP ayuda a encontrar las relaciones ocultas y las asociaciones que ayudan al descubrimiento de fármacos y otros avances. No obstante, hay que tener un ojo crítico con las relaciones: causalidad, correlación, causa-consecuencia, umbrales de observación distintos, etc.
+\item \textbf{Respuesta a preguntas:} Los sistemas de BioNLP ayuda a proporcionar respuestas a preguntas médicas al buscar y resumir la información de textos relevantes. Por ejemplo, la Fundación 29 tiene una aplicación (Nav29) que permite a los médicos buscar los síntomas de un paciente para buscar posibles enfermedades. No obstante, hay que tener cuidado porque siempre suele salir cáncer o tumor en algún momento y se deben considerar también otras opciones. 
+\item \textbf{Salud del consumidor:} Puede ayudar a individuos entender la información de salud y ayudar a investigadores a estudiar el lenguaje generado por el paciente para monitorizar los cambios cognitivos u otros indicadores de salud. Por ejemplo, los efectos secundarios causados por la toma de varios medicamentos a la vez. 
+\end{itemize}
+
+El BioNLP es importante por lo siguiente:
+\begin{itemize}
+\item \textbf{Manejo de datos complejos:} BioNLP permite estudiar las complejidades y el vocabulario específico del dominio biomédico, que es difícil de procesar por modelos de NLP genéricos.
+\item \textbf{Manejo del exceso de información:} permite procesar automáticamente millones de artículos y documentos producidos en ciencia cada año.
+\item \textbf{Mejora la eficiencia:} aumenta la velocidad de investigación al encontrar rápidamente la información relevante que se puede usar para automatizar tareas.
+\end{itemize}
+
+La minería de textos en biología se utiliza para extraer información biológica de grandes cantidades de texto, con aplicaciones que incluyen asociaciones entre genes y enfermedades, interacciones entre proteínas y grupos de genes. También es útil en campos como la farmacogenómica, la toxicología y el reposicionamiento de fármacos, ya que identifica y relaciona automáticamente entidades biológicas como genes, proteínas y fármacos. Esto ayuda a gestionar la explosión de literatura científica, que sería imposible de procesar manualmente.
+
+\section{Sistemas de recuperación de información biomédica}
+El objetivo principal es enumerar las entradas para disponer de un diccionario bastante limitado con el que trabajar. Esto ayuda a los investigadores a gestionar la sobrecarga de información y a encontrar conexiones entre entidades biológicas como genes, proteínas y enfermedades, lo que facilita tareas como el descubrimiento de fármacos, la comprensión de enfermedades y la biología de sistemas. Este campo implica técnicas como el \textbf{reconocimiento de entidades} nombradas para identificar términos y luego analizarlos para encontrar relaciones.
+
+Las dos tareas principales son: recuperar la información y reconocer las entidades.
+
+Al enumerar las cosas usando, por ejemplo, MeSH, se reduce el número de entidades y se obtiene una jerarquía: enfermedad - enfermedad de pulmón - enfermedad de pulmón infecciosa - tuberculosis. 
+
+Los procesos principales son:
+\begin{itemize}
+\item \textbf{Extracción de información:} identificar y extraer datos específicos.
+\item \textbf{Minería de relaciones:} determinar el tipo de relaciones entre las entidades identificadas.
+\item \textbf{Biología de sistemas:} construir modelos utilizando minería de texto para identificar componentes e interacciones en la literatura para entender sistemas biológicos complejos. Muchos modelos hoy en día se basan en texto o chat. Al tener solo texto, no piden relaciones entre dos entidades. Un modelo de un sistema cualquiera con ecuaciones diferenciales es mejor que un modelo textual.
+\item \textbf{Descubrimiento de fármacos:} identificar fármacos candidatos potenciales al encontrar moléculas y pathways relacionados a una enfermedad.
+\item \textbf{Descubrimiento de conocimiento} 
+\end{itemize}
+
+Entre las herramientas que se pueden utilizar está PubMed. Tiene una API para la minería de texto, que se puede ver en la siguiente página: \href{https://www.ncbi.nlm.nih.gov/home/develop/api/}{https://www.ncbi.nlm.nih.gov/home/develop/api/}
+
+Aunque los tools buenos son los que se encuentran en \href{https://www.ncbi.nlm.nih.gov/research/bionlp/Tools/}{https://www.ncbi.nlm.nih.gov/research/bionlp/Tools/}.
+
+BioRxiv y MedRxiv contienen preprints para dar a conocer el descubrimiento mucho antes de la publicación y recibir feedback de otros investigadores. También se pueden publicar pequeños descubrimientos de 1-2 párrafos pero de mucho valor que no se convertirán en ninguna publicación (por ejemplo, alguna tabla de un médico). Estas dos páginas son muy limitadas en su acceso, y MedRxiv puede ser incluso de pago si se utiliza en batch. 
+
+\textbf{Ejercicio:}
+Encontrar las APIs para acceder a los repositorios de PubMed, MedRxiv, BioRxiv, Arxive y CORD-19. Casi todos trabajan con el modelo REST; casi no hay modelos estrictos programáticos. 
+\begin{itemize}
+\item API de Pubmed: \href{https://www.ncbi.nlm.nih.gov/home/develop/api/}{https://www.ncbi.nlm.nih.gov/home/develop/api/}
+\item API de bioRxiv: \href{https://api.biorxiv.org/}{https://api.biorxiv.org/}
+\item API de medRxiv: \href{https://api.medrxiv.org/}{https://api.medrxiv.org/}
+\item API de arXiv: \href{https://info.arxiv.org/help/api/index.html}{https://info.arxiv.org/help/api/index.html}
+
+\begin{lstlisting}[language = Python]
+import urllib.request
+import xml.etree.ElementTree as ET
+
+# URL de búsqueda
+url = 'http://export.arxiv.org/api/query?search_query=all:pneumonia+peniciline&start=0&max_results=10'
+
+# Descargar y parsear los datos XML
+with urllib.request.urlopen(url) as response:
+    xml_data = response.read()
+
+# Parsear XML
+root = ET.fromstring(xml_data)
+
+# Extraer los abstracts (etiqueta <summary>)
+abstracts = [entry.find('{http://www.w3.org/2005/Atom}summary').text.strip()
+             for entry in root.findall('{http://www.w3.org/2005/Atom}entry')]
+
+# Mostrar resultados
+for i, abs_text in enumerate(abstracts, 1):
+    print(f"\n--- Abstract {i} ---\n{abs_text}\n")
+\end{lstlisting}
+
+\item API de CORD19: \href{https://ir-datasets.com/cord19.html}{https://ir-datasets.com/cord19.html}
+\end{itemize}
+
+\section{Reconocimiento y normalización de entidades biológicas}
+El objetivo principal es enumerar las entradas para disponer de un diccionario bastante limitado con el que trabajar. El reconocimiento y la normalización de entidades biológicas se refieren a dos pasos clave en el procesamiento del lenguaje natural biomédico: . Este proceso extrae información estructurada, como genes, enfermedades o fármacos, de fuentes no estructuradas, como la literatura científica, y es crucial para tareas como la construcción de grafos de conocimiento y el análisis de datos.
+
+\subsection{Reconocimiento de entidades nombradas}
+Se trata del proceso de identificación y clasificación de entidades biológicas específicas dentro de un texto. Algunos ejemplos son encontrar «TP53» y reconocerlo como un gen, o «cáncer de pulmón» como una enfermedad. Esto se suele hacer utilizando modelos de aprendizaje automático entrenados con grandes conjuntos de datos de texto anotado. Estos modelos aprenden a reconocer patrones que indican una entidad biológica, a menudo con el contexto de las palabras circundantes.
+
+\subsection{Normalización de entidades nombradas}
+La normalización es el proceso de vincular una mención de entidad reconocida a un concepto único y estandarizado en un vocabulario controlado o base de conocimientos, como Entrez para genes o ICD-10 para enfermedades. Muchas entidades tienen múltiples nombres, sinónimos y abreviaturas (por ejemplo, «cáncer», «neoplasias» y «tumor» pueden referirse a la misma afección). La normalización elimina la ambigüedad de estos términos y proporciona un identificador único y coherente. Esto implica el uso de diccionarios de términos conocidos y, a menudo, métodos más sofisticados que utilizan el contexto del texto para elegir el identificador único correcto de una lista de posibles candidatos.
+
+La herramienta principal es \href{https://academic.oup.com/bioinformatics/article/38/20/4837/6687126}{BERN2} (\href{http://bern2.korea.ac.kr}{web}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = \textwidth]{figs/bern2.jpeg}
+\end{figure}
+
+BERN2 funciona bien si se trata de un árbol o un bosque. Es decir, podemos partir de un cuadro respiratorio > pulmón > infección > tuberculosis. La bacteria a su vez tendrá su propio árbol con su taxonomía. Esto se debe a que nuestra mente humana funciona así, con ramificaciones y clasificaciones fijas. Lo que se salga de esa estructura no lo consideramos y BERN2 no lo puede determinar. 
+
+Una vez identificado el nombre de la especie, la normalización lo conecta con un identificador estándar, normalmente un identificador taxonómico del NCBI. Este paso puede resultar complejo, especialmente cuando se mencionan varias especies en un documento o cuando el nombre de una especie se utiliza en un contexto diferente (por ejemplo, el nombre de un virus en un artículo sobre una enfermedad humana). Las herramientas utilizan diversas técnicas para normalizar, entre ellas la coincidencia exacta, la coincidencia aproximada y reglas basadas en la proximidad para asignar el identificador correcto.
+
+Asignar la identificación correcta de la especie a las menciones de genes para vincular los genes con sus organismos específicos, un paso fundamental para comprender la función de los genes y el reconocimiento y la normalización de especies es el proceso de identificar las menciones de especies en el texto y vincularlas a identificadores únicos de bases de datos, como los identificadores de taxonomía del NCBI. El reconocimiento consiste en encontrar los nombres de las especies dentro de un documento, mientras que la normalización es la tarea de asignar esos nombres a un identificador específico y estandarizado para eliminar la ambigüedad y garantizar la coherencia. Este es un paso crucial para muchas aplicaciones de minería de textos, especialmente en biología y medicina, ya que permite realizar análisis posteriores, como la normalización de genes, en la que se asigna el identificador de una especie a las menciones de genes asociadas. 
+
+El material genético también especifica la especie, pero puede que todo un conjunto de especies tenga el mismo material genético o muy parecido. También se puede hacer lo mismo con un texto que describa una especie o la especifique en un artículo. Generalmente se suele poner el identificador.
+
+En la mayoría de las aplicaciones prácticas, tanto el reconocimiento como la normalización son necesarios y, a menudo, se tratan como una única tarea denominada «reconocimiento y normalización de entidades nombradas» (NERN, por sus siglas en inglés).
+
+\textbf{Ejercicio}
+Encontrar cómo utilizar BERN2 en un texto virgen, que no haya pasado por Pubmed ni por su curación especial. 
+
+\begin{lstlisting}[language = Python]
+import requests
+
+def query_plain(text, url="http://bern2.korea.ac.kr/plain"):
+    return requests.post(url, json={'text': text}).json()
+
+if __name__ == '__main__':
+    text = "Autophagy maintains tumour growth through circulating arginine."
+    print(query_plain(text))
+\end{lstlisting}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{figs/bern2-ex.png}
+\end{figure}
+
+También hay que leer los abstracts de los paper \href{https://www.sciencedirect.com/science/article/pii/S1532046423002083}{BioREx: Improving biomedical relation extraction by leveraging heterogeneous datasets} y \href{https://pmc.ncbi.nlm.nih.gov/articles/PMC11306928/}{The overview of the BioRED (Biomedical Relation Extraction Dataset) track at BioCreative VIII}.
+
+Las herramientas modernas utilizan modelos de aprendizaje profundo, como los basados en Bio-LM (un modelo de lenguaje biomédico preentrenado), para identificar los límites de las entidades nombradas. Se utilizan Conditional Random Fields (CRFs) y modelos basados en redes neuronales. 
+
+Además de BERN2 hay otras herramientas como NERsuite y GNorm2. 
+
+\section{Sistemas de extracción de relaciones}
+Un currículum para un sistema de extracción de relaciones biomédicas incluye habilidades en procesamiento del lenguaje natural (NLP), aprendizaje profundo (por ejemplo, Bi-LSTM, Transformers) y tareas biomédicas específicas como identificar relaciones entre genes y enfermedades, interacciones entre fármacos y interacciones entre proteínas y genes. Los logros clave deben cuantificarse utilizando métricas como la precisión, la recuperación y la puntuación F1, y deben destacar la experiencia con grandes conjuntos de datos (por ejemplo, PubMed), el manejo de dependencias de largo alcance y la aplicación de técnicas como la supervisión débil y el aprendizaje conjunto.
+
+Existen muchos casos de relaciones que no son causalmente conectadas, puramente fantasmas.
+Si sabemos que buscamos una relación concreta, es mejor buscarla manualmente al ser más eficiente y obtener un mejor resultado. 
+
+Se pueden buscar relaciones indirectas con causas comunes que estén fuera de lo que busquemos (por ejemplo, causa ambiental).
+
+\section{Ranking genético y clasificación de texto}
+Este enfoque combinado permite identificar y comprender con mayor precisión los genes en áreas como la investigación de enfermedades, al reducir los grandes conjuntos de datos y destacar los genes importantes.
+
+Los textos son los que más influyen en el ránking de genes, ya que permite enlazar los genes con las enfermedades. Las relaciones también sirven para encontrar medicamentos o procedimientos. Hay un problema de negatividad; si solo se trata de una causa, se encuentra fácil, pero cuando se trata de la falta de una actividad, es más difícil (por ejemplo, una persona obesa no tiene mucha grasa por la comida que toma, sino por la falta de ejercicio físico).
+
+El ránking de genes es el proceso de ordenar o priorizar genes basándose en uno o más criterios, como su relevancia para una enfermedad, sus niveles de expresión en diferentes condiciones o su función biológica.
+
+No se pueden combinar los genes si no hay múltiples fuentes de información, como datos de expresión génica y resultados de minería de texto. Esta combinación permite crear un ránking más exhaustivo.
+
+La clasificación de textos en el ránking de genes es el uso de técnicas de minería de texto para categorizar automáticamente los genes o su información asociada, la cual se utiliza para el proceso del ránking de genes. Por ejemplo, clasificar genes en base a su coocurrencia con nombres de enfermedades en los artículos permite identificar genes candidatos causantes de la enfermedad. También se pueden clasificar los genes por su función. El mayor problema es rebajar la dimensionalidad, ya que en altas dimensiones todo va a aparecer cercano y dos instancias aleatorias tendrán vectores ortogonales, por lo que se debe proyectar.
+
+El uso de texto permite mejorar la precisión, encontrar la relación de x cosas y dar mayor robustez al análisis. 
