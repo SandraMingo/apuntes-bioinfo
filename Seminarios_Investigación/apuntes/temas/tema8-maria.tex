@@ -1,0 +1,40 @@
+%21/11 - María de Toro
+\section{NGS, Epidemiología y micribioma en la práctica real - ¿Qué hace un bioinformático en un laboratorio de microbiología?}
+\textbf{María de Toro - CIBIR (Centro de Investigación Biomédica de la Rioja)}
+
+Lleva la plataforma de Genómica y Bioinformática del CIBIR. Los objetivos son asistir en el diseño y ejecución de proyectos de secuenciación NGS para todos los investigadores que lo requieran y proveer servicios de secuenciación. Además de la actividad asistencial, tienen actividad investigadora principalmente enfocada en microorganismos. 
+
+Los patógenos los analizan en cuatro fases:
+\begin{itemize}
+\item Análisis de amplicones
+\item Enriquecimiento
+\item Whole-genome sequencing
+\item Metagenómica y metatranscriptómica
+\end{itemize}
+
+Todo esto se analiza mediante secuenciación de alto rendimiento (generaciones 2, 3 y 4). La cuarta generación se acaba de anunciar, siendo la secuenciación por expansión desarrollada por Roche. Para escoger la tecnología adecuada, hay que ver la pregunta biológica, el tipo de muestra y su integridad, y sobre todo el presupuesto, si se quieren lecturas cortas o largas, etc. 
+
+Tras el ensamblaje, las lecturas cortas suelen dar una visión con piezas faltantes, generalmente en las regiones repetidas. Con las lecturas largas este problema no pasa, ya que permiten resolver variantes estructurales, secuencias repetidas, haplotipos, etc. 
+
+Las lecturas cortas van bien para detecciones rutinarias en clínicas, supervisión de SNPs y metagenómica cuantitativa, mientras que las lecturas largas se deben usar para ensamblar genomas completos, resolver plásmidos, detectar elementos móviles genéticos o caracterizar comunidades microbianas complejas. 
+
+Una vez que tenemos las secuencias, hay que transformarlas en conocimiento. 
+
+\subsection{Seguridad alimentaria: monitorización integrada del flujo de resistencias a antimicrobianos y dianas de intervención del medio ambiente, a la granja y a la mesa}
+Los alimentos son un reservorio de patógenos extraintestinales. La adquisición de bacterias MDR implica una gran presión selectiva sobre las comensales, que bien adquieren estos mecanismos vía HGT.
+
+Los antibióticos se adminsitran en atención primaria en hospitales, en veterinarias e incluso en animales de producción. Pero esto no es estanco; cuando salimos del hospital vemos a otras personas, animales, salimos al campo, etc. 
+
+En cunicultura, en el momento en el que un conejo tiene una infección se deben sacrificar. En las heces se encontraron aislados multirresistentes, entre ellos muchos potenciales colonizadores humanos.
+
+Los resultados no satisfactorios también se deben publicar. La utilización de estas tecnologías en clínica son un campo muy activo de estudio. Ojo con las muestras de baja biomasa, hospedador y ojo con el diagnósito clínico. Hay que afinar la diana. Hay paneles de captura que permiten enriquecer los patógenos que interesan con sondas. Esto aumenta la sensibilidad, especificidad, aunque se pierde la capacidad de detectar microorganismos que no están estrechamente relacionados con el panel. 
+
+En Nanopore, también se puede hacer adaptive sampling, deshechando la hebra de ADN de humano durante el proceso de secuenciación. 
+
+\subsection{Epidemiología genómica de SARS-CoV-2}
+Se analizó la presión selectiva y la tasa de sustitución. La selección podía ser negativa/purificante (alto grado de conservación) o positiva (evolución). El objetivo era evaluar la presión selectiva a nivel del genoma completo para estudiar las proteínas menos conocidas del virus, incluyendo las que contienen un solapamiento de lecturas. 
+
+Los genes estructurales tienen una selección positiva al ser los que están expuestos al sistema inmune del hospedador. Los genes no estructurales tienen una selección negativa al ser proteíans de función esencial que no requieren adaptaciones mayores al hospedador. Los genes accesorios mostraron valores intermedios. 
+
+Los virus tienen muchos genes solapantes, especialmente la ORF3. Cambiando uno de esos genes, se modifican también los otros, por lo que esas zonas son muy conservadas. Ka/Ks permite evaluar la presión selectiva de genomas completos de virus y bacterias.
+
